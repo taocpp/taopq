@@ -55,7 +55,7 @@ $(BUILDDIR)/%: $(BUILDDIR)/%.o $(BUILDDIR)/lib/lib$(LIBNAME).a
 	$(CXX) -std=$(CXXSTD) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
 $(BUILDDIR)/%.success: $(BUILDDIR)/%
-	$< >$<.log 2>&1
+	$< #>$<.log 2>&1
 	touch $@
 
 .PHONY: test

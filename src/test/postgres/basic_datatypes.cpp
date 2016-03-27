@@ -24,6 +24,7 @@ bool prepare_datatype( const std::string& datatype )
 
 void check_null( const std::string& datatype )
 {
+  std::cout << "check null: " << datatype << std::endl;
   if( prepare_datatype( datatype ) ) {
     assert( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", tao::postgres::null ).rows_affected() == 1 );
   }
@@ -37,6 +38,7 @@ void check_null( const std::string& datatype )
 template< typename T >
 void check( const std::string& datatype, const T& value )
 {
+  std::cout << "check: " << datatype << " value: " << value << std::endl;
   if( prepare_datatype( datatype ) ) {
     assert( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", value ).rows_affected() == 1 );
   }
