@@ -4,6 +4,8 @@
 #include <cassert>
 #include <cmath>
 #include <limits>
+#include <iostream>
+
 #include <tao/utility/getenv.hpp>
 #include <tao/utility/demangle.hpp>
 #include <tao/postgres/connection.hpp>
