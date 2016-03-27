@@ -6,7 +6,7 @@
 [![Coverage](https://img.shields.io/coveralls/taocpp/postgres.svg)](https://coveralls.io/github/taocpp/postgres)
 [![Issues](https://img.shields.io/github/issues/taocpp/postgres.svg)](https://github.com/taocpp/postgres/issues)
 
-The Art of C++ / Postgres is a C++11 wrapper library for [PostgreSQL's]() `libpq` client library.
+The Art of C++ / Postgres is a C++11 wrapper library for [PostgreSQL's](http://www.postgresql.org/) `libpq` client library.
 
 ### Table of content
 
