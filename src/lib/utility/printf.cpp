@@ -1,4 +1,4 @@
-// The Art of C++ / PostgreSQL
+// The Art of C++ / Utility
 // Copyright (c) 2016 Daniel Frey
 
 #include <tao/utility/printf.hpp>

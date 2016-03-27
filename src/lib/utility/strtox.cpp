@@ -1,4 +1,4 @@
-// The Art of C++ / PostgreSQL
+// The Art of C++ / Utility
 // Copyright (c) 2016 Daniel Frey
 
 #include <tao/utility/strtox.hpp>
@@ -25,7 +25,7 @@ namespace tao
 
       template<> const std::string message< long >::value = "tao::utility::strtol() failed for input: ";
       template<> const std::string message< unsigned long >::value = "tao::utility::strtoul() failed for input: ";
-      template<> const std::string message< long long >::value = "tao::utility::strtoll() failed for input:";
+      template<> const std::string message< long long >::value = "tao::utility::strtoll() failed for input: ";
       template<> const std::string message< unsigned long long >::value = "tao::utility::strtoull() failed for input: ";
 
       template<> const std::string message< float >::value = "tao::utility::strtof() failed for input: ";
