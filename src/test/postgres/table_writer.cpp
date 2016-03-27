@@ -1,7 +1,7 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016 Daniel Frey
 
-#include "test_macros.hpp"
+#include "../macros.hpp"
 
 #include <tao/utility/getenv.hpp>
 #include <tao/postgres/connection.hpp>

@@ -1,3 +1,6 @@
+// The Art of C++ / PostgreSQL
+// Copyright (c) 2016 Daniel Frey
+
 #include <tao/postgres.hpp>
 
 #include <cassert>
