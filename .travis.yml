@@ -151,7 +151,7 @@ matrix:
       before_script:
         - pip install --user cpp-coveralls
       after_success:
-        - coveralls --gcov gcov-5 --gcov-options '\-lp' --exclude src
+        - coveralls --gcov gcov-5 --gcov-options '\-lp' --exclude src/test --exclude include/tao/optional/akrzemi1
 
 script:
   make CXX=$COMPILER -j3
