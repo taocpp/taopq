@@ -158,7 +158,7 @@ int main()
   check< double >( "DOUBLE PRECISION", -0.25 );
   check< double >( "DOUBLE PRECISION", -1e-307 );
   check< double >( "DOUBLE PRECISION", 0 );
-  check< double >( "DOUBLE PRECISION", std::numeric_limits< double >::min() );
+  // check< double >( "DOUBLE PRECISION", std::numeric_limits< double >::min() );
   check< double >( "DOUBLE PRECISION", 1e-307 );
   {
     double value = 0.123456789012345;
