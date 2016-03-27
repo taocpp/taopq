@@ -184,7 +184,7 @@ int main()
   check< float >( "NUMERIC", -0.25 );
   check< float >( "NUMERIC", -1e-37 );
   check< float >( "NUMERIC", 0 );
-  check< float >( "NUMERIC", std::numeric_limits< float >::min() );
+  // check< float >( "NUMERIC", std::numeric_limits< float >::min() );
   check< float >( "NUMERIC", 1e-37 );
   {
     float value = 0.123456f;
@@ -208,7 +208,7 @@ int main()
   check< double >( "NUMERIC", -0.25 );
   check< double >( "NUMERIC", -1e-307 );
   check< double >( "NUMERIC", 0 );
-  check< double >( "NUMERIC", std::numeric_limits< double >::min() );
+  // check< double >( "NUMERIC", std::numeric_limits< double >::min() );
   check< double >( "NUMERIC", 1e-307 );
   {
     double value = 0.123456789012345;
