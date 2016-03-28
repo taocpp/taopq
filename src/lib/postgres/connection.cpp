@@ -206,6 +206,16 @@ namespace tao
       prepared_statements_.insert( name );
     }
 
+    void connection::deallocate( const std::string& name )
+    {
+      check_prepared_name( name );
+      if( !is_prepared( name.c_str() ) ) {
+        throw std::runtime_error( "prepared statement name not found: " + name );
+      }
+      execute( "DEALLOCATE " + name );
+      prepared_statements_.erase( name );
+    }
+
     std::shared_ptr< transaction > connection::direct()
     {
       return std::make_shared< autocommit_transaction >( shared_from_this() );

@@ -54,6 +54,7 @@ namespace tao
       bool is_open() const;
 
       void prepare( const std::string& name, const std::string& statement );
+      void deallocate( const std::string& name );
 
       std::shared_ptr< postgres::transaction > direct();
       std::shared_ptr< postgres::transaction > transaction( const transaction::isolation_level isolation_level = transaction::isolation_level::DEFAULT );

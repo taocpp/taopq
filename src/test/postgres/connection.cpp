@@ -50,6 +50,18 @@ int main()
   // a statement which is not a query does not return "affected rows"
   TEST_THROWS( connection->execute( "drop_table" ).rows_affected() );
 
+  // deallocate a prepared statement
+  connection->deallocate( "drop_table" );
+
+  // no longer possible
+  TEST_THROWS( connection->execute( "drop_table" ) );
+
+  // deallocate must refer to a prepared statement
+  TEST_THROWS( connection->deallocate( "drop_table" ) );
+
+  // deallocate must get a valid name
+  TEST_THROWS( connection->deallocate( "FOO BAR" ) );
+
   // create a test table
   connection->execute( "CREATE TABLE tao_connection_test ( a INTEGER PRIMARY KEY, b INTEGER )" );
 
