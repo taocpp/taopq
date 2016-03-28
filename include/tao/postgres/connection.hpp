@@ -42,10 +42,11 @@ namespace tao
       class private_key
       {
         friend std::shared_ptr< connection > connection::create( const std::string& connect_info );
-        explicit private_key() {}
       };
 
     public:
+      // the ctor is public for technical reasons, the user is *not*
+      // supposed to call it directly. use connection::create() instead.
       connection( const private_key&, const std::string& connect_info );
 
       connection( const connection& ) = delete;
