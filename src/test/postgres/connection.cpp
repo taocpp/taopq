@@ -34,11 +34,13 @@ int main()
   // execution of invalid statements fails
   TEST_THROWS( connection->execute( "FOO BAR BAZ" ) );
 
+  // a prepared statement's name must be a valid C++ identifier
+  TEST_THROWS( connection->prepare( "", "DROP TABLE IF EXISTS tao_connection_test" ) );
+  TEST_THROWS( connection->prepare( "0drop_table", "DROP TABLE IF EXISTS tao_connection_test" ) );
+  TEST_THROWS( connection->prepare( "drop table", "DROP TABLE IF EXISTS tao_connection_test" ) );
+
   // prepare a statement
   connection->prepare( "drop_table", "DROP TABLE IF EXISTS tao_connection_test" );
-
-  // a prepared statement's name must be a valid C++ identifier
-  TEST_THROWS( connection->prepare( "drop table", "DROP TABLE IF EXISTS tao_connection_test" ) );
 
   // execute a prepared statement
   //
