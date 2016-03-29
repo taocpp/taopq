@@ -17,6 +17,14 @@ int main()
   TEST_ASSERT( connection->execute( "SELECT 1764" ).optional< int >() == 1764 );
   TEST_ASSERT( !connection->execute( "SELECT 64 WHERE FALSE" ).optional< int >() );
   TEST_ASSERT( !connection->execute( "SELECT NULL" ).as< tao::optional< int > >() );
+  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ].is_null( 0 ) );
+  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ].is_null() );
+  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] == tao::postgres::null );
+  TEST_ASSERT( !( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] != tao::postgres::null ) );
+  TEST_ASSERT( !connection->execute( "SELECT 42" )[ 0 ].is_null( 0 ) );
+  TEST_ASSERT( !connection->execute( "SELECT 42" )[ 0 ][ 0 ].is_null() );
+  TEST_ASSERT( !( connection->execute( "SELECT 42" )[ 0 ][ 0 ] == tao::postgres::null ) );
+  TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ][ 0 ] != tao::postgres::null );
 
   TEST_ASSERT( connection->execute( "SELECT $1::INTEGER", tao::optional< int >( 42 ) ).as< tao::optional< int > >() == 42 );
   TEST_ASSERT( !connection->execute( "SELECT $1::INTEGER", tao::optional< int >() ).as< tao::optional< int > >() );

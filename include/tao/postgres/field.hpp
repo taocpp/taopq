@@ -7,6 +7,7 @@
 #include <type_traits>
 #include <tao/optional/optional.hpp>
 #include <tao/postgres/result_traits.hpp>
+#include <tao/postgres/null.hpp>
 
 namespace tao
 {
@@ -50,6 +51,16 @@ namespace tao
         return as< tao::optional< T > >();
       }
     };
+
+    inline bool operator==( const field& f, const null_t& )
+    {
+      return f.is_null();
+    }
+
+    inline bool operator!=( const field& f, const null_t& )
+    {
+      return !f.is_null();
+    }
   }
 }
 
