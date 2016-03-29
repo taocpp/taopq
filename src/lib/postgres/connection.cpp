@@ -7,6 +7,8 @@
 #include <cstring>
 #include <stdexcept>
 
+#include <libpq-fe.h>
+
 namespace tao
 {
   namespace postgres

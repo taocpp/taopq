@@ -7,6 +7,8 @@
 #include <cstring>
 #include <stdexcept>
 
+#include <libpq-fe.h>
+
 #include <tao/utility/printf.hpp>
 #include <tao/utility/strtox.hpp>
 

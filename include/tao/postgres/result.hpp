@@ -15,11 +15,14 @@
 #include <unordered_set>
 #include <map>
 #include <unordered_map>
-#include <libpq-fe.h>
 
 #include <tao/optional/optional.hpp>
 #include <tao/utility/printf.hpp>
 #include <tao/postgres/row.hpp>
+
+// forward-declare libpq structures
+struct pg_result;
+typedef struct pg_result PGresult;
 
 namespace tao
 {
@@ -227,11 +230,13 @@ namespace tao
         return as_container< std::unordered_multimap< Ts... > >();
       }
 
+      // make sure you include libpq-fe.h before accessing the raw pointer
       ::PGresult* underlying_raw_ptr()
       {
         return pgresult_.get();
       }
 
+      // make sure you include libpq-fe.h before accessing the raw pointer
       const ::PGresult* underlying_raw_ptr() const
       {
         return pgresult_.get();

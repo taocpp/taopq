@@ -7,9 +7,12 @@
 #include <memory>
 #include <unordered_set>
 #include <string>
-#include <libpq-fe.h>
 #include <tao/postgres/transaction.hpp>
 #include <tao/postgres/result.hpp>
+
+// forward-declare libpq structures
+struct pg_conn;
+typedef struct pg_conn PGconn;
 
 namespace tao
 {
@@ -66,11 +69,13 @@ namespace tao
         return direct()->execute( std::forward< Ts >( ts )... );
       }
 
+      // make sure you include libpq-fe.h before accessing the raw pointer
       ::PGconn* underlying_raw_ptr()
       {
         return pgconn_.get();
       }
 
+      // make sure you include libpq-fe.h before accessing the raw pointer
       const ::PGconn* underlying_raw_ptr() const
       {
         return pgconn_.get();
