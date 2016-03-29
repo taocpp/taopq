@@ -6,7 +6,7 @@
 [![Coverage](https://img.shields.io/coveralls/taocpp/postgres.svg)](https://coveralls.io/github/taocpp/postgres)
 [![Issues](https://img.shields.io/github/issues/taocpp/postgres.svg)](https://github.com/taocpp/postgres/issues)
 
-The Art of C++ / PostgreSQL is a C++11 wrapper library for [PostgreSQL](http://www.postgresql.org/)'s `libpq` client library.
+The Art of C++ / PostgreSQL is a C++11 client library for [PostgreSQL](http://www.postgresql.org/).
 
 ### Table of content
 
@@ -18,7 +18,7 @@ The Art of C++ / PostgreSQL is a C++11 wrapper library for [PostgreSQL](http://w
 
 ## Preface
 
-The Art of C++ / PostgreSQL is a light-weight library for accessing a PostgreSQL database with a modern C++11 interface.
+The Art of C++ / PostgreSQL is a light-weight C++11 client library for accessing a PostgreSQL database, providing a modern API around PostgreSQL's `libpq`. Besides a C++11 compatible compiler and `libpq`, it has no further dependencies.
 
 ## Example
 
@@ -32,38 +32,47 @@ The below is a small "getting started" example. The library has a lot more to of
 
 int main()
 {
-  const auto connection = tao::postgres::connection::create( "dbname=template1" );
+  // open a connection
+  const auto conn = tao::postgres::connection::create( "dbname=template1" );
 
-  connection->execute( "DROP TABLE IF EXISTS tao_example" );
-  connection->execute( "CREATE TABLE tao_example ( a INTEGER PRIMARY KEY, b INTEGER, c TEXT NOT NULL )" );
+  // execute statements directly
+  conn->execute( "DROP TABLE IF EXISTS tao_example" );
+  conn->execute( "CREATE TABLE tao_example ( a INTEGER PRIMARY KEY, b INTEGER, c TEXT NOT NULL )" );
 
   // preparing a statement is optional, but often recommended
-  connection->prepare( "insert", "INSERT INTO tao_example VALUES ( $1, $2, $3 )" );
+  conn->prepare( "insert", "INSERT INTO tao_example VALUES ( $1, $2, $3 )" );
 
   // use a transaction if needed
   {
-    const auto transaction = connection->transaction();
-    // execute prepared statements with parameters
-    transaction->execute( "insert", 1, 42, "foo" );
-    transaction->execute( "insert", 2, tao::postgres::null, "Hello, world!" );
-    transaction->commit();
+    const auto tr = conn->transaction();
+
+    // execute statement with parameters directly
+    tr->execute( "INSERT INTO tao_example VALUES ( $1, $2, $3 )", 1, 42, "foo" );
+
+    // execute prepared statement with parameters
+    tr->execute( "insert", 2, tao::postgres::null, "Hello, world!" );
+
+    tr->commit();
   }
 
   // insert/update/delete statements return a result which can be queried for the rows affected
   {
-    const auto r = connection->execute( "insert", 3, 3, "drei" );
-    assert( r.rows_affected() == 1 );
+    const auto res = conn->execute( "insert", 3, 3, "drei" );
+    assert( res.rows_affected() == 1 );
   }
 
   // queries have a result as well, it contains the returned data
-  const auto result = connection->execute( "SELECT * FROM tao_example WHERE b IS NOT NULL" );
-  assert( result.size() == 2 );
+  const auto res = conn->execute( "SELECT * FROM tao_example" );
+  assert( res.size() == 3 );
 
   // iterate over a result
-  for( const auto& row : result ) {
+  for( const auto& row : res ) {
     // access fields by index or (less efficiently) by name
     std::cout << row[ 0 ].as< int >() << ": " << row[ "c" ].as< std::string >() << std::endl;
   }
+
+  // or convert a result into a container
+  const auto v = res.vector< std::tuple< int, tao::optional< int >, std::string > >();
 }
 ```
 
