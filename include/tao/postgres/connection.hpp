@@ -18,12 +18,14 @@ namespace tao
 {
   namespace postgres
   {
+    class connection_pool;
     class table_writer;
 
     class connection final
       : public std::enable_shared_from_this< connection >
     {
     private:
+      friend class connection_pool;
       friend class postgres::transaction;
       friend class table_writer;
 
@@ -44,12 +46,12 @@ namespace tao
       // pass-key idiom
       class private_key
       {
+        private_key() = default;
+        friend class connection_pool;
         friend std::shared_ptr< connection > connection::create( const std::string& connect_info );
       };
 
     public:
-      // the ctor is public for technical reasons, the user is *not*
-      // supposed to call it directly. use connection::create() instead.
       connection( const private_key&, const std::string& connect_info );
 
       connection( const connection& ) = delete;
