@@ -59,6 +59,30 @@ matrix:
           packages: ['g++-5']
       env: COMPILER=g++-5 CXXSTD=c++1z
 
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6']
+      env: COMPILER=g++-6
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6']
+      env: COMPILER=g++-6 CXXSTD=c++14
+
+    - os: linux
+      compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-6']
+      env: COMPILER=g++-6 CXXSTD=c++17
+
 # disable due to problem with akrzemi1/optional
 #    - os: linux
 #      compiler: clang
