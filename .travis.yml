@@ -87,19 +87,12 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
-      env: COMPILER=g++-6 CXXSTD=c++17
-
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-6']
         coverity_scan:
           project:
             name: "taocpp/postgres"
             description: "The Art of C++ / PostgreSQL"
           notification_email: d.frey@gmx.de
+          build_command_prepend: "make clean"
           build_command: "make CXX=g++-6 CXXSTD=c++17 -j3"
           branch_pattern: master
       env: COMPILER=g++-6 CXXSTD=c++17
