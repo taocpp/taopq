@@ -179,6 +179,21 @@ matrix:
       compiler: clang
       env: COMPILER=clang++
 
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+      env: COMPILER=clang++ CXXSTD=c++11
+
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+      env: COMPILER=clang++ CXXSTD=c++14
+
+    - os: osx
+      osx_image: xcode8
+      compiler: clang
+      env: COMPILER=clang++ CXXSTD=c++1z
+
     - os: linux
       compiler: gcc
       addons:
