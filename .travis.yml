@@ -1,11 +1,5 @@
 language: cpp
 
-#env:
-#  global:
-#   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-#   #   via the "travis encrypt" command using the project repo's public key
-#   - secure: "EYbbUaS+nFA5+8KqrB77FDxVCIN8dBi/AQgdrNJ1JEwtXoKyT/OmNboQ60onSrVx5O+n8HoylKrVNw+NpVlHbpHXFbd4lmHrp5WGuCWrVA0psMZyBZHCnp5c9PH+Kz3e2A3e3WgT6HWfXkcUz0b+QY/8Xp9V9UaMjYWVNh4mYkAakNrgCtoyPfC/fkEZCWsqFlXEvp0jXnijGCQMli0m/PLgd2avChSxVtlDXFscDx6TuHOFd6jD2mB/39sp8r+U5gPqdmCkVvmfMYof3/ZgmoXPvjY2saipmAorcvwv2BSaBv4kqwk/DEq3YN+drT7vElVqGJzpRkOctYmLLfxSt6lBeTut+3kjRm3f1wi7wYddL0gdWzg7jog+qK48uq+i0oi50byfkAOJdQiDnjyjfhpnpTflxmAxyjNS3eXZ4HXqfeBI24LcEkLBHHsnYyztFp1dgBrDpAsKp7tO8PO+zZ4sGO74fbujNymw8e/tuH/ln4Sy+rwdaSfeJLmT1lpJsQ18vOMsjEu3uG8CHPOn4BOcOhwdFlp9XDOivYzCtSl1gSMUzrZDJnP/UWYGh5HRVfl23cvOa79bFAbjv6V9jZZSxyvPRhXlnGvT1/tVJ5mEFlVzJvpfRZKBzZXfu4vG61CiRQ6+4X8VOGZeko/UJlPE2eyOJ9VdnuLRy4FD4pc="
-
 matrix:
   include:
     - os: linux
@@ -87,14 +81,6 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
-#        coverity_scan:
-#          project:
-#            name: "taocpp/postgres"
-#            description: "The Art of C++ / PostgreSQL"
-#          notification_email: d.frey@gmx.de
-#          build_command_prepend: "make clean"
-#          build_command: "make CXX=g++-6 CXXSTD=c++17 -j3"
-#          branch_pattern: master
       env: COMPILER=g++-6 CXXSTD=c++17
 
 # disable due to problem with akrzemi1/optional
