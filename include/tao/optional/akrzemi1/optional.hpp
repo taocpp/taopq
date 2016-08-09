@@ -234,7 +234,7 @@ T* static_addressof(T& ref)
 
 // the call to convert<A>(b) has return type A and converts b to type A iff b decltype(b) is implicitly convertible to A  
 template <class U>
-U convert(U v) { return v; }
+constexpr U convert(U v) { return v; }
   
 } // namespace detail
 
@@ -341,8 +341,8 @@ struct constexpr_optional_base
 template <class T>
 using OptionalBase = typename std::conditional<
     is_trivially_destructible<T>::value,
-    constexpr_optional_base<T>,
-    optional_base<T>
+    constexpr_optional_base<typename std::remove_const<T>::type>,
+    optional_base<typename std::remove_const<T>::type>
 >::type;
 
 
@@ -355,7 +355,7 @@ class optional : private OptionalBase<T>
   
 
   constexpr bool initialized() const noexcept { return OptionalBase<T>::init_; }
-  T* dataptr() {  return std::addressof(OptionalBase<T>::storage_.value_); }
+  typename std::remove_const<T>::type* dataptr() {  return std::addressof(OptionalBase<T>::storage_.value_); }
   constexpr const T* dataptr() const { return detail_::static_addressof(OptionalBase<T>::storage_.value_); }
   
 # if OPTIONAL_HAS_THIS_RVALUE_REFS == 1
