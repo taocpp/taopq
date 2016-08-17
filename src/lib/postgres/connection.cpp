@@ -142,6 +142,14 @@ namespace tao
       };
     }
 
+    namespace connection_impl
+    {
+      void deleter::operator()( ::PGconn* p ) const
+      {
+        ::PQfinish( p );
+      }
+    }
+
     std::string connection::error_message() const
     {
       const char* message = ::PQerrorMessage( pgconn_.get() );
@@ -178,7 +186,7 @@ namespace tao
     }
 
     connection::connection( const connection::private_key&, const std::string& connect_info )
-      : pgconn_( ::PQconnectdb( connect_info.c_str() ), &::PQfinish ),
+      : pgconn_( ::PQconnectdb( connect_info.c_str() ), connection_impl::deleter() ),
         current_transaction_( nullptr )
     {
       if( !is_open() ) {

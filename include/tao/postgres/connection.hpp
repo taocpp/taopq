@@ -21,6 +21,14 @@ namespace tao
     class connection_pool;
     class table_writer;
 
+    namespace connection_impl
+    {
+      struct deleter final
+      {
+        void operator()( ::PGconn* p ) const;
+      };
+    }
+
     class connection final
       : public std::enable_shared_from_this< connection >
     {
@@ -29,7 +37,7 @@ namespace tao
       friend class postgres::transaction;
       friend class table_writer;
 
-      const std::unique_ptr< ::PGconn, void(*)( ::PGconn* ) > pgconn_;
+      const std::unique_ptr< ::PGconn, connection_impl::deleter > pgconn_;
       postgres::transaction* current_transaction_;
       std::unordered_set< std::string > prepared_statements_;
 
