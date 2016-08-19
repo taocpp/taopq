@@ -26,23 +26,27 @@ int main()
 
   TEST_THROWS( connection->execute( "SELECT 42" )[ 0 ].as< bool >() );
 
-  const auto result = connection->execute( "SELECT 1 AS a, 2 AS B, 3 AS \"C\"");
+  const auto result = connection->execute( "SELECT 1 AS a, 2 AS B, 3 AS \"C\", 4 as \"A\"");
   const auto& row = result[ 0 ];
 
-  TEST_ASSERT( row.columns() == 3 );
+  TEST_ASSERT( row.columns() == 4 );
 
   TEST_ASSERT( row.name( 0 ) == "a" );
   TEST_ASSERT( row.name( 1 ) == "b" );
   TEST_ASSERT( row.name( 2 ) == "C" );
+  TEST_ASSERT( row.name( 3 ) == "A" );
+  TEST_THROWS( row.name( 4 ) );
 
   TEST_ASSERT( row[ 0 ].name() == "a" );
   TEST_ASSERT( row[ 1 ].name() == "b" );
   TEST_ASSERT( row[ 2 ].name() == "C" );
+  TEST_ASSERT( row[ 3 ].name() == "A" );
+  TEST_THROWS( row[ 4 ] );
 
   TEST_ASSERT( row.index( "a" ) == 0 );
   TEST_ASSERT( row.index( "A" ) == 0 );
   TEST_ASSERT( row.index( "\"a\"" ) == 0 );
-  TEST_THROWS( row.index( "\"A\"" ) );
+  TEST_ASSERT( row.index( "\"A\"" ) == 3 );
 
   TEST_ASSERT( row.index( "b" ) == 1 );
   TEST_ASSERT( row.index( "B" ) == 1 );
@@ -54,10 +58,16 @@ int main()
   TEST_THROWS( row.index( "\"c\"" ) );
   TEST_ASSERT( row.index( "\"C\"" ) == 2 );
 
-  TEST_THROWS( row.get< std::string >( 3 ) );
-  TEST_THROWS( row.get< tao::optional< std::string > >( 3 ) );
-  TEST_THROWS( row.get< std::pair< std::string, std::string > >( 2 ) );
+  TEST_THROWS( row.get< std::string >( 4 ) );
+  TEST_THROWS( row.get< tao::optional< std::string > >( 4 ) );
+  TEST_THROWS( row.get< std::pair< std::string, std::string > >( 3 ) );
 
+  TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].index( "a" ) == 0 );
+  TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].index( "A" ) == 0 );
   TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 2 ).index( "a" ) == 1 );
+  TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 2 ).index( "A" ) == 1 );
+  TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 1 ).index( "a" ) );
+  TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 1 ).index( "A" ) );
   TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 2, 1 ).index( "b" ) );
+  TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 2, 1 ).index( "B" ) );
 }

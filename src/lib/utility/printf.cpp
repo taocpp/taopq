@@ -27,7 +27,9 @@ namespace tao
         s.resize( size );
         char* buffer = &s[ 0 ];
         const int result = ::vsnprintf( buffer, size, format, ap );
-        assert( result >= 0 && "unexpected result from ::vsnprintf()" );
+        if( result < 0 ) {
+          assert( !"unexpected result from ::vsnprintf()" );
+        }
         if( static_cast< std::size_t >( result ) < size ) {
           s.resize( result );
         }

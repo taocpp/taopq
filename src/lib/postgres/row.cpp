@@ -1,8 +1,6 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016 Daniel Frey
 
-#include <cassert>
-
 #include <tao/postgres/row.hpp>
 #include <tao/postgres/result.hpp>
 
@@ -10,10 +8,21 @@ namespace tao
 {
   namespace postgres
   {
+    void row::ensure_column( const std::size_t column ) const
+    {
+      if( column >= columns_ ) {
+        throw std::out_of_range( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
+      }
+    }
+
     row row::slice( const std::size_t offset, const std::size_t columns ) const
     {
-      assert( columns > 0 );
-      assert( offset + columns <= columns_ );
+      if( columns == 0 ) {
+        throw std::runtime_error( "slice requires at least one column" );
+      }
+      if( offset + columns > columns_ ) {
+        throw std::out_of_range( utility::printf( "slice (%lu-%lu) out of range (0-%lu)", offset, offset + columns - 1, columns_ - 1 ) );
+      }
       return row( result_, row_, offset_ + offset, columns );
     }
 
@@ -43,13 +52,13 @@ namespace tao
 
     bool row::is_null( const std::size_t column ) const
     {
-      assert( column < columns_ );
+      ensure_column( column );
       return result_.is_null( row_, offset_ + column );
     }
 
     const char* row::get( const std::size_t column ) const
     {
-      assert( column < columns_ );
+      ensure_column( column );
       return result_.get( row_, offset_ + column );
     }
   }

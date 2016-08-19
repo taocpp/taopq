@@ -4,11 +4,9 @@
 #ifndef TAOCPP_INCLUDE_POSTGRES_TRANSACTION_HPP
 #define TAOCPP_INCLUDE_POSTGRES_TRANSACTION_HPP
 
-#include <cassert>
 #include <memory>
 #include <string>
 #include <tuple>
-#include <stdexcept>
 #include <utility>
 
 #include <tao/seq/make_integer_sequence.hpp>

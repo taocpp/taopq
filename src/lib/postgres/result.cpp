@@ -74,7 +74,9 @@ namespace tao
 
     std::string result::name( const std::size_t column ) const
     {
-      assert( column < columns_ );
+      if( column >= columns_ ) {
+        throw std::out_of_range( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
+      }
       return ::PQfname( pgresult_.get(), column );
     }
 
@@ -113,8 +115,12 @@ namespace tao
     bool result::is_null( const std::size_t row, const std::size_t column ) const
     {
       check_has_result_set();
-      assert( row < rows_ );
-      assert( column < columns_ );
+      if( row >= rows_ ) {
+        throw std::out_of_range( utility::printf( "row %lu out of range (0-%lu)", row, rows_ - 1 ) );
+      }
+      if( column >= columns_ ) {
+        throw std::out_of_range( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
+      }
       return ::PQgetisnull( pgresult_.get(), row, column );
     }
 

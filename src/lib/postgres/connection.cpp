@@ -20,8 +20,8 @@ namespace tao
         if( value.empty() || std::isdigit( value[ 0 ] ) ) {
           return false;
         }
-        for( std::size_t i = 0; i < value.size(); ++i ) {
-          if( !std::isalnum( value[ i ] ) && value[ i ] != '_' ) {
+        for( auto c : value ) {
+          if( !std::isalnum( c ) && c != '_' ) {
             return false;
           }
         }

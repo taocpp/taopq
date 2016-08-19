@@ -3,8 +3,6 @@
 
 #include "../macros.hpp"
 
-#include <cassert>
-#include <stdexcept>
 #include <tao/utility/getenv.hpp>
 #include <tao/postgres/connection_pool.hpp>
 

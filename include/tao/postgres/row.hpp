@@ -38,6 +38,8 @@ namespace tao
       {
       }
 
+      void ensure_column( const std::size_t column ) const;
+
     public:
       row slice( const std::size_t offset, const std::size_t columns ) const;
 
@@ -62,9 +64,6 @@ namespace tao
       template< typename T >
       typename std::enable_if< result_traits_size< T >::value == 1 && result_traits_has_null< T >::value, T >::type get( const std::size_t column ) const
       {
-        if( column >= columns_ ) {
-          throw std::runtime_error( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
-        }
         if( is_null( column ) ) {
           return result_traits< T >::null();
         }
@@ -74,18 +73,13 @@ namespace tao
       template< typename T >
       typename std::enable_if< result_traits_size< T >::value == 1 && !result_traits_has_null< T >::value, T >::type get( const std::size_t column ) const
       {
-        if( column >= columns_ ) {
-          throw std::runtime_error( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
-        }
+        ensure_column( column );
         return result_traits< T >::from( get( column ) );
       }
 
       template< typename T >
       typename std::enable_if< ( result_traits_size< T >::value > 1 ), T >::type get( const std::size_t column ) const
       {
-        if( ( column + result_traits_size< T >::value - 1 ) >= columns_ ) {
-          throw std::runtime_error( utility::printf( "column slice %lu-%lu out of range (0-%lu)", column, column + result_traits_size< T >::value - 1, columns_ - 1 ) );
-        }
         return result_traits< T >::from( slice( column, result_traits_size< T >::value ) );
       }
 
@@ -111,7 +105,7 @@ namespace tao
       T as() const
       {
         if( result_traits_size< T >::value != columns_ ) {
-          throw std::runtime_error( utility::printf( "datatype (%s) requires %lu columns, but row/slice has only %lu columns", utility::demangle< T >().c_str(), result_traits_size< T >::value, columns_ ) );
+          throw std::runtime_error( utility::printf( "datatype (%s) requires %lu columns, but row/slice has %lu columns", utility::demangle< T >().c_str(), result_traits_size< T >::value, columns_ ) );
         }
         return get< T >( 0 );
       }
@@ -136,7 +130,7 @@ namespace tao
 
       field operator[]( const std::size_t column ) const
       {
-        assert( column < columns_ );
+        ensure_column( column );
         return field( *this, offset_ + column );
       }
 
