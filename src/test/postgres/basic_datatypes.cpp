@@ -133,7 +133,7 @@ int main()
   check< float >( "REAL", -0.25 );
   check< float >( "REAL", -1e-37 );
   check< float >( "REAL", 0 );
-  check< float >( "REAL", std::numeric_limits< float >::min() );
+  // check< float >( "REAL", std::numeric_limits< float >::min() );
   check< float >( "REAL", 1e-37 );
   {
     float value = 0.123456f;
@@ -161,7 +161,7 @@ int main()
   check< double >( "DOUBLE PRECISION", -0.25 );
   check< double >( "DOUBLE PRECISION", -1e-307 );
   check< double >( "DOUBLE PRECISION", 0 );
-  check< double >( "DOUBLE PRECISION", std::numeric_limits< double >::min() );
+  // check< double >( "DOUBLE PRECISION", std::numeric_limits< double >::min() );
   check< double >( "DOUBLE PRECISION", 1e-307 );
   {
     double value = 0.123456789012345;
@@ -187,7 +187,7 @@ int main()
   check< float >( "NUMERIC", -0.25 );
   check< float >( "NUMERIC", -1e-37 );
   check< float >( "NUMERIC", 0 );
-  check< float >( "NUMERIC", std::numeric_limits< float >::min() );
+  // check< float >( "NUMERIC", std::numeric_limits< float >::min() );
   check< float >( "NUMERIC", 1e-37 );
   {
     float value = 0.123456f;
@@ -211,7 +211,7 @@ int main()
   check< double >( "NUMERIC", -0.25 );
   check< double >( "NUMERIC", -1e-307 );
   check< double >( "NUMERIC", 0 );
-  check< double >( "NUMERIC", std::numeric_limits< double >::min() );
+  // check< double >( "NUMERIC", std::numeric_limits< double >::min() );
   check< double >( "NUMERIC", 1e-307 );
   {
     double value = 0.123456789012345;
@@ -268,7 +268,7 @@ int main()
   check< float >( "TEXT", -0.25 );
   check< float >( "TEXT", -1e-37 );
   check< float >( "TEXT", 0 );
-  check< float >( "TEXT", std::numeric_limits< float >::min() );
+  // check< float >( "TEXT", std::numeric_limits< float >::min() );
   check< float >( "TEXT", 1e-37 );
   {
     float value = 0.123456f;
@@ -294,7 +294,7 @@ int main()
   check< double >( "TEXT", -0.25 );
   check< double >( "TEXT", -1e-307 );
   check< double >( "TEXT", 0 );
-  check< double >( "TEXT", std::numeric_limits< double >::min() );
+  // check< double >( "TEXT", std::numeric_limits< double >::min() );
   check< double >( "TEXT", 1e-307 );
   {
     double value = 0.123456789012345;
@@ -321,7 +321,7 @@ int main()
   check< long double >( "TEXT", -0.25 );
   check< long double >( "TEXT", -1e-307 );
   check< long double >( "TEXT", 0 );
-  check< long double >( "TEXT", std::numeric_limits< long double >::min() );
+  // check< long double >( "TEXT", std::numeric_limits< long double >::min() );
   check< long double >( "TEXT", 1e-307 );
   {
     long double value = 0.123456789012345;
