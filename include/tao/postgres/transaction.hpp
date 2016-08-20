@@ -5,9 +5,10 @@
 #define TAOCPP_INCLUDE_POSTGRES_TRANSACTION_HPP
 
 #include <memory>
-#include <string>
 #include <tuple>
+#include <type_traits>
 #include <utility>
+#include <string>
 
 #include <tao/seq/make_integer_sequence.hpp>
 #include <tao/postgres/result.hpp>

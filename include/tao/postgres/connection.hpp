@@ -7,6 +7,8 @@
 #include <memory>
 #include <unordered_set>
 #include <string>
+#include <utility>
+
 #include <tao/postgres/transaction.hpp>
 #include <tao/postgres/result.hpp>
 

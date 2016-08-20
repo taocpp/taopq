@@ -5,10 +5,13 @@
 #define TAOCPP_INCLUDE_POSTGRES_CONNECTION_POOL_HPP
 
 #include <string>
+#include <memory>
+#include <utility>
 
 #include <tao/utility/pool.hpp>
 
 #include <tao/postgres/connection.hpp>
+#include <tao/postgres/result.hpp>
 
 namespace tao
 {
