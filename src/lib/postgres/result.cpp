@@ -19,7 +19,7 @@ namespace tao
     void result::check_has_result_set() const
     {
       if( columns_ == 0 ) {
-        throw std::runtime_error( "statement does not yield a result set" );
+        throw std::logic_error( "statement does not yield a result set" );
       }
     }
 
@@ -67,7 +67,7 @@ namespace tao
     {
       const char* str = ::PQcmdTuples( pgresult_.get() );
       if( str[ 0 ] == '\0' ) {
-        throw std::runtime_error( "statement does not return affected rows" );
+        throw std::logic_error( "statement does not return affected rows" );
       }
       return utility::strtoul( str, 10 );
     }
@@ -86,7 +86,7 @@ namespace tao
       if( column < 0 ) {
         assert( column == -1 );
         check_has_result_set();
-        throw std::runtime_error( "column not found: " + name );
+        throw std::out_of_range( "column not found: " + name );
       }
       return column;
     }

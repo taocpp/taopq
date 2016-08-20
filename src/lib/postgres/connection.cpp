@@ -163,7 +163,7 @@ namespace tao
     void connection::check_prepared_name( const std::string& name ) const
     {
       if( !postgres::is_identifier( name ) ) {
-        throw std::runtime_error( "invalid prepared statement name" );
+        throw std::invalid_argument( "invalid prepared statement name" );
       }
     }
 

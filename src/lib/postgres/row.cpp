@@ -18,7 +18,7 @@ namespace tao
     row row::slice( const std::size_t offset, const std::size_t columns ) const
     {
       if( columns == 0 ) {
-        throw std::runtime_error( "slice requires at least one column" );
+        throw std::invalid_argument( "slice requires at least one column" );
       }
       if( offset + columns > columns_ ) {
         throw std::out_of_range( utility::printf( "slice (%lu-%lu) out of range (0-%lu)", offset, offset + columns - 1, columns_ - 1 ) );
@@ -47,7 +47,7 @@ namespace tao
           }
         }
       }
-      throw std::runtime_error( "column not found: " + name );
+      throw std::out_of_range( "column not found: " + name );
     }
 
     bool row::is_null( const std::size_t column ) const
