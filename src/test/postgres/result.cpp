@@ -13,18 +13,40 @@ int main()
 {
   const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TEST_DATABASE", "dbname=template1" ) );
 
+  TEST_EXECUTE( connection->execute( "SELECT NULL" ) );
+  TEST_ASSERT( connection->execute( "SELECT NULL" ).is_null( 0, 0 ) );
+  TEST_THROWS( connection->execute( "SELECT NULL" ).is_null( 0, 1 ) );
+  TEST_THROWS( connection->execute( "SELECT NULL" ).is_null( 1, 0 ) );
+  TEST_THROWS( connection->execute( "SELECT NULL" ).get( 0, 0 ) );
+  TEST_THROWS( connection->execute( "SELECT NULL" ).get( 0, 1 ) );
+  TEST_THROWS( connection->execute( "SELECT NULL" ).get( 1, 0 ) );
+  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ].is_null( 0 ) );
+  TEST_THROWS( connection->execute( "SELECT NULL" )[ 0 ].is_null( 1 ) );
+  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ].is_null() );
+  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] == tao::postgres::null );
+  TEST_ASSERT( !( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] != tao::postgres::null ) );
+  TEST_THROWS( connection->execute( "SELECT NULL" )[ 0 ][ 1 ] );
+  TEST_THROWS( connection->execute( "SELECT NULL" )[ 1 ][ 1 ] );
+
+  TEST_EXECUTE( connection->execute( "SELECT 42" ) );
+  TEST_ASSERT( !connection->execute( "SELECT 42" ).is_null( 0, 0 ) );
+  TEST_THROWS( connection->execute( "SELECT 42" ).is_null( 0, 1 ) );
+  TEST_THROWS( connection->execute( "SELECT 42" ).is_null( 1, 0 ) );
+  TEST_ASSERT( connection->execute( "SELECT 42" ).get( 0, 0 ) == std::string( "42" ) );
+  TEST_THROWS( connection->execute( "SELECT 42" ).get( 0, 1 ) );
+  TEST_THROWS( connection->execute( "SELECT 42" ).get( 1, 0 ) );
+  TEST_ASSERT( !connection->execute( "SELECT 42" )[ 0 ].is_null( 0 ) );
+  TEST_THROWS( connection->execute( "SELECT 42" )[ 0 ].is_null( 1 ) );
+  TEST_ASSERT( !connection->execute( "SELECT 42" )[ 0 ][ 0 ].is_null() );
+  TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ][ 0 ] != tao::postgres::null );
+  TEST_ASSERT( !( connection->execute( "SELECT 42" )[ 0 ][ 0 ] == tao::postgres::null ) );
+  TEST_THROWS( connection->execute( "SELECT 42" )[ 0 ][ 1 ] );
+  TEST_THROWS( connection->execute( "SELECT 42" )[ 1 ][ 1 ] );
+
   TEST_ASSERT( connection->execute( "SELECT 42" ).as< int >() == 42 );
   TEST_ASSERT( connection->execute( "SELECT 1764" ).optional< int >() == 1764 );
   TEST_ASSERT( !connection->execute( "SELECT 64 WHERE FALSE" ).optional< int >() );
   TEST_ASSERT( !connection->execute( "SELECT NULL" ).as< tao::optional< int > >() );
-  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ].is_null( 0 ) );
-  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ].is_null() );
-  TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] == tao::postgres::null );
-  TEST_ASSERT( !( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] != tao::postgres::null ) );
-  TEST_ASSERT( !connection->execute( "SELECT 42" )[ 0 ].is_null( 0 ) );
-  TEST_ASSERT( !connection->execute( "SELECT 42" )[ 0 ][ 0 ].is_null() );
-  TEST_ASSERT( !( connection->execute( "SELECT 42" )[ 0 ][ 0 ] == tao::postgres::null ) );
-  TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ][ 0 ] != tao::postgres::null );
 
   TEST_ASSERT( connection->execute( "SELECT $1::INTEGER", tao::optional< int >( 42 ) ).as< tao::optional< int > >() == 42 );
   TEST_ASSERT( !connection->execute( "SELECT $1::INTEGER", tao::optional< int >() ).as< tao::optional< int > >() );

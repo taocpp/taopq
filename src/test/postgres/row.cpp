@@ -62,12 +62,24 @@ int main()
   TEST_THROWS( row.get< tao::optional< std::string > >( 4 ) );
   TEST_THROWS( row.get< std::pair< std::string, std::string > >( 3 ) );
 
-  TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].index( "a" ) == 0 );
-  TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].index( "A" ) == 0 );
-  TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 2 ).index( "a" ) == 1 );
-  TEST_ASSERT( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 2 ).index( "A" ) == 1 );
-  TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 1 ).index( "a" ) );
-  TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 1, 1 ).index( "A" ) );
-  TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 2, 1 ).index( "b" ) );
-  TEST_THROWS( connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" )[ 0 ].slice( 2, 1 ).index( "B" ) );
+  const auto result2 = connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" );
+  const auto& row2 = result2[ 0 ];
+
+  TEST_ASSERT( row2.index( "a" ) == 0 );
+  TEST_ASSERT( row2.index( "A" ) == 0 );
+  TEST_ASSERT( row2.slice( 1, 2 ).index( "a" ) == 1 );
+  TEST_ASSERT( row2.slice( 1, 2 ).index( "A" ) == 1 );
+
+  TEST_THROWS( row2.slice( 1, 1 ).index( "a" ) );
+  TEST_THROWS( row2.slice( 1, 1 ).index( "A" ) );
+  TEST_THROWS( row2.slice( 2, 1 ).index( "b" ) );
+  TEST_THROWS( row2.slice( 2, 1 ).index( "B" ) );
+
+  TEST_THROWS( row2.slice( 0, 0 ) );
+  TEST_THROWS( row2.slice( 1, 0 ) );
+  TEST_THROWS( row2.slice( 2, 0 ) );
+
+  TEST_THROWS( row2.slice( 0, 4 ) );
+  TEST_THROWS( row2.slice( 1, 3 ) );
+  TEST_THROWS( row2.slice( 2, 2 ) );
 }
