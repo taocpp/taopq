@@ -6,6 +6,9 @@ if(APPLE)
     # Homebrew
     link_directories ("/usr/local/lib")
     include_directories ("/usr/local/include")
+elseif(WIN32)
+    set(POSTGRES_INCLUDE "" CACHE PATH "PostgreSQL include")
+    include_directories (${POSTGRES_INCLUDE})
 elseif(UNIX)
     # Tested for RHEL7 only
     link_directories ("/usr/pgsql-9.6/lib")
