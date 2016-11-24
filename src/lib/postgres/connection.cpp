@@ -6,6 +6,7 @@
 #include <cassert>
 #include <cstring>
 #include <stdexcept>
+#include <cctype>
 
 #include <libpq-fe.h>
 

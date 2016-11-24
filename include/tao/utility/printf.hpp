@@ -10,8 +10,11 @@ namespace tao
 {
   namespace utility
   {
-    std::string printf( const char* format, ... ) __attribute__(( format( printf, 1, 2 ) ));
-    std::string vprintf( const char* format, va_list ap ) __attribute__(( format( printf, 1, 0 ) ));
+#ifdef WIN32
+#define __attribute__(A) /* do nothing */
+#endif
+	  std::string printf(const char* format, ...) __attribute__((format(printf, 1, 2)));
+	  std::string vprintf(const char* format, va_list ap) __attribute__((format(printf, 1, 0)));
   }
 }
 
