@@ -4,6 +4,7 @@
 #include <tao/postgres/connection.hpp>
 
 #include <cassert>
+#include <cctype>
 #include <cstring>
 #include <stdexcept>
 

@@ -3,6 +3,7 @@
 
 #include <tao/utility/strtox.hpp>
 
+#include <string>
 #include <cstdlib>
 #include <cassert>
 #include <cctype>
