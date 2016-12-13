@@ -122,7 +122,7 @@ namespace tao
       T as() const
       {
         if( size() != 1 ) {
-          throw std::runtime_error( utility::printf( "invalid result size: %lu rows, expected 1 row", rows_ ) );
+          throw std::runtime_error( utility::printf( "invalid result size: %zu rows, expected 1 row", rows_ ) );
         }
         return (*this)[ 0 ].as< T >();
       }

@@ -11,7 +11,7 @@ namespace tao
     void row::ensure_column( const std::size_t column ) const
     {
       if( column >= columns_ ) {
-        throw std::out_of_range( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
+        throw std::out_of_range( utility::printf( "column %zu out of range (0-%zu)", column, columns_ - 1 ) );
       }
     }
 
@@ -21,7 +21,7 @@ namespace tao
         throw std::invalid_argument( "slice requires at least one column" );
       }
       if( offset + columns > columns_ ) {
-        throw std::out_of_range( utility::printf( "slice (%lu-%lu) out of range (0-%lu)", offset, offset + columns - 1, columns_ - 1 ) );
+        throw std::out_of_range( utility::printf( "slice (%zu-%zu) out of range (0-%zu)", offset, offset + columns - 1, columns_ - 1 ) );
       }
       return row( result_, row_, offset_ + offset, columns );
     }

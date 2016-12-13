@@ -75,7 +75,7 @@ namespace tao
     std::string result::name( const std::size_t column ) const
     {
       if( column >= columns_ ) {
-        throw std::out_of_range( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
+        throw std::out_of_range( utility::printf( "column %zu out of range (0-%zu)", column, columns_ - 1 ) );
       }
       return ::PQfname( pgresult_.get(), column );
     }
@@ -116,10 +116,10 @@ namespace tao
     {
       check_has_result_set();
       if( row >= rows_ ) {
-        throw std::out_of_range( utility::printf( "row %lu out of range (0-%lu)", row, rows_ - 1 ) );
+        throw std::out_of_range( utility::printf( "row %zu out of range (0-%zu)", row, rows_ - 1 ) );
       }
       if( column >= columns_ ) {
-        throw std::out_of_range( utility::printf( "column %lu out of range (0-%lu)", column, columns_ - 1 ) );
+        throw std::out_of_range( utility::printf( "column %zu out of range (0-%zu)", column, columns_ - 1 ) );
       }
       return ::PQgetisnull( pgresult_.get(), row, column );
     }
@@ -127,7 +127,7 @@ namespace tao
     const char* result::get( const std::size_t row, const std::size_t column ) const
     {
       if( is_null( row, column ) ) {
-        throw std::runtime_error( utility::printf( "unexpected NULL value in row %lu column %lu = %s", row, column, name( column ).c_str() ) );
+        throw std::runtime_error( utility::printf( "unexpected NULL value in row %zu column %zu = %s", row, column, name( column ).c_str() ) );
       }
       return ::PQgetvalue( pgresult_.get(), row, column );
     }
@@ -137,10 +137,10 @@ namespace tao
       check_has_result_set();
       if( !( row < rows_ ) ) {
         if( rows_ > 0 ) {
-          throw std::out_of_range( utility::printf( "row %lu out of range (0-%lu)", row, rows_ - 1 ) );
+          throw std::out_of_range( utility::printf( "row %zu out of range (0-%zu)", row, rows_ - 1 ) );
         }
         else {
-          throw std::out_of_range( utility::printf( "row %lu out of range, result is empty", row ) );
+          throw std::out_of_range( utility::printf( "row %zu out of range, result is empty", row ) );
         }
       }
       return (*this)[ row ];

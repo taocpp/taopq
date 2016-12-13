@@ -105,7 +105,7 @@ namespace tao
       T as() const
       {
         if( result_traits_size< T >::value != columns_ ) {
-          throw std::runtime_error( utility::printf( "datatype (%s) requires %lu columns, but row/slice has %lu columns", utility::demangle< T >().c_str(), result_traits_size< T >::value, columns_ ) );
+          throw std::runtime_error( utility::printf( "datatype (%s) requires %zu columns, but row/slice has %zu columns", utility::demangle< T >().c_str(), result_traits_size< T >::value, columns_ ) );
         }
         return get< T >( 0 );
       }

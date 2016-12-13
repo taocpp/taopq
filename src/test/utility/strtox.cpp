@@ -112,8 +112,13 @@ int main()
   TEST_ASSERT( tao::utility::strtol( "-0000000000000000001" ) == -1 );
   TEST_ASSERT( tao::utility::strtol( "00000000000000000000000000000000000001" ) == 1 );
   TEST_ASSERT( tao::utility::strtol( "-00000000000000000000000000000000000001" ) == -1 );
+#ifdef __LP64__
   TEST_ASSERT( tao::utility::strtol( "9223372036854775807" ) == 9223372036854775807 );
   TEST_ASSERT( tao::utility::strtol( "-9223372036854775808" ) == -9223372036854775807 - 1 );
+#else
+  TEST_ASSERT( tao::utility::strtol( "2147483647" ) == 2147483647 );
+  TEST_ASSERT( tao::utility::strtol( "-2147483648" ) == -2147483647 - 1 );
+#endif
 
   TEST_ASSERT( tao::utility::strtol( "0", 2 ) == 0 );
   TEST_ASSERT( tao::utility::strtol( "0", 36 ) == 0 );
@@ -206,7 +211,11 @@ int main()
   TEST_ASSERT( tao::utility::strtoul( "01" ) == 1 );
   TEST_ASSERT( tao::utility::strtoul( "0000000000000000001" ) == 1 );
   TEST_ASSERT( tao::utility::strtoul( "00000000000000000000000000000000000001" ) == 1 );
+#ifdef __LP64__
   TEST_ASSERT( tao::utility::strtoul( "18446744073709551615" ) == 18446744073709551615U );
+#else
+  TEST_ASSERT( tao::utility::strtoul( "4294967295" ) == 4294967295U );
+#endif
 
   TEST_ASSERT( tao::utility::strtoull( "0" ) == 0 );
   TEST_ASSERT( tao::utility::strtoull( "1" ) == 1 );
