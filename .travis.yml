@@ -8,7 +8,9 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.7']
-      env: COMPILER=g++-4.7
+      env:
+        COMPILER=g++-4.7
+        CXXFLAGS="-O3 -Wall -Wextra -Wno-format -Werror"
 
 #    - os: linux
 #      compiler: gcc
@@ -31,48 +33,8 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.9']
-      env: COMPILER=g++-4.9 CXXSTD=c++14
-
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5']
-      env: COMPILER=g++-5
-
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
       env: COMPILER=g++-5 CXXSTD=c++14
-
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-5']
-      env: COMPILER=g++-5 CXXSTD=c++1z
-
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-6']
-      env: COMPILER=g++-6
-
-    - os: linux
-      compiler: gcc
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-6']
-      env: COMPILER=g++-6 CXXSTD=c++14
 
     - os: linux
       compiler: gcc
@@ -104,39 +66,7 @@ matrix:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
           packages: ['clang-3.6']
-      env: COMPILER=clang++-3.6
-
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
-          packages: ['clang-3.6']
       env: COMPILER=clang++-3.6 CXXSTD=c++14
-
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-          packages: ['clang-3.7']
-      env: COMPILER=clang++-3.7
-
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
-          packages: ['clang-3.7']
-      env: COMPILER=clang++-3.7 CXXSTD=c++14
-
-    - os: linux
-      compiler: clang
-      addons:
-        apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
-          packages: ['clang-3.8']
-      env: COMPILER=clang++-3.8
 
     - os: linux
       compiler: clang
@@ -156,47 +86,12 @@ matrix:
       env: COMPILER=clang++
 
     - os: osx
-      osx_image: xcode7
-      compiler: clang
-      env: COMPILER=clang++ CXXSTD=c++11
-
-    - os: osx
-      osx_image: xcode7
-      compiler: clang
-      env: COMPILER=clang++ CXXSTD=c++14
-
-    - os: osx
-      osx_image: xcode7
-      compiler: clang
-      env: COMPILER=clang++ CXXSTD=c++1z
-
-    - os: osx
-      osx_image: xcode7.1
-      compiler: clang
-      env: COMPILER=clang++
-
-    - os: osx
-      osx_image: xcode7.2
-      compiler: clang
-      env: COMPILER=clang++
-
-    - os: osx
       osx_image: xcode7.3
       compiler: clang
-      env: COMPILER=clang++
-
-    - os: osx
-      osx_image: xcode8
-      compiler: clang
-      env: COMPILER=clang++ CXXSTD=c++11
-
-    - os: osx
-      osx_image: xcode8
-      compiler: clang
       env: COMPILER=clang++ CXXSTD=c++14
 
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode8.2
       compiler: clang
       env: COMPILER=clang++ CXXSTD=c++1z
 
