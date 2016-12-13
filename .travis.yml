@@ -9,8 +9,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.7']
       env:
-        COMPILER=g++-4.7
-        CXXFLAGS="-O3 -Wall -Wextra -Wno-format -Werror"
+        - COMPILER=g++-4.7
+        - CXXFLAGS="-O3 -Wall -Wextra -Wno-format -Werror"
 
 #    - os: linux
 #      compiler: gcc
@@ -19,7 +19,7 @@ matrix:
 #          sources: ['ubuntu-toolchain-r-test']
 #          packages: ['g++-4.8']
 #      env:
-         COMPILER=g++-4.8
+         - COMPILER=g++-4.8
 
     - os: linux
       compiler: gcc
@@ -28,7 +28,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.9']
       env:
-        COMPILER=g++-4.9
+        - COMPILER=g++-4.9
 
     - os: linux
       compiler: gcc
@@ -37,8 +37,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
       env:
-        COMPILER=g++-5
-        CXXSTD=c++14
+        - COMPILER=g++-5
+        - CXXSTD=c++14
 
     - os: linux
       compiler: gcc
@@ -47,8 +47,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
       env:
-        COMPILER=g++-6
-        CXXSTD=c++17
+        - COMPILER=g++-6
+        - CXXSTD=c++17
 
     - os: linux
       compiler: clang
@@ -57,7 +57,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.7']
       env:
-        COMPILER=clang++
+        - COMPILER=clang++
 
     - os: linux
       compiler: clang
@@ -66,7 +66,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
           packages: ['g++-4.9', 'clang-3.5']
       env:
-        COMPILER=clang++-3.5
+        - COMPILER=clang++-3.5
 
     - os: linux
       compiler: clang
@@ -75,8 +75,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
           packages: ['clang-3.6']
       env:
-        COMPILER=clang++-3.6
-        CXXSTD=c++14
+        - COMPILER=clang++-3.6
+        - CXXSTD=c++14
 
     - os: linux
       compiler: clang
@@ -85,8 +85,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7']
       env:
-        COMPILER=clang++-3.7
-        CXXSTD=c++14
+        - COMPILER=clang++-3.7
+        - CXXSTD=c++14
 
     - os: linux
       compiler: clang
@@ -95,14 +95,14 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
           packages: ['clang-3.8']
       env:
-        COMPILER=clang++-3.8
-        CXXSTD=c++14
+        - COMPILER=clang++-3.8
+        - CXXSTD=c++14
 
     - os: osx
       osx_image: xcode6.4
       compiler: clang
       env:
-        COMPILER=clang++
+        - COMPILER=clang++
 
     - os: osx
       osx_image: xcode7.3
@@ -115,8 +115,8 @@ matrix:
       osx_image: xcode8.2
       compiler: clang
       env:
-        COMPILER=clang++
-        CXXSTD=c++1z
+        - COMPILER=clang++
+        - CXXSTD=c++1z
 
     - os: linux
       compiler: gcc
@@ -125,8 +125,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
       env:
-        COMPILER=g++-6
-        CXXFLAGS="-O0 --coverage"
+        - COMPILER=g++-6
+        - CXXFLAGS="-O0 --coverage"
       before_script:
         - pip install --user cpp-coveralls
       after_success:
@@ -149,8 +149,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
       env:
-        COMPILER=g++-6
-        CPPFLAGS="-fsanitize=address -fuse-ld=gold"
+        - COMPILER=g++-6
+        - CPPFLAGS="-fsanitize=address -fuse-ld=gold"
 
     - os: linux
       compiler: clang
@@ -159,8 +159,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
           packages: ['clang-3.8']
       env:
-        COMPILER=clang++-3.8
-        CPPFLAGS=-fsanitize=undefined
+        - COMPILER=clang++-3.8
+        - CPPFLAGS=-fsanitize=undefined
 
     - os: linux
       compiler: clang
@@ -169,8 +169,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
           packages: ['clang-3.8']
       env:
-        COMPILER=clang++-3.8
-        CPPFLAGS=-fsanitize=address
+        - COMPILER=clang++-3.8
+        - CPPFLAGS=-fsanitize=address
 
     - os: linux
       compiler: clang
@@ -179,8 +179,8 @@ matrix:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
           packages: ['clang-3.8']
       env:
-        COMPILER=clang++-3.8
-        CPPFLAGS=-fsanitize=memory
+        - COMPILER=clang++-3.8
+        - CPPFLAGS=-fsanitize=memory
 
 script:
   make CXX=$COMPILER -j3
