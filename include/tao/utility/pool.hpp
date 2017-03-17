@@ -35,7 +35,7 @@ namespace tao
         void operator()( T* item ) const
         {
           std::unique_ptr< T > up( item );
-          if( const std::shared_ptr< pool > p = pool_.lock() ) {
+          if( const auto p = pool_.lock() ) {
             p->push( up );
           }
         }
@@ -103,13 +103,13 @@ namespace tao
       // create a new T which is put into the pool when no longer used
       std::shared_ptr< T > create()
       {
-        return std::shared_ptr< T >( v_create().release(), deleter( this->shared_from_this() ) );
+        return { v_create().release(), deleter( this->shared_from_this() ) };
       }
 
       // get an instance from the pool or create a new one if necessary
       std::shared_ptr< T > get()
       {
-        while( const std::shared_ptr< T > sp = pull() ) {
+        while( const auto sp = pull() ) {
           v_pull_before( *sp );
           if( v_is_valid( *sp ) ) {
             attach( sp, this->shared_from_this() );
