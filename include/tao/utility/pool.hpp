@@ -130,7 +130,7 @@ namespace tao
         auto it = items_.begin();
         while( it != items_.end() ) {
           if( !v_is_valid( **it ) ) {
-            deferred_delete.push_back( *it );
+            deferred_delete.push_back( std::move( *it ) );
             it = items_.erase( it );
           }
           else {
