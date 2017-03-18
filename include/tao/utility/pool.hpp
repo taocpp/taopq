@@ -76,7 +76,7 @@ namespace tao
         std::shared_ptr< T > nrv;
         const std::lock_guard< std::mutex > lock( mutex_ );
         if( !items_.empty() ) {
-          items_.back().swap( nrv );
+          nrv = std::move( items_.back() );
           items_.pop_back();
         }
         return nrv;
