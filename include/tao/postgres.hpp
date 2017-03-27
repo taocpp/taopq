@@ -1,5 +1,5 @@
 // The Art of C++ / PostgreSQL
-// Copyright (c) 2016 Daniel Frey
+// Copyright (c) 2016-2017 Daniel Frey
 
 #ifndef TAOCPP_INCLUDE_POSTGRES_HPP
 #define TAOCPP_INCLUDE_POSTGRES_HPP
@@ -9,15 +9,15 @@
 #include <tao/postgres/connection.hpp>
 #include <tao/postgres/transaction.hpp>
 
+#include <tao/postgres/field.hpp>
 #include <tao/postgres/result.hpp>
 #include <tao/postgres/row.hpp>
-#include <tao/postgres/field.hpp>
 
 #include <tao/postgres/parameter_traits.hpp>
 
 #include <tao/postgres/result_traits.hpp>
+#include <tao/postgres/result_traits_optional.hpp>
 #include <tao/postgres/result_traits_pair.hpp>
 #include <tao/postgres/result_traits_tuple.hpp>
-#include <tao/postgres/result_traits_optional.hpp>
 
-#endif // TAOCPP_INCLUDE_POSTGRES_HPP
+#endif  // TAOCPP_INCLUDE_POSTGRES_HPP

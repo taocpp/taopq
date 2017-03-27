@@ -1,5 +1,5 @@
 // The Art of C++ / Utility
-// Copyright (c) 2016 Daniel Frey
+// Copyright (c) 2016-2017 Daniel Frey
 
 #ifndef TAOCPP_INCLUDE_UTILITY_MAKE_UNIQUE_HPP
 #define TAOCPP_INCLUDE_UTILITY_MAKE_UNIQUE_HPP
@@ -37,8 +37,8 @@ namespace tao
          static_assert( !( std::extent< T >::value != 0 ), "array with known bound may not be used with make_unique" );
       }
 
-   } // utility
+   }  // utility
 
-} // tao
+}  // tao
 
-#endif // TAOCPP_INCLUDE_UTILITY_MAKE_UNIQUE_HPP
+#endif  // TAOCPP_INCLUDE_UTILITY_MAKE_UNIQUE_HPP

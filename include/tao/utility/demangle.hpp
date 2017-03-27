@@ -1,5 +1,5 @@
 // The Art of C++ / Utility
-// Copyright (c) 2016 Daniel Frey
+// Copyright (c) 2016-2017 Daniel Frey
 
 #ifndef TAOCPP_INCLUDE_UTILITY_DEMANGLE_HPP
 #define TAOCPP_INCLUDE_UTILITY_DEMANGLE_HPP
@@ -9,17 +9,17 @@
 
 namespace tao
 {
-  namespace utility
-  {
-    std::string demangle( const char* const symbol );
-    std::string demangle( const std::type_info& type_info );
+   namespace utility
+   {
+      std::string demangle( const char* const symbol );
+      std::string demangle( const std::type_info& type_info );
 
-    template< typename T >
-    std::string demangle()
-    {
-      return demangle( typeid( T ) );
-    }
-  }
+      template< typename T >
+      std::string demangle()
+      {
+         return demangle( typeid( T ) );
+      }
+   }
 }
 
-#endif // TAOCPP_INCLUDE_UTILITY_DEMANGLE_HPP
+#endif  // TAOCPP_INCLUDE_UTILITY_DEMANGLE_HPP

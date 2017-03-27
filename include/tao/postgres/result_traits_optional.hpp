@@ -1,5 +1,5 @@
 // The Art of C++ / PostgreSQL
-// Copyright (c) 2016 Daniel Frey
+// Copyright (c) 2016-2017 Daniel Frey
 
 #ifndef TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
 #define TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
@@ -11,34 +11,34 @@
 
 namespace tao
 {
-  namespace postgres
-  {
-    template< typename T >
-    struct result_traits< optional< T > >
-    {
-      static constexpr std::size_t size = result_traits_size< T >::value;
-
-      static optional< T > null()
+   namespace postgres
+   {
+      template< typename T >
+      struct result_traits< optional< T > >
       {
-        return optional< T >();
-      }
+         static constexpr std::size_t size = result_traits_size< T >::value;
 
-      static optional< T > from( const char* value )
-      {
-        return optional< T >( result_traits< T >::from( value ) );
-      }
+         static optional< T > null()
+         {
+            return optional< T >();
+         }
 
-      static optional< T > from( const row& row )
-      {
-        for( std::size_t column = 0; column < row.columns(); ++column ) {
-          if( !row.is_null( column ) ) {
-            return optional< T >( result_traits< T >::from( row ) );
-          }
-        }
-        return null();
-      }
-    };
-  }
+         static optional< T > from( const char* value )
+         {
+            return optional< T >( result_traits< T >::from( value ) );
+         }
+
+         static optional< T > from( const row& row )
+         {
+            for( std::size_t column = 0; column < row.columns(); ++column ) {
+               if( !row.is_null( column ) ) {
+                  return optional< T >( result_traits< T >::from( row ) );
+               }
+            }
+            return null();
+         }
+      };
+   }
 }
 
-#endif // TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
+#endif  // TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP

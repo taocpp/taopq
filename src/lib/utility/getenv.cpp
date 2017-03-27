@@ -1,5 +1,5 @@
 // The Art of C++ / Utility
-// Copyright (c) 2016 Daniel Frey
+// Copyright (c) 2016-2017 Daniel Frey
 
 #include <tao/utility/getenv.hpp>
 
@@ -8,18 +8,18 @@
 
 namespace tao
 {
-  namespace utility
-  {
-    std::string getenv( const std::string& name )
-    {
-      const char* result = std::getenv( name.c_str() );
-      return result ? result : throw std::runtime_error( "environment variable not found: " + name );
-    }
+   namespace utility
+   {
+      std::string getenv( const std::string& name )
+      {
+         const char* result = std::getenv( name.c_str() );
+         return result ? result : throw std::runtime_error( "environment variable not found: " + name );
+      }
 
-    std::string getenv( const std::string& name, const std::string& default_value )
-    {
-      const char* result = std::getenv( name.c_str() );
-      return result ? result : default_value;
-    }
-  }
+      std::string getenv( const std::string& name, const std::string& default_value )
+      {
+         const char* result = std::getenv( name.c_str() );
+         return result ? result : default_value;
+      }
+   }
 }
