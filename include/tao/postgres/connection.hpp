@@ -39,7 +39,7 @@ namespace tao
          friend class postgres::transaction;
          friend class table_writer;
 
-         const std::unique_ptr<::PGconn, connection_impl::deleter > pgconn_;
+         const std::unique_ptr< PGconn, connection_impl::deleter > pgconn_;
          postgres::transaction* current_transaction_;
          std::unordered_set< std::string > prepared_statements_;
 

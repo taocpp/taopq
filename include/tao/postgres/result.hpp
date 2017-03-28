@@ -52,7 +52,7 @@ namespace tao
          friend class connection;
          friend class table_writer;
 
-         const std::shared_ptr<::PGresult > pgresult_;
+         const std::shared_ptr< PGresult > pgresult_;
          const std::size_t columns_;
          const std::size_t rows_;
 
