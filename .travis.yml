@@ -14,8 +14,7 @@ matrix:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.7']
       env:
-        - COMPILER=g++-4.7
-        - CXXFLAGS="-O3 -Wall -Wextra -Wno-format -Werror"
+        - CXX=g++-4.7
 
     - compiler: gcc
       env:
@@ -64,6 +63,10 @@ matrix:
 
     - dist: precise
       compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-4.7']
       env:
         - CXX=clang++
 
@@ -134,28 +137,25 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
-          packages: ['clang-5.0']
+          packages: ['clang-5.0', 'g++-7']
       env:
         - CXX=clang++-5.0
         - CXXSTD=-std=c++17
 
-    - os: osx
+    - language: cpp
+      os: osx
       osx_image: xcode6.4
       compiler: clang
-      env:
-        - CXX=clang++
 
-    - os: osx
+    - language: cpp
+      os: osx
       osx_image: xcode7.3
       compiler: clang
-      env:
-        - CXX=clang++
 
-    - os: osx
+    - language: cpp
+      os: osx
       osx_image: xcode8.3
       compiler: clang
-      env:
-        - CXX=clang++
 
     - compiler: gcc
       addons:

@@ -51,7 +51,7 @@ all: check
 
 .PHONY: check
 check: $(UNIT_TESTS)
-	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T > /dev/null; done
+	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T; done
 
 .PHONY: clean
 clean:
