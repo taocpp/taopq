@@ -73,7 +73,7 @@ namespace tao
          void deallocate( const std::string& name );
 
          std::shared_ptr< postgres::transaction > direct();
-         std::shared_ptr< postgres::transaction > transaction( const transaction::isolation_level isolation_level = transaction::isolation_level::DEFAULT );
+         std::shared_ptr< postgres::transaction > transaction( const transaction::isolation_level il = transaction::isolation_level::DEFAULT );
 
          template< typename... Ts >
          result execute( Ts&&... ts )

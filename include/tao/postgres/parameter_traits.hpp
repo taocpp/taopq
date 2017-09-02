@@ -152,6 +152,34 @@ namespace tao
          }
       };
 
+      template<>
+      const char* const parameter_traits< signed char >::format;
+      template<>
+      const char* const parameter_traits< unsigned char >::format;
+      template<>
+      const char* const parameter_traits< short >::format;
+      template<>
+      const char* const parameter_traits< unsigned short >::format;
+      template<>
+      const char* const parameter_traits< int >::format;
+      template<>
+      const char* const parameter_traits< unsigned >::format;
+      template<>
+      const char* const parameter_traits< long >::format;
+      template<>
+      const char* const parameter_traits< unsigned long >::format;
+      template<>
+      const char* const parameter_traits< long long >::format;
+      template<>
+      const char* const parameter_traits< unsigned long long >::format;
+
+      template<>
+      const char* const parameter_traits< float >::format;
+      template<>
+      const char* const parameter_traits< double >::format;
+      template<>
+      const char* const parameter_traits< long double >::format;
+
       template< typename T >
       struct parameter_traits< optional< T > >
       {

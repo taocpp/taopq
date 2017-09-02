@@ -80,13 +80,13 @@ namespace tao
          return ::PQfname( pgresult_.get(), column );
       }
 
-      std::size_t result::index( const std::string& name ) const
+      std::size_t result::index( const std::string& in_name ) const
       {
-         const int column = ::PQfnumber( pgresult_.get(), name.c_str() );
+         const int column = ::PQfnumber( pgresult_.get(), in_name.c_str() );
          if( column < 0 ) {
             assert( column == -1 );
             check_has_result_set();
-            throw std::out_of_range( "column not found: " + name );
+            throw std::out_of_range( "column not found: " + in_name );
          }
          return column;
       }

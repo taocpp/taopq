@@ -44,29 +44,29 @@ int main()
 
    TEST_THROWS_MESSAGE( "mixed usage test #1", {
       const auto tr = connection->direct();
-      tao::postgres::table_writer tw( tr, "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
+      tao::postgres::table_writer tw2( tr, "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tr->execute( "SELECT 42" );
-      tw.insert( "1\t0\tXXX\n" );
+      tw2.insert( "1\t0\tXXX\n" );
    } );
 
    TEST_THROWS_MESSAGE( "mixed usage test #2", {
       const auto tr = connection->direct();
-      tao::postgres::table_writer tw( tr, "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
+      tao::postgres::table_writer tw2( tr, "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tr->execute( "SELECT 42" );
-      tw.finish();
+      tw2.finish();
    } );
 
    connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
    connection->execute( "CREATE TABLE tao_table_writer_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
    {
-      tao::postgres::table_writer tw( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
-      tw.insert( "1\t0\tXXX\n" );
-      tw.finish();
+      tao::postgres::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
+      tw2.insert( "1\t0\tXXX\n" );
+      tw2.finish();
    }
    TEST_ASSERT( connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 1 );
    {
-      tao::postgres::table_writer tw( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
-      tw.insert( "2\t0\tXXX\n" );
+      tao::postgres::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
+      tw2.insert( "2\t0\tXXX\n" );
    }
    TEST_ASSERT( connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 1 );
 

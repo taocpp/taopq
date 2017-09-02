@@ -30,18 +30,18 @@ namespace tao
          const std::size_t offset_;
          const std::size_t columns_;
 
-         row( const result& result, const std::size_t row, const std::size_t offset, const std::size_t columns )
-            : result_( result ),
-              row_( row ),
-              offset_( offset ),
-              columns_( columns )
+         row( const result& in_result, const std::size_t in_row, const std::size_t in_offset, const std::size_t in_columns )
+            : result_( in_result ),
+              row_( in_row ),
+              offset_( in_offset ),
+              columns_( in_columns )
          {
          }
 
          void ensure_column( const std::size_t column ) const;
 
       public:
-         row slice( const std::size_t offset, const std::size_t columns ) const;
+         row slice( const std::size_t offset, const std::size_t in_columns ) const;
 
          std::size_t columns() const
          {
@@ -49,7 +49,7 @@ namespace tao
          }
 
          std::string name( const std::size_t column ) const;
-         std::size_t index( const std::string& name ) const;
+         std::size_t index( const std::string& in_name ) const;
 
          bool is_null( const std::size_t column ) const;
          const char* get( const std::size_t column ) const;
@@ -134,13 +134,13 @@ namespace tao
             return field( *this, offset_ + column );
          }
 
-         field operator[]( const std::string& name ) const
+         field operator[]( const std::string& in_name ) const
          {
-            return ( *this )[ index( name ) ];
+            return ( *this )[ index( in_name ) ];
          }
 
          field at( const std::size_t column ) const;
-         field at( const std::string& name ) const;
+         field at( const std::string& in_name ) const;
       };
 
       template< typename T >

@@ -84,9 +84,9 @@ namespace tao
             : public transaction_base
          {
          private:
-            const char* isolation_level_to_statement( const transaction::isolation_level isolation_level )
+            const char* isolation_level_to_statement( const transaction::isolation_level il )
             {
-               switch( isolation_level ) {
+               switch( il ) {
                   case transaction::isolation_level::DEFAULT:
                      return "START TRANSACTION";
                   case transaction::isolation_level::SERIALIZABLE:
@@ -102,10 +102,10 @@ namespace tao
             }
 
          public:
-            explicit top_level_transaction( const transaction::isolation_level isolation_level, const std::shared_ptr< postgres::connection >& connection )
+            explicit top_level_transaction( const transaction::isolation_level il, const std::shared_ptr< postgres::connection >& connection )
                : transaction_base( connection )
             {
-               execute( isolation_level_to_statement( isolation_level ) );
+               execute( isolation_level_to_statement( il ) );
             }
 
             ~top_level_transaction()
@@ -232,9 +232,9 @@ namespace tao
          return std::make_shared< autocommit_transaction >( shared_from_this() );
       }
 
-      std::shared_ptr< transaction > connection::transaction( const transaction::isolation_level isolation_level )
+      std::shared_ptr< transaction > connection::transaction( const transaction::isolation_level il )
       {
-         return std::make_shared< top_level_transaction >( isolation_level, shared_from_this() );
+         return std::make_shared< top_level_transaction >( il, shared_from_this() );
       }
    }
 }

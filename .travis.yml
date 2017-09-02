@@ -1,9 +1,14 @@
-language: cpp
+language: generic
+os: linux
+dist: trusty
+
+branches:
+  only:
+    - master
 
 matrix:
   include:
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
@@ -12,129 +17,159 @@ matrix:
         - COMPILER=g++-4.7
         - CXXFLAGS="-O3 -Wall -Wextra -Wno-format -Werror"
 
-#    - os: linux
-#      compiler: gcc
-#      addons:
-#        apt:
-#          sources: ['ubuntu-toolchain-r-test']
-#          packages: ['g++-4.8']
-#      env:
-#        - COMPILER=g++-4.8
+    - compiler: gcc
+      env:
+        - CXX=g++-4.8
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-4.9']
       env:
-        - COMPILER=g++-4.9
+        - CXX=g++-4.9
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-5']
       env:
-        - COMPILER=g++-5
-        - CXXSTD=c++14
+        - CXX=g++-5
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
           packages: ['g++-6']
       env:
-        - COMPILER=g++-6
-        - CXXSTD=c++17
+        - CXX=g++-6
 
-    - os: linux
-      compiler: clang
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-4.7']
+          packages: ['g++-7']
       env:
-        - COMPILER=clang++
+        - CXX=g++-7
 
-    - os: linux
-      compiler: clang
+    - compiler: gcc
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.5']
-          packages: ['g++-4.9', 'clang-3.5']
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-7']
       env:
-        - COMPILER=clang++-3.5
+        - CXX=g++-7
+        - CXXSTD=-std=c++17
 
-    - os: linux
+    - dist: precise
       compiler: clang
+      env:
+        - CXX=clang++
+
+    - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.6']
+          packages: ['clang-3.5']
+      env:
+        - CXX=clang++-3.5
+
+    - compiler: clang
+      addons:
+        apt:
           packages: ['clang-3.6']
       env:
-        - COMPILER=clang++-3.6
-        - CXXSTD=c++14
+        - CXX=clang++-3.6
 
-    - os: linux
+    - dist: precise
       compiler: clang
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.7']
           packages: ['clang-3.7']
       env:
-        - COMPILER=clang++-3.7
-        - CXXSTD=c++14
+        - CXX=clang++-3.7
 
-    - os: linux
-      compiler: clang
+    - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-precise-3.8']
           packages: ['clang-3.8']
       env:
-        - COMPILER=clang++-3.8
-        - CXXSTD=c++14
+        - CXX=clang++-3.8
+
+    - compiler: clang
+      addons:
+        apt:
+          #sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-3.9']
+          packages: ['clang-3.9']
+      env:
+        - CXX=clang++-3.9
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+          packages: ['clang-4.0']
+      env:
+        - CXX=clang++-4.0
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']
+      env:
+        - CXX=clang++-5.0
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']
+      env:
+        - CXX=clang++-5.0
+        - CXXSTD=-std=c++14
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          packages: ['clang-5.0']
+      env:
+        - CXX=clang++-5.0
+        - CXXSTD=-std=c++17
 
     - os: osx
       osx_image: xcode6.4
       compiler: clang
       env:
-        - COMPILER=clang++
+        - CXX=clang++
 
     - os: osx
       osx_image: xcode7.3
       compiler: clang
       env:
-        COMPILER=clang++
-        CXXSTD=c++14
+        - CXX=clang++
 
     - os: osx
-      osx_image: xcode8.2
+      osx_image: xcode8.3
       compiler: clang
       env:
-        - COMPILER=clang++
-        - CXXSTD=c++1z
+        - CXX=clang++
 
-    - os: linux
-      compiler: gcc
+    - compiler: gcc
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-6']
+          packages: ['g++-7']
       env:
-        - COMPILER=g++-6
+        - CXX=g++-7
         - CXXFLAGS="-O0 --coverage"
       before_script:
-        - pip install --user urllib3[secure] cpp-coveralls
-        # Work around https://github.com/eddyxu/cpp-coveralls/issues/108 by manually
-        # installing the pyOpenSSL module and injecting it into urllib3 as per
-        # https://urllib3.readthedocs.io/en/latest/user-guide.html#ssl-py2
-        - sed -i -e '/^import sys$/a import urllib3.contrib.pyopenssl\nurllib3.contrib.pyopenssl.inject_into_urllib3()' $(which coveralls)
+        - pip install --user cpp-coveralls
       after_success:
-        - coveralls --gcov gcov-6 --gcov-options '\-lp' --exclude src/test --exclude include/tao/optional/akrzemi1
+        - coveralls --gcov gcov-7 --gcov-options '\-lp' --exclude src/test --exclude include/tao/optional/akrzemi1
 
 script:
-  make CXX=$COMPILER -j3
+  - $CXX --version
+  - make -j3

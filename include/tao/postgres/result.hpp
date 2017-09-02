@@ -75,7 +75,7 @@ namespace tao
          }
 
          std::string name( const std::size_t column ) const;
-         std::size_t index( const std::string& name ) const;
+         std::size_t index( const std::string& in_name ) const;
 
          bool empty() const;
          std::size_t size() const;

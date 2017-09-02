@@ -15,15 +15,15 @@ namespace tao
          }
       }
 
-      row row::slice( const std::size_t offset, const std::size_t columns ) const
+      row row::slice( const std::size_t offset, const std::size_t in_columns ) const
       {
-         if( columns == 0 ) {
+         if( in_columns == 0 ) {
             throw std::invalid_argument( "slice requires at least one column" );
          }
-         if( offset + columns > columns_ ) {
-            throw std::out_of_range( utility::printf( "slice (%zu-%zu) out of range (0-%zu)", offset, offset + columns - 1, columns_ - 1 ) );
+         if( offset + in_columns > columns_ ) {
+            throw std::out_of_range( utility::printf( "slice (%zu-%zu) out of range (0-%zu)", offset, offset + in_columns - 1, columns_ - 1 ) );
          }
-         return row( result_, row_, offset_ + offset, columns );
+         return row( result_, row_, offset_ + offset, in_columns );
       }
 
       std::string row::name( const std::size_t column ) const
@@ -31,9 +31,9 @@ namespace tao
          return result_.name( offset_ + column );
       }
 
-      std::size_t row::index( const std::string& name ) const
+      std::size_t row::index( const std::string& in_name ) const
       {
-         const std::size_t n = result_.index( name );
+         const std::size_t n = result_.index( in_name );
          if( n >= offset_ ) {
             if( n - offset_ < columns_ ) {
                return n - offset_;
@@ -42,12 +42,12 @@ namespace tao
          else {
             const std::string adapted_name = result_.name( n );
             for( std::size_t pos = 0; pos < columns_; ++pos ) {
-               if( this->name( pos ) == adapted_name ) {
+               if( name( pos ) == adapted_name ) {
                   return pos;
                }
             }
          }
-         throw std::out_of_range( "column not found: " + name );
+         throw std::out_of_range( "column not found: " + in_name );
       }
 
       bool row::is_null( const std::size_t column ) const
