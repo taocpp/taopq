@@ -15,6 +15,7 @@ matrix:
           packages: ['g++-4.7']
       env:
         - CXX=g++-4.7
+        - CXXFLAGS="-Wall -Wextra -Wshadow -Wno-format -Werror -O3"
 
     - compiler: gcc
       env:
