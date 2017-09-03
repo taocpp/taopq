@@ -1,10 +1,8 @@
 # The Art of C++ / PostgreSQL
 
 [![Release](https://img.shields.io/github/release/taocpp/postgres.svg)](https://github.com/taocpp/postgres/releases/latest)
-[![License](https://img.shields.io/github/license/taocpp/postgres.svg)](#license)
 [![TravisCI](https://travis-ci.org/taocpp/postgres.svg)](https://travis-ci.org/taocpp/postgres)
 [![Coverage](https://img.shields.io/coveralls/taocpp/postgres.svg)](https://coveralls.io/github/taocpp/postgres)
-[![Issues](https://img.shields.io/github/issues/taocpp/postgres.svg)](https://github.com/taocpp/postgres/issues)
 
 The Art of C++ / PostgreSQL is a C++11 client library for [PostgreSQL](http://www.postgresql.org/).
 
@@ -18,7 +16,7 @@ The Art of C++ / PostgreSQL is a C++11 client library for [PostgreSQL](http://ww
 
 ## Preface
 
-The Art of C++ / PostgreSQL is a light-weight C++11 client library for accessing a PostgreSQL database, providing a modern API around PostgreSQL's `libpq`. Besides a C++11 compatible compiler and `libpq`, it has no further dependencies.
+The Art of C++ / PostgreSQL is a light-weight C++11 client library for accessing a PostgreSQL database, providing a modern API around PostgreSQL's `libpq`. Besides a C++11 compatible compiler and `libpq` it has no further dependencies.
 
 ## Example
 
