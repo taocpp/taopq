@@ -17,9 +17,12 @@ matrix:
         - CXX=g++-4.7
         - CXXFLAGS="-Wall -Wextra -Wshadow -Wno-format -Werror -O3"
 
-    - compiler: gcc
-      env:
-        - CXX=g++-4.8
+# GCC 4.8 disabled due to accuracy problems with floating
+# point values, everything else should work as expected.
+#
+#    - compiler: gcc
+#      env:
+#        - CXX=g++-4.8
 
     - compiler: gcc
       addons:
