@@ -49,8 +49,11 @@ LIBNAME := taopq
 .PHONY: all
 all: check
 
+.PHONY: compile
+compile: $(UNIT_TESTS)
+
 .PHONY: check
-check: $(UNIT_TESTS)
+check: compile
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T; done
 
 .PHONY: clean
