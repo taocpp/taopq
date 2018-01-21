@@ -115,7 +115,7 @@ namespace tao
                      rollback();
                   }
                   // LCOV_EXCL_START
-                  catch( const std::exception& e ) {
+                  catch( const std::exception& ) {
                      // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
                   }
                   catch( ... ) {
