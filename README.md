@@ -2,6 +2,7 @@
 
 [![Release](https://img.shields.io/github/release/taocpp/postgres.svg)](https://github.com/taocpp/postgres/releases/latest)
 [![TravisCI](https://travis-ci.org/taocpp/postgres.svg)](https://travis-ci.org/taocpp/postgres)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/postgres?svg=true)](https://ci.appveyor.com/project/taocpp/postgres)
 [![Coverage](https://img.shields.io/coveralls/taocpp/postgres.svg)](https://coveralls.io/github/taocpp/postgres)
 
 The Art of C++ / PostgreSQL is a C++11 client library for [PostgreSQL](http://www.postgresql.org/).
