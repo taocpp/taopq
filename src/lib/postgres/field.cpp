@@ -1,5 +1,5 @@
 // The Art of C++ / PostgreSQL
-// Copyright (c) 2016-2017 Daniel Frey
+// Copyright (c) 2016-2018 Daniel Frey
 
 #include <tao/postgres/field.hpp>
 #include <tao/postgres/row.hpp>

@@ -1,5 +1,5 @@
 // The Art of C++ / PostgreSQL
-// Copyright (c) 2016-2017 Daniel Frey
+// Copyright (c) 2016-2018 Daniel Frey
 
 #ifndef TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_PAIR_HPP
 #define TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_PAIR_HPP

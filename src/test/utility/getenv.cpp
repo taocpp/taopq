@@ -1,5 +1,5 @@
 // The Art of C++ / Utility
-// Copyright (c) 2016-2017 Daniel Frey
+// Copyright (c) 2016-2018 Daniel Frey
 
 #include "../macros.hpp"
 

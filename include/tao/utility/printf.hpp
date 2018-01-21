@@ -1,5 +1,5 @@
 // The Art of C++ / Utility
-// Copyright (c) 2016-2017 Daniel Frey
+// Copyright (c) 2016-2018 Daniel Frey
 
 #ifndef TAOCPP_INCLUDE_UTILITY_PRINTF_HPP
 #define TAOCPP_INCLUDE_UTILITY_PRINTF_HPP

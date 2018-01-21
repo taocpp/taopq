@@ -1,5 +1,5 @@
 // The Art of C++ / Sequences
-// Copyright (c) 2015-2017 Daniel Frey
+// Copyright (c) 2015-2018 Daniel Frey
 
 #ifndef TAOCPP_SEQUENCES_INCLUDE_CONFIG_HPP
 #define TAOCPP_SEQUENCES_INCLUDE_CONFIG_HPP
