@@ -14,6 +14,14 @@
 #include <tao/seq/make_integer_sequence.hpp>
 #include <tao/utility/printf.hpp>
 
+#if defined( _MSC_VER )
+#define WEAK_PREFIX __declspec( selectany )
+#define WEAK_SUFFIX
+#else
+#define WEAK_PREFIX
+#define WEAK_SUFFIX __attribute__( ( weak ) )
+#endif
+
 namespace tao
 {
    namespace postgres
@@ -151,6 +159,23 @@ namespace tao
          {
          }
       };
+
+      // clang-format off
+      template<> WEAK_PREFIX const char* const parameter_traits< signed char >::format WEAK_SUFFIX = "%hhd";
+      template<> WEAK_PREFIX const char* const parameter_traits< unsigned char >::format WEAK_SUFFIX = "%hhu";
+      template<> WEAK_PREFIX const char* const parameter_traits< short >::format WEAK_SUFFIX = "%hd";
+      template<> WEAK_PREFIX const char* const parameter_traits< unsigned short >::format WEAK_SUFFIX = "%hu";
+      template<> WEAK_PREFIX const char* const parameter_traits< int >::format WEAK_SUFFIX = "%d";
+      template<> WEAK_PREFIX const char* const parameter_traits< unsigned >::format WEAK_SUFFIX = "%u";
+      template<> WEAK_PREFIX const char* const parameter_traits< long >::format WEAK_SUFFIX = "%ld";
+      template<> WEAK_PREFIX const char* const parameter_traits< unsigned long >::format WEAK_SUFFIX = "%lu";
+      template<> WEAK_PREFIX const char* const parameter_traits< long long >::format WEAK_SUFFIX = "%lld";
+      template<> WEAK_PREFIX const char* const parameter_traits< unsigned long long >::format WEAK_SUFFIX = "%llu";
+
+      template<> WEAK_PREFIX const char* const parameter_traits< float >::format WEAK_SUFFIX = "%.9g";
+      template<> WEAK_PREFIX const char* const parameter_traits< double >::format WEAK_SUFFIX = "%.17g";
+      template<> WEAK_PREFIX const char* const parameter_traits< long double >::format WEAK_SUFFIX = "%.21Lg";
+      // clang-format on
 
       template< typename T >
       struct parameter_traits< optional< T > >
