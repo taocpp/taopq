@@ -6,6 +6,10 @@
 #include <cstdlib>
 #include <stdexcept>
 
+#if defined( _MSC_VER )
+#include <memory>
+#endif
+
 namespace tao
 {
    namespace utility
@@ -14,9 +18,10 @@ namespace tao
       std::string getenv( const std::string& name )
       {
          char* buf = nullptr;
-         if( _dupenv_s( &buf, nullptr, name.c_str() ) == 0 && buf != nullptr ) {
+         std::size_t sz = 0;
+         if( _dupenv_s( &buf, &sz, name.c_str() ) == 0 && buf != nullptr ) {
             const std::unique_ptr< char, decltype( &std::free ) > up( buf, &std::free );
-            return up.get();
+            return std::string( up.get(), sz );
          }
          throw std::runtime_error( "environment variable not found: " + name );
       }
@@ -24,9 +29,10 @@ namespace tao
       std::string getenv( const std::string& name, const std::string& default_value )
       {
          char* buf = nullptr;
-         if( _dupenv_s( &buf, nullptr, name.c_str() ) == 0 && buf != nullptr ) {
+         std::size_t sz = 0;
+         if( _dupenv_s( &buf, &sz, name.c_str() ) == 0 && buf != nullptr ) {
             const std::unique_ptr< char, decltype( &std::free ) > up( buf, &std::free );
-            return up.get();
+            return std::string( up.get(), sz );
          }
          return default_value;
       }
