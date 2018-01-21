@@ -2,6 +2,9 @@ cmake_minimum_required (VERSION 3.2.0 FATAL_ERROR)
 
 project (taocpp-postgres VERSION 1.0.0 LANGUAGES CXX)
 
+set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
+
 # postgres
 find_package (PostgreSQL REQUIRED)
 include_directories (${PostgreSQL_INCLUDE_DIRS})

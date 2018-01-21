@@ -8,6 +8,7 @@ source_group ("Header Files" FILES ${TAOCPP_POSTGRES_INCLUDE_FILES})
 
 add_library (${TAOCPP_POSTGRES_LIBRARIES} ${TAOCPP_POSTGRES_SOURCE_FILES} ${TAOCPP_POSTGRES_INCLUDE_FILES})
 add_library (taocpp::postgres ALIAS ${TAOCPP_POSTGRES_LIBRARIES})
+target_link_libraries (${TAOCPP_POSTGRES_LIBRARIES} ${PostgreSQL_LIBRARIES})
 
 # features used by the taocpp/postgres
 target_compile_features (${TAOCPP_POSTGRES_LIBRARIES} INTERFACE
