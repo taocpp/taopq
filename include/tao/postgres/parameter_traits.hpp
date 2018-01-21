@@ -144,41 +144,13 @@ namespace tao
       struct parameter_traits< T, typename std::enable_if< std::is_arithmetic< T >::value >::type >
          : parameter_traits_impl::string_helper
       {
-         static const char* format;
+         static const char* const format;
 
          parameter_traits( const T v )
             : string_helper( utility::printf( format, v ) )
          {
          }
       };
-
-      template<>
-      const char* parameter_traits< signed char >::format;
-      template<>
-      const char* parameter_traits< unsigned char >::format;
-      template<>
-      const char* parameter_traits< short >::format;
-      template<>
-      const char* parameter_traits< unsigned short >::format;
-      template<>
-      const char* parameter_traits< int >::format;
-      template<>
-      const char* parameter_traits< unsigned >::format;
-      template<>
-      const char* parameter_traits< long >::format;
-      template<>
-      const char* parameter_traits< unsigned long >::format;
-      template<>
-      const char* parameter_traits< long long >::format;
-      template<>
-      const char* parameter_traits< unsigned long long >::format;
-
-      template<>
-      const char* parameter_traits< float >::format;
-      template<>
-      const char* parameter_traits< double >::format;
-      template<>
-      const char* parameter_traits< long double >::format;
 
       template< typename T >
       struct parameter_traits< optional< T > >
