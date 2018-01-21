@@ -4,6 +4,7 @@
 #ifndef TAOCPP_INCLUDE_UTILITY_PRINTF_HPP
 #define TAOCPP_INCLUDE_UTILITY_PRINTF_HPP
 
+#include <cstdarg>
 #include <string>
 
 namespace tao
