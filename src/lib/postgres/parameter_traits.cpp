@@ -8,31 +8,31 @@ namespace tao
    namespace postgres
    {
       template<>
-      const char* const parameter_traits< signed char >::format = "%hhd";
+      const char* parameter_traits< signed char >::format = "%hhd";
       template<>
-      const char* const parameter_traits< unsigned char >::format = "%hhu";
+      const char* parameter_traits< unsigned char >::format = "%hhu";
       template<>
-      const char* const parameter_traits< short >::format = "%hd";
+      const char* parameter_traits< short >::format = "%hd";
       template<>
-      const char* const parameter_traits< unsigned short >::format = "%hu";
+      const char* parameter_traits< unsigned short >::format = "%hu";
       template<>
-      const char* const parameter_traits< int >::format = "%d";
+      const char* parameter_traits< int >::format = "%d";
       template<>
-      const char* const parameter_traits< unsigned >::format = "%u";
+      const char* parameter_traits< unsigned >::format = "%u";
       template<>
-      const char* const parameter_traits< long >::format = "%ld";
+      const char* parameter_traits< long >::format = "%ld";
       template<>
-      const char* const parameter_traits< unsigned long >::format = "%lu";
+      const char* parameter_traits< unsigned long >::format = "%lu";
       template<>
-      const char* const parameter_traits< long long >::format = "%lld";
+      const char* parameter_traits< long long >::format = "%lld";
       template<>
-      const char* const parameter_traits< unsigned long long >::format = "%llu";
+      const char* parameter_traits< unsigned long long >::format = "%llu";
 
       template<>
-      const char* const parameter_traits< float >::format = "%.*g";
+      const char* parameter_traits< float >::format = "%.*g";
       template<>
-      const char* const parameter_traits< double >::format = "%.*g";
+      const char* parameter_traits< double >::format = "%.*g";
       template<>
-      const char* const parameter_traits< long double >::format = "%.*Lg";
+      const char* parameter_traits< long double >::format = "%.*Lg";
    }
 }
