@@ -98,7 +98,8 @@ namespace tao
                   case transaction::isolation_level::READ_UNCOMMITTED:
                      return "START TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
                }
-               assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
+               assert( !"code should be unreachable" );                   // LCOV_EXCL_LINE
+               throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
             }
 
          public:
