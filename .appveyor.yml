@@ -1,0 +1,56 @@
+version: '{branch}-{build}'
+
+branches:
+  only:
+    - master
+
+os:
+- Visual Studio 2015
+
+configuration:
+- Release
+- Debug
+
+environment:
+  matrix:
+    - GENERATOR: Visual Studio 14 2015
+
+    - GENERATOR: Visual Studio 14 2015 Win64
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR: Visual Studio 15 2017
+
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      GENERATOR: Visual Studio 15 2017 Win64
+
+    - GENERATOR: MinGW Makefiles
+      BINDIR: C:\MinGW\bin
+
+    - GENERATOR: MinGW Makefiles
+      COMPILER: MinGW 5
+      BINDIR: C:\mingw-w64\i686-5.3.0-posix-dwarf-rt_v4-rev0\mingw32\bin
+
+    - GENERATOR: MinGW Makefiles
+      COMPILER: MinGW 6
+      BINDIR: C:\mingw-w64\i686-6.3.0-posix-dwarf-rt_v5-rev1\mingw32\bin
+
+    - GENERATOR: MinGW Makefiles
+      COMPILER: MinGW 6
+      BINDIR: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
+
+init: []
+
+install: []
+
+before_build:
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2015" (del "C:\Program Files (x86)\MSBuild\14.0\Microsoft.Common.targets\ImportAfter\Xamarin.Common.targets")
+- if defined BINDIR (set "PATH=%BINDIR%;%PATH:C:\Program Files\Git\usr\bin;=%")
+- md build
+- cd build
+- cmake -Wno-dev -DTAOCPP_POSTGRES_BUILD_EXAMPLES=OFF --config "%CONFIGURATION%" -G "%GENERATOR%" ..
+
+build_script:
+- cmake --build . --config "%CONFIGURATION%"
+
+test_script:
+- ctest -C "%CONFIGURATION%" --output-on-failure
