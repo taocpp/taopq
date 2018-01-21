@@ -42,7 +42,7 @@ namespace tao
          if( v > std::numeric_limits< signed char >::max() ) {
             throw std::overflow_error( "overflow error in tao::postgres::result_traits<signed char> for input: " + std::string( value ) );
          }
-         return v;
+         return static_cast< signed char >( v );
       }
 
       unsigned char result_traits< unsigned char >::from( const char* value )
@@ -51,7 +51,7 @@ namespace tao
          if( v > std::numeric_limits< unsigned char >::max() ) {
             throw std::overflow_error( "overflow error in tao::postgres::result_traits<unsigned char> for input: " + std::string( value ) );
          }
-         return v;
+         return static_cast< unsigned char >( v );
       }
 
       short result_traits< short >::from( const char* value )
@@ -63,7 +63,7 @@ namespace tao
          if( v > std::numeric_limits< short >::max() ) {
             throw std::overflow_error( "overflow error in tao::postgres::result_traits<short> for input: " + std::string( value ) );
          }
-         return v;
+         return static_cast< short >( v );
       }
 
       unsigned short result_traits< unsigned short >::from( const char* value )
@@ -72,7 +72,7 @@ namespace tao
          if( v > std::numeric_limits< unsigned short >::max() ) {
             throw std::overflow_error( "overflow error in tao::postgres::result_traits<unsigned short> for input: " + std::string( value ) );
          }
-         return v;
+         return static_cast< unsigned short >( v );
       }
 
       int result_traits< int >::from( const char* value )
@@ -84,7 +84,7 @@ namespace tao
          if( v > std::numeric_limits< int >::max() ) {
             throw std::overflow_error( "overflow error in tao::postgres::result_traits<int> for input: " + std::string( value ) );
          }
-         return v;
+         return static_cast< int >( v );
       }
 
       unsigned result_traits< unsigned >::from( const char* value )
@@ -93,7 +93,7 @@ namespace tao
          if( v > std::numeric_limits< unsigned >::max() ) {
             throw std::overflow_error( "overflow error in tao::postgres::result_traits<unsigned> for input: " + std::string( value ) );
          }
-         return v;
+         return static_cast< unsigned >( v );
       }
 
       long result_traits< long >::from( const char* value )
