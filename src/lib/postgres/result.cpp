@@ -121,7 +121,7 @@ namespace tao
          if( column >= columns_ ) {
             throw std::out_of_range( utility::printf( "column %zu out of range (0-%zu)", column, columns_ - 1 ) );
          }
-         return ::PQgetisnull( pgresult_.get(), row, column );
+         return ::PQgetisnull( pgresult_.get(), row, column ) != 0;
       }
 
       const char* result::get( const std::size_t row, const std::size_t column ) const
