@@ -6,9 +6,13 @@ file (GLOB_RECURSE TAOCPP_POSTGRES_SOURCE_FILES ${CMAKE_CURRENT_LIST_DIR}/src/li
 
 source_group ("Header Files" FILES ${TAOCPP_POSTGRES_INCLUDE_FILES})
 
+find_package (PostgreSQL REQUIRED)
+
 add_library (${TAOCPP_POSTGRES_LIBRARIES} ${TAOCPP_POSTGRES_SOURCE_FILES} ${TAOCPP_POSTGRES_INCLUDE_FILES})
 add_library (taocpp::postgres ALIAS ${TAOCPP_POSTGRES_LIBRARIES})
-target_link_libraries (${TAOCPP_POSTGRES_LIBRARIES} ${PostgreSQL_LIBRARIES})
+
+target_include_directories (${TAOCPP_POSTGRES_LIBRARIES} PUBLIC ${TAOCPP_POSTGRES_INCLUDE_DIRS} ${PostgreSQL_INCLUDE_DIRS})
+target_link_libraries (${TAOCPP_POSTGRES_LIBRARIES} PUBLIC ${PostgreSQL_LIBRARIES})
 
 # features used by the taocpp/postgres
 target_compile_features (${TAOCPP_POSTGRES_LIBRARIES} INTERFACE

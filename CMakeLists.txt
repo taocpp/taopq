@@ -5,11 +5,6 @@ project (taocpp-postgres VERSION 1.0.0 LANGUAGES CXX)
 set (CMAKE_CXX_STANDARD 11)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# postgres
-find_package (PostgreSQL REQUIRED)
-include_directories (${PostgreSQL_INCLUDE_DIRS})
-link_directories (${PostgreSQL_LIBRARY_DIRS})
-
 # taocpp/postgres
 include ("taocpp-postgres.cmake")
 include_directories (${TAOCPP_POSTGRES_INCLUDE_DIRS})
