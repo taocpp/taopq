@@ -266,14 +266,14 @@ int main()
    check_null( "TEXT" );
    check< float >( "TEXT", std::numeric_limits< float >::lowest() );
    check_null( "TEXT" );
-   check< float >( "TEXT", -1e37 );
-   check< float >( "TEXT", -1.25 );
-   check< float >( "TEXT", -1 );
-   check< float >( "TEXT", -0.25 );
-   check< float >( "TEXT", -1e-37 );
-   check< float >( "TEXT", 0 );
+   check< float >( "TEXT", -1e37f );
+   check< float >( "TEXT", -1.25f );
+   check< float >( "TEXT", -1.f );
+   check< float >( "TEXT", -0.25f );
+   check< float >( "TEXT", -1e-37f );
+   check< float >( "TEXT", 0.f );
    // check< float >( "TEXT", std::numeric_limits< float >::min() );
-   check< float >( "TEXT", 1e-37 );
+   check< float >( "TEXT", 1e-37f );
    {
       float value = 0.123456f;
       for( int i = 0; i < 32; ++i ) {
