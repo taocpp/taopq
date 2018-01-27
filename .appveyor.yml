@@ -40,7 +40,14 @@ environment:
       COMPILER: MinGW 6
       BINDIR: C:\mingw-w64\x86_64-6.3.0-posix-seh-rt_v5-rev1\mingw64\bin
 
-init: []
+services:
+- postgresql96
+
+init:
+- set PGUSER=postgres
+- set PGPASSWORD=Password12!
+- PATH=C:\Program Files\PostgreSQL\9.6\bin\;%PATH%
+- createdb taocpp
 
 install: []
 
@@ -50,6 +57,7 @@ before_build:
 - md build
 - cd build
 - cmake -Wno-dev --config "%CONFIGURATION%" -G "%GENERATOR%" ..
+- set TAO_TEST_DATABASE="dbname=taocpp host=localhost user=postgres password=Password12!"
 
 build_script:
 - cmake --build . --config "%CONFIGURATION%"
