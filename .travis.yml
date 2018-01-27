@@ -170,6 +170,14 @@ matrix:
         - $CXX --version
         - make -j3 compile
 
+    - language: cpp
+      os: osx
+      osx_image: xcode9.2
+      compiler: clang
+      script:
+        - $CXX --version
+        - make -j3 compile
+
     - compiler: gcc
       addons:
         apt:
