@@ -77,7 +77,7 @@ namespace tao
          if( column >= columns_ ) {
             throw std::out_of_range( utility::printf( "column %zu out of range (0-%zu)", column, columns_ - 1 ) );
          }
-         return ::PQfname( pgresult_.get(), column );
+         return ::PQfname( pgresult_.get(), static_cast< int >( column ) );
       }
 
       std::size_t result::index( const std::string& in_name ) const
@@ -121,7 +121,7 @@ namespace tao
          if( column >= columns_ ) {
             throw std::out_of_range( utility::printf( "column %zu out of range (0-%zu)", column, columns_ - 1 ) );
          }
-         return ::PQgetisnull( pgresult_.get(), row, column ) != 0;
+         return ::PQgetisnull( pgresult_.get(), static_cast< int >( row ), static_cast< int >( column ) ) != 0;
       }
 
       const char* result::get( const std::size_t row, const std::size_t column ) const
@@ -129,7 +129,7 @@ namespace tao
          if( is_null( row, column ) ) {
             throw std::runtime_error( utility::printf( "unexpected NULL value in row %zu column %zu = %s", row, column, name( column ).c_str() ) );
          }
-         return ::PQgetvalue( pgresult_.get(), row, column );
+         return ::PQgetvalue( pgresult_.get(), static_cast< int >( row ), static_cast< int >( column ) );
       }
 
       row result::at( const std::size_t row ) const

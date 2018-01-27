@@ -28,7 +28,7 @@ namespace tao
 
       void table_writer::insert( const std::string& data )
       {
-         const int r = ::PQputCopyData( transaction_->connection_->pgconn_.get(), data.data(), data.size() );
+         const int r = ::PQputCopyData( transaction_->connection_->pgconn_.get(), data.data(), static_cast< int >( data.size() ) );
          if( r != 1 ) {
             throw std::runtime_error( "::PQputCopyData() failed: " + transaction_->connection_->error_message() );
          }

@@ -128,7 +128,7 @@ int main()
    TEST_THROWS( connection->execute( "SELECT 65536" ).as< unsigned short >() );
 
    TEST_THROWS( connection->execute( "SELECT -2147483649" ).as< int >() );
-   TEST_ASSERT( connection->execute( "SELECT -2147483648" ).as< int >() == -2147483648 );
+   TEST_ASSERT( connection->execute( "SELECT -2147483648" ).as< int >() == -2147483648LL );
    TEST_ASSERT( connection->execute( "SELECT 2147483647" ).as< int >() == 2147483647 );
    TEST_THROWS( connection->execute( "SELECT 2147483648" ).as< int >() );
 
