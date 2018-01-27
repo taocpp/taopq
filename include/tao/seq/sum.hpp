@@ -50,13 +50,13 @@ namespace tao
          template< bool, std::size_t N, typename T, T... Ns >
          struct sum
          {
-            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) - N ) - T( sizeof( collector< make_index_sequence< N >, ( ( Ns < 0 ) ? -Ns : 0 )... > ) - N ) >;
+            using type = std::integral_constant< T, ( static_cast< T >( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) - N ) - static_cast< T >( sizeof( collector< make_index_sequence< N >, ( ( Ns < 0 ) ? -Ns : 0 )... > ) - N ) ) >;
          };
 
          template< std::size_t N, typename T, T... Ns >
          struct sum< true, N, T, Ns... >
          {
-            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) - N ) >;
+            using type = std::integral_constant< T, static_cast< T >( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) - N ) >;
          };
       }
 
