@@ -19,7 +19,9 @@
 #define WEAK_SUFFIX
 #else
 #define WEAK_PREFIX
-#define WEAK_SUFFIX __attribute__( ( weak ) )
+// clang-format off
+#define WEAK_SUFFIX __attribute__(( weak ))
+// clang-format on
 #endif
 
 namespace tao
