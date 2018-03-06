@@ -14,16 +14,6 @@
 #include <tao/seq/make_integer_sequence.hpp>
 #include <tao/utility/printf.hpp>
 
-#if defined( _MSC_VER )
-#define WEAK_PREFIX __declspec( selectany )
-#define WEAK_SUFFIX
-#else
-#define WEAK_PREFIX
-// clang-format off
-#define WEAK_SUFFIX __attribute__(( weak ))
-// clang-format on
-#endif
-
 namespace tao
 {
    namespace postgres
@@ -150,34 +140,135 @@ namespace tao
          }
       };
 
-      template< typename T >
-      struct parameter_traits< T, typename std::enable_if< std::is_arithmetic< T >::value >::type >
+      template<>
+      struct parameter_traits< signed char >
          : parameter_traits_impl::string_helper
       {
-         static const char* const format;
-
-         parameter_traits( const T v )
-            : string_helper( utility::printf( format, v ) )
+         parameter_traits( const signed char v )
+            : string_helper( utility::printf( "%hhd", v ) )
          {
          }
       };
 
-      // clang-format off
-      template<> WEAK_PREFIX const char* const parameter_traits< signed char >::format WEAK_SUFFIX = "%hhd";
-      template<> WEAK_PREFIX const char* const parameter_traits< unsigned char >::format WEAK_SUFFIX = "%hhu";
-      template<> WEAK_PREFIX const char* const parameter_traits< short >::format WEAK_SUFFIX = "%hd";
-      template<> WEAK_PREFIX const char* const parameter_traits< unsigned short >::format WEAK_SUFFIX = "%hu";
-      template<> WEAK_PREFIX const char* const parameter_traits< int >::format WEAK_SUFFIX = "%d";
-      template<> WEAK_PREFIX const char* const parameter_traits< unsigned >::format WEAK_SUFFIX = "%u";
-      template<> WEAK_PREFIX const char* const parameter_traits< long >::format WEAK_SUFFIX = "%ld";
-      template<> WEAK_PREFIX const char* const parameter_traits< unsigned long >::format WEAK_SUFFIX = "%lu";
-      template<> WEAK_PREFIX const char* const parameter_traits< long long >::format WEAK_SUFFIX = "%lld";
-      template<> WEAK_PREFIX const char* const parameter_traits< unsigned long long >::format WEAK_SUFFIX = "%llu";
+      template<>
+      struct parameter_traits< unsigned char >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const unsigned char v )
+            : string_helper( utility::printf( "%hhu", v ) )
+         {
+         }
+      };
 
-      template<> WEAK_PREFIX const char* const parameter_traits< float >::format WEAK_SUFFIX = "%.9g";
-      template<> WEAK_PREFIX const char* const parameter_traits< double >::format WEAK_SUFFIX = "%.17g";
-      template<> WEAK_PREFIX const char* const parameter_traits< long double >::format WEAK_SUFFIX = "%.21Lg";
-      // clang-format on
+      template<>
+      struct parameter_traits< short >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const short v )
+            : string_helper( utility::printf( "%hd", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< unsigned short >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const unsigned short v )
+            : string_helper( utility::printf( "%hu", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< int >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const int v )
+            : string_helper( utility::printf( "%d", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< unsigned >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const unsigned v )
+            : string_helper( utility::printf( "%u", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< long >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const long v )
+            : string_helper( utility::printf( "%ld", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< unsigned long >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const unsigned long v )
+            : string_helper( utility::printf( "%lu", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< long long >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const long long v )
+            : string_helper( utility::printf( "%lld", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< unsigned long long >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const unsigned long long v )
+            : string_helper( utility::printf( "%llu", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< float >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const float v )
+            : string_helper( utility::printf( "%.9g", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< double >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const double v )
+            : string_helper( utility::printf( "%.17g", v ) )
+         {
+         }
+      };
+
+      template<>
+      struct parameter_traits< long double >
+         : parameter_traits_impl::string_helper
+      {
+         parameter_traits( const long double v )
+            : string_helper( utility::printf( "%.21Lg", v ) )
+         {
+         }
+      };
 
       template< typename T >
       struct parameter_traits< optional< T > >
