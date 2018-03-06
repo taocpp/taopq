@@ -23,6 +23,7 @@ namespace tao
          {
             using type = integer_sequence< typename S::value_type, partial_sum< Is, S >::value... >;
          };
+
       }  // namespace impl
 
       template< typename T, T... Ns >
@@ -39,7 +40,9 @@ namespace tao
 
       template< typename T, T... Ns >
       using exclusive_scan_t = typename exclusive_scan< T, Ns... >::type;
+
    }  // namespace seq
+
 }  // namespace tao
 
-#endif // TAO_SEQ_EXCLUSIVE_SCAN_HPP
+#endif

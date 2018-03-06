@@ -58,6 +58,7 @@ namespace tao
          {
             using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) - N ) >;
          };
+
       }  // namespace impl
 
       template< typename T, T... Ns >
@@ -73,7 +74,9 @@ namespace tao
          : sum< T, Ns... >
       {
       };
+
    }  // namespace seq
+
 }  // namespace tao
 
-#endif // TAO_SEQ_SUM_HPP
+#endif

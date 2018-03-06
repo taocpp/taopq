@@ -16,8 +16,8 @@ namespace tao
 
 #ifdef TAO_USE_STD_INTEGER_SEQUENCE
 
-      using std::integer_sequence;
       using std::index_sequence;
+      using std::integer_sequence;
 
 #else
 
@@ -36,7 +36,9 @@ namespace tao
       using index_sequence = integer_sequence< std::size_t, Ns... >;
 
 #endif
+
    }  // namespace seq
+
 }  // namespace tao
 
-#endif // TAO_SEQ_INTEGER_SEQUENCE_HPP
+#endif
