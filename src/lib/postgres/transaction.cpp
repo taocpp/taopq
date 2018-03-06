@@ -125,7 +125,7 @@ namespace tao
                execute( utility::printf( "ROLLBACK TO \"TAO_%p\"", static_cast< void* >( this ) ) );
             }
          };
-      }
+      }  // namespace
 
       transaction::transaction( const std::shared_ptr< postgres::connection >& connection )
          : connection_( connection )
@@ -194,5 +194,7 @@ namespace tao
             return std::make_shared< nested_transaction >( connection_ );
          }
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

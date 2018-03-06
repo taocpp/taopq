@@ -28,5 +28,7 @@ namespace tao
       {
          return std::make_shared< connection_pool >( connection_pool::private_key(), connection_info );
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

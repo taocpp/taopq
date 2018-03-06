@@ -24,21 +24,16 @@ namespace tao
             static const std::string value;
          };
 
-         template<>
-         const std::string message< long >::value = "tao::utility::strtol() failed for input: ";
-         template<>
-         const std::string message< unsigned long >::value = "tao::utility::strtoul() failed for input: ";
-         template<>
-         const std::string message< long long >::value = "tao::utility::strtoll() failed for input: ";
-         template<>
-         const std::string message< unsigned long long >::value = "tao::utility::strtoull() failed for input: ";
+         // clang-format off
+         template<> const std::string message< long >::value = "tao::utility::strtol() failed for input: ";
+         template<> const std::string message< unsigned long >::value = "tao::utility::strtoul() failed for input: ";
+         template<> const std::string message< long long >::value = "tao::utility::strtoll() failed for input: ";
+         template<> const std::string message< unsigned long long >::value = "tao::utility::strtoull() failed for input: ";
 
-         template<>
-         const std::string message< float >::value = "tao::utility::strtof() failed for input: ";
-         template<>
-         const std::string message< double >::value = "tao::utility::strtod() failed for input: ";
-         template<>
-         const std::string message< long double >::value = "tao::utility::strtold() failed for input: ";
+         template<> const std::string message< float >::value = "tao::utility::strtof() failed for input: ";
+         template<> const std::string message< double >::value = "tao::utility::strtod() failed for input: ";
+         template<> const std::string message< long double >::value = "tao::utility::strtold() failed for input: ";
+         // clang-format on
 
          template< typename T >
          std::string failure_message( const char* input )
@@ -109,7 +104,7 @@ namespace tao
                   if( *end == '\0' ) {
                      return result;
                   }
-               // fall through
+                  // fall through
 
                case EINVAL:
                   throw std::runtime_error( failure_message< T >( input ) );
@@ -155,7 +150,8 @@ namespace tao
             assert( !"code should be unreachable" );                   // LCOV_EXCL_LINE
             throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
          }
-      }
+
+      }  // namespace
 
       long strtol( const char* input, const int base )
       {
@@ -191,5 +187,7 @@ namespace tao
       {
          return str_to_floating_point< long double >( input );
       }
-   }
-}
+
+   }  // namespace utility
+
+}  // namespace tao

@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_TUPLE_HPP
-#define TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_TUPLE_HPP
+#ifndef TAO_POSTGRES_RESULT_TRAITS_TUPLE_HPP
+#define TAO_POSTGRES_RESULT_TRAITS_TUPLE_HPP
 
 #include <tao/postgres/result_traits.hpp>
 #include <tao/postgres/row.hpp>
@@ -49,7 +49,9 @@ namespace tao
             return from( row, seq::exclusive_scan_t< std::size_t, result_traits_size< Ts >::value... >() );
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_TUPLE_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

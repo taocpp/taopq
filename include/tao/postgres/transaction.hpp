@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_TRANSACTION_HPP
-#define TAOCPP_INCLUDE_POSTGRES_TRANSACTION_HPP
+#ifndef TAO_POSTGRES_TRANSACTION_HPP
+#define TAO_POSTGRES_TRANSACTION_HPP
 
 #include <memory>
 #include <string>
@@ -94,7 +94,9 @@ namespace tao
             return execute( statement.c_str(), std::forward< As >( as )... );
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_TRANSACTION_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

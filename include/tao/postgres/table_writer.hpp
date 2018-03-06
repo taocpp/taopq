@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_TABLE_WRITER_HPP
-#define TAOCPP_INCLUDE_POSTGRES_TABLE_WRITER_HPP
+#ifndef TAO_POSTGRES_TABLE_WRITER_HPP
+#define TAO_POSTGRES_TABLE_WRITER_HPP
 
 #include <memory>
 #include <string>
@@ -25,7 +25,9 @@ namespace tao
          void insert( const std::string& data );
          std::size_t finish();
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_TABLE_WRITER_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

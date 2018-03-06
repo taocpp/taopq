@@ -145,5 +145,7 @@ namespace tao
          }
          return ( *this )[ row ];
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

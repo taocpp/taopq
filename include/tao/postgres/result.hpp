@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_RESULT_HPP
-#define TAOCPP_INCLUDE_POSTGRES_RESULT_HPP
+#ifndef TAO_POSTGRES_RESULT_HPP
+#define TAO_POSTGRES_RESULT_HPP
 
 #include <list>
 #include <map>
@@ -44,7 +44,8 @@ namespace tao
             : std::true_type
          {
          };
-      }
+
+      }  // namespace result_impl
 
       class result
       {
@@ -246,7 +247,9 @@ namespace tao
             return pgresult_.get();
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_RESULT_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

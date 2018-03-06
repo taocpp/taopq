@@ -41,7 +41,7 @@ namespace tao
             }
             return result;
          }
-      }
+      }  // namespace
 
       std::string printf( const char* format, ... )
       {
@@ -66,5 +66,7 @@ namespace tao
          }
          return s;
       }
-   }
-}
+
+   }  // namespace utility
+
+}  // namespace tao

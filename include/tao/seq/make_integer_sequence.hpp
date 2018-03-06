@@ -1,8 +1,8 @@
 // Copyright (c) 2015-2017 Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/sequences/
 
-#ifndef TAOCPP_SEQUENCES_INCLUDE_MAKE_INTEGER_SEQUENCE_HPP
-#define TAOCPP_SEQUENCES_INCLUDE_MAKE_INTEGER_SEQUENCE_HPP
+#ifndef TAO_SEQ_MAKE_INTEGER_SEQUENCE_HPP
+#define TAO_SEQ_MAKE_INTEGER_SEQUENCE_HPP
 
 #include <cstddef>
 #include <type_traits>
@@ -16,11 +16,11 @@ namespace tao
    namespace seq
    {
 
-#ifdef TAOCPP_USE_STD_MAKE_INTEGER_SEQUENCE
+#ifdef TAO_USE_STD_MAKE_INTEGER_SEQUENCE
 
-      using std::make_integer_sequence;
-      using std::make_index_sequence;
       using std::index_sequence_for;
+      using std::make_index_sequence;
+      using std::make_integer_sequence;
 
 #else
 
@@ -69,7 +69,8 @@ namespace tao
             static_assert( N < T( 1 << 20 ), "N too large" );
             using type = typename generate_sequence< false, false >::template f< T, ( N < T( 1 << 1 ) ) ? T( 1 << 1 ) : ( N < T( 1 << 2 ) ) ? T( 1 << 2 ) : ( N < T( 1 << 3 ) ) ? T( 1 << 3 ) : ( N < T( 1 << 4 ) ) ? T( 1 << 4 ) : ( N < T( 1 << 5 ) ) ? T( 1 << 5 ) : ( N < T( 1 << 6 ) ) ? T( 1 << 6 ) : ( N < T( 1 << 7 ) ) ? T( 1 << 7 ) : ( N < T( 1 << 8 ) ) ? T( 1 << 8 ) : ( N < T( 1 << 9 ) ) ? T( 1 << 9 ) : ( N < T( 1 << 10 ) ) ? T( 1 << 10 ) : T( 1 << 20 ), N, 0 >;
          };
-      }
+
+      }  // namespace impl
 
       template< typename T, T N >
       using make_integer_sequence = typename impl::memoize_sequence< T, N >::type;
@@ -81,7 +82,9 @@ namespace tao
       using index_sequence_for = make_index_sequence< sizeof...( Ts ) >;
 
 #endif
-   }
-}
 
-#endif  // TAOCPP_SEQUENCES_INCLUDE_MAKE_INTEGER_SEQUENCE_HPP
+   }  // namespace seq
+
+}  // namespace tao
+
+#endif

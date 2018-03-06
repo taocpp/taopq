@@ -61,5 +61,7 @@ namespace tao
          ensure_column( column );
          return result_.get( row_, offset_ + column );
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

@@ -142,7 +142,7 @@ namespace tao
                execute( "ROLLBACK TRANSACTION" );
             }
          };
-      }
+      }  // namespace
 
       namespace connection_impl
       {
@@ -150,7 +150,7 @@ namespace tao
          {
             ::PQfinish( p );
          }
-      }
+      }  // namespace connection_impl
 
       std::string connection::error_message() const
       {
@@ -237,5 +237,7 @@ namespace tao
       {
          return std::make_shared< top_level_transaction >( il, shared_from_this() );
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

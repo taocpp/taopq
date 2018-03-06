@@ -1,8 +1,8 @@
 // Copyright (c) 2015-2017 Daniel Frey
 // Please see LICENSE for license or visit https://github.com/taocpp/sequences/
 
-#ifndef TAOCPP_SEQUENCES_INCLUDE_PARTIAL_SUM_HPP
-#define TAOCPP_SEQUENCES_INCLUDE_PARTIAL_SUM_HPP
+#ifndef TAO_SEQ_PARTIAL_SUM_HPP
+#define TAO_SEQ_PARTIAL_SUM_HPP
 
 #include <cstddef>
 #include <utility>
@@ -25,7 +25,7 @@ namespace tao
          {
             static_assert( I <= sizeof...( Is ), "tao::seq::partial_sum<I, S>: I is out of range" );
          };
-      }
+      }  // namespace impl
 
       template< std::size_t I, typename T, T... Ns >
       struct partial_sum
@@ -38,7 +38,9 @@ namespace tao
          : impl::partial_sum< I, integer_sequence< T, Ns... > >
       {
       };
-   }
-}
 
-#endif  // TAOCPP_SEQUENCES_INCLUDE_PARTIAL_SUM_HPP
+   }  // namespace seq
+
+}  // namespace tao
+
+#endif

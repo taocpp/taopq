@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
-#define TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
+#ifndef TAO_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
+#define TAO_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
 
 #include <tao/optional/optional.hpp>
 
@@ -38,7 +38,9 @@ namespace tao
             return null();
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_OPTIONAL_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

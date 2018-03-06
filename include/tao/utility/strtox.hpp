@@ -1,8 +1,8 @@
 // The Art of C++ / Utility
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_UTILITY_STRTOX_HPP
-#define TAOCPP_INCLUDE_UTILITY_STRTOX_HPP
+#ifndef TAO_UTILITY_STRTOX_HPP
+#define TAO_UTILITY_STRTOX_HPP
 
 namespace tao
 {
@@ -16,7 +16,9 @@ namespace tao
       float strtof( const char* input );
       double strtod( const char* input );
       long double strtold( const char* input );
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_UTILITY_STRTOX_HPP
+   }  // namespace utility
+
+}  // namespace tao
+
+#endif

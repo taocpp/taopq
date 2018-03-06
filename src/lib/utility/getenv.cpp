@@ -49,5 +49,7 @@ namespace tao
          return result ? result : default_value;
       }
 #endif
-   }
-}
+
+   }  // namespace utility
+
+}  // namespace tao

@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_TEST_MACROS_HPP
-#define TAOCPP_INCLUDE_TEST_MACROS_HPP
+#ifndef SRC_TEST_MACROS_HPP
+#define SRC_TEST_MACROS_HPP
 
 // This is an internal header used for unit-tests.
 
@@ -46,4 +46,4 @@
 #define TEST_ASSERT( ... ) TEST_ASSERT_MESSAGE( "ASSERT " #__VA_ARGS__, __VA_ARGS__ )
 #define TEST_THROWS( ... ) TEST_THROWS_MESSAGE( "THROWS " #__VA_ARGS__, __VA_ARGS__ )
 
-#endif  // TAOCPP_INCLUDE_TEST_MACROS_HPP
+#endif

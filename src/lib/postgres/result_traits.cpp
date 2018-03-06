@@ -130,5 +130,7 @@ namespace tao
       {
          return utility::strtold( value );
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

@@ -22,5 +22,7 @@ namespace tao
       {
          return row_.get( column_ );
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

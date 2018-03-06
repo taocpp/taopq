@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_HPP
-#define TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_HPP
+#ifndef TAO_POSTGRES_RESULT_TRAITS_HPP
+#define TAO_POSTGRES_RESULT_TRAITS_HPP
 
 #include <string>
 #include <tuple>
@@ -151,7 +151,9 @@ namespace tao
       {
          static long double from( const char* value );
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_RESULT_TRAITS_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

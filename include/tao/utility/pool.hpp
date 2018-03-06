@@ -1,8 +1,8 @@
 // The Art of C++ / Utility
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_UTILITY_POOL_HPP
-#define TAOCPP_INCLUDE_UTILITY_POOL_HPP
+#ifndef TAO_UTILITY_POOL_HPP
+#define TAO_UTILITY_POOL_HPP
 
 #include <cassert>
 #include <list>
@@ -154,7 +154,9 @@ namespace tao
             }
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_UTILITY_POOL_HPP
+   }  // namespace utility
+
+}  // namespace tao
+
+#endif

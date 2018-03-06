@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_FIELD_HPP
-#define TAOCPP_INCLUDE_POSTGRES_FIELD_HPP
+#ifndef TAO_POSTGRES_FIELD_HPP
+#define TAO_POSTGRES_FIELD_HPP
 
 #include <tao/optional/optional.hpp>
 #include <tao/postgres/null.hpp>
@@ -61,7 +61,9 @@ namespace tao
       {
          return !f.is_null();
       }
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_FIELD_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

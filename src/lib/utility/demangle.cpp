@@ -27,5 +27,7 @@ namespace tao
       {
          return demangle( type_info.name() );
       }
-   }
-}
+
+   }  // namespace utility
+
+}  // namespace tao

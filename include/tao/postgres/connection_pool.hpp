@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_CONNECTION_POOL_HPP
-#define TAOCPP_INCLUDE_POSTGRES_CONNECTION_POOL_HPP
+#ifndef TAO_POSTGRES_CONNECTION_POOL_HPP
+#define TAO_POSTGRES_CONNECTION_POOL_HPP
 
 #include <memory>
 #include <string>
@@ -51,7 +51,9 @@ namespace tao
             return this->connection()->direct()->execute( std::forward< Ts >( ts )... );
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_CONNECTION_POOL_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

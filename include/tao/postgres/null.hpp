@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_NULL_HPP
-#define TAOCPP_INCLUDE_POSTGRES_NULL_HPP
+#ifndef TAO_POSTGRES_NULL_HPP
+#define TAO_POSTGRES_NULL_HPP
 
 namespace tao
 {
@@ -18,7 +18,9 @@ namespace tao
       };
 
       constexpr null_t null{};
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_NULL_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

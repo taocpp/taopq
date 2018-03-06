@@ -1,8 +1,8 @@
 // The Art of C++ / Utility
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_UTILITY_DEMANGLE_HPP
-#define TAOCPP_INCLUDE_UTILITY_DEMANGLE_HPP
+#ifndef TAO_UTILITY_DEMANGLE_HPP
+#define TAO_UTILITY_DEMANGLE_HPP
 
 #include <string>
 #include <typeinfo>
@@ -19,7 +19,9 @@ namespace tao
       {
          return demangle( typeid( T ) );
       }
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_UTILITY_DEMANGLE_HPP
+   }  // namespace utility
+
+}  // namespace tao
+
+#endif

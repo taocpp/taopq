@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_PARAMETER_TRAITS_HPP
-#define TAOCPP_INCLUDE_POSTGRES_PARAMETER_TRAITS_HPP
+#ifndef TAO_POSTGRES_PARAMETER_TRAITS_HPP
+#define TAO_POSTGRES_PARAMETER_TRAITS_HPP
 
 #include <string>
 #include <tuple>
@@ -85,7 +85,8 @@ namespace tao
                return impl( seq::index_sequence_for< Ts... >() );
             }
          };
-      }
+
+      }  // namespace parameter_traits_impl
 
       template<>
       struct parameter_traits< null_t >
@@ -290,7 +291,9 @@ namespace tao
             return forwarder_ ? ( *forwarder_ )() : result_type();
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_PARAMETER_TRAITS_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

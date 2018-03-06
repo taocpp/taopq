@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_CONNECTION_HPP
-#define TAOCPP_INCLUDE_POSTGRES_CONNECTION_HPP
+#ifndef TAO_POSTGRES_CONNECTION_HPP
+#define TAO_POSTGRES_CONNECTION_HPP
 
 #include <memory>
 #include <string>
@@ -29,7 +29,8 @@ namespace tao
          {
             void operator()(::PGconn* p ) const;
          };
-      }
+
+      }  // namespace connection_impl
 
       class connection final
          : public std::enable_shared_from_this< connection >
@@ -93,7 +94,9 @@ namespace tao
             return pgconn_.get();
          }
       };
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_CONNECTION_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif

@@ -44,5 +44,7 @@ namespace tao
          transaction_.reset();
          return result(::PQgetResult( connection->pgconn_.get() ) ).rows_affected();
       }
-   }
-}
+
+   }  // namespace postgres
+
+}  // namespace tao

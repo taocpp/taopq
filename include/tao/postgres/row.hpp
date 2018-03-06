@@ -1,8 +1,8 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#ifndef TAOCPP_INCLUDE_POSTGRES_ROW_HPP
-#define TAOCPP_INCLUDE_POSTGRES_ROW_HPP
+#ifndef TAO_POSTGRES_ROW_HPP
+#define TAO_POSTGRES_ROW_HPP
 
 #include <stdexcept>
 #include <string>
@@ -148,7 +148,9 @@ namespace tao
       {
          return row_.get< T >( column_ );
       }
-   }
-}
 
-#endif  // TAOCPP_INCLUDE_POSTGRES_ROW_HPP
+   }  // namespace postgres
+
+}  // namespace tao
+
+#endif
