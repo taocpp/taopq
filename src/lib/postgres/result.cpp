@@ -50,7 +50,7 @@ namespace tao
                const std::string res_status = ::PQresStatus( status );
                const char* sql_state = ::PQresultErrorField( pgresult, PG_DIAG_SQLSTATE );
                const char* error_message = ::PQresultErrorMessage( pgresult );
-               throw std::runtime_error( res_status + '/' + sql_state + ": " + error_message );
+               throw std::runtime_error( res_status + '/' + ( sql_state ? sql_state : "?" ) + ": " + error_message );
          }
 
          const std::string res_status = ::PQresStatus( status );
