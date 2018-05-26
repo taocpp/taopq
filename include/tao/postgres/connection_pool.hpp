@@ -21,7 +21,7 @@ namespace tao
          : public utility::pool< postgres::connection >
       {
       private:
-         std::string connection_info_;
+         const std::string connection_info_;
 
          std::unique_ptr< postgres::connection > v_create() const override;
          bool v_is_valid( postgres::connection& c ) const override;
