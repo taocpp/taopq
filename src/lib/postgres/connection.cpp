@@ -206,7 +206,7 @@ namespace tao
          return std::make_shared< connection >( private_key(), connect_info );
       }
 
-      bool connection::is_open() const
+      bool connection::is_open() const noexcept
       {
          return ::PQstatus( pgconn_.get() ) == CONNECTION_OK;
       }

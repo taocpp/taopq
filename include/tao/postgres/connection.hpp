@@ -68,7 +68,7 @@ namespace tao
          connection( const connection& ) = delete;
          void operator=( const connection& ) = delete;
 
-         bool is_open() const;
+         bool is_open() const noexcept;
 
          void prepare( const std::string& name, const std::string& statement );
          void deallocate( const std::string& name );
