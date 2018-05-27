@@ -88,7 +88,7 @@ void reject_floating_point( const char* input )
    }
 }
 
-int main()
+void run()
 {
    TEST_ASSERT( tao::utility::strtol( "0" ) == 0 );
    TEST_ASSERT( tao::utility::strtol( "+0" ) == 0 );
@@ -293,4 +293,19 @@ int main()
    reject_floating_point< std::overflow_error >( "-1e10000" );
    reject_floating_point< std::underflow_error >( "1e-10000" );
    reject_floating_point< std::underflow_error >( "-1e-10000" );
+}
+
+int main()
+{
+   try {
+      run();
+   }
+   catch( const std::exception& e ) {
+      std::cerr << "exception: " << e.what() << std::endl;
+      throw;
+   }
+   catch( ... ) {
+      std::cerr << "unknown exception" << std::endl;
+      throw;
+   }
 }
