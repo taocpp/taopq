@@ -4,6 +4,7 @@
 #ifndef TAO_POSTGRES_PARAMETER_TRAITS_HPP
 #define TAO_POSTGRES_PARAMETER_TRAITS_HPP
 
+#include <cmath>
 #include <string>
 #include <tuple>
 #include <type_traits>
@@ -59,6 +60,18 @@ namespace tao
                return std::tuple< const char* >( s_.c_str() );
             }
          };
+
+         template< typename T >
+         std::string printf_helper( const char* format, const T v )
+         {
+            if( std::isfinite( v ) ) {
+               return utility::printf( format, v );
+            }
+            if( std::isnan( v ) ) {
+               return "NAN";
+            }
+            return ( v < 0 ) ? "-INF" : "INF";
+         }
 
          template< typename... Ts >
          class decay_helper
@@ -246,7 +259,7 @@ namespace tao
          : parameter_traits_impl::string_helper
       {
          parameter_traits( const float v )
-            : string_helper( utility::printf( "%.9g", v ) )
+            : string_helper( parameter_traits_impl::printf_helper( "%.9g", v ) )
          {
          }
       };
@@ -256,7 +269,7 @@ namespace tao
          : parameter_traits_impl::string_helper
       {
          parameter_traits( const double v )
-            : string_helper( utility::printf( "%.17g", v ) )
+            : string_helper( parameter_traits_impl::printf_helper( "%.17g", v ) )
          {
          }
       };
@@ -266,7 +279,7 @@ namespace tao
          : parameter_traits_impl::string_helper
       {
          parameter_traits( const long double v )
-            : string_helper( utility::printf( "%.21Lg", v ) )
+            : string_helper( parameter_traits_impl::printf_helper( "%.21Lg", v ) )
          {
          }
       };

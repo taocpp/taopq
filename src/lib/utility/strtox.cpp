@@ -118,7 +118,6 @@ namespace tao
                   }
                   break;  // LCOV_EXCL_LINE
             }
-            assert( !"code should be unreachable" );                   // LCOV_EXCL_LINE
             throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
          }
 
@@ -147,7 +146,6 @@ namespace tao
                      throw std::overflow_error( failure_message< T >( input ) );
                   }
             }
-            assert( !"code should be unreachable" );                   // LCOV_EXCL_LINE
             throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
          }
 
