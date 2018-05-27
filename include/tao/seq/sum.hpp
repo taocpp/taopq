@@ -47,10 +47,16 @@ namespace tao
          {
          };
 
+         template< typename T, T lhs, T rhs >
+         struct sum_minus_helper
+         {
+            using type = std::integral_constant< T, lhs - rhs >;
+         };
+
          template< bool, std::size_t N, typename T, T... Ns >
          struct sum
          {
-            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) ) - T( sizeof( collector< make_index_sequence< N >, ( ( Ns < 0 ) ? -Ns : 0 )... > ) ) >;
+            using type = typename sum_minus_helper< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) ), T( sizeof( collector< make_index_sequence< N >, ( ( Ns < 0 ) ? -Ns : 0 )... > ) ) >::type;
          };
 
          template< std::size_t N, typename T, T... Ns >
