@@ -85,7 +85,7 @@ typename std::enable_if< std::is_unsigned< T >::value >::type check( const std::
    check< T >( datatype, std::numeric_limits< T >::max() );
 }
 
-int main()
+void run()
 {
    connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
 
@@ -359,4 +359,19 @@ int main()
    check< std::string >( "TEXT", "𝄞" );
    check< std::string >( "TEXT", "äöüÄÖÜß€𝄞" );
    check< std::string >( "TEXT", "ä\tö\nü\1Ä\"Ö;Ü'ß#€𝄞" );
+}
+
+int main()
+{
+   try {
+      run();
+   }
+   catch( const std::exception& e ) {
+      std::cerr << "exception: " << e.what() << std::endl;
+      throw;
+   }
+   catch( ... ) {
+      std::cerr << "unknown exception" << std::endl;
+      throw;
+   }
 }

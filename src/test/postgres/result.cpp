@@ -9,7 +9,7 @@
 #include <tao/postgres/result_traits_tuple.hpp>
 #include <tao/utility/getenv.hpp>
 
-int main()
+void run()
 {
    const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
 
@@ -140,4 +140,19 @@ int main()
       TEST_ASSERT( row.as< int >() == ++count );
    }
    TEST_ASSERT( count == 2 );
+}
+
+int main()
+{
+   try {
+      run();
+   }
+   catch( const std::exception& e ) {
+      std::cerr << "exception: " << e.what() << std::endl;
+      throw;
+   }
+   catch( ... ) {
+      std::cerr << "unknown exception" << std::endl;
+      throw;
+   }
 }

@@ -44,7 +44,7 @@ void check_nested( const std::shared_ptr< tao::postgres::connection >& connectio
    TEST_EXECUTE( connection->transaction() );
 }
 
-int main()
+void run()
 {
    const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
 
@@ -107,4 +107,19 @@ int main()
 
    TEST_EXECUTE( check_nested( connection, connection->direct() ) );
    TEST_EXECUTE( check_nested( connection, connection->transaction() ) );
+}
+
+int main()
+{
+   try {
+      run();
+   }
+   catch( const std::exception& e ) {
+      std::cerr << "exception: " << e.what() << std::endl;
+      throw;
+   }
+   catch( ... ) {
+      std::cerr << "unknown exception" << std::endl;
+      throw;
+   }
 }

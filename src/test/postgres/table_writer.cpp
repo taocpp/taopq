@@ -7,7 +7,7 @@
 #include <tao/postgres/table_writer.hpp>
 #include <tao/utility/getenv.hpp>
 
-int main()
+void run()
 {
    const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
    connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
@@ -71,4 +71,19 @@ int main()
    TEST_ASSERT( connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 1 );
 
    connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
+}
+
+int main()
+{
+   try {
+      run();
+   }
+   catch( const std::exception& e ) {
+      std::cerr << "exception: " << e.what() << std::endl;
+      throw;
+   }
+   catch( ... ) {
+      std::cerr << "unknown exception" << std::endl;
+      throw;
+   }
 }

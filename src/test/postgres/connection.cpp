@@ -6,7 +6,7 @@
 #include <tao/postgres/connection.hpp>
 #include <tao/utility/getenv.hpp>
 
-int main()
+void run()
 {
    // overwrite the default with an environment variable if needed
    const auto connection_string = tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" );
@@ -76,4 +76,19 @@ int main()
 
    // read data
    TEST_ASSERT( connection->execute( "SELECT b FROM tao_connection_test WHERE a = 1" )[ 0 ][ 0 ].get() == std::string( "42" ) );
+}
+
+int main()
+{
+   try {
+      run();
+   }
+   catch( const std::exception& e ) {
+      std::cerr << "exception: " << e.what() << std::endl;
+      throw;
+   }
+   catch( ... ) {
+      std::cerr << "unknown exception" << std::endl;
+      throw;
+   }
 }

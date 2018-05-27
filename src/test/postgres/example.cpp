@@ -6,7 +6,7 @@
 #include <cassert>
 #include <iostream>
 
-int main()
+void run()
 {
    // open a connection
    const auto conn = tao::postgres::connection::create( "dbname=template1" );
@@ -49,4 +49,19 @@ int main()
 
    // or convert a result into a container
    const auto v = res.vector< std::tuple< int, tao::optional< int >, std::string > >();
+}
+
+int main()
+{
+   try {
+      run();
+   }
+   catch( const std::exception& e ) {
+      std::cerr << "exception: " << e.what() << std::endl;
+      throw;
+   }
+   catch( ... ) {
+      std::cerr << "unknown exception" << std::endl;
+      throw;
+   }
 }
