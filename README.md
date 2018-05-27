@@ -165,6 +165,8 @@ const auto r2 = tr->execute( "DELETE FROM users WHERE id = $1", 42 );
 
 As you can see from the second example, all values should be passed as C++ parameters and the statement itself should only contain placeholders.
 This avoids SQL injection attacks and it is also more efficient.
+
+If you need to set a value to SQL's `NULL`, you can pass `tao::postgres::null`.
 Custom data types can be registered via traits, documentation will follow later.
 For now, just have a look at the examples in the repository.
 
@@ -199,53 +201,96 @@ Results are values, i.e. they are not handled via `std::shared_ptr<>`.
 They are copyable, but not assignable or movable.
 For the remainder of the documentation, let `res` be an instance of `tao::postgres::result`.
 
-If a result does *not* contain a result set, i.e. if it is not the result of a `SELECT` statement, you can query the number of rows affected by the statements by calling `res.rows_affected()`.
+If a result does *not* contain a result set, i.e. if it is not the result of a `SELECT` statement, you can query the number of rows affected by the statements by calling `rs.rows_affected()`.
 Statements that do not return a number of affected rows and that also do not return a result set, e.g. `CREATE TABLE`, will return 0.
-You can query if a result has only the number of affected rows by calling `res.has_affected_rows()`.
+You can query if a result has only the number of affected rows by calling `rs.has_affected_rows()`.
 This will only return `false` if the statement returned a result set.
 
 ## Result Sets
 
 Statements that return a result set allow you to query the returned rows as well as some meta-information about the result.
 
-You can query the number of columns by calling `res.columns()`.
-You can get the name or a column by calling `res.name( index )` (where `index` must be from 0 to less than `res.columns()`).
-You can also get the index of a column by name, by calling `res.index( name )`.
+You can query the number of columns by calling `rs.columns()`.
+You can get the name or a column by calling `rs.name( index )` (where `index` must be from 0 to less than `rs.columns()`).
+You can also get the index of a column by name, by calling `rs.index( name )`.
 Note that name matching is done according to the SQL standard.
 
-You can query the number of rows by calling `res.size()` and, since the result set may also contain no rows, you can call `res.empty()`.
-You can iterate over the rows of a result set by using `res.begin()` and `res.end()`, which also allows to iterate over a result set with a range-based for-loop.
-Alternatively, you can access rows by their row number by using `res[ row ]` or `res.at( row )`.
+You can query the number of rows by calling `rs.size()` and, since the result set may also contain no rows, you can call `rs.empty()`.
+You can iterate over the rows of a result set by using `rs.begin()` and `rs.end()`, which also allows to iterate over a result set with a range-based for-loop.
+Alternatively, you can access rows by their row number by using `rs[ row ]` or `rs.at( row )`.
 
-Lastly, you can access the (raw) data stored at each field with two methods `res.is_null( row, column )` and `res.get( row, column )`.
+Lastly, you can access the (raw) data stored at each field with two methods `rs.is_null( row, column )` and `rs.get( row, column )`.
 The latter call is only allowed if the former returned `false`.
 The `get` methods returns a `const char*`, which is valid for as long as the lifetime of (any copy of) the result.
+
 Using direct access if often not necessary, but it might be helpful for generic function, e.g. for debugging purposes.
+Access methods to the data via type traits is documented later, as their understanding depends on the methods provided by rows and fields.
+
+TODO:
+
+* `r.as<T>()`
+* `r.optional<T>()`
+* `r.pair<T>()`, `r.tuple<T>()`
+* `r.as_container<T>()`
+* `r.vector<T,...>()`
+* `r.list<T,...>()`
+* `r.set<T,...>()`
+* `r.multiset<T,...>()`
+* `r.unordered_set<T,...>()`
+* `r.unordered_multiset<T,...>()`
+* `r.map<T,U,...>()`
+* `r.multimap<T,U,...>()`
+* `r.unordered_map<T,U,...>()`
+* `r.unordered_multimap<T,U,...>()`
 
 ## Rows
 
-For the remainder of the documentation, let `row` be an instance of `tao::postgres::row`.
+For the remainder of the documentation, let `r` be an instance of `tao::postgres::row`.
 Rows are provided by a result set, you can not create them manually.
 Rows are valid for as long as the lifetime of (any copy of) the result.
 
 Like with the result set itself, you can query meta-information about the columns.
 This information will the the same as for the result set.
-You can query the number of columns by calling `row.columns()`.
-You can get the name or a column by calling `row.name( index )` (where `index` must be from 0 to less than `row.columns()`).
-You can also get the index of a column by name, by calling `row.index( name )`.
+You can query the number of columns by calling `r.columns()`.
+You can get the name or a column by calling `r.name( index )` (where `index` must be from 0 to less than `r.columns()`).
+You can also get the index of a column by name, by calling `r.index( name )`.
 Note that name matching is done according to the SQL standard.
 
-You can access a row's fields by their field number by using `row[ index ]` or `row.at( index )`.
+You can access a row's fields by their field number by using `r[ index ]` or `r.at( index )`, or you can access them by their field name by using `r[ name ]` or `r.at( name )`.
+The latter is less efficient as it will call `r.index( name )` each time.
 
-As with the result set, you can access the (raw) data stored at each field with two methods `row.is_null( column )` and `row.get( column )`.
+As with the result set, you can access the (raw) data stored at each field with two methods `r.is_null( column )` and `r.get( column )`.
 The latter call is only allowed if the former returned `false`.
 The `get` methods returns a `const char*`, which is valid for as long as the lifetime of (any copy of) the result.
 
-TODO: Slicing, convenience methods get<T>, as<T>, ...
+Using direct access if often not necessary, but it might be helpful for generic function, e.g. for debugging purposes.
+Access methods to the data via type traits is documented later, as their understanding depends on the methods provided by fields.
+
+TODO:
+
+* Slicing
+* `r.get<T>( column )`
+* `r.optional<T>( column )`
+* `r.pair<T>( column )`, `r.tuple<T>( column )`
+* `r.as<T>()`
+* `r.optional<T>()`
+* `r.pair<T>()`, `r.tuple<T>()`
 
 ## Fields
 
-TODO
+For the remainder of the documentation, let `f` be an instance of `tao::postgres::field`.
+Fields are provided by a result set or row, you can not create them manually.
+Fields are valid for as long as the lifetime of (any copy of) the result.
+
+As with the result set or rows, you can access the (raw) data stored at a field with two methods `f.is_null()` and `f.get()`.
+The latter call is only allowed if the former returned `false`.
+The `get` methods returns a `const char*`, which is valid for as long as the lifetime of (any copy of) the result.
+Instead of calling `f.is_null()`, you can also compare a field against `tao::postgres::null` with `==` or `!=`.
+
+TODO:
+
+* `f.as<T>()`
+* `f.optional<T>()`
 
 ## Convenience
 
