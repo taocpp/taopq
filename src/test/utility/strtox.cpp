@@ -178,8 +178,10 @@ void run()
    reject< std::runtime_error >( "0x" );
    reject< std::runtime_error >( "1 " );
 
+   // TODO: Should this yield a different error message? Or even be a std::logic_error?
    reject< std::runtime_error >( "0", 1 );
    reject< std::runtime_error >( "0", 37 );
+
    reject< std::runtime_error >( "0xABCDEFG", 16 );
    reject< std::overflow_error >( "0x8000000000000000", 16 );
    reject< std::overflow_error >( "0xFFFFFFFFFFFFFFFF", 16 );

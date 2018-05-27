@@ -108,6 +108,7 @@ namespace tao
                   // fall through
 
                case EINVAL:
+               case EDOM:  // used by MinGW
                   throw std::runtime_error( failure_message< T >( input ) );
 
                case ERANGE:
