@@ -1,6 +1,7 @@
 // The Art of C++ / Utility
 // Copyright (c) 2016-2018 Daniel Frey
 
+#include <tao/utility/printf.hpp>
 #include <tao/utility/strtox.hpp>
 
 #include <cassert>
@@ -116,9 +117,9 @@ namespace tao
                   if( std::is_signed< T >::value && result == std::numeric_limits< T >::min() ) {
                      throw std::underflow_error( failure_message< T >( input ) );
                   }
-                  break;  // LCOV_EXCL_LINE
+                  throw std::runtime_error( tao::utility::printf( "code should be unreachable, errno: ERANGE, input: \"%s\"", input ) );  // LCOV_EXCL_LINE
             }
-            throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
+            throw std::runtime_error( tao::utility::printf( "code should be unreachable, errno: %d, input: \"%s\"", errno, input ) );  // LCOV_EXCL_LINE
          }
 
          template< typename T >
@@ -146,7 +147,7 @@ namespace tao
                      throw std::overflow_error( failure_message< T >( input ) );
                   }
             }
-            throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
+            throw std::runtime_error( tao::utility::printf( "code should be unreachable, errno: %d, input: \"%s\"", errno, input ) );  // LCOV_EXCL_LINE
          }
 
       }  // namespace
