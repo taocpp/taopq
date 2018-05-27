@@ -11,7 +11,7 @@
 
 int main()
 {
-   const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TEST_DATABASE", "dbname=template1" ) );
+   const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
 
    TEST_EXECUTE( connection->execute( "SELECT NULL" ) );
    TEST_ASSERT( connection->execute( "SELECT NULL" ).is_null( 0, 0 ) );

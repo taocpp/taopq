@@ -9,7 +9,7 @@
 
 int main()
 {
-   const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TEST_DATABASE", "dbname=template1" ) );
+   const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
    connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
    connection->execute( "CREATE TABLE tao_table_writer_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
 
