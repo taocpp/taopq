@@ -47,19 +47,10 @@ namespace tao
          {
          };
 
-         template< typename T, T v >
-         struct unary_minus_t
-         {
-            using type = std::integral_constant< T, -v >;
-         };
-
-         template< typename T, T v >
-         using unary_minus = typename unary_minus_t< T, v >::type;
-
          template< bool, std::size_t N, typename T, T... Ns >
          struct sum
          {
-            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) ) - T( sizeof( collector< make_index_sequence< N >, ( ( Ns < 0 ) ? unary_minus< T, Ns >::value : 0 )... > ) ) >;
+            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) ) - T( sizeof( collector< make_index_sequence< N >, ( ( Ns < 0 ) ? ( 0 - Ns ) : 0 )... > ) ) >;
          };
 
          template< std::size_t N, typename T, T... Ns >
