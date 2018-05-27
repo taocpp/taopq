@@ -13,6 +13,7 @@ include_directories (${TAOCPP_POSTGRES_INCLUDE_DIRS})
 enable_testing ()
 option (TAOCPP_POSTGRES_BUILD_TESTS "Build test programs" ON)
 if (TAOCPP_POSTGRES_BUILD_TESTS)
+  add_subdirectory (src/test/utility)
   add_subdirectory (src/test/postgres)
 endif ()
 
