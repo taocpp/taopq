@@ -1,6 +1,10 @@
 // The Art of C++ / Utility
 // Copyright (c) 2016-2018 Daniel Frey
 
+#ifdef WIN32
+int main() {}
+#else
+
 #include "../macros.hpp"
 
 #include <cmath>
@@ -309,3 +313,5 @@ int main()
       throw;
    }
 }
+
+#endif
