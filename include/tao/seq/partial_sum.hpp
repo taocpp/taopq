@@ -25,6 +25,7 @@ namespace tao
          {
             static_assert( I <= sizeof...( Is ), "tao::seq::partial_sum<I, S>: I is out of range" );
          };
+
       }  // namespace impl
 
       template< std::size_t I, typename T, T... Ns >
