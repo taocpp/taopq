@@ -60,4 +60,7 @@ build_script:
 - cmake --build . --config "%CONFIGURATION%"
 
 test_script:
+- PATH=C:\Program Files\PostgreSQL\9.6\bin\;%PATH%
+- createdb taocpp
+- set TAO_TEST_DATABASE="dbname=taocpp host=localhost user=postgres password=Password12!"
 - ctest -C "%CONFIGURATION%" --output-on-failure
