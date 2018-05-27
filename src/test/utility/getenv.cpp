@@ -7,10 +7,18 @@
 
 void run()
 {
+#ifdef WIN32
+   TEST_ASSERT( !tao::utility::getenv( "WINDIR" ).empty() );
+#else
    TEST_ASSERT( !tao::utility::getenv( "USER" ).empty() );
+#endif
    TEST_THROWS( tao::utility::getenv( "TAO_DOESNOTEXIST" ) );
 
+#ifdef WIN32
+   TEST_ASSERT( !tao::utility::getenv( "WINDIR", "" ).empty() );
+#else
    TEST_ASSERT( !tao::utility::getenv( "USER", "" ).empty() );
+#endif
    TEST_ASSERT( tao::utility::getenv( "TAO_DOESNOTEXIST", "" ).empty() );
    TEST_ASSERT( tao::utility::getenv( "TAO_DOESNOTEXIST", "DEFAULT VALUE" ) == "DEFAULT VALUE" );
 }
