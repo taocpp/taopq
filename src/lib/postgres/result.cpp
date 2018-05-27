@@ -23,6 +23,19 @@ namespace tao
          }
       }
 
+      void result::check_row( const std::size_t row ) const
+      {
+         check_has_result_set();
+         if( !( row < rows_ ) ) {
+            if( rows_ > 0 ) {
+               throw std::out_of_range( utility::printf( "row %zu out of range (0-%zu)", row, rows_ - 1 ) );
+            }
+            else {
+               throw std::out_of_range( utility::printf( "row %zu out of range, result is empty", row ) );
+            }
+         }
+      }
+
       result::result(::PGresult* pgresult, const mode_t mode )
          : pgresult_( pgresult, &::PQclear ),
            columns_(::PQnfields( pgresult ) ),
@@ -114,10 +127,7 @@ namespace tao
 
       bool result::is_null( const std::size_t row, const std::size_t column ) const
       {
-         check_has_result_set();
-         if( row >= rows_ ) {
-            throw std::out_of_range( utility::printf( "row %zu out of range (0-%zu)", row, rows_ - 1 ) );
-         }
+         check_row( row );
          if( column >= columns_ ) {
             throw std::out_of_range( utility::printf( "column %zu out of range (0-%zu)", column, columns_ - 1 ) );
          }
@@ -134,15 +144,7 @@ namespace tao
 
       row result::at( const std::size_t row ) const
       {
-         check_has_result_set();
-         if( !( row < rows_ ) ) {
-            if( rows_ > 0 ) {
-               throw std::out_of_range( utility::printf( "row %zu out of range (0-%zu)", row, rows_ - 1 ) );
-            }
-            else {
-               throw std::out_of_range( utility::printf( "row %zu out of range, result is empty", row ) );
-            }
-         }
+         check_row( row );
          return ( *this )[ row ];
       }
 

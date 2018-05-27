@@ -58,6 +58,7 @@ namespace tao
          const std::size_t rows_;
 
          void check_has_result_set() const;
+         void check_row( const std::size_t row ) const;
 
          enum class mode_t
          {
