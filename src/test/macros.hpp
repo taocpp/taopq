@@ -6,7 +6,7 @@
 
 // This is an internal header used for unit-tests.
 
-#include <cassert>
+#include <cstdlib>
 #include <iostream>
 
 #define STRINGIFY_INTERNAL( ... ) #__VA_ARGS__
@@ -22,7 +22,7 @@
 #define TEST_FAILED                                                     \
    do {                                                                 \
       std::cerr << "TEST FAILED in [ " FILE_AND_LINE " ]" << std::endl; \
-      assert( !FILE_AND_LINE );                                         \
+      std::exit( 1 );                                                   \
    } while( false )
 
 #define TEST_ASSERT_MESSAGE( MESSAGE, ... )                          \

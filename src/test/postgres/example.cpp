@@ -1,9 +1,10 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
+#include "../macros.hpp"
+
 #include <tao/postgres.hpp>
 
-#include <cassert>
 #include <iostream>
 
 void run()
@@ -34,12 +35,12 @@ void run()
    // insert/update/delete statements return a result which can be queried for the rows affected
    {
       const auto res = conn->execute( "insert", 3, 3, "drei" );
-      assert( res.rows_affected() == 1 );
+      TEST_ASSERT( res.rows_affected() == 1 );
    }
 
    // queries have a result as well, it contains the returned data
    const auto res = conn->execute( "SELECT * FROM tao_example" );
-   assert( res.size() == 3 );
+   TEST_ASSERT( res.size() == 3 );
 
    // iterate over a result
    for( const auto& row : res ) {

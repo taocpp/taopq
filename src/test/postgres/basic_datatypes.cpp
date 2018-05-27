@@ -1,10 +1,11 @@
 // The Art of C++ / PostgreSQL
 // Copyright (c) 2016-2018 Daniel Frey
 
-#include <cassert>
 #include <cmath>
 #include <iostream>
 #include <limits>
+
+#include "../macros.hpp"
 
 #include <tao/postgres/connection.hpp>
 #include <tao/utility/demangle.hpp>
@@ -28,13 +29,13 @@ void check_null( const std::string& datatype )
 {
    std::cout << "check null: " << datatype << std::endl;
    if( prepare_datatype( datatype ) ) {
-      assert( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", tao::postgres::null ).rows_affected() == 1 );
+      TEST_ASSERT( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", tao::postgres::null ).rows_affected() == 1 );
    }
    else {
-      assert( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", tao::postgres::null ).rows_affected() == 1 );
+      TEST_ASSERT( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", tao::postgres::null ).rows_affected() == 1 );
    }
    const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
-   assert( result[ 0 ][ 0 ].is_null() );
+   TEST_ASSERT( result[ 0 ][ 0 ].is_null() );
 }
 
 template< typename T >
@@ -42,21 +43,21 @@ void check( const std::string& datatype, const T& value )
 {
    std::cout << "check: " << datatype << " value: " << value << std::endl;
    if( prepare_datatype( datatype ) ) {
-      assert( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", value ).rows_affected() == 1 );
+      TEST_ASSERT( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", value ).rows_affected() == 1 );
    }
    else {
-      assert( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", value ).rows_affected() == 1 );
+      TEST_ASSERT( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", value ).rows_affected() == 1 );
    }
    const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
    if( value == value ) {
       if( result[ 0 ][ 0 ].as< T >() != value ) {
          std::cout << "check: " << datatype << " value: " << value << " result: " << result.get( 0, 0 ) << " FAILED!" << std::endl;
-         assert( false );
+         TEST_ASSERT( false );
       }
    }
    else {
       const auto v = result[ 0 ][ 0 ].as< T >();
-      assert( v != v );
+      TEST_ASSERT( v != v );
    }
 }
 

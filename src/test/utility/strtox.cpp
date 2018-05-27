@@ -3,7 +3,6 @@
 
 #include "../macros.hpp"
 
-#include <cassert>
 #include <cmath>
 #include <stdexcept>
 #include <typeinfo>
@@ -17,7 +16,6 @@ void reject( const char* input, const int base = 10 )
    try {
       tao::utility::strtol( input, base );
       throw std::runtime_error( tao::utility::printf( "strtol(): %s (%d)", input, base ) );
-      assert( !"code should be unreachable" );
    }
    catch( const T& e ) {
       if( e.what() != "tao::utility::strtol() failed for input: " + std::string( input ) ) {
@@ -27,7 +25,6 @@ void reject( const char* input, const int base = 10 )
    try {
       tao::utility::strtoll( input, base );
       throw std::runtime_error( tao::utility::printf( "strtoll(): %s (%d)", input, base ) );
-      assert( !"code should be unreachable" );
    }
    catch( const T& e ) {
       if( e.what() != "tao::utility::strtoll() failed for input: " + std::string( input ) ) {
@@ -42,7 +39,6 @@ void reject_unsigned( const char* input, const int base = 10 )
    try {
       tao::utility::strtoul( input, base );
       throw std::runtime_error( tao::utility::printf( "strtoul(): %s (%d)", input, base ) );
-      assert( !"code should be unreachable" );
    }
    catch( const T& e ) {
       if( e.what() != "tao::utility::strtoul() failed for input: " + std::string( input ) ) {
@@ -52,7 +48,6 @@ void reject_unsigned( const char* input, const int base = 10 )
    try {
       tao::utility::strtoull( input, base );
       throw std::runtime_error( tao::utility::printf( "strtoull(): %s (%d)", input, base ) );
-      assert( !"code should be unreachable" );
    }
    catch( const T& e ) {
       if( e.what() != "tao::utility::strtoull() failed for input: " + std::string( input ) ) {
@@ -67,7 +62,6 @@ void reject_floating_point( const char* input )
    try {
       tao::utility::strtof( input );
       throw std::runtime_error( tao::utility::printf( "strtof(): %s", input ) );
-      assert( !"code should be unreachable" );
    }
    catch( const T& e ) {
       if( e.what() != "tao::utility::strtof() failed for input: " + std::string( input ) ) {
@@ -77,7 +71,6 @@ void reject_floating_point( const char* input )
    try {
       tao::utility::strtod( input );
       throw std::runtime_error( tao::utility::printf( "strtod(): %s", input ) );
-      assert( !"code should be unreachable" );
    }
    catch( const T& e ) {
       if( e.what() != "tao::utility::strtod() failed for input: " + std::string( input ) ) {
@@ -87,7 +80,6 @@ void reject_floating_point( const char* input )
    try {
       tao::utility::strtold( input );
       throw std::runtime_error( tao::utility::printf( "strtold(): %s", input ) );
-      assert( !"code should be unreachable" );
    }
    catch( const T& e ) {
       if( e.what() != "tao::utility::strtold() failed for input: " + std::string( input ) ) {
