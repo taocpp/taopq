@@ -89,18 +89,6 @@ namespace tao
             return get< tao::optional< T > >( column );
          }
 
-         template< typename T, typename U >
-         std::pair< T, U > pair( const std::size_t column ) const
-         {
-            return get< std::pair< T, U > >( column );
-         }
-
-         template< typename... Ts >
-         std::tuple< Ts... > tuple( const std::size_t column ) const
-         {
-            return get< std::tuple< Ts... > >( column );
-         }
-
          template< typename T >
          T as() const
          {
