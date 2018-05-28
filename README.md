@@ -227,68 +227,68 @@ Access methods to the data via type traits is documented later, as their underst
 
 Regular access happens by iterating over the rows of the result set, or by conveniently converting the whole result set into a value or a container.
 
-### `rs.as< T >()`
+###### `rs.as< T >()`
 
 If you expect the result set to contain a single row, you may call `rs.as< T >()` as a shortcut for `rs[ 0 ].as< T >()`.
 If the result set contain no rows or more than one rows, an exception is thrown.
 
-### `rs.optional< T >()`
+###### `rs.optional< T >()`
 
 If you except a result set with either no rows or a single row, you may call `rs.optional< T >()`.
 If the result set is empty, it will return an empty `tao::optional< T >`.
 Otherwise it will return a `tao::optional< T >` initialized with the result of `rs.as< T >()`.
 
-### `rs.pair< T, U >()`
+###### `rs.pair< T, U >()`
 
 Short-cut for `rs.as< std::pair< T, U > >()`.
 
-### `rs.tuple< T, ... >()`
+###### `rs.tuple< T, ... >()`
 
 Short-cut for `rs.as< std::tuple< T, ... > >()`.
 
-### `rs.as_container< T >()`
+###### `rs.as_container< T >()`
 
 Default constructs a value `T tmp`, calls `tmp.reserve( rs.size() )` (if possible).
 It then calls `tmp.insert( tmp.end(), r.as< typename T::value_type >() )` for each row `r` of the result set.
 Finally, `tmp` is returned.
 
-### `rs.vector< T, ... >()`
+###### `rs.vector< T, ... >()`
 
 Short-cut for `rs.as_container< std::vector< T, ... > >()`.
 
-### `rs.list< T, ... >()`
+###### `rs.list< T, ... >()`
 
 Short-cut for `rs.as_container< std::list< T, ... > >()`.
 
-### `rs.set< T, ... >()`
+###### `rs.set< T, ... >()`
 
 Short-cut for `rs.as_container< std::set< T, ... > >()`.
 
-### `rs.multiset< T, ... >()`
+###### `rs.multiset< T, ... >()`
 
 Short-cut for `rs.as_container< std::multiset< T, ... > >()`.
 
-### `rs.unordered_set< T, ... >()`
+###### `rs.unordered_set< T, ... >()`
 
 Short-cut for `rs.as_container< std::unordered_set< T, ... > >()`.
 
-### `rs.unordered_multiset< T, ... >()`
+###### `rs.unordered_multiset< T, ... >()`
 
 Short-cut for `rs.as_container< std::unordered_multiset< T, ... > >()`.
 
-### `rs.map< T, U, ... >()`
+###### `rs.map< T, U, ... >()`
 
 Short-cut for `rs.as_container< std::map< T, U, ... > >()`.
 
-### `rs.multimap< T, U, ... >()`
+###### `rs.multimap< T, U, ... >()`
 
 Short-cut for `rs.as_container< std::multimap< T, U, ... > >()`.
 
-### `rs.unordered_map< T, U, ... >()`
+###### `rs.unordered_map< T, U, ... >()`
 
 Short-cut for `rs.as_container< std::unordered_map< T, U, ... > >()`.
 
-### `rs.unordered_multimap< T, U, ... >()`
+###### `rs.unordered_multimap< T, U, ... >()`
 
 Short-cut for `rs.as_container< std::unordered_multimap< T, U, ... > >()`.
 
@@ -315,33 +315,33 @@ The `get` methods returns a `const char*`, which is valid for as long as the lif
 Using direct access if often not necessary, but it might be helpful for generic function, e.g. for debugging purposes.
 Access methods to the data via type traits is documented later, as their understanding depends on the methods provided by fields.
 
-### Slicing
+###### Slicing
 
 From a row `r` you can create a sub-range by calling `r.slice( offset, size )`.
 If the sub-range is outside of the available columns of `r`, an exception is thrown.
 The returned row will allow zero-based access to only the sub-range of the original row.
 
-### `r.get< T >( column )`
+###### `r.get< T >( column )`
 
 TODO
 
-### `r.optional< T >( column )`
+###### `r.optional< T >( column )`
 
 Short-cut for `r.get< tao::optional< T > >( column )`.
 
-### `r.as< T >()`
+###### `r.as< T >()`
 
 Returns `r.get< T >( 0 )` if the size of the row is suitable for `T`, otherwise an exception is thrown.
 
-### `r.optional< T >()`
+###### `r.optional< T >()`
 
 Short-cut for `r.as< tao::optional< T > >()`.
 
-### `r.pair< T, U >()`
+###### `r.pair< T, U >()`
 
 Short-cut for `r.as< std::pair< T, U > >()`.
 
-### `r.tuple< T, ... >()`
+###### `r.tuple< T, ... >()`
 
 Short-cut for `r.as< std::tuple< T, ... > >()`.
 
@@ -356,11 +356,11 @@ The latter call is only allowed if the former returned `false`.
 The `get` methods returns a `const char*`, which is valid for as long as the lifetime of (any copy of) the result.
 Instead of calling `f.is_null()`, you can also compare a field against `tao::postgres::null` with `==` or `!=`.
 
-### `f.as< T >()`
+###### `f.as< T >()`
 
 TODO
 
-### `f.optional< T >()`
+###### `f.optional< T >()`
 
 Short-cut for `f.as< tao::optional< T > >()`.
 
