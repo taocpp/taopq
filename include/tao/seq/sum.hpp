@@ -10,7 +10,7 @@
 #include "config.hpp"
 #include "integer_sequence.hpp"
 
-#ifndef TAO_FOLD_EXPRESSIONS
+#ifndef TAO_SEQ_FOLD_EXPRESSIONS
 #include "make_integer_sequence.hpp"
 #include <cstddef>
 #endif
@@ -20,7 +20,7 @@ namespace tao
    namespace seq
    {
 
-#ifdef TAO_FOLD_EXPRESSIONS
+#ifdef TAO_SEQ_FOLD_EXPRESSIONS
 
       template< typename T, T... Ns >
       struct sum
@@ -48,15 +48,20 @@ namespace tao
          };
 
          template< bool, std::size_t N, typename T, T... Ns >
-         struct sum
-         {
-            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) ) - T( sizeof( collector< make_index_sequence< N >, ( ( Ns < 0 ) ? ( 0 - Ns ) : 0 )... > ) ) >;
-         };
+         struct sum;
 
          template< std::size_t N, typename T, T... Ns >
          struct sum< true, N, T, Ns... >
          {
-            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, ( ( Ns > 0 ) ? Ns : 0 )... > ) - N ) >;
+            using type = std::integral_constant< T, T( sizeof( collector< make_index_sequence< N >, Ns... > ) - N ) >;
+         };
+
+         template< bool, std::size_t N, typename T, T... Ns >
+         struct sum
+         {
+            using positive = typename sum< true, N, T, ( ( Ns > 0 ) ? Ns : 0 )... >::type;
+            using negative = typename sum< true, N, T, ( ( Ns < 0 ) ? -Ns : 0 )... >::type;
+            using type = std::integral_constant< T, positive::value - negative::value >;
          };
 
       }  // namespace impl
