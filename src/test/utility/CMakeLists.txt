@@ -1,6 +1,7 @@
 file (GLOB testsources *.cpp)
 foreach (testsourcefile ${testsources})
   get_filename_component (exename ${testsourcefile} NAME_WE)
+  set (exename "tao-postgres-utility-test-${exename}")
   add_executable (${exename} ${testsourcefile})
   set_property (TARGET ${exename} PROPERTY CXX_STANDARD 11)
   set_property (TARGET ${exename} PROPERTY CXX_STANDARD_REQUIRED ON)
