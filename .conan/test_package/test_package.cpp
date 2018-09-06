@@ -1,5 +1,5 @@
 // Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
-// Please see LICENSE for license or visit https://github.com/taocpp/json/
+// Please see LICENSE for license or visit https://github.com/taocpp/postgres/
 
 #include <cstdlib>
 #include <iostream>
@@ -14,6 +14,7 @@ int main()
         connection->execute( "DROP TABLE IF EXISTS tao_transaction_test" );
         connection->execute( "CREATE TABLE tao_transaction_test ( a INTEGER PRIMARY KEY )" );
     } catch (const std::runtime_error& error) {
+        // ignore connection fault
         std::cerr << error.what() << std::endl;
     }
 
