@@ -1,0 +1,13 @@
+get_filename_component(taocpp-postgres_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+list(APPEND CMAKE_MODULE_PATH ${taocpp-postgres_CMAKE_DIR})
+
+find_package(PostgreSQL 9.6.9 REQUIRED MODULE)
+list(REMOVE_AT CMAKE_MODULE_PATH -1)
+
+if(NOT TARGET taocpp::taocpp-postgres)
+    include("${taocpp-postgres_CMAKE_DIR}/taocpp-postgresTargets.cmake")
+endif()
+
+set(taocpp-postgres_LIBRARIES taocpp::postgres)
