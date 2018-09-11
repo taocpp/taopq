@@ -7,12 +7,14 @@
 #include <string>
 #include <typeinfo>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace utility
    {
-      std::string demangle( const char* const symbol );
-      std::string demangle( const std::type_info& type_info );
+      POSTGRES_EXPORT std::string demangle( const char* const symbol );
+      POSTGRES_EXPORT std::string demangle( const std::type_info& type_info );
 
       template< typename T >
       std::string demangle()

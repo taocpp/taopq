@@ -6,12 +6,14 @@
 
 #include <string>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace utility
    {
-      std::string getenv( const std::string& name );
-      std::string getenv( const std::string& name, const std::string& default_value );
+      POSTGRES_EXPORT std::string getenv( const std::string& name );
+      POSTGRES_EXPORT std::string getenv( const std::string& name, const std::string& default_value );
 
    }  // namespace utility
 

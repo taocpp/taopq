@@ -20,6 +20,8 @@
 #include <tao/postgres/row.hpp>
 #include <tao/utility/printf.hpp>
 
+#include <postgres_export.h>
+
 // forward-declare libpq structures
 struct pg_result;
 typedef struct pg_result PGresult;
@@ -47,7 +49,7 @@ namespace tao
 
       }  // namespace result_impl
 
-      class result
+      class POSTGRES_EXPORT result
       {
       private:
          friend class connection;

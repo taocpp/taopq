@@ -4,18 +4,20 @@
 #ifndef TAO_UTILITY_STRTOX_HPP
 #define TAO_UTILITY_STRTOX_HPP
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace utility
    {
-      long strtol( const char* input, const int base = 0 );
-      unsigned long strtoul( const char* input, const int base = 0 );
-      long long strtoll( const char* input, const int base = 0 );
-      unsigned long long strtoull( const char* input, const int base = 0 );
+      POSTGRES_EXPORT long strtol( const char* input, const int base = 0 );
+      POSTGRES_EXPORT unsigned long strtoul( const char* input, const int base = 0 );
+      POSTGRES_EXPORT long long strtoll( const char* input, const int base = 0 );
+      POSTGRES_EXPORT unsigned long long strtoull( const char* input, const int base = 0 );
 
-      float strtof( const char* input );
-      double strtod( const char* input );
-      long double strtold( const char* input );
+      POSTGRES_EXPORT float strtof( const char* input );
+      POSTGRES_EXPORT double strtod( const char* input );
+      POSTGRES_EXPORT long double strtold( const char* input );
 
    }  // namespace utility
 

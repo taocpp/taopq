@@ -9,43 +9,45 @@
 #include <type_traits>
 #include <utility>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
       template< typename T, typename = void >
-      struct result_traits
+      struct POSTGRES_EXPORT result_traits
       {
          static_assert( !std::is_same< T, T >::value, "tao::postgres::result_traits<T> not specialized for T" );
          static T from( const char* value );
       };
 
       template< typename T, typename = void >
-      struct result_traits_size
+      struct POSTGRES_EXPORT result_traits_size
          : std::integral_constant< std::size_t, 1 >
       {
       };
 
       template< typename T >
-      struct result_traits_size< T, typename std::enable_if< std::is_same< decltype( result_traits< T >::size ), const std::size_t >::value >::type >
+      struct POSTGRES_EXPORT result_traits_size< T, typename std::enable_if< std::is_same< decltype( result_traits< T >::size ), const std::size_t >::value >::type >
          : std::integral_constant< std::size_t, result_traits< T >::size >
       {
       };
 
       template< typename T, typename = void >
-      struct result_traits_has_null
+      struct POSTGRES_EXPORT result_traits_has_null
          : std::false_type
       {
       };
 
       template< typename T >
-      struct result_traits_has_null< T, decltype( result_traits< T >::null(), void() ) >
+      struct POSTGRES_EXPORT result_traits_has_null< T, decltype( result_traits< T >::null(), void() ) >
          : std::true_type
       {
       };
 
       template<>
-      struct result_traits< const char* >
+      struct POSTGRES_EXPORT result_traits< const char* >
       {
          static const char* from( const char* value )
          {
@@ -54,7 +56,7 @@ namespace tao
       };
 
       template<>
-      struct result_traits< std::string >
+      struct POSTGRES_EXPORT result_traits< std::string >
       {
          static std::string from( const char* value )
          {
@@ -63,91 +65,91 @@ namespace tao
       };
 
       template<>
-      struct result_traits< bool >
+      struct POSTGRES_EXPORT result_traits< bool >
       {
          static bool from( const char* value );
       };
 
       template<>
-      struct result_traits< char >
+      struct POSTGRES_EXPORT result_traits< char >
       {
          static char from( const char* value );
       };
 
       template<>
-      struct result_traits< signed char >
+      struct POSTGRES_EXPORT result_traits< signed char >
       {
          static signed char from( const char* value );
       };
 
       template<>
-      struct result_traits< unsigned char >
+      struct POSTGRES_EXPORT result_traits< unsigned char >
       {
          static unsigned char from( const char* value );
       };
 
       template<>
-      struct result_traits< short >
+      struct POSTGRES_EXPORT result_traits< short >
       {
          static short from( const char* value );
       };
 
       template<>
-      struct result_traits< unsigned short >
+      struct POSTGRES_EXPORT result_traits< unsigned short >
       {
          static unsigned short from( const char* value );
       };
 
       template<>
-      struct result_traits< int >
+      struct POSTGRES_EXPORT result_traits< int >
       {
          static int from( const char* value );
       };
 
       template<>
-      struct result_traits< unsigned >
+      struct POSTGRES_EXPORT result_traits< unsigned >
       {
          static unsigned from( const char* value );
       };
 
       template<>
-      struct result_traits< long >
+      struct POSTGRES_EXPORT result_traits< long >
       {
          static long from( const char* value );
       };
 
       template<>
-      struct result_traits< unsigned long >
+      struct POSTGRES_EXPORT result_traits< unsigned long >
       {
          static unsigned long from( const char* value );
       };
 
       template<>
-      struct result_traits< long long >
+      struct POSTGRES_EXPORT result_traits< long long >
       {
          static long long from( const char* value );
       };
 
       template<>
-      struct result_traits< unsigned long long >
+      struct POSTGRES_EXPORT result_traits< unsigned long long >
       {
          static unsigned long long from( const char* value );
       };
 
       template<>
-      struct result_traits< float >
+      struct POSTGRES_EXPORT result_traits< float >
       {
          static float from( const char* value );
       };
 
       template<>
-      struct result_traits< double >
+      struct POSTGRES_EXPORT result_traits< double >
       {
          static double from( const char* value );
       };
 
       template<>
-      struct result_traits< long double >
+      struct POSTGRES_EXPORT result_traits< long double >
       {
          static long double from( const char* value );
       };

@@ -7,13 +7,15 @@
 #include <memory>
 #include <string>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
       class transaction;
 
-      class table_writer
+      class POSTGRES_EXPORT table_writer
       {
       private:
          std::shared_ptr< transaction > transaction_;

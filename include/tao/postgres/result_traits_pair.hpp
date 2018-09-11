@@ -9,12 +9,14 @@
 #include <type_traits>
 #include <utility>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
       template< typename T, typename U >
-      struct result_traits< std::pair< T, U > >
+      struct POSTGRES_EXPORT result_traits< std::pair< T, U > >
       {
          using DT = typename std::decay< T >::type;
          using DU = typename std::decay< U >::type;

@@ -12,12 +12,14 @@
 #include <type_traits>
 #include <utility>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
       template< typename... Ts >
-      struct result_traits< std::tuple< Ts... >, typename std::enable_if< sizeof...( Ts ) == 1 >::type >
+      struct POSTGRES_EXPORT result_traits< std::tuple< Ts... >, typename std::enable_if< sizeof...( Ts ) == 1 >::type >
       {
          using T = typename std::tuple_element< 0, std::tuple< Ts... > >::type;
          static constexpr std::size_t size = result_traits_size< T >::value;
@@ -34,7 +36,7 @@ namespace tao
       };
 
       template< typename... Ts >
-      struct result_traits< std::tuple< Ts... >, typename std::enable_if< ( sizeof...( Ts ) > 1 ) >::type >
+      struct POSTGRES_EXPORT result_traits< std::tuple< Ts... >, typename std::enable_if< ( sizeof...( Ts ) > 1 ) >::type >
       {
          static constexpr std::size_t size = seq::sum< std::size_t, result_traits_size< Ts >::value... >::value;
 

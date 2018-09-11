@@ -14,13 +14,15 @@
 #include <type_traits>
 #include <utility>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
       class result;
 
-      class row
+      class POSTGRES_EXPORT row
       {
       protected:
          friend class result;

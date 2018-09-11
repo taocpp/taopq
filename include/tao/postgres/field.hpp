@@ -9,13 +9,15 @@
 #include <tao/postgres/result_traits.hpp>
 #include <type_traits>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
       class row;
 
-      class field
+      class POSTGRES_EXPORT field
       {
       private:
          friend class row;

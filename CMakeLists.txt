@@ -69,12 +69,21 @@ source_group ("Header Files" FILES ${TAOCPP_POSTGRES_INCLUDE_FILES})
 
 add_library (postgres ${TAOCPP_POSTGRES_SOURCE_FILES} ${TAOCPP_POSTGRES_INCLUDE_FILES})
 add_library (taocpp::postgres ALIAS postgres)
-set_target_properties(postgres PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
+set_target_properties (postgres PROPERTIES
+  OUTPUT_NAME "${PROJECT_NAME}"
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN ON)
+if (MSVC)
+    # Disable a warning about dll-export of class members on Windows
+    target_compile_options (postgres PRIVATE /wd4251)
+    #set_target_properties (postgres PROPERTIES COMPILE_FLAGS "/wd4251")
+endif()
 
 target_include_directories (postgres
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
     ${PostgreSQL_INCLUDE_DIRS}
@@ -111,6 +120,9 @@ target_compile_features (postgres PRIVATE
   cxx_variadic_templates
 )
 
+include (GenerateExportHeader)
+generate_export_header (postgres)
+
 # install
 include(GNUInstallDirs)
 set(TAOCPP_POSTGRES_INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME} CACHE STRING "The installation cmake directory")
@@ -123,6 +135,7 @@ install (TARGETS postgres EXPORT postgres-targets
 
 install (DIRECTORY include/ DESTINATION ${TAOCPP_POSTGRES_INSTALL_INCLUDE_DIR})
 install (FILES LICENSE DESTINATION ${TAOCPP_POSTGRES_INSTALL_DOC_DIR})
+install (FILES ${CMAKE_CURRENT_BINARY_DIR}/postgres_export.h DESTINATION include)
 
 install(EXPORT postgres-targets
   FILE ${PROJECT_NAME}Targets.cmake

@@ -9,12 +9,14 @@
 #include <tao/postgres/result_traits.hpp>
 #include <tao/postgres/row.hpp>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
       template< typename T >
-      struct result_traits< optional< T > >
+      struct POSTGRES_EXPORT result_traits< optional< T > >
       {
          static constexpr std::size_t size = result_traits_size< T >::value;
 

@@ -14,6 +14,8 @@
 #include <tao/postgres/result.hpp>
 #include <tao/seq/make_integer_sequence.hpp>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
@@ -21,7 +23,7 @@ namespace tao
       class connection;
       class table_writer;
 
-      class transaction
+      class POSTGRES_EXPORT transaction
          : public std::enable_shared_from_this< transaction >
       {
       public:

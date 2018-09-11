@@ -13,11 +13,13 @@
 #include <tao/postgres/connection.hpp>
 #include <tao/postgres/result.hpp>
 
+#include <postgres_export.h>
+
 namespace tao
 {
    namespace postgres
    {
-      class connection_pool
+      class POSTGRES_EXPORT connection_pool
          : public utility::pool< postgres::connection >
       {
       private:

@@ -12,6 +12,8 @@
 #include <tao/postgres/result.hpp>
 #include <tao/postgres/transaction.hpp>
 
+#include <postgres_export.h>
+
 // forward-declare libpq structures
 struct pg_conn;
 typedef struct pg_conn PGconn;
@@ -25,14 +27,14 @@ namespace tao
 
       namespace connection_impl
       {
-         struct deleter final
+         struct POSTGRES_EXPORT deleter final
          {
             void operator()(::PGconn* p ) const;
          };
 
       }  // namespace connection_impl
 
-      class connection final
+      class POSTGRES_EXPORT connection final
          : public std::enable_shared_from_this< connection >
       {
       private:
