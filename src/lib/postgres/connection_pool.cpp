@@ -3,8 +3,6 @@
 
 #include <tao/postgres/connection_pool.hpp>
 
-#include <tao/utility/make_unique.hpp>
-
 namespace tao
 {
    namespace postgres
@@ -16,7 +14,7 @@ namespace tao
 
       std::unique_ptr< connection > connection_pool::v_create() const
       {
-         return utility::make_unique< postgres::connection >( connection::private_key(), connection_info_ );
+         return std::make_unique< postgres::connection >( connection::private_key(), connection_info_ );
       }
 
       bool connection_pool::v_is_valid( postgres::connection& c ) const

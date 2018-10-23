@@ -7,7 +7,6 @@
 #include <cstddef>
 #include <utility>
 
-#include "make_integer_sequence.hpp"
 #include "sum.hpp"
 
 namespace tao
@@ -16,11 +15,11 @@ namespace tao
    {
       namespace impl
       {
-         template< std::size_t, typename S, typename = make_index_sequence< S::size() > >
+         template< std::size_t, typename S, typename = std::make_index_sequence< S::size() > >
          struct partial_sum;
 
          template< std::size_t I, typename T, T... Ns, std::size_t... Is >
-         struct partial_sum< I, integer_sequence< T, Ns... >, index_sequence< Is... > >
+         struct partial_sum< I, std::integer_sequence< T, Ns... >, std::index_sequence< Is... > >
             : seq::sum< T, ( ( Is < I ) ? Ns : 0 )... >
          {
             static_assert( I <= sizeof...( Is ), "tao::seq::partial_sum<I, S>: I is out of range" );
@@ -30,13 +29,13 @@ namespace tao
 
       template< std::size_t I, typename T, T... Ns >
       struct partial_sum
-         : impl::partial_sum< I, integer_sequence< T, Ns... > >
+         : impl::partial_sum< I, std::integer_sequence< T, Ns... > >
       {
       };
 
       template< std::size_t I, typename T, T... Ns >
-      struct partial_sum< I, integer_sequence< T, Ns... > >
-         : impl::partial_sum< I, integer_sequence< T, Ns... > >
+      struct partial_sum< I, std::integer_sequence< T, Ns... > >
+         : impl::partial_sum< I, std::integer_sequence< T, Ns... > >
       {
       };
 

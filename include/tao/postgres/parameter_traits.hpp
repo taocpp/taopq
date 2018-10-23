@@ -5,14 +5,13 @@
 #define TAO_POSTGRES_PARAMETER_TRAITS_HPP
 
 #include <cmath>
+#include <optional>
 #include <string>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-#include <tao/optional/optional.hpp>
 #include <tao/postgres/null.hpp>
-#include <tao/seq/make_integer_sequence.hpp>
 #include <tao/utility/printf.hpp>
 
 namespace tao
@@ -77,10 +76,10 @@ namespace tao
          class decay_helper
          {
          private:
-            std::tuple< parameter_traits< typename std::decay< Ts >::type >... > value_;
+            std::tuple< parameter_traits< std::decay_t< Ts > >... > value_;
 
             template< std::size_t... Ns >
-            auto impl( const seq::index_sequence< Ns... >& ) const -> decltype( std::tuple_cat( std::get< Ns >( value_ )()... ) )
+            auto impl( const std::index_sequence< Ns... >& ) const
             {
                return std::tuple_cat( std::get< Ns >( value_ )()... );
             }
@@ -93,9 +92,9 @@ namespace tao
             }
 
          public:
-            auto operator()() const -> decltype( impl( seq::index_sequence_for< Ts... >() ) )
+            auto operator()() const
             {
-               return impl( seq::index_sequence_for< Ts... >() );
+               return impl( std::index_sequence_for< Ts... >() );
             }
          };
 
@@ -285,14 +284,14 @@ namespace tao
       };
 
       template< typename T >
-      struct parameter_traits< optional< T > >
+      struct parameter_traits< std::optional< T > >
       {
       private:
-         optional< parameter_traits< typename std::decay< T >::type > > forwarder_;
+         std::optional< parameter_traits< std::decay_t< T > > > forwarder_;
          using result_type = decltype( ( *forwarder_ )() );
 
       public:
-         parameter_traits( const optional< T >& v )
+         parameter_traits( const std::optional< T >& v )
          {
             if( v ) {
                forwarder_.emplace( *v );

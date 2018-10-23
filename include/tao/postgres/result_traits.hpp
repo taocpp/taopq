@@ -13,6 +13,8 @@ namespace tao
 {
    namespace postgres
    {
+      class row;
+
       template< typename T, typename = void >
       struct result_traits
       {
@@ -27,7 +29,7 @@ namespace tao
       };
 
       template< typename T >
-      struct result_traits_size< T, typename std::enable_if< std::is_same< decltype( result_traits< T >::size ), const std::size_t >::value >::type >
+      struct result_traits_size< T, std::enable_if_t< std::is_same_v< decltype( result_traits< T >::size ), const std::size_t > > >
          : std::integral_constant< std::size_t, result_traits< T >::size >
       {
       };

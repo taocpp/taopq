@@ -6,7 +6,6 @@
 
 #include <utility>
 
-#include "make_integer_sequence.hpp"
 #include "partial_sum.hpp"
 
 namespace tao
@@ -15,26 +14,26 @@ namespace tao
    {
       namespace impl
       {
-         template< typename S, typename = make_index_sequence< S::size() > >
+         template< typename S, typename = std::make_index_sequence< S::size() > >
          struct exclusive_scan;
 
          template< typename S, std::size_t... Is >
-         struct exclusive_scan< S, index_sequence< Is... > >
+         struct exclusive_scan< S, std::index_sequence< Is... > >
          {
-            using type = integer_sequence< typename S::value_type, partial_sum< Is, S >::value... >;
+            using type = std::integer_sequence< typename S::value_type, partial_sum< Is, S >::value... >;
          };
 
       }  // namespace impl
 
       template< typename T, T... Ns >
       struct exclusive_scan
-         : impl::exclusive_scan< integer_sequence< T, Ns... > >
+         : impl::exclusive_scan< std::integer_sequence< T, Ns... > >
       {
       };
 
       template< typename T, T... Ns >
-      struct exclusive_scan< integer_sequence< T, Ns... > >
-         : impl::exclusive_scan< integer_sequence< T, Ns... > >
+      struct exclusive_scan< std::integer_sequence< T, Ns... > >
+         : impl::exclusive_scan< std::integer_sequence< T, Ns... > >
       {
       };
 

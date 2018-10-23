@@ -15,7 +15,7 @@ void run()
 
    TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ].as< int >() == 42 );
    TEST_ASSERT( connection->execute( "SELECT 1764" )[ 0 ].optional< int >() == 1764 );
-   TEST_ASSERT( !connection->execute( "SELECT NULL" )[ 0 ].as< tao::optional< int > >() );
+   TEST_ASSERT( !connection->execute( "SELECT NULL" )[ 0 ].as< std::optional< int > >() );
 
    TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ][ 0 ].get() == std::string( "42" ) );
    TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ][ 0 ].as< int >() == 42 );
@@ -59,7 +59,7 @@ void run()
    TEST_ASSERT( row.index( "\"C\"" ) == 2 );
 
    TEST_THROWS( row.get< std::string >( 4 ) );
-   TEST_THROWS( row.get< tao::optional< std::string > >( 4 ) );
+   TEST_THROWS( row.get< std::optional< std::string > >( 4 ) );
    TEST_THROWS( row.get< std::pair< std::string, std::string > >( 3 ) );
 
    const auto result2 = connection->execute( "SELECT 1 AS a, 2 AS b, 3 AS a" );

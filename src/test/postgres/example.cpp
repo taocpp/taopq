@@ -49,7 +49,7 @@ void run()
    }
 
    // or convert a result into a container
-   const auto v = res.vector< std::tuple< int, tao::optional< int >, std::string > >();
+   const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
 }
 
 int main()

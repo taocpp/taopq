@@ -38,7 +38,7 @@ A single field from a result row. Each field can be converted to different data 
 
 ### SQL `NULL`
 
-SQL `NULL` can be supplied as `tao::postgres::null` as a parameter to a statement and it can be mapped to `tao::optional` for results, which is the same as `std::experimental::optional` or `std::optional`.
+SQL `NULL` can be supplied as `tao::postgres::null` as a parameter to a statement and it can be mapped to `std::optional` for results.
 
 ### Data Types
 

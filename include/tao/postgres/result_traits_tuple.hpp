@@ -8,6 +8,7 @@
 #include <tao/postgres/row.hpp>
 #include <tao/seq/exclusive_scan.hpp>
 #include <tao/seq/sum.hpp>
+
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -17,12 +18,12 @@ namespace tao
    namespace postgres
    {
       template< typename... Ts >
-      struct result_traits< std::tuple< Ts... >, typename std::enable_if< sizeof...( Ts ) == 1 >::type >
+      struct result_traits< std::tuple< Ts... >, std::enable_if_t< sizeof...( Ts ) == 1 > >
       {
-         using T = typename std::tuple_element< 0, std::tuple< Ts... > >::type;
+         using T = std::tuple_element_t< 0, std::tuple< Ts... > >;
          static constexpr std::size_t size = result_traits_size< T >::value;
 
-         static typename std::enable_if< result_traits_has_null< T >::value, std::tuple< T > >::type null()
+         static std::enable_if_t< result_traits_has_null< T >::value, std::tuple< T > > null()
          {
             return std::tuple< T >( result_traits< T >::null() );
          }
@@ -34,12 +35,12 @@ namespace tao
       };
 
       template< typename... Ts >
-      struct result_traits< std::tuple< Ts... >, typename std::enable_if< ( sizeof...( Ts ) > 1 ) >::type >
+      struct result_traits< std::tuple< Ts... >, std::enable_if_t< ( sizeof...( Ts ) > 1 ) > >
       {
          static constexpr std::size_t size = seq::sum< std::size_t, result_traits_size< Ts >::value... >::value;
 
          template< std::size_t... Ns >
-         static std::tuple< Ts... > from( const row& row, const seq::index_sequence< Ns... >& )
+         static std::tuple< Ts... > from( const row& row, const std::index_sequence< Ns... >& )
          {
             return std::tuple< Ts... >( row.get< Ts >( Ns )... );
          }

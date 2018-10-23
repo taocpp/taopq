@@ -62,7 +62,7 @@ void check( const std::string& datatype, const T& value )
 }
 
 template< typename T >
-typename std::enable_if< std::is_signed< T >::value >::type check( const std::string& datatype )
+typename std::enable_if_t< std::is_signed_v< T > > check( const std::string& datatype )
 {
    check_null( datatype );
    check< T >( datatype, std::numeric_limits< T >::min() );
@@ -76,7 +76,7 @@ typename std::enable_if< std::is_signed< T >::value >::type check( const std::st
 }
 
 template< typename T >
-typename std::enable_if< std::is_unsigned< T >::value >::type check( const std::string& datatype )
+typename std::enable_if_t< std::is_unsigned_v< T > > check( const std::string& datatype )
 {
    check_null( datatype );
    check< T >( datatype, 0 );

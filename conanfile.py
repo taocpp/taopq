@@ -5,7 +5,7 @@ from conans import ConanFile, CMake, tools
 
 class PostgreSQLConan(ConanFile):
     name = "postgres"
-    description = "C++11 client library for PostgreSQL"
+    description = "C++17 client library for PostgreSQL"
     homepage = "https://github.com/taocpp/postgres"
     url = homepage
     license = "MIT"

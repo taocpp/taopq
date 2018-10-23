@@ -9,14 +9,15 @@
 
 int main()
 {
-    try {
-        const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
-        connection->execute( "DROP TABLE IF EXISTS tao_transaction_test" );
-        connection->execute( "CREATE TABLE tao_transaction_test ( a INTEGER PRIMARY KEY )" );
-    } catch (const std::runtime_error& error) {
-        // ignore connection fault
-        std::cerr << error.what() << std::endl;
-    }
+   try {
+      const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
+      connection->execute( "DROP TABLE IF EXISTS tao_transaction_test" );
+      connection->execute( "CREATE TABLE tao_transaction_test ( a INTEGER PRIMARY KEY )" );
+   }
+   catch( const std::runtime_error& error ) {
+      // ignore connection fault
+      std::cerr << error.what() << std::endl;
+   }
 
    return EXIT_SUCCESS;
 }

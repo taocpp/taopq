@@ -12,7 +12,6 @@
 
 #include <tao/postgres/parameter_traits.hpp>
 #include <tao/postgres/result.hpp>
-#include <tao/seq/make_integer_sequence.hpp>
 
 namespace tao
 {
@@ -55,7 +54,7 @@ namespace tao
          result execute_params( const char* statement, const int n_params, const char* const param_values[] );
 
          template< std::size_t... Ns, typename... Ts >
-         result execute_indexed_tuple( const char* statement, const seq::index_sequence< Ns... >&, const std::tuple< Ts... >& tuple )
+         result execute_indexed_tuple( const char* statement, const std::index_sequence< Ns... >&, const std::tuple< Ts... >& tuple )
          {
             const char* const param_values[] = { std::get< Ns >( tuple )... };
             return execute_params( statement, sizeof...( Ns ), param_values );
@@ -64,7 +63,7 @@ namespace tao
          template< typename... Ts >
          result execute_tuple( const char* statement, const std::tuple< Ts... >& tuple )
          {
-            return execute_indexed_tuple( statement, seq::index_sequence_for< Ts... >(), tuple );
+            return execute_indexed_tuple( statement, std::index_sequence_for< Ts... >(), tuple );
          }
 
       public:
@@ -79,7 +78,7 @@ namespace tao
          template< typename... As >
          result execute( const char* statement, As&&... as )
          {
-            return execute_tuple( statement, std::tuple_cat( parameter_traits< typename std::decay< As >::type >( std::forward< As >( as ) )()... ) );
+            return execute_tuple( statement, std::tuple_cat( parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )()... ) );
          }
 
          // short-cut for no-arguments invocations

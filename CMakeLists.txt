@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.2.0 FATAL_ERROR)
+cmake_minimum_required (VERSION 3.8.0 FATAL_ERROR)
 
 project (taocpp-postgres VERSION 1.0.0 LANGUAGES CXX)
 
@@ -83,33 +83,7 @@ target_include_directories (postgres
 target_link_libraries (postgres PUBLIC ${PostgreSQL_LIBRARIES})
 
 # features used by the taocpp/postgres
-target_compile_features (postgres PRIVATE
-  # TODO: Update to the real list...
-  cxx_alias_templates
-  cxx_auto_type
-  cxx_constexpr
-  cxx_decltype
-  cxx_default_function_template_args
-  cxx_defaulted_functions
-  cxx_delegating_constructors
-  cxx_deleted_functions
-  cxx_explicit_conversions
-  cxx_generalized_initializers
-  cxx_inheriting_constructors
-  cxx_inline_namespaces
-  cxx_noexcept
-  cxx_nonstatic_member_init
-  cxx_nullptr
-  cxx_range_for
-  cxx_rvalue_references
-  cxx_static_assert
-  cxx_strong_enums
-  cxx_template_template_parameters
-  cxx_trailing_return_types
-  cxx_uniform_initialization
-  cxx_variadic_macros
-  cxx_variadic_templates
-)
+target_compile_features (postgres PUBLIC cxx_std_17)
 
 # install
 include(GNUInstallDirs)

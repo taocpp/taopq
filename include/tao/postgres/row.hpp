@@ -6,13 +6,14 @@
 
 #include <stdexcept>
 #include <string>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+
 #include <tao/postgres/field.hpp>
 #include <tao/postgres/result_traits.hpp>
 #include <tao/utility/demangle.hpp>
 #include <tao/utility/printf.hpp>
-#include <tuple>
-#include <type_traits>
-#include <utility>
 
 namespace tao
 {
@@ -55,14 +56,14 @@ namespace tao
          const char* get( const std::size_t column ) const;
 
          template< typename T >
-         typename std::enable_if< result_traits_size< T >::value == 0, T >::type get( const std::size_t ) const
+         std::enable_if_t< result_traits_size< T >::value == 0, T > get( const std::size_t ) const
          {
             static_assert( !std::is_same< T, T >::value, "tao::postgres::result_traits<T>::size yields zero" );
             __builtin_unreachable();
          }
 
          template< typename T >
-         typename std::enable_if< result_traits_size< T >::value == 1 && result_traits_has_null< T >::value, T >::type get( const std::size_t column ) const
+         std::enable_if_t< result_traits_size< T >::value == 1 && result_traits_has_null< T >::value, T > get( const std::size_t column ) const
          {
             if( is_null( column ) ) {
                return result_traits< T >::null();
@@ -71,22 +72,22 @@ namespace tao
          }
 
          template< typename T >
-         typename std::enable_if< result_traits_size< T >::value == 1 && !result_traits_has_null< T >::value, T >::type get( const std::size_t column ) const
+         std::enable_if_t< result_traits_size< T >::value == 1 && !result_traits_has_null< T >::value, T > get( const std::size_t column ) const
          {
             ensure_column( column );
             return result_traits< T >::from( get( column ) );
          }
 
          template< typename T >
-         typename std::enable_if< ( result_traits_size< T >::value > 1 ), T >::type get( const std::size_t column ) const
+         std::enable_if_t< ( result_traits_size< T >::value > 1 ), T > get( const std::size_t column ) const
          {
             return result_traits< T >::from( slice( column, result_traits_size< T >::value ) );
          }
 
          template< typename T >
-         tao::optional< T > optional( const std::size_t column ) const
+         std::optional< T > optional( const std::size_t column ) const
          {
-            return get< tao::optional< T > >( column );
+            return get< std::optional< T > >( column );
          }
 
          template< typename T >
@@ -99,9 +100,9 @@ namespace tao
          }
 
          template< typename T >
-         tao::optional< T > optional() const
+         std::optional< T > optional() const
          {
-            return as< tao::optional< T > >();
+            return as< std::optional< T > >();
          }
 
          template< typename T, typename U >
@@ -132,7 +133,7 @@ namespace tao
       };
 
       template< typename T >
-      typename std::enable_if< result_traits_size< T >::value == 1, T >::type field::as() const
+      std::enable_if_t< result_traits_size< T >::value == 1, T > field::as() const
       {
          return row_.get< T >( column_ );
       }

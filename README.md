@@ -5,7 +5,7 @@
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/postgres?svg=true)](https://ci.appveyor.com/project/taocpp/postgres)
 [![Coverage](https://img.shields.io/coveralls/taocpp/postgres.svg)](https://coveralls.io/github/taocpp/postgres)
 
-The Art of C++ / PostgreSQL is a C++11 client library for [PostgreSQL](http://www.postgresql.org/).
+The Art of C++ / PostgreSQL is a C++17 client library for [PostgreSQL](http://www.postgresql.org/).
 
 ### Table of content
 
@@ -29,8 +29,8 @@ The Art of C++ / PostgreSQL is a C++11 client library for [PostgreSQL](http://ww
 
 ## Preface
 
-The Art of C++ / PostgreSQL is a light-weight C++11 client library for accessing a PostgreSQL database, providing a modern API around PostgreSQL's `libpq`.
-Besides a C++11 compatible compiler and `libpq` it has no further dependencies.
+The Art of C++ / PostgreSQL is a light-weight C++17 client library for accessing a PostgreSQL database, providing a modern API around PostgreSQL's `libpq`.
+Besides a C++17 compatible compiler and `libpq` it has no further dependencies.
 
 ## Example
 
@@ -85,7 +85,7 @@ int main()
   }
 
   // or convert a result into a container
-  const auto v = res.vector< std::tuple< int, tao::optional< int >, std::string > >();
+  const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
 }
 ```
 
@@ -235,8 +235,8 @@ If the result set contain no rows or more than one rows, an exception is thrown.
 ###### `rs.optional< T >()`
 
 If you except a result set with either no rows or a single row, you may call `rs.optional< T >()`.
-If the result set is empty, it will return an empty `tao::optional< T >`.
-Otherwise it will return a `tao::optional< T >` initialized with the result of `rs.as< T >()`.
+If the result set is empty, it will return an empty `std::optional< T >`.
+Otherwise it will return a `std::optional< T >` initialized with the result of `rs.as< T >()`.
 
 ###### `rs.pair< T, U >()`
 
@@ -327,7 +327,7 @@ TODO
 
 ###### `r.optional< T >( column )`
 
-Short-cut for `r.get< tao::optional< T > >( column )`.
+Short-cut for `r.get< std::optional< T > >( column )`.
 
 ###### `r.as< T >()`
 
@@ -335,7 +335,7 @@ Returns `r.get< T >( 0 )` if the size of the row is suitable for `T`, otherwise 
 
 ###### `r.optional< T >()`
 
-Short-cut for `r.as< tao::optional< T > >()`.
+Short-cut for `r.as< std::optional< T > >()`.
 
 ###### `r.pair< T, U >()`
 
@@ -362,7 +362,7 @@ TODO
 
 ###### `f.optional< T >()`
 
-Short-cut for `f.as< tao::optional< T > >()`.
+Short-cut for `f.as< std::optional< T > >()`.
 
 ## Custom Data Types for Parameters
 

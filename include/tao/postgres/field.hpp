@@ -4,9 +4,10 @@
 #ifndef TAO_POSTGRES_FIELD_HPP
 #define TAO_POSTGRES_FIELD_HPP
 
-#include <tao/optional/optional.hpp>
 #include <tao/postgres/null.hpp>
 #include <tao/postgres/result_traits.hpp>
+
+#include <optional>
 #include <type_traits>
 
 namespace tao
@@ -36,19 +37,19 @@ namespace tao
          const char* get() const;
 
          template< typename T >
-         typename std::enable_if< result_traits_size< T >::value != 1, T >::type as() const
+         typename std::enable_if_t< result_traits_size< T >::value != 1, T > as() const
          {
-            static_assert( !std::is_same< T, T >::value, "tao::postgres::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
+            static_assert( !std::is_same_v< T, T >, "tao::postgres::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
             __builtin_unreachable();
          }
 
          template< typename T >
-         typename std::enable_if< result_traits_size< T >::value == 1, T >::type as() const;  // implemented in row.hpp
+         typename std::enable_if_t< result_traits_size< T >::value == 1, T > as() const;  // implemented in row.hpp
 
          template< typename T >
-         tao::optional< T > optional() const
+         std::optional< T > optional() const
          {
-            return as< tao::optional< T > >();
+            return as< std::optional< T > >();
          }
       };
 

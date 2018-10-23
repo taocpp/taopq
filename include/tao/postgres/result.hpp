@@ -7,6 +7,7 @@
 #include <list>
 #include <map>
 #include <memory>
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <string>
@@ -16,7 +17,6 @@
 #include <utility>
 #include <vector>
 
-#include <tao/optional/optional.hpp>
 #include <tao/postgres/row.hpp>
 #include <tao/utility/printf.hpp>
 
@@ -40,7 +40,7 @@ namespace tao
          };
 
          template< typename T >
-         struct has_reserve< T, typename std::enable_if< std::is_void< decltype( T::reserve( std::declval< typename T::size_type >() ) ) >::value >::type >
+         struct has_reserve< T, std::enable_if_t< std::is_void_v< decltype( T::reserve( std::declval< typename T::size_type >() ) ) > > >
             : std::true_type
          {
          };
@@ -134,12 +134,12 @@ namespace tao
          }
 
          template< typename T >
-         tao::optional< T > optional() const
+         std::optional< T > optional() const
          {
             if( empty() ) {
-               return tao::optional< T >();
+               return {};
             }
-            return tao::optional< T >( as< T >() );
+            return as< T >();
          }
 
          template< typename T, typename U >
@@ -155,7 +155,7 @@ namespace tao
          }
 
          template< typename T >
-         typename std::enable_if< result_impl::has_reserve< T >::value, T >::type as_container() const
+         std::enable_if_t< result_impl::has_reserve< T >::value, T > as_container() const
          {
             T nrv;
             nrv.reserve( size() );
@@ -167,7 +167,7 @@ namespace tao
          }
 
          template< typename T >
-         typename std::enable_if< !result_impl::has_reserve< T >::value, T >::type as_container() const
+         std::enable_if_t< !result_impl::has_reserve< T >::value, T > as_container() const
          {
             T nrv;
             check_has_result_set();

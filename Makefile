@@ -16,11 +16,11 @@ endif
 
 # For Darwin (Mac OS X / macOS) we assume that the default compiler
 # clang++ is used; when $(CXX) is some version of g++, then
-# $(CXXSTD) has to be set to -std=c++11 (or newer) so
+# $(CXXSTD) has to be set to -std=c++17 (or newer) so
 # that -stdlib=libc++ is not automatically added.
 
 ifeq ($(CXXSTD),)
-CXXSTD := -std=c++11
+CXXSTD := -std=c++17
 ifeq ($(UNAME_S),Darwin)
 CXXSTD += -stdlib=libc++
 endif
@@ -39,7 +39,7 @@ BUILDDIR ?= build
 
 CLANG_TIDY ?= clang-tidy
 
-HEADERS := $(filter-out include/tao/optional/akrzemi1/%,$(shell find include -name '*.hpp')) $(filter-out src/test/macros.hpp,$(shell find src -name '*.hpp'))
+HEADERS := $(shell find include -name '*.hpp') $(filter-out src/test/macros.hpp,$(shell find src -name '*.hpp'))
 SOURCES := $(shell find src -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=$(BUILDDIR)/%.d)
 BINARIES := $(SOURCES:%.cpp=$(BUILDDIR)/%)
@@ -83,7 +83,7 @@ $(BUILDDIR)/%: $(BUILDDIR)/%.o $(BUILDDIR)/lib/lib$(LIBNAME).a
 	$(CXX) $(CXXSTD) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
 build/%.clang-tidy: %
-	$(CLANG_TIDY) -extra-arg "-Iinclude" -extra-arg "-std=c++11" -checks=*,-google-runtime-references,-google-runtime-int,-google-readability-todo,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-modernize-raw-string-literal,-misc-sizeof-expression -warnings-as-errors=* $< 2>/dev/null
+	$(CLANG_TIDY) -extra-arg "-Iinclude" -extra-arg "-std=c++17" -checks=*,-google-runtime-references,-google-runtime-int,-google-readability-todo,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-modernize-raw-string-literal,-misc-sizeof-expression -warnings-as-errors=* $< 2>/dev/null
 	@mkdir -p $(@D)
 	@touch $@
 

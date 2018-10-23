@@ -16,8 +16,8 @@ namespace tao
       template< typename T, typename U >
       struct result_traits< std::pair< T, U > >
       {
-         using DT = typename std::decay< T >::type;
-         using DU = typename std::decay< U >::type;
+         using DT = std::decay_t< T >;
+         using DU = std::decay_t< U >;
 
          static constexpr std::size_t size = result_traits_size< DT >::value + result_traits_size< DU >::value;
 
