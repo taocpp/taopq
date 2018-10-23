@@ -37,17 +37,11 @@ set (TAOCPP_POSTGRES_INCLUDE_FILES
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/strtox.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/demangle.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/printf.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/make_unique.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/pool.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/sum.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/config.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/integer_sequence.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/exclusive_scan.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/make_integer_sequence.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/partial_sum.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/postgres.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/optional/akrzemi1/optional.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/optional/optional.hpp
 )
 
 set (TAOCPP_POSTGRES_SOURCE_FILES
