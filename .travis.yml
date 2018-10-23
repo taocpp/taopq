@@ -59,14 +59,6 @@ matrix:
 
     - language: cpp
       os: osx
-      osx_image: xcode9.4
-      compiler: clang
-      script:
-        - $CXX --version
-        - make -j3 compile
-
-    - language: cpp
-      os: osx
       osx_image: xcode10
       compiler: clang
       script:
