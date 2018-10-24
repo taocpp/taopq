@@ -38,9 +38,6 @@ set (TAOCPP_POSTGRES_INCLUDE_FILES
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/demangle.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/printf.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/utility/pool.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/sum.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/exclusive_scan.hpp
-  ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/seq/partial_sum.hpp
   ${TAOCPP_POSTGRES_INCLUDE_DIRS}/tao/postgres.hpp
 )
 
