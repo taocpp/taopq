@@ -8,16 +8,14 @@ namespace tao
 {
    namespace postgres
    {
-      struct null_t final
+      struct null_t
       {
-         constexpr null_t()
+         constexpr explicit null_t( int /*unused*/ )
          {
          }
-         null_t( const null_t& ) = delete;
-         void operator=( const null_t& ) = delete;
       };
 
-      constexpr null_t null{};
+      constexpr null_t null{ 0 };
 
    }  // namespace postgres
 

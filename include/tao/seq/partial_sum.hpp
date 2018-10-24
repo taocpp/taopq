@@ -7,8 +7,6 @@
 #include <cstddef>
 #include <utility>
 
-#include "sum.hpp"
-
 namespace tao
 {
    namespace seq
@@ -20,7 +18,7 @@ namespace tao
 
          template< std::size_t I, typename T, T... Ns, std::size_t... Is >
          struct partial_sum< I, std::integer_sequence< T, Ns... >, std::index_sequence< Is... > >
-            : seq::sum< T, ( ( Is < I ) ? Ns : 0 )... >
+            : std::integral_constant< T, ( ( ( Is < I ) ? Ns : 0 ) + ... ) >
          {
             static_assert( I <= sizeof...( Is ), "tao::seq::partial_sum<I, S>: I is out of range" );
          };
@@ -28,16 +26,7 @@ namespace tao
       }  // namespace impl
 
       template< std::size_t I, typename T, T... Ns >
-      struct partial_sum
-         : impl::partial_sum< I, std::integer_sequence< T, Ns... > >
-      {
-      };
-
-      template< std::size_t I, typename T, T... Ns >
-      struct partial_sum< I, std::integer_sequence< T, Ns... > >
-         : impl::partial_sum< I, std::integer_sequence< T, Ns... > >
-      {
-      };
+      using partial_sum = impl::partial_sum< I, std::integer_sequence< T, Ns... > >;
 
    }  // namespace seq
 

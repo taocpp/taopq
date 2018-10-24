@@ -37,7 +37,7 @@ namespace tao
       template< typename... Ts >
       struct result_traits< std::tuple< Ts... >, std::enable_if_t< ( sizeof...( Ts ) > 1 ) > >
       {
-         static constexpr std::size_t size = seq::sum< std::size_t, result_traits_size< Ts >::value... >::value;
+         static constexpr std::size_t size = seq::sum< std::size_t, result_traits_size< Ts >::value... >;
 
          template< std::size_t... Ns >
          static std::tuple< Ts... > from( const row& row, const std::index_sequence< Ns... >& )

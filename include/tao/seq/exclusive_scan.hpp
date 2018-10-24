@@ -26,16 +26,7 @@ namespace tao
       }  // namespace impl
 
       template< typename T, T... Ns >
-      struct exclusive_scan
-         : impl::exclusive_scan< std::integer_sequence< T, Ns... > >
-      {
-      };
-
-      template< typename T, T... Ns >
-      struct exclusive_scan< std::integer_sequence< T, Ns... > >
-         : impl::exclusive_scan< std::integer_sequence< T, Ns... > >
-      {
-      };
+      using exclusive_scan = impl::exclusive_scan< std::integer_sequence< T, Ns... > >;
 
       template< typename T, T... Ns >
       using exclusive_scan_t = typename exclusive_scan< T, Ns... >::type;
