@@ -34,16 +34,10 @@ namespace tao
       namespace result_impl
       {
          template< typename T, typename = void >
-         struct has_reserve
-            : std::false_type
-         {
-         };
+         inline constexpr bool has_reserve = false;
 
          template< typename T >
-         struct has_reserve< T, std::enable_if_t< std::is_void_v< decltype( T::reserve( std::declval< typename T::size_type >() ) ) > > >
-            : std::true_type
-         {
-         };
+         inline constexpr bool has_reserve< T, std::void_t< decltype( T::reserve( std::declval< typename T::size_type >() ) ) > > = true;
 
       }  // namespace result_impl
 
@@ -155,7 +149,7 @@ namespace tao
          }
 
          template< typename T >
-         std::enable_if_t< result_impl::has_reserve< T >::value, T > as_container() const
+         std::enable_if_t< result_impl::has_reserve< T >, T > as_container() const
          {
             T nrv;
             nrv.reserve( size() );
@@ -167,7 +161,7 @@ namespace tao
          }
 
          template< typename T >
-         std::enable_if_t< !result_impl::has_reserve< T >::value, T > as_container() const
+         std::enable_if_t< !result_impl::has_reserve< T >, T > as_container() const
          {
             T nrv;
             check_has_result_set();

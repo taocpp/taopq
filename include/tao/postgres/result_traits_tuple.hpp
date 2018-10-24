@@ -38,9 +38,9 @@ namespace tao
       struct result_traits< std::tuple< Ts... >, std::enable_if_t< sizeof...( Ts ) == 1 > >
       {
          using T = std::tuple_element_t< 0, std::tuple< Ts... > >;
-         static constexpr std::size_t size = result_traits_size< T >::value;
+         static constexpr std::size_t size = result_traits_size< T >;
 
-         static std::enable_if_t< result_traits_has_null< T >::value, std::tuple< T > > null()
+         static std::enable_if_t< result_traits_has_null< T >, std::tuple< T > > null()
          {
             return std::tuple< T >( result_traits< T >::null() );
          }
@@ -54,7 +54,7 @@ namespace tao
       template< typename... Ts >
       struct result_traits< std::tuple< Ts... >, std::enable_if_t< ( sizeof...( Ts ) > 1 ) > >
       {
-         static constexpr std::size_t size = ( result_traits_size< Ts >::value + ... );
+         static constexpr std::size_t size = ( result_traits_size< Ts > + ... );
 
          template< std::size_t... Ns >
          static std::tuple< Ts... > from( const row& row, const std::index_sequence< Ns... >& )
@@ -64,7 +64,7 @@ namespace tao
 
          static std::tuple< Ts... > from( const row& row )
          {
-            return from( row, impl::exclusive_scan_t< result_traits_size< Ts >::value... >() );
+            return from( row, impl::exclusive_scan_t< result_traits_size< Ts >... >() );
          }
       };
 

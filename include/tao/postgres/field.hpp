@@ -37,14 +37,14 @@ namespace tao
          const char* get() const;
 
          template< typename T >
-         typename std::enable_if_t< result_traits_size< T >::value != 1, T > as() const
+         typename std::enable_if_t< result_traits_size< T > != 1, T > as() const
          {
             static_assert( !std::is_same_v< T, T >, "tao::postgres::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
             __builtin_unreachable();
          }
 
          template< typename T >
-         typename std::enable_if_t< result_traits_size< T >::value == 1, T > as() const;  // implemented in row.hpp
+         typename std::enable_if_t< result_traits_size< T > == 1, T > as() const;  // implemented in row.hpp
 
          template< typename T >
          std::optional< T > optional() const

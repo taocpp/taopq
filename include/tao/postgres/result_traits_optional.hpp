@@ -16,7 +16,7 @@ namespace tao
       template< typename T >
       struct result_traits< std::optional< T > >
       {
-         static constexpr std::size_t size = result_traits_size< T >::value;
+         static constexpr std::size_t size = result_traits_size< T >;
 
          static std::optional< T > null()
          {

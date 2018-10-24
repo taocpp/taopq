@@ -19,11 +19,11 @@ namespace tao
          using DT = std::decay_t< T >;
          using DU = std::decay_t< U >;
 
-         static constexpr std::size_t size = result_traits_size< DT >::value + result_traits_size< DU >::value;
+         static constexpr std::size_t size = result_traits_size< DT > + result_traits_size< DU >;
 
          static std::pair< T, U > from( const row& row )
          {
-            return std::pair< T, U >( row.get< DT >( 0 ), row.get< DU >( result_traits_size< DT >::value ) );
+            return std::pair< T, U >( row.get< DT >( 0 ), row.get< DU >( result_traits_size< DT > ) );
          }
       };
 

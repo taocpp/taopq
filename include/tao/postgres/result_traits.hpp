@@ -23,28 +23,16 @@ namespace tao
       };
 
       template< typename T, typename = void >
-      struct result_traits_size
-         : std::integral_constant< std::size_t, 1 >
-      {
-      };
+      inline constexpr std::size_t result_traits_size = 1;
 
       template< typename T >
-      struct result_traits_size< T, std::enable_if_t< std::is_same_v< decltype( result_traits< T >::size ), const std::size_t > > >
-         : std::integral_constant< std::size_t, result_traits< T >::size >
-      {
-      };
+      inline constexpr std::size_t result_traits_size< T, std::enable_if_t< std::is_same_v< decltype( result_traits< T >::size ), const std::size_t > > > = result_traits< T >::size;
 
       template< typename T, typename = void >
-      struct result_traits_has_null
-         : std::false_type
-      {
-      };
+      inline constexpr bool result_traits_has_null = false;
 
       template< typename T >
-      struct result_traits_has_null< T, decltype( result_traits< T >::null(), void() ) >
-         : std::true_type
-      {
-      };
+      inline constexpr bool result_traits_has_null< T, decltype( result_traits< T >::null(), void() ) > = true;
 
       template<>
       struct result_traits< const char* >
