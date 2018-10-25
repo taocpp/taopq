@@ -72,32 +72,6 @@ namespace tao
             return ( v < 0 ) ? "-INF" : "INF";
          }
 
-         template< typename... Ts >
-         class decay_helper
-         {
-         private:
-            std::tuple< parameter_traits< std::decay_t< Ts > >... > value_;
-
-            template< std::size_t... Ns >
-            auto impl( const std::index_sequence< Ns... >& ) const
-            {
-               return std::tuple_cat( std::get< Ns >( value_ )()... );
-            }
-
-         protected:
-            template< typename... Us >
-            explicit decay_helper( Us&&... us )
-               : value_( std::forward< Us >( us )... )
-            {
-            }
-
-         public:
-            auto operator()() const
-            {
-               return impl( std::index_sequence_for< Ts... >() );
-            }
-         };
-
       }  // namespace parameter_traits_impl
 
       template<>
