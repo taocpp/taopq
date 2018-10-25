@@ -52,25 +52,13 @@ namespace tao
             return true;
          }
 
-         virtual void v_push_before( T& ) const noexcept
-         {
-         }
-         virtual void v_push_success( T& ) const noexcept
-         {
-         }
-         virtual void v_push_failure( T& ) const noexcept
-         {
-         }
+         virtual void v_push_before( T& ) const noexcept {}
+         virtual void v_push_success( T& ) const noexcept {}
+         virtual void v_push_failure( T& ) const noexcept {}
 
-         virtual void v_pull_before( T& ) const noexcept
-         {
-         }
-         virtual void v_pull_success( T& ) const noexcept
-         {
-         }
-         virtual void v_pull_failure( T& ) const noexcept
-         {
-         }
+         virtual void v_pull_before( T& ) const noexcept {}
+         virtual void v_pull_success( T& ) const noexcept {}
+         virtual void v_pull_failure( T& ) const noexcept {}
 
          void push( std::unique_ptr< T >& up )
          {

@@ -10,9 +10,7 @@ namespace tao
    {
       struct null_t
       {
-         constexpr explicit null_t( int /*unused*/ )
-         {
-         }
+         explicit constexpr null_t( int /*unused*/ ) {}
       };
 
       constexpr null_t null{ 0 };
