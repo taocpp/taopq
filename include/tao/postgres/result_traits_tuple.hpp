@@ -34,13 +34,13 @@ namespace tao
 
       }  // namespace impl
 
-      template< typename... Ts >
-      struct result_traits< std::tuple< Ts... >, std::enable_if_t< sizeof...( Ts ) == 1 > >
+      template< typename T >
+      struct result_traits< std::tuple< T > >
       {
-         using T = std::tuple_element_t< 0, std::tuple< Ts... > >;
          static constexpr std::size_t size = result_traits_size< T >;
 
-         static std::enable_if_t< result_traits_has_null< T >, std::tuple< T > > null()
+         template< typename U = T >
+         static std::enable_if_t< result_traits_has_null< U >, std::tuple< T > > null()
          {
             return std::tuple< T >( result_traits< T >::null() );
          }
@@ -52,12 +52,14 @@ namespace tao
       };
 
       template< typename... Ts >
-      struct result_traits< std::tuple< Ts... >, std::enable_if_t< ( sizeof...( Ts ) > 1 ) > >
+      struct result_traits< std::tuple< Ts... > >
       {
-         static constexpr std::size_t size{ ( result_traits_size< Ts > + ... ) };
+         static_assert( sizeof...( Ts ) != 0, "conversion to empty std::tuple<> not support" );
+
+         static constexpr std::size_t size{ ( result_traits_size< Ts > + ... + 0 ) };
 
          template< std::size_t... Ns >
-         static std::tuple< Ts... > from( const row& row, const std::index_sequence< Ns... >& )
+         static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > )
          {
             return std::tuple< Ts... >( row.get< Ts >( Ns )... );
          }

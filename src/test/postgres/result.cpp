@@ -51,6 +51,8 @@ void run()
    TEST_ASSERT( connection->execute( "SELECT $1::INTEGER", std::optional< int >( 42 ) ).as< std::optional< int > >() == 42 );
    TEST_ASSERT( !connection->execute( "SELECT $1::INTEGER", std::optional< int >() ).as< std::optional< int > >() );
 
+   TEST_ASSERT( connection->execute( "SELECT 42" ).tuple< int >() == std::tuple< int >( 42 ) );
+
    TEST_ASSERT( connection->execute( "SELECT 1, 2" ).pair< int, int >() == std::pair< int, int >( 1, 2 ) );
    TEST_ASSERT( connection->execute( "SELECT 1, 2, 3, 4" ).tuple< int, int, int, int >() == std::tuple< int, int, int, int >( 1, 2, 3, 4 ) );
 
