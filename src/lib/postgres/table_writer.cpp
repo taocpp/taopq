@@ -16,7 +16,7 @@ namespace tao
       table_writer::table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement )
          : transaction_( transaction )
       {
-         result(::PQexecParams( transaction->connection_->pgconn_.get(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::EXPECT_COPY_IN );
+         result(::PQexecParams( transaction->connection_->pgconn_.get(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
       }
 
       table_writer::~table_writer()

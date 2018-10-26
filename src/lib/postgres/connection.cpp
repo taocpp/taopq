@@ -87,15 +87,15 @@ namespace tao
             const char* isolation_level_to_statement( const transaction::isolation_level il )
             {
                switch( il ) {
-                  case transaction::isolation_level::DEFAULT:
+                  case transaction::isolation_level::default_isolation_level:
                      return "START TRANSACTION";
-                  case transaction::isolation_level::SERIALIZABLE:
+                  case transaction::isolation_level::serializable:
                      return "START TRANSACTION ISOLATION LEVEL SERIALIZABLE";
-                  case transaction::isolation_level::REPEATABLE_READ:
+                  case transaction::isolation_level::repeatable_read:
                      return "START TRANSACTION ISOLATION LEVEL REPEATABLE READ";
-                  case transaction::isolation_level::READ_COMMITTED:
+                  case transaction::isolation_level::read_committed:
                      return "START TRANSACTION ISOLATION LEVEL READ COMMITTED";
-                  case transaction::isolation_level::READ_UNCOMMITTED:
+                  case transaction::isolation_level::read_uncommitted:
                      return "START TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
                }
                assert( !"code should be unreachable" );                   // LCOV_EXCL_LINE

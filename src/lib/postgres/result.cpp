@@ -45,13 +45,13 @@ namespace tao
          switch( status ) {
             case PGRES_COMMAND_OK:
             case PGRES_TUPLES_OK:
-               if( mode == mode_t::EXPECT_OK ) {
+               if( mode == mode_t::expect_ok ) {
                   return;
                }
                break;
 
             case PGRES_COPY_IN:
-               if( mode == mode_t::EXPECT_COPY_IN ) {
+               if( mode == mode_t::expect_copy_in ) {
                   return;
                }
                break;

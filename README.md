@@ -132,11 +132,11 @@ Regular top-level transactions can also be passed an isolation level `c->transac
 ```c++
 enum class isolation_level
 {
-   DEFAULT,
-   SERIALIZABLE,
-   REPEATABLE_READ,
-   READ_COMMITTED,
-   READ_UNCOMMITTED
+   default_isolation_level,
+   serializable,
+   repeatable_read,
+   read_committed,
+   read_uncommitted
 };
 ```
 

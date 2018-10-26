@@ -56,10 +56,10 @@ namespace tao
 
          enum class mode_t
          {
-            EXPECT_OK,
-            EXPECT_COPY_IN
+            expect_ok,
+            expect_copy_in
          };
-         result(::PGresult* pgresult, const mode_t mode = mode_t::EXPECT_OK );
+         result(::PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
 
       public:
          bool has_rows_affected() const;
