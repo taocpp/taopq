@@ -69,14 +69,14 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
+          packages: ['g++-7']
       env:
-        - CXX=g++-8
+        - CXX=g++-7
         - CXXFLAGS="-O0 --coverage"
       before_script:
         - pip install --user cpp-coveralls
       after_success:
-        - coveralls --gcov gcov-8 --gcov-options '\-lp' --exclude src/test
+        - coveralls --gcov gcov-7 --gcov-options '\-lp' --exclude src/test
 
 script:
   - $CXX --version
