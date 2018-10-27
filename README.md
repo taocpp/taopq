@@ -97,14 +97,18 @@ From a connection you open a transaction, several sub-types of transactions (inc
 
 On a transaction you can then execute statements.
 You can choose between prepared statements or direct statements.
+
 Parameters are passed as additional parameters to the function call, no manual string manipulation/escaping is necessary.
 Parameters can be of almost any type, several types are predefined by the library.
-Custom types need to be registered via traits.
+Custom data types can be registered via traits.
 
-Each statement then returns a result, which either contains to number of rows affected in case of `INSERT`, `UPDATE`, `DELETE`, ... statements, or it contains a result set if the statement was a `SELECT` statement.
+You can use `std::optional` to model the NULL value of SQL, giving you seemless and intuitive support for NULL-able values.
+You can also use `tao::postgres::null` as a parameter if you want to pass NULL explicitly.
+
+Each statement then returns a result, which either contains the number of rows affected in case of `INSERT`, `UPDATE`, `DELETE`, ... statements, or it contains a result set if the statement was a `SELECT` statement.
 
 If the result contains a result set, you can either iterate directly or have it conveniently converted into a C++ data structure.
-STL containers, `std::pair`/`std::tuple` and custom types are supported.
+STL containers, `std::pair`/`std::tuple`, `std::optional` for NULL-able values and custom data types registered via traits are supported.
 
 Some convenience methods are provided to keep simple use-cases simple, e.g. if you have a connection pool you can get an (implicit) transaction, execute a statement, and convert the result to an STL container with just a single, simple line of code which hides the intermediate steps.
 
