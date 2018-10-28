@@ -66,8 +66,8 @@ namespace tao
             if( v_is_valid( *up ) ) {
                std::shared_ptr< T > sp( up.release(), deleter() );
                v_push_success( *sp );
-               const std::lock_guard< std::mutex > lock( mutex_ );
-               items_.push_back( std::move( sp ) );
+               const std::lock_guard lock( mutex_ );
+               items_.emplace_back( std::move( sp ) );
             }
             else {
                v_push_failure( *up );
@@ -77,7 +77,7 @@ namespace tao
          std::shared_ptr< T > pull() noexcept
          {
             std::shared_ptr< T > nrv;
-            const std::lock_guard< std::mutex > lock( mutex_ );
+            const std::lock_guard lock( mutex_ );
             if( !items_.empty() ) {
                nrv = std::move( items_.back() );
                items_.pop_back();
@@ -129,11 +129,11 @@ namespace tao
          void erase_invalid()
          {
             std::list< std::shared_ptr< T > > deferred_delete;
-            const std::lock_guard< std::mutex > lock( mutex_ );
+            const std::lock_guard lock( mutex_ );
             auto it = items_.begin();
             while( it != items_.end() ) {
                if( !v_is_valid( **it ) ) {
-                  deferred_delete.push_back( std::move( *it ) );
+                  deferred_delete.emplace_back( std::move( *it ) );
                   it = items_.erase( it );
                }
                else {
