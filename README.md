@@ -159,7 +159,7 @@ If you open two regular transactions (on the same connection) and execute statem
 ## Executing Statements
 
 You can execute SQL statements on a transaction by calling `tr->execute( statement, parameters... )`.
-This is best shows by some simple examples:
+This is best shown by some simple examples:
 
 ```c++
 const auto r1 = tr->execute( "SELECT * FROM users" );
@@ -234,7 +234,7 @@ Regular access happens by iterating over the rows of the result set, or by conve
 ###### `rs.as< T >()`
 
 If you expect the result set to contain a single row, you may call `rs.as< T >()` as a shortcut for `rs[ 0 ].as< T >()`.
-If the result set contain no rows or more than one rows, an exception is thrown.
+If the result set contain no rows or more than one row, an exception is thrown.
 
 ###### `rs.optional< T >()`
 
