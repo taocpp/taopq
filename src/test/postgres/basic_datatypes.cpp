@@ -8,7 +8,6 @@
 #include "../macros.hpp"
 
 #include <tao/postgres/connection.hpp>
-#include <tao/utility/demangle.hpp>
 #include <tao/utility/getenv.hpp>
 
 std::shared_ptr< tao::postgres::connection > connection;
