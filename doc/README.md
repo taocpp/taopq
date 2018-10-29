@@ -2,8 +2,7 @@
 
 ## Table of content
 
- * [Preface](#preface)
- * [Example](#example)
+ * [Project](https://github.com/taocpp/postgres)
  * [Design Overview](#design-overview)
  * [Connections](#connections)
  * [Transactions](#transactions)
