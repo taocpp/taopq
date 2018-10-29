@@ -388,9 +388,15 @@ TODO
 
 TODO
 
+## Contact
+
+The Art of C++ / Postgres is part of [The Art of C++].
+
+For questions and suggestions about The Art of C++ / Postgres please contact the authors at `taocpp(at)icemx.net`.
+
 ## License
 
-The Art of C++ is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
+The Art of C++ / Postgres is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
 It may be used for any purpose, including commercial purposes, at absolutely no cost.
 It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
 
@@ -401,3 +407,5 @@ It is distributed under the terms of the [MIT license](http://www.opensource.org
 > The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 >
 > THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+[The Art of C++]: https://taocpp.github.io/

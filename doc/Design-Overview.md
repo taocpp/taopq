@@ -1,6 +1,4 @@
-# The Art of C++ / PostgreSQL
-
-## Design Overview
+# Design Overview
 
 The design of The Art of C++ / PostgreSQL is loosely based on Jeroen T. Vermeulen's [libpqxx](http://pqxx.org/development/libpqxx/), keeping the philosophy of the design while rethinking everything from the ground up and taking C++11 into account where possible.
 
@@ -43,3 +41,5 @@ SQL `NULL` can be supplied as `tao::postgres::null` as a parameter to a statemen
 ### Data Types
 
 A set of predefined data types is available for both parameters (converting a type `T` into a string for PostgreSQL's API) and for results (converting a string returned from the database into a type `T`). The user can specialize both `tao::postgres::parameter_traits` as well as `tao::postgres::result_traits` to extend the API. Each data type may correspond to one or more result fields.
+
+Copyright (c) 2016-2018 Daniel Frey and Dr. Colin Hirsch
