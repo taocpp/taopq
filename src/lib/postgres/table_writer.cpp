@@ -16,7 +16,7 @@ namespace tao
       table_writer::table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement )
          : transaction_( transaction )
       {
-         result(::PQexecParams( transaction->connection_->pgconn_.get(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
+         result( ::PQexecParams( transaction->connection_->pgconn_.get(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
       }
 
       table_writer::~table_writer()
@@ -42,7 +42,7 @@ namespace tao
             throw std::runtime_error( "::PQputCopyEnd() failed: " + connection->error_message() );
          }
          transaction_.reset();
-         return result(::PQgetResult( connection->pgconn_.get() ) ).rows_affected();
+         return result( ::PQgetResult( connection->pgconn_.get() ) ).rows_affected();
       }
 
    }  // namespace postgres

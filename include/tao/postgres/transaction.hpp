@@ -47,21 +47,21 @@ namespace tao
 
          virtual void v_reset() noexcept = 0;
 
-         transaction*& current_transaction() const;
+         [[nodiscard]] transaction*& current_transaction() const;
          void check_current_transaction() const;
 
       private:
-         result execute_params( const char* statement, const int n_params, const char* const param_values[] );
+         [[nodiscard]] result execute_params( const char* statement, const int n_params, const char* const param_values[] );
 
          template< std::size_t... Ns, typename... Ts >
-         result execute_indexed_tuple( const char* statement, const std::index_sequence< Ns... >&, const std::tuple< Ts... >& tuple )
+         [[nodiscard]] result execute_indexed_tuple( const char* statement, const std::index_sequence< Ns... >&, const std::tuple< Ts... >& tuple )
          {
             const char* const param_values[] = { std::get< Ns >( tuple )... };
             return execute_params( statement, sizeof...( Ns ), param_values );
          }
 
          template< typename... Ts >
-         result execute_tuple( const char* statement, const std::tuple< Ts... >& tuple )
+         [[nodiscard]] result execute_tuple( const char* statement, const std::tuple< Ts... >& tuple )
          {
             return execute_indexed_tuple( statement, std::index_sequence_for< Ts... >(), tuple );
          }
@@ -73,7 +73,7 @@ namespace tao
          void commit();
          void rollback();
 
-         std::shared_ptr< transaction > subtransaction();
+         [[nodiscard]] std::shared_ptr< transaction > subtransaction();
 
          template< typename... As >
          result execute( const char* statement, As&&... as )

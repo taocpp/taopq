@@ -8,14 +8,14 @@ namespace tao
 {
    namespace utility
    {
-      long strtol( const char* input, const int base = 0 );
-      unsigned long strtoul( const char* input, const int base = 0 );
-      long long strtoll( const char* input, const int base = 0 );
-      unsigned long long strtoull( const char* input, const int base = 0 );
+      [[nodiscard]] long strtol( const char* input, const int base = 0 );
+      [[nodiscard]] unsigned long strtoul( const char* input, const int base = 0 );
+      [[nodiscard]] long long strtoll( const char* input, const int base = 0 );
+      [[nodiscard]] unsigned long long strtoull( const char* input, const int base = 0 );
 
-      float strtof( const char* input );
-      double strtod( const char* input );
-      long double strtold( const char* input );
+      [[nodiscard]] float strtof( const char* input );
+      [[nodiscard]] double strtod( const char* input );
+      [[nodiscard]] long double strtold( const char* input );
 
    }  // namespace utility
 

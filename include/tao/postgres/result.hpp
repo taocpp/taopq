@@ -59,22 +59,22 @@ namespace tao
             expect_ok,
             expect_copy_in
          };
-         result(::PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
+         result( ::PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
 
       public:
-         bool has_rows_affected() const;
-         std::size_t rows_affected() const;
+         [[nodiscard]] bool has_rows_affected() const;
+         [[nodiscard]] std::size_t rows_affected() const;
 
-         std::size_t columns() const
+         [[nodiscard]] std::size_t columns() const
          {
             return columns_;
          }
 
-         std::string name( const std::size_t column ) const;
-         std::size_t index( const std::string& in_name ) const;
+         [[nodiscard]] std::string name( const std::size_t column ) const;
+         [[nodiscard]] std::size_t index( const std::string& in_name ) const;
 
-         bool empty() const;
-         std::size_t size() const;
+         [[nodiscard]] bool empty() const;
+         [[nodiscard]] std::size_t size() const;
 
          class const_iterator
             : private row
@@ -88,7 +88,7 @@ namespace tao
             }
 
          public:
-            friend bool operator!=( const const_iterator& lhs, const const_iterator& rhs )
+            [[nodiscard]] friend bool operator!=( const const_iterator& lhs, const const_iterator& rhs )
             {
                return lhs.row_ != rhs.row_;
             }
@@ -99,27 +99,27 @@ namespace tao
                return *this;
             }
 
-            const row& operator*() const
+            [[nodiscard]] const row& operator*() const
             {
                return *this;
             }
          };
 
-         const_iterator begin() const;
-         const_iterator end() const;
+         [[nodiscard]] const_iterator begin() const;
+         [[nodiscard]] const_iterator end() const;
 
-         bool is_null( const std::size_t row, const std::size_t column ) const;
-         const char* get( const std::size_t row, const std::size_t column ) const;
+         [[nodiscard]] bool is_null( const std::size_t row, const std::size_t column ) const;
+         [[nodiscard]] const char* get( const std::size_t row, const std::size_t column ) const;
 
-         row operator[]( const std::size_t row ) const
+         [[nodiscard]] row operator[]( const std::size_t row ) const
          {
             return postgres::row( *this, row, 0, columns_ );
          }
 
-         row at( const std::size_t row ) const;
+         [[nodiscard]] row at( const std::size_t row ) const;
 
          template< typename T >
-         T as() const
+         [[nodiscard]] T as() const
          {
             if( size() != 1 ) {
                throw std::runtime_error( utility::printf( "invalid result size: %zu rows, expected 1 row", rows_ ) );
@@ -128,7 +128,7 @@ namespace tao
          }
 
          template< typename T >
-         std::optional< T > optional() const
+         [[nodiscard]] std::optional< T > optional() const
          {
             if( empty() ) {
                return {};
@@ -137,19 +137,19 @@ namespace tao
          }
 
          template< typename T, typename U >
-         std::pair< T, U > pair() const
+         [[nodiscard]] std::pair< T, U > pair() const
          {
             return as< std::pair< T, U > >();
          }
 
          template< typename... Ts >
-         std::tuple< Ts... > tuple() const
+         [[nodiscard]] std::tuple< Ts... > tuple() const
          {
             return as< std::tuple< Ts... > >();
          }
 
          template< typename T >
-         std::enable_if_t< result_impl::has_reserve< T >, T > as_container() const
+         [[nodiscard]] std::enable_if_t< result_impl::has_reserve< T >, T > as_container() const
          {
             T nrv;
             nrv.reserve( size() );
@@ -161,7 +161,7 @@ namespace tao
          }
 
          template< typename T >
-         std::enable_if_t< !result_impl::has_reserve< T >, T > as_container() const
+         [[nodiscard]] std::enable_if_t< !result_impl::has_reserve< T >, T > as_container() const
          {
             T nrv;
             check_has_result_set();
@@ -172,73 +172,73 @@ namespace tao
          }
 
          template< typename... Ts >
-         std::vector< Ts... > vector() const
+         [[nodiscard]] std::vector< Ts... > vector() const
          {
             return as_container< std::vector< Ts... > >();
          }
 
          template< typename... Ts >
-         std::list< Ts... > list() const
+         [[nodiscard]] std::list< Ts... > list() const
          {
             return as_container< std::list< Ts... > >();
          }
 
          template< typename... Ts >
-         std::set< Ts... > set() const
+         [[nodiscard]] std::set< Ts... > set() const
          {
             return as_container< std::set< Ts... > >();
          }
 
          template< typename... Ts >
-         std::multiset< Ts... > multiset() const
+         [[nodiscard]] std::multiset< Ts... > multiset() const
          {
             return as_container< std::multiset< Ts... > >();
          }
 
          template< typename... Ts >
-         std::unordered_set< Ts... > unordered_set() const
+         [[nodiscard]] std::unordered_set< Ts... > unordered_set() const
          {
             return as_container< std::unordered_set< Ts... > >();
          }
 
          template< typename... Ts >
-         std::unordered_multiset< Ts... > unordered_multiset() const
+         [[nodiscard]] std::unordered_multiset< Ts... > unordered_multiset() const
          {
             return as_container< std::unordered_multiset< Ts... > >();
          }
 
          template< typename... Ts >
-         std::map< Ts... > map() const
+         [[nodiscard]] std::map< Ts... > map() const
          {
             return as_container< std::map< Ts... > >();
          }
 
          template< typename... Ts >
-         std::multimap< Ts... > multimap() const
+         [[nodiscard]] std::multimap< Ts... > multimap() const
          {
             return as_container< std::multimap< Ts... > >();
          }
 
          template< typename... Ts >
-         std::unordered_map< Ts... > unordered_map() const
+         [[nodiscard]] std::unordered_map< Ts... > unordered_map() const
          {
             return as_container< std::unordered_map< Ts... > >();
          }
 
          template< typename... Ts >
-         std::unordered_multimap< Ts... > unordered_multimap() const
+         [[nodiscard]] std::unordered_multimap< Ts... > unordered_multimap() const
          {
             return as_container< std::unordered_multimap< Ts... > >();
          }
 
          // make sure you include libpq-fe.h before accessing the raw pointer
-         ::PGresult* underlying_raw_ptr()
+         [[nodiscard]] ::PGresult* underlying_raw_ptr()
          {
             return pgresult_.get();
          }
 
          // make sure you include libpq-fe.h before accessing the raw pointer
-         const ::PGresult* underlying_raw_ptr() const
+         [[nodiscard]] const ::PGresult* underlying_raw_ptr() const
          {
             return pgresult_.get();
          }

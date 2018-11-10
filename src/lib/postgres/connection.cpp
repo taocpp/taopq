@@ -16,7 +16,7 @@ namespace tao
    {
       namespace
       {
-         bool is_identifier( const std::string& value )
+         [[nodiscard]] bool is_identifier( const std::string& value )
          {
             if( value.empty() || std::isdigit( value[ 0 ] ) ) {
                return false;
@@ -66,7 +66,7 @@ namespace tao
             }
 
          private:
-            bool v_is_direct() const
+            [[nodiscard]] bool v_is_direct() const
             {
                return true;
             }
@@ -84,7 +84,7 @@ namespace tao
             : public transaction_base
          {
          private:
-            const char* isolation_level_to_statement( const transaction::isolation_level il )
+            [[nodiscard]] const char* isolation_level_to_statement( const transaction::isolation_level il )
             {
                switch( il ) {
                   case transaction::isolation_level::default_isolation_level:
@@ -127,7 +127,7 @@ namespace tao
             }
 
          private:
-            bool v_is_direct() const
+            [[nodiscard]] bool v_is_direct() const
             {
                return false;
             }
@@ -146,7 +146,7 @@ namespace tao
 
       namespace connection_impl
       {
-         void deleter::operator()(::PGconn* p ) const
+         void deleter::operator()( ::PGconn* p ) const
          {
             ::PQfinish( p );
          }
@@ -180,15 +180,15 @@ namespace tao
             assert( param_values );
          }
          if( is_prepared( statement ) ) {
-            return result(::PQexecPrepared( pgconn_.get(), statement, n_params, param_values, nullptr, nullptr, 0 ) );
+            return result( ::PQexecPrepared( pgconn_.get(), statement, n_params, param_values, nullptr, nullptr, 0 ) );
          }
          else {
-            return result(::PQexecParams( pgconn_.get(), statement, n_params, nullptr, param_values, nullptr, nullptr, 0 ) );
+            return result( ::PQexecParams( pgconn_.get(), statement, n_params, nullptr, param_values, nullptr, nullptr, 0 ) );
          }
       }
 
       connection::connection( const connection::private_key&, const std::string& connect_info )
-         : pgconn_(::PQconnectdb( connect_info.c_str() ), connection_impl::deleter() ),
+         : pgconn_( ::PQconnectdb( connect_info.c_str() ), connection_impl::deleter() ),
            current_transaction_( nullptr )
       {
          if( !is_open() ) {
@@ -214,7 +214,7 @@ namespace tao
       void connection::prepare( const std::string& name, const std::string& statement )
       {
          check_prepared_name( name );
-         result(::PQprepare( pgconn_.get(), name.c_str(), statement.c_str(), 0, nullptr ) );
+         result( ::PQprepare( pgconn_.get(), name.c_str(), statement.c_str(), 0, nullptr ) );
          prepared_statements_.insert( name );
       }
 

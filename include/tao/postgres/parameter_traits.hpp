@@ -35,7 +35,7 @@ namespace tao
             }
 
          public:
-            std::tuple< const char* > operator()() const
+            [[nodiscard]] std::tuple< const char* > operator()() const
             {
                return std::tuple< const char* >( p_ );
             }
@@ -54,14 +54,14 @@ namespace tao
             }
 
          public:
-            std::tuple< const char* > operator()() const
+            [[nodiscard]] std::tuple< const char* > operator()() const
             {
                return std::tuple< const char* >( s_.c_str() );
             }
          };
 
          template< typename T >
-         std::string printf_helper( const char* format, const T v )
+         [[nodiscard]] std::string printf_helper( const char* format, const T v )
          {
             if( std::isfinite( v ) ) {
                return utility::printf( format, v );
@@ -81,7 +81,7 @@ namespace tao
          {
          }
 
-         std::tuple< const char* > operator()() const
+         [[nodiscard]] std::tuple< const char* > operator()() const
          {
             return std::tuple< const char* >( nullptr );
          }
@@ -272,7 +272,7 @@ namespace tao
             }
          }
 
-         result_type operator()() const
+         [[nodiscard]] result_type operator()() const
          {
             return forwarder_ ? ( *forwarder_ )() : result_type();
          }

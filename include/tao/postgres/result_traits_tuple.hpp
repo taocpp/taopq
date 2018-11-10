@@ -40,12 +40,12 @@ namespace tao
          static constexpr std::size_t size = result_traits_size< T >;
 
          template< typename U = T >
-         static std::enable_if_t< std::is_same_v< T, U > && result_traits_has_null< T >, std::tuple< T > > null()
+         [[nodiscard]] static std::enable_if_t< std::is_same_v< T, U > && result_traits_has_null< T >, std::tuple< T > > null()
          {
             return std::tuple< T >( result_traits< T >::null() );
          }
 
-         static std::tuple< T > from( const char* value )
+         [[nodiscard]] static std::tuple< T > from( const char* value )
          {
             return std::tuple< T >( result_traits< T >::from( value ) );
          }
@@ -59,12 +59,12 @@ namespace tao
          static constexpr std::size_t size{ ( result_traits_size< Ts > + ... + 0 ) };
 
          template< std::size_t... Ns >
-         static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > )
+         [[nodiscard]] static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > )
          {
             return std::tuple< Ts... >( row.get< Ts >( Ns )... );
          }
 
-         static std::tuple< Ts... > from( const row& row )
+         [[nodiscard]] static std::tuple< Ts... > from( const row& row )
          {
             return from( row, impl::exclusive_scan_t< result_traits_size< Ts >... >() );
          }

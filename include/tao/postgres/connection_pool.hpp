@@ -23,11 +23,11 @@ namespace tao
       private:
          const std::string connection_info_;
 
-         std::unique_ptr< postgres::connection > v_create() const override;
-         bool v_is_valid( postgres::connection& c ) const override;
+         [[nodiscard]] std::unique_ptr< postgres::connection > v_create() const override;
+         [[nodiscard]] bool v_is_valid( postgres::connection& c ) const override;
 
       public:
-         static std::shared_ptr< connection_pool > create( const std::string& connection_info );
+         [[nodiscard]] static std::shared_ptr< connection_pool > create( const std::string& connection_info );
 
       private:
          // pass-key idiom
@@ -40,7 +40,7 @@ namespace tao
       public:
          connection_pool( const private_key&, const std::string& connection_info );
 
-         std::shared_ptr< postgres::connection > connection()
+         [[nodiscard]] std::shared_ptr< postgres::connection > connection()
          {
             return this->get();
          }

@@ -31,34 +31,34 @@ namespace tao
          }
 
       public:
-         std::string name() const;
+         [[nodiscard]] std::string name() const;
 
-         bool is_null() const;
-         const char* get() const;
+         [[nodiscard]] bool is_null() const;
+         [[nodiscard]] const char* get() const;
 
          template< typename T >
-         typename std::enable_if_t< result_traits_size< T > != 1, T > as() const
+         [[nodiscard]] std::enable_if_t< result_traits_size< T > != 1, T > as() const
          {
             static_assert( !std::is_same_v< T, T >, "tao::postgres::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
             __builtin_unreachable();
          }
 
          template< typename T >
-         typename std::enable_if_t< result_traits_size< T > == 1, T > as() const;  // implemented in row.hpp
+         [[nodiscard]] std::enable_if_t< result_traits_size< T > == 1, T > as() const;  // implemented in row.hpp
 
          template< typename T >
-         std::optional< T > optional() const
+         [[nodiscard]] std::optional< T > optional() const
          {
             return as< std::optional< T > >();
          }
       };
 
-      inline bool operator==( const field& f, const null_t& )
+      [[nodiscard]] inline bool operator==( const field& f, const null_t& )
       {
          return f.is_null();
       }
 
-      inline bool operator!=( const field& f, const null_t& )
+      [[nodiscard]] inline bool operator!=( const field& f, const null_t& )
       {
          return !f.is_null();
       }

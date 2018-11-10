@@ -36,10 +36,10 @@ namespace tao
          }
       }
 
-      result::result(::PGresult* pgresult, const mode_t mode )
+      result::result( ::PGresult* pgresult, const mode_t mode )
          : pgresult_( pgresult, &::PQclear ),
-           columns_(::PQnfields( pgresult ) ),
-           rows_(::PQntuples( pgresult ) )
+           columns_( ::PQnfields( pgresult ) ),
+           rows_( ::PQntuples( pgresult ) )
       {
          const auto status = ::PQresultStatus( pgresult );
          switch( status ) {

@@ -18,17 +18,17 @@ namespace tao
       {
          static constexpr std::size_t size = result_traits_size< T >;
 
-         static std::optional< T > null()
+         [[nodiscard]] static std::optional< T > null()
          {
             return {};
          }
 
-         static std::optional< T > from( const char* value )
+         [[nodiscard]] static std::optional< T > from( const char* value )
          {
             return result_traits< T >::from( value );
          }
 
-         static std::optional< T > from( const row& row )
+         [[nodiscard]] static std::optional< T > from( const row& row )
          {
             for( std::size_t column = 0; column < row.columns(); ++column ) {
                if( !row.is_null( column ) ) {

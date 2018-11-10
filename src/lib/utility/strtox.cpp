@@ -37,61 +37,61 @@ namespace tao
          // clang-format on
 
          template< typename T >
-         std::string failure_message( const char* input )
+         [[nodiscard]] std::string failure_message( const char* input )
          {
             return message< T >::value + input;
          }
 
          template< typename T >
-         T call_integral( const char* nptr, char** endptr, int base );
+         [[nodiscard]] T call_integral( const char* nptr, char** endptr, int base );
 
          template<>
-         long call_integral< long >( const char* nptr, char** endptr, int base )
+         [[nodiscard]] long call_integral< long >( const char* nptr, char** endptr, int base )
          {
             return std::strtol( nptr, endptr, base );
          }
 
          template<>
-         unsigned long call_integral< unsigned long >( const char* nptr, char** endptr, int base )
+         [[nodiscard]] unsigned long call_integral< unsigned long >( const char* nptr, char** endptr, int base )
          {
             return std::strtoul( nptr, endptr, base );
          }
 
          template<>
-         long long call_integral< long long >( const char* nptr, char** endptr, int base )
+         [[nodiscard]] long long call_integral< long long >( const char* nptr, char** endptr, int base )
          {
             return std::strtoll( nptr, endptr, base );
          }
 
          template<>
-         unsigned long long call_integral< unsigned long long >( const char* nptr, char** endptr, int base )
+         [[nodiscard]] unsigned long long call_integral< unsigned long long >( const char* nptr, char** endptr, int base )
          {
             return std::strtoull( nptr, endptr, base );
          }
 
          template< typename T >
-         T call_floating_point( const char* nptr, char** endptr );
+         [[nodiscard]] T call_floating_point( const char* nptr, char** endptr );
 
          template<>
-         float call_floating_point< float >( const char* nptr, char** endptr )
+         [[nodiscard]] float call_floating_point< float >( const char* nptr, char** endptr )
          {
             return std::strtof( nptr, endptr );
          }
 
          template<>
-         double call_floating_point< double >( const char* nptr, char** endptr )
+         [[nodiscard]] double call_floating_point< double >( const char* nptr, char** endptr )
          {
             return std::strtod( nptr, endptr );
          }
 
          template<>
-         long double call_floating_point< long double >( const char* nptr, char** endptr )
+         [[nodiscard]] long double call_floating_point< long double >( const char* nptr, char** endptr )
          {
             return std::strtold( nptr, endptr );
          }
 
          template< typename T >
-         T str_to_integral( const char* input, const int base )
+         [[nodiscard]] T str_to_integral( const char* input, const int base )
          {
             assert( input );
             if( *input == '\0' || std::isspace( *input ) ) {
@@ -124,7 +124,7 @@ namespace tao
          }
 
          template< typename T >
-         T str_to_floating_point( const char* input )
+         [[nodiscard]] T str_to_floating_point( const char* input )
          {
             assert( input );
             if( *input == '\0' || std::isspace( *input ) ) {
@@ -153,7 +153,7 @@ namespace tao
 
       }  // namespace
 
-      long strtol( const char* input, const int base )
+      [[nodiscard]] long strtol( const char* input, const int base )
       {
          return str_to_integral< long >( input, base );
       }

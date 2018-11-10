@@ -21,7 +21,7 @@ void run()
    const auto connection = tao::postgres::connection::create( connection_string );
 
    // open a seconds, independent connection (and discard it immediately)
-   tao::postgres::connection::create( connection_string );
+   (void)tao::postgres::connection::create( connection_string );
 
    // execute an SQL statement
    connection->execute( "DROP TABLE IF EXISTS tao_connection_test" );

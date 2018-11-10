@@ -10,8 +10,8 @@ namespace tao
 {
    namespace utility
    {
-      std::string getenv( const std::string& name );
-      std::string getenv( const std::string& name, const std::string& default_value );
+      [[nodiscard]] std::string getenv( const std::string& name );
+      [[nodiscard]] std::string getenv( const std::string& name, const std::string& default_value );
 
    }  // namespace utility
 

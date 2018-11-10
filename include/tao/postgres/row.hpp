@@ -42,28 +42,28 @@ namespace tao
          void ensure_column( const std::size_t column ) const;
 
       public:
-         row slice( const std::size_t offset, const std::size_t in_columns ) const;
+         [[nodiscard]] row slice( const std::size_t offset, const std::size_t in_columns ) const;
 
-         std::size_t columns() const
+         [[nodiscard]] std::size_t columns() const
          {
             return columns_;
          }
 
-         std::string name( const std::size_t column ) const;
-         std::size_t index( const std::string& in_name ) const;
+         [[nodiscard]] std::string name( const std::size_t column ) const;
+         [[nodiscard]] std::size_t index( const std::string& in_name ) const;
 
-         bool is_null( const std::size_t column ) const;
-         const char* get( const std::size_t column ) const;
+         [[nodiscard]] bool is_null( const std::size_t column ) const;
+         [[nodiscard]] const char* get( const std::size_t column ) const;
 
          template< typename T >
-         std::enable_if_t< result_traits_size< T > == 0, T > get( const std::size_t ) const
+         [[nodiscard]] std::enable_if_t< result_traits_size< T > == 0, T > get( const std::size_t ) const
          {
             static_assert( !std::is_same< T, T >::value, "tao::postgres::result_traits<T>::size yields zero" );
             __builtin_unreachable();
          }
 
          template< typename T >
-         std::enable_if_t< result_traits_size< T > == 1 && result_traits_has_null< T >, T > get( const std::size_t column ) const
+         [[nodiscard]] std::enable_if_t< result_traits_size< T > == 1 && result_traits_has_null< T >, T > get( const std::size_t column ) const
          {
             if( is_null( column ) ) {
                return result_traits< T >::null();
@@ -72,26 +72,26 @@ namespace tao
          }
 
          template< typename T >
-         std::enable_if_t< result_traits_size< T > == 1 && !result_traits_has_null< T >, T > get( const std::size_t column ) const
+         [[nodiscard]] std::enable_if_t< result_traits_size< T > == 1 && !result_traits_has_null< T >, T > get( const std::size_t column ) const
          {
             ensure_column( column );
             return result_traits< T >::from( get( column ) );
          }
 
          template< typename T >
-         std::enable_if_t< ( result_traits_size< T >> 1 ), T > get( const std::size_t column ) const
+         [[nodiscard]] std::enable_if_t< ( result_traits_size< T >> 1 ), T > get( const std::size_t column ) const
          {
             return result_traits< T >::from( slice( column, result_traits_size< T > ) );
          }
 
          template< typename T >
-         std::optional< T > optional( const std::size_t column ) const
+         [[nodiscard]] std::optional< T > optional( const std::size_t column ) const
          {
             return get< std::optional< T > >( column );
          }
 
          template< typename T >
-         T as() const
+         [[nodiscard]] T as() const
          {
             if( result_traits_size< T > != columns_ ) {
                throw std::runtime_error( utility::printf( "datatype (%s) requires %zu columns, but row/slice has %zu columns", utility::demangle< T >().c_str(), result_traits_size< T >, columns_ ) );
@@ -100,36 +100,36 @@ namespace tao
          }
 
          template< typename T >
-         std::optional< T > optional() const
+         [[nodiscard]] std::optional< T > optional() const
          {
             return as< std::optional< T > >();
          }
 
          template< typename T, typename U >
-         std::pair< T, U > pair() const
+         [[nodiscard]] std::pair< T, U > pair() const
          {
             return as< std::pair< T, U > >();
          }
 
          template< typename... Ts >
-         std::tuple< Ts... > tuple() const
+         [[nodiscard]] std::tuple< Ts... > tuple() const
          {
             return as< std::tuple< Ts... > >();
          }
 
-         field operator[]( const std::size_t column ) const
+         [[nodiscard]] field operator[]( const std::size_t column ) const
          {
             ensure_column( column );
             return field( *this, offset_ + column );
          }
 
-         field operator[]( const std::string& in_name ) const
+         [[nodiscard]] field operator[]( const std::string& in_name ) const
          {
             return ( *this )[ index( in_name ) ];
          }
 
-         field at( const std::size_t column ) const;
-         field at( const std::string& in_name ) const;
+         [[nodiscard]] field at( const std::size_t column ) const;
+         [[nodiscard]] field at( const std::string& in_name ) const;
       };
 
       template< typename T >

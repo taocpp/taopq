@@ -46,8 +46,8 @@ namespace tao
          virtual ~pool() = default;
 
          // create a new T
-         virtual std::unique_ptr< T > v_create() const = 0;
-         virtual bool v_is_valid( T& ) const
+         [[nodiscard]] virtual std::unique_ptr< T > v_create() const = 0;
+         [[nodiscard]] virtual bool v_is_valid( T& ) const
          {
             return true;
          }
@@ -74,7 +74,7 @@ namespace tao
             }
          }
 
-         std::shared_ptr< T > pull() noexcept
+         [[nodiscard]] std::shared_ptr< T > pull() noexcept
          {
             std::shared_ptr< T > nrv;
             const std::lock_guard lock( mutex_ );
@@ -104,13 +104,13 @@ namespace tao
          }
 
          // create a new T which is put into the pool when no longer used
-         std::shared_ptr< T > create()
+         [[nodiscard]] std::shared_ptr< T > create()
          {
             return { v_create().release(), deleter( this->shared_from_this() ) };
          }
 
          // get an instance from the pool or create a new one if necessary
-         std::shared_ptr< T > get()
+         [[nodiscard]] std::shared_ptr< T > get()
          {
             while( const auto sp = pull() ) {
                v_pull_before( *sp );

@@ -44,6 +44,6 @@
 
 #define TEST_EXECUTE( ... ) TEST_EXECUTE_MESSAGE( "EXECUTE " #__VA_ARGS__, __VA_ARGS__ )
 #define TEST_ASSERT( ... ) TEST_ASSERT_MESSAGE( "ASSERT " #__VA_ARGS__, __VA_ARGS__ )
-#define TEST_THROWS( ... ) TEST_THROWS_MESSAGE( "THROWS " #__VA_ARGS__, __VA_ARGS__ )
+#define TEST_THROWS( ... ) TEST_THROWS_MESSAGE( "THROWS " #__VA_ARGS__, (void)__VA_ARGS__ )
 
 #endif

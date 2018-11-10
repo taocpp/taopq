@@ -11,11 +11,11 @@ namespace tao
 {
    namespace utility
    {
-      std::string demangle( const char* const symbol );
-      std::string demangle( const std::type_info& type_info );
+      [[nodiscard]] std::string demangle( const char* const symbol );
+      [[nodiscard]] std::string demangle( const std::type_info& type_info );
 
       template< typename T >
-      std::string demangle()
+      [[nodiscard]] std::string demangle()
       {
          return demangle( typeid( T ) );
       }

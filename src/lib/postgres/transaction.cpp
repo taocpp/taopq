@@ -35,7 +35,7 @@ namespace tao
                }
             }
 
-            bool v_is_direct() const
+            [[nodiscard]] bool v_is_direct() const
             {
                return false;
             }

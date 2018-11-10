@@ -32,12 +32,12 @@ namespace tao
       inline constexpr bool result_traits_has_null = false;
 
       template< typename T >
-      inline constexpr bool result_traits_has_null< T, decltype( result_traits< T >::null(), void() ) > = true;
+      inline constexpr bool result_traits_has_null< T, decltype( (void)result_traits< T >::null() ) > = true;
 
       template<>
       struct result_traits< const char* >
       {
-         static const char* from( const char* value )
+         [[nodiscard]] static const char* from( const char* value )
          {
             return value;
          }
@@ -46,7 +46,7 @@ namespace tao
       template<>
       struct result_traits< std::string >
       {
-         static std::string from( const char* value )
+         [[nodiscard]] static std::string from( const char* value )
          {
             return value;
          }
@@ -55,91 +55,91 @@ namespace tao
       template<>
       struct result_traits< bool >
       {
-         static bool from( const char* value );
+         [[nodiscard]] static bool from( const char* value );
       };
 
       template<>
       struct result_traits< char >
       {
-         static char from( const char* value );
+         [[nodiscard]] static char from( const char* value );
       };
 
       template<>
       struct result_traits< signed char >
       {
-         static signed char from( const char* value );
+         [[nodiscard]] static signed char from( const char* value );
       };
 
       template<>
       struct result_traits< unsigned char >
       {
-         static unsigned char from( const char* value );
+         [[nodiscard]] static unsigned char from( const char* value );
       };
 
       template<>
       struct result_traits< short >
       {
-         static short from( const char* value );
+         [[nodiscard]] static short from( const char* value );
       };
 
       template<>
       struct result_traits< unsigned short >
       {
-         static unsigned short from( const char* value );
+         [[nodiscard]] static unsigned short from( const char* value );
       };
 
       template<>
       struct result_traits< int >
       {
-         static int from( const char* value );
+         [[nodiscard]] static int from( const char* value );
       };
 
       template<>
       struct result_traits< unsigned >
       {
-         static unsigned from( const char* value );
+         [[nodiscard]] static unsigned from( const char* value );
       };
 
       template<>
       struct result_traits< long >
       {
-         static long from( const char* value );
+         [[nodiscard]] static long from( const char* value );
       };
 
       template<>
       struct result_traits< unsigned long >
       {
-         static unsigned long from( const char* value );
+         [[nodiscard]] static unsigned long from( const char* value );
       };
 
       template<>
       struct result_traits< long long >
       {
-         static long long from( const char* value );
+         [[nodiscard]] static long long from( const char* value );
       };
 
       template<>
       struct result_traits< unsigned long long >
       {
-         static unsigned long long from( const char* value );
+         [[nodiscard]] static unsigned long long from( const char* value );
       };
 
       template<>
       struct result_traits< float >
       {
-         static float from( const char* value );
+         [[nodiscard]] static float from( const char* value );
       };
 
       template<>
       struct result_traits< double >
       {
-         static double from( const char* value );
+         [[nodiscard]] static double from( const char* value );
       };
 
       template<>
       struct result_traits< long double >
       {
-         static long double from( const char* value );
+         [[nodiscard]] static long double from( const char* value );
       };
 
    }  // namespace postgres

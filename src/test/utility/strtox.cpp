@@ -18,7 +18,7 @@ template< typename T >
 void reject( const char* input, const int base = 10 )
 {
    try {
-      tao::utility::strtol( input, base );
+      (void)tao::utility::strtol( input, base );
       throw std::runtime_error( tao::utility::printf( "strtol(): %s (%d)", input, base ) );
    }
    catch( const T& e ) {
@@ -27,7 +27,7 @@ void reject( const char* input, const int base = 10 )
       }
    }
    try {
-      tao::utility::strtoll( input, base );
+      (void)tao::utility::strtoll( input, base );
       throw std::runtime_error( tao::utility::printf( "strtoll(): %s (%d)", input, base ) );
    }
    catch( const T& e ) {
@@ -41,7 +41,7 @@ template< typename T >
 void reject_unsigned( const char* input, const int base = 10 )
 {
    try {
-      tao::utility::strtoul( input, base );
+      (void)tao::utility::strtoul( input, base );
       throw std::runtime_error( tao::utility::printf( "strtoul(): %s (%d)", input, base ) );
    }
    catch( const T& e ) {
@@ -50,7 +50,7 @@ void reject_unsigned( const char* input, const int base = 10 )
       }
    }
    try {
-      tao::utility::strtoull( input, base );
+      (void)tao::utility::strtoull( input, base );
       throw std::runtime_error( tao::utility::printf( "strtoull(): %s (%d)", input, base ) );
    }
    catch( const T& e ) {
@@ -64,7 +64,7 @@ template< typename T >
 void reject_floating_point( const char* input )
 {
    try {
-      tao::utility::strtof( input );
+      (void)tao::utility::strtof( input );
       throw std::runtime_error( tao::utility::printf( "strtof(): %s", input ) );
    }
    catch( const T& e ) {
@@ -73,7 +73,7 @@ void reject_floating_point( const char* input )
       }
    }
    try {
-      tao::utility::strtod( input );
+      (void)tao::utility::strtod( input );
       throw std::runtime_error( tao::utility::printf( "strtod(): %s", input ) );
    }
    catch( const T& e ) {
@@ -82,7 +82,7 @@ void reject_floating_point( const char* input )
       }
    }
    try {
-      tao::utility::strtold( input );
+      (void)tao::utility::strtold( input );
       throw std::runtime_error( tao::utility::printf( "strtold(): %s", input ) );
    }
    catch( const T& e ) {
