@@ -6,8 +6,42 @@ branches:
   only:
     - master
 
+linux-conan: &linux-conan
+  os: linux
+  dist: xenial
+  language: python
+  python: "3.7"
+  services:
+    - docker
+  install:
+    - .conan/travis/install.sh
+  script:
+    - .conan/travis/run.sh
+
+osx-conan: &osx-conan
+  os: osx
+  language: generic
+  install:
+    - .conan/travis/install.sh
+  script:
+    - .conan/travis/run.sh
+
 matrix:
   include:
+    - <<: *linux-conan
+      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7
+    - <<: *linux-conan
+      env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
+    - <<: *linux-conan
+      env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50
+    - <<: *linux-conan
+      env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60
+    - <<: *linux-conan
+      env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
+    - <<: *osx-conan
+      osx_image: xcode10
+      env: CONAN_APPLE_CLANG_VERSIONS=10.0
+
     - compiler: gcc
       addons:
         apt:

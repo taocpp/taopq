@@ -32,3 +32,19 @@ build_script:
 test_script:
 - PATH=C:\Program Files\PostgreSQL\9.6\bin\;%PATH%
 - ctest -C "%CONFIGURATION%" --output-on-failure
+
+for:
+  -
+    matrix:
+    environment:
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      CONAN_VISUAL_VERSIONS: 15
+      PYTHON: "C:\\Python37"
+    build: false
+    install:
+      - set PATH=%PATH%;%PYTHON%/Scripts/
+      - pip.exe install conan --upgrade
+      - pip.exe install conan_package_tools bincrafters_package_tools
+      - conan user
+    test_script:
+      - python build.py
