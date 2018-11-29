@@ -1,16 +1,16 @@
 # Design Overview
 
-The design of The Art of C++ / taopq is loosely based on Jeroen T. Vermeulen's [libpqxx](http://pqxx.org/development/libpqxx/), keeping the philosophy of the design while rethinking everything from the ground up and taking C++17 into account where possible.
+The design of `taopq` is loosely based on Jeroen T. Vermeulen's [libpqxx](http://pqxx.org/development/libpqxx/), keeping the philosophy of the design while rethinking everything from the ground up and taking C++17 into account where possible.
 
 The most important classes and design decisions are listed below.
 
 ### `tao::pq::connection`
 
-Each connection to a server is handled by an instance of `tao::pq::connection`. A connection is created by a static method `tao::pq::connection::create()`, which returns a `std::shared_ptr` to the connection. From a connection instance you can get a transaction by calling `direct()` or `transaction()`, where the former is an auto-commit transaction while the latter creates a *real* transaction.
+Each connection to a server is handled by an instance of `tao::pq::connection`. A connection is created by a static method `tao::pq::connection::create()`, which returns a `std::shared_ptr` to the connection. From a connection you can get a transaction by calling `direct()` or `transaction()`, where the former is an auto-commit transaction while the latter creates a *real* transaction.
 
 ### `tao::pq::transaction`
 
-The base class for all transactions. Like connections, transactions are handled via `std::shared_ptr`. SQL commands are always executed within a transaction with the `execute()` method. You can also get a subtransacion by calling `subtransaction()`. The subtransaction is, again, a transaction and you can create nested subtransactions. The library will ensure that transactions are used with correct nesting, for each transaction there is only one active transaction that can be used. For each transaction instance you should call either `commit()` or `rollback()`, otherwise the dtor will try to call `rollback()`. After calling either `commit()` or `rollback()`, a transaction is automatically marked inactive. Usage of inactive transactions results in an exception being thrown.
+The base class for all transactions. Like connections, transactions are handled via `std::shared_ptr`. SQL commands are always executed within a transaction with the `execute()` method. You can also get a subtransacion by calling `subtransaction()`. The subtransaction is, again, a transaction and you can create nested subtransactions. The library will ensure that transactions are used with correct nesting, for each transaction there is only one active transaction that can be used. For each transaction you should call either `commit()` or `rollback()`, otherwise the dtor will try to call `rollback()`. After calling either `commit()` or `rollback()`, a transaction is automatically marked inactive. Usage of inactive transactions results in an exception being thrown.
 
 ### Execution of SQL statements
 
@@ -24,7 +24,7 @@ On a connection, you can prepare statements with a symbolic name by calling `pre
 
 ### `tao::pq::result`
 
-Each execution of an SQL command returns a result instance. A result is a non-modifiable container which contains either the number of rows affected by an INSERT/UPDATE/DELETE statement or any number of rows returned from a SELECT statement. It is usually clear which type of result is returned from a statement, in case of doubt (or for a more generic result handler), you can call `has_rows_affected()`.
+Each execution of an SQL command returns a result. A result is a non-modifiable container which contains either the number of rows affected by an INSERT/UPDATE/DELETE statement or any number of rows returned from a SELECT statement. It is usually clear which type of result is returned from a statement, in case of doubt (or for a more generic result handler), you can call `has_rows_affected()`.
 
 ### `tao::pq::row`
 
