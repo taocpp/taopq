@@ -1,18 +1,19 @@
-// Copyright (c) 2014-2018 Dr. Colin Hirsch and Daniel Frey
-// Please see LICENSE for license or visit https://github.com/taocpp/postgres/
+// The Art of C++ / taopq
+// Copyright (c) 2016-2018 Daniel Frey
 
 #include <cstdlib>
 #include <iostream>
 
-#include <tao/postgres.hpp>
-#include <tao/utility/getenv.hpp>
+#include <tao/pq.hpp>
+
+#include "../../src/test/getenv.hpp"
 
 int main()
 {
    try {
-      const auto connection = tao::postgres::connection::create( tao::utility::getenv( "TAO_TEST_DATABASE", "dbname=template1" ) );
-      connection->execute( "DROP TABLE IF EXISTS tao_transaction_test" );
-      connection->execute( "CREATE TABLE tao_transaction_test ( a INTEGER PRIMARY KEY )" );
+      const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
+      connection->execute( "DROP TABLE IF EXISTS taopq_conan_test" );
+      connection->execute( "CREATE TABLE taopq_conan_test ( a INTEGER PRIMARY KEY )" );
    }
    catch( const std::runtime_error& error ) {
       // ignore connection fault

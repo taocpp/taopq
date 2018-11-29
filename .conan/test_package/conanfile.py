@@ -16,7 +16,7 @@ class TestPackageConan(ConanFile):
 
     def test(self):
         # Search for LICENSE file
-        path = os.path.join(self.deps_cpp_info["postgres"].rootpath, "licenses", "LICENSE")
+        path = os.path.join(self.deps_cpp_info["taopq"].rootpath, "licenses", "LICENSE")
         assert os.path.isfile(path)
         # Validate package import
         with tools.environment_append(RunEnvironment(self).vars):

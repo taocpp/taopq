@@ -1,6 +1,6 @@
 # The Art of C++
 # Copyright (c) 2016-2018 Daniel Frey
-# Please see LICENSE for license or visit https://github.com/taocpp/postgres
+# Please see LICENSE for license or visit https://github.com/taocpp/taopq
 
 .SUFFIXES:
 .SECONDARY:

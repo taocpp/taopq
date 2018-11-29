@@ -56,7 +56,7 @@ class BuilderSettings(object):
     def reference(self):
         """ Read project version from CMake file to create Conan referece
         """
-        pattern = re.compile(r"project \(taocpp-postgres VERSION (\d+\.\d+\.\d+) LANGUAGES CXX\)")
+        pattern = re.compile(r"project \(taopq VERSION (\d+\.\d+\.\d+) LANGUAGES CXX\)")
         version = None
         with open('CMakeLists.txt') as file:
             for line in file:
@@ -65,7 +65,7 @@ class BuilderSettings(object):
                     version = result.group(1)
         if not version:
             raise Exception("Could not find version in CMakeLists.txt")
-        return os.getenv("CONAN_REFERENCE", "postgres/{}".format(version))
+        return os.getenv("CONAN_REFERENCE", "taopq/{}".format(version))
 
 if __name__ == "__main__":
     settings = BuilderSettings()

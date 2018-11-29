@@ -1,11 +1,11 @@
-# The Art of C++ / PostgreSQL
+# The Art of C++ / taopq
 
-[![Release](https://img.shields.io/github/release/taocpp/postgres.svg)](https://github.com/taocpp/postgres/releases/latest)
-[![TravisCI](https://travis-ci.org/taocpp/postgres.svg)](https://travis-ci.org/taocpp/postgres)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/postgres?svg=true)](https://ci.appveyor.com/project/taocpp/postgres)
-[![Coverage](https://img.shields.io/coveralls/taocpp/postgres.svg)](https://coveralls.io/github/taocpp/postgres)
+[![Release](https://img.shields.io/github/release/taocpp/taopq.svg)](https://github.com/taocpp/taopq/releases/latest)
+[![TravisCI](https://travis-ci.org/taocpp/taopq.svg)](https://travis-ci.org/taocpp/taopq)
+[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/taopq?svg=true)](https://ci.appveyor.com/project/taocpp/taopq)
+[![Coverage](https://img.shields.io/coveralls/taocpp/taopq.svg)](https://coveralls.io/github/taocpp/taopq)
 
-The Art of C++ / PostgreSQL is a light-weight C++17 client library for accessing a PostgreSQL database, providing a modern C++ wrapper for `libpq`.
+The Art of C++ / taopq is a light-weight C++17 client library for accessing a PostgreSQL database, providing a modern C++ wrapper for `libpq`.
 It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `libpq` library.
 
 ## Documentation
@@ -19,7 +19,7 @@ The library has many more features and possibilities to offer.
 The "best practice" often diverges from the style of this introductory example.
 
 ```c++
-#include <tao/postgres.hpp>
+#include <tao/pq.hpp>
 
 #include <cassert>
 #include <iostream>
@@ -27,7 +27,7 @@ The "best practice" often diverges from the style of this introductory example.
 int main()
 {
   // open a connection
-  const auto conn = tao::postgres::connection::create( "dbname=template1" );
+  const auto conn = tao::pq::connection::create( "dbname=template1" );
 
   // execute statements directly
   conn->execute( "DROP TABLE IF EXISTS tao_example" );
@@ -44,7 +44,7 @@ int main()
     tr->execute( "INSERT INTO tao_example VALUES ( $1, $2, $3 )", 1, 42, "foo" );
 
     // execute prepared statement with parameters
-    tr->execute( "insert", 2, tao::postgres::null, "Hello, world!" );
+    tr->execute( "insert", 2, tao::pq::null, "Hello, world!" );
 
     tr->commit();
   }
@@ -72,13 +72,13 @@ int main()
 
 ## Contact
 
-The Art of C++ / Postgres is part of [The Art of C++].
+The Art of C++ / taopq is part of [The Art of C++].
 
-For questions and suggestions about The Art of C++ / Postgres please contact the authors at `taocpp(at)icemx.net`.
+For questions and suggestions about The Art of C++ / taopq please contact the authors at `taocpp(at)icemx.net`.
 
 ## License
 
-The Art of C++ / Postgres is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
+The Art of C++ / taopq is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
 It may be used for any purpose, including commercial purposes, at absolutely no cost.
 It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
 

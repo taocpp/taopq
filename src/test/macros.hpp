@@ -1,4 +1,4 @@
-// The Art of C++ / PostgreSQL
+// The Art of C++ / taopq
 // Copyright (c) 2016-2018 Daniel Frey
 
 #ifndef SRC_TEST_MACROS_HPP

@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 from conans import ConanFile, CMake, tools
 
-
 class PostgreSQLConan(ConanFile):
-    name = "postgres"
-    description = "C++17 client library for PostgreSQL"
-    homepage = "https://github.com/taocpp/postgres"
+    name = "taopq"
+    description = "C++ client library for PostgreSQL"
+    homepage = "https://github.com/taocpp/taopq"
     url = homepage
     license = "MIT"
     author = "taocpp@icemx.net"
@@ -24,8 +23,8 @@ class PostgreSQLConan(ConanFile):
 
     def configure_cmake(self):
         cmake = CMake(self)
-        cmake.definitions["TAOCPP_POSTGRES_BUILD_TESTS"] = False
-        cmake.definitions["TAOCPP_POSTGRES_INSTALL_DOC_DIR"] = "licenses"
+        cmake.definitions["TAOPQ_BUILD_TESTS"] = False
+        cmake.definitions["TAOPQ_INSTALL_DOC_DIR"] = "licenses"
         cmake.configure()
         return cmake
 

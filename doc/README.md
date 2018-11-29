@@ -2,7 +2,7 @@
 
 ## Table of content
 
- * [Project](https://github.com/taocpp/postgres)
+ * [Project](https://github.com/taocpp/taopq)
  * [Design Overview](#design-overview)
  * [Connections](#connections)
  * [Transactions](#transactions)
@@ -32,7 +32,7 @@ Parameters can be of almost any type, several types are predefined by the librar
 Custom data types can be registered via traits.
 
 You can use `std::optional` to model the NULL value of SQL, giving you seemless and intuitive support for NULL-able values.
-You can also use `tao::postgres::null` as a parameter if you want to pass NULL explicitly.
+You can also use `tao::pq::null` as a parameter if you want to pass NULL explicitly.
 
 Each statement then returns a result, which either contains the number of rows affected in case of `INSERT`, `UPDATE`, `DELETE`, ... statements, or it contains a result set if the statement was a `SELECT` statement.
 
@@ -43,19 +43,19 @@ Some convenience methods are provided to keep simple use-cases simple, e.g. if y
 
 ## Connections
 
-To open a connection, call `tao::postgres::connection::create( connect_info )`.
+To open a connection, call `tao::pq::connection::create( connect_info )`.
 The parameter `connect_info` is a string according to PostgreSQL's documentation for [Connection Strings](https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-CONNSTRING).
 
-The method returns a `std::shared_ptr< tao::postgres::connection >`.
+The method returns a `std::shared_ptr< tao::pq::connection >`.
 All connections are handled by `std::shared_ptr<>`, as transactions keep a reference to the connection to ensure consistent usage of (nested) transactions.
 
-For the remainder of the documentation, let `c` be an instance of `std::shared_ptr< tao::postgres::connection >`.
+For the remainder of the documentation, let `c` be an instance of `std::shared_ptr< tao::pq::connection >`.
 
 ## Transactions
 
 Given a connection, you can either get a "direct" transaction by calling `c->direct()`, or you get a regular transaction by calling `c->transaction()`.
 Like connections, transactions are also handled via `std::shared_ptr<>`.
-For the remainder of the documentation, let `tr` be an instance of `std::shared_ptr< tao::postgres::transaction >`.
+For the remainder of the documentation, let `tr` be an instance of `std::shared_ptr< tao::pq::transaction >`.
 On all connections you can also open a (regular) sub-transaction, including nested sub-transactions, by calling `tr->subtransaction()`.
 
 Direct transactions are pseudo-transaction where statements on the connection are executed in autocommit mode.
@@ -73,7 +73,7 @@ enum class isolation_level
 };
 ```
 
-which is defined in `tao::postgres::transaction`.
+which is defined in `tao::pq::transaction`.
 
 Regular transactions need to be committed (or rolled back), call `tr->commit()` or `tr->rollback()` explicitly.
 If a transaction is not explicitly committed or rolled back, the destructor will implicitly roll back the transaction.
@@ -98,7 +98,7 @@ const auto r2 = tr->execute( "DELETE FROM users WHERE id = $1", 42 );
 As you can see from the second example, all values should be passed as C++ parameters and the statement itself should only contain placeholders.
 This avoids SQL injection attacks and it is also more efficient.
 
-If you need to set a value to SQL's `NULL`, you can pass `tao::postgres::null`.
+If you need to set a value to SQL's `NULL`, you can pass `tao::pq::null`.
 Custom data types can be registered via traits, documentation will follow later.
 For now, just have a look at the examples in the repository.
 
@@ -131,7 +131,7 @@ If you ever need to unprepare a prepared statement, use `c->deallocate( name )`.
 
 Results are values, i.e. they are not handled via `std::shared_ptr<>`.
 They are copyable, but not assignable or movable.
-For the remainder of the documentation, let `res` be an instance of `tao::postgres::result`.
+For the remainder of the documentation, let `res` be an instance of `tao::pq::result`.
 
 If a result does *not* contain a result set, i.e. if it is not the result of a `SELECT` statement, you can query the number of rows affected by the statements by calling `rs.rows_affected()`.
 Statements that do not return a number of affected rows and that also do not return a result set, e.g. `CREATE TABLE`, will return 0.
@@ -227,7 +227,7 @@ Short-cut for `rs.as_container< std::unordered_multimap< T, U, ... > >()`.
 
 ## Rows
 
-For the remainder of the documentation, let `r` be an instance of `tao::postgres::row`.
+For the remainder of the documentation, let `r` be an instance of `tao::pq::row`.
 Rows are provided by a result set, you can not create them manually.
 Rows are valid for as long as the lifetime of (any copy of) the result.
 
@@ -280,14 +280,14 @@ Short-cut for `r.as< std::tuple< T, ... > >()`.
 
 ## Fields
 
-For the remainder of the documentation, let `f` be an instance of `tao::postgres::field`.
+For the remainder of the documentation, let `f` be an instance of `tao::pq::field`.
 Fields are provided by a result set or row, you can not create them manually.
 Fields are valid for as long as the lifetime of (any copy of) the result.
 
 As with the result set or rows, you can access the (raw) data stored at a field with two methods `f.is_null()` and `f.get()`.
 The latter call is only allowed if the former returned `false`.
 The `get` methods returns a `const char*`, which is valid for as long as the lifetime of (any copy of) the result.
-Instead of calling `f.is_null()`, you can also compare a field against `tao::postgres::null` with `==` or `!=`.
+Instead of calling `f.is_null()`, you can also compare a field against `tao::pq::null` with `==` or `!=`.
 
 ###### `f.as< T >()`
 
