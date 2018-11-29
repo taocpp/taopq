@@ -4,10 +4,10 @@ cmake_minimum_required(VERSION 3.2.0 FATAL_ERROR)
 set(CMAKE_VERBOSE_MAKEFILE TRUE)
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+conan_basic_setup(TARGETS)
 
 find_package(Threads)
 find_package(taopq REQUIRED CONFIG)
 
 add_executable(${PROJECT_NAME} test_package.cpp)
-target_link_libraries(${PROJECT_NAME} taocpp::taopq ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(${PROJECT_NAME} taocpp::taopq CONAN_PKG::libpq ${CMAKE_THREAD_LIBS_INIT})
