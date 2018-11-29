@@ -26,7 +26,9 @@ class TaopqConan(ConanFile):
     def configure(self):
         compiler_version = Version(self.settings.compiler.version.value)
         if (self.settings.compiler == "gcc" and compiler_version < "7") or \
-           (self.settings.compiler == "clang" and compiler_version < "5") or \
+           (self.settings.compiler == "clang" and compiler_version < "5.0") or \
+           (self.settings.compiler == "clang" and compiler_version == "5.0" and \
+            self.settings.compiler.libcxx == "libc++") or \
            (self.settings.compiler == "apple-clang" and compiler_version < "10") or \
            (self.settings.compiler == "Visual Studio" and compiler_version < "15"):
             raise ConanInvalidConfiguration("taocpp/taopq requires C++17 support")
