@@ -24,6 +24,7 @@ namespace tao
                   : ap_( ap )
                {
                }
+
                ~va_deleter()
                {
                   va_end( ap_ );
@@ -43,6 +44,7 @@ namespace tao
                }
                return result;
             }
+
          }  // namespace
 
          std::string printf( const char* format, ... )

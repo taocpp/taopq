@@ -56,7 +56,7 @@ class BuilderSettings(object):
     def reference(self):
         """ Read project version from CMake file to create Conan referece
         """
-        pattern = re.compile(r"project \(taopq VERSION (\d+\.\d+\.\d+) LANGUAGES CXX\)")
+        pattern = re.compile(r"project\(taopq VERSION (\d+\.\d+\.\d+) LANGUAGES CXX\)")
         version = None
         with open('CMakeLists.txt') as file:
             for line in file:

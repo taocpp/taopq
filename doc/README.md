@@ -1,4 +1,4 @@
-# The Art of C++ / PostgreSQL Documentation
+# `taopq` Documentation
 
 ## Table of content
 
@@ -49,14 +49,14 @@ The parameter `connect_info` is a string according to PostgreSQL's documentation
 The method returns a `std::shared_ptr< tao::pq::connection >`.
 All connections are handled by `std::shared_ptr<>`, as transactions keep a reference to the connection to ensure consistent usage of (nested) transactions.
 
-For the remainder of the documentation, let `c` be an instance of `std::shared_ptr< tao::pq::connection >`.
+For the remainder of the documentation, let `c` be a `std::shared_ptr< tao::pq::connection >`.
 
 ## Transactions
 
 Given a connection, you can either get a "direct" transaction by calling `c->direct()`, or you get a regular transaction by calling `c->transaction()`.
 Like connections, transactions are also handled via `std::shared_ptr<>`.
-For the remainder of the documentation, let `tr` be an instance of `std::shared_ptr< tao::pq::transaction >`.
-On all connections you can also open a (regular) sub-transaction, including nested sub-transactions, by calling `tr->subtransaction()`.
+For the remainder of the documentation, let `tr` be a `std::shared_ptr< tao::pq::transaction >`.
+On all transactions you can also open a (regular) sub-transaction, including nested sub-transactions, by calling `tr->subtransaction()`.
 
 Direct transactions are pseudo-transaction where statements on the connection are executed in autocommit mode.
 
@@ -131,7 +131,7 @@ If you ever need to unprepare a prepared statement, use `c->deallocate( name )`.
 
 Results are values, i.e. they are not handled via `std::shared_ptr<>`.
 They are copyable, but not assignable or movable.
-For the remainder of the documentation, let `res` be an instance of `tao::pq::result`.
+For the remainder of the documentation, let `rs` be a `tao::pq::result`.
 
 If a result does *not* contain a result set, i.e. if it is not the result of a `SELECT` statement, you can query the number of rows affected by the statements by calling `rs.rows_affected()`.
 Statements that do not return a number of affected rows and that also do not return a result set, e.g. `CREATE TABLE`, will return 0.
@@ -227,7 +227,7 @@ Short-cut for `rs.as_container< std::unordered_multimap< T, U, ... > >()`.
 
 ## Rows
 
-For the remainder of the documentation, let `r` be an instance of `tao::pq::row`.
+For the remainder of the documentation, let `r` be a `tao::pq::row`.
 Rows are provided by a result set, you can not create them manually.
 Rows are valid for as long as the lifetime of (any copy of) the result.
 
@@ -280,7 +280,7 @@ Short-cut for `r.as< std::tuple< T, ... > >()`.
 
 ## Fields
 
-For the remainder of the documentation, let `f` be an instance of `tao::pq::field`.
+For the remainder of the documentation, let `f` be a `tao::pq::field`.
 Fields are provided by a result set or row, you can not create them manually.
 Fields are valid for as long as the lifetime of (any copy of) the result.
 
