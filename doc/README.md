@@ -56,7 +56,7 @@ For the remainder of the documentation, let `c` be a `std::shared_ptr< tao::pq::
 Given a connection, you can either get a "direct" transaction by calling `c->direct()`, or you get a regular transaction by calling `c->transaction()`.
 Like connections, transactions are also handled via `std::shared_ptr<>`.
 For the remainder of the documentation, let `tr` be a `std::shared_ptr< tao::pq::transaction >`.
-On all connections you can also open a (regular) sub-transaction, including nested sub-transactions, by calling `tr->subtransaction()`.
+On all transactions you can also open a (regular) sub-transaction, including nested sub-transactions, by calling `tr->subtransaction()`.
 
 Direct transactions are pseudo-transaction where statements on the connection are executed in autocommit mode.
 
@@ -131,7 +131,7 @@ If you ever need to unprepare a prepared statement, use `c->deallocate( name )`.
 
 Results are values, i.e. they are not handled via `std::shared_ptr<>`.
 They are copyable, but not assignable or movable.
-For the remainder of the documentation, let `res` be a `tao::pq::result`.
+For the remainder of the documentation, let `rs` be a `tao::pq::result`.
 
 If a result does *not* contain a result set, i.e. if it is not the result of a `SELECT` statement, you can query the number of rows affected by the statements by calling `rs.rows_affected()`.
 Statements that do not return a number of affected rows and that also do not return a result set, e.g. `CREATE TABLE`, will return 0.
