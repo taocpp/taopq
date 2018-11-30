@@ -28,21 +28,6 @@ osx-conan: &osx-conan
 
 matrix:
   include:
-    - <<: *osx-conan
-      osx_image: xcode10
-      env: CONAN_APPLE_CLANG_VERSIONS=10.0
-    - <<: *linux-conan
-      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7
-    - <<: *linux-conan
-      env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
-    - <<: *linux-conan
-      env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50
-    - <<: *linux-conan
-      env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60
-    - <<: *linux-conan
-      env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
-
-
     - compiler: gcc
       addons:
         apt:
@@ -91,6 +76,25 @@ matrix:
       env:
         - CXX=clang++-7
         - CPPFLAGS=-fms-extensions
+
+    - <<: *osx-conan
+      osx_image: xcode10
+      env: CONAN_APPLE_CLANG_VERSIONS=10.0
+
+    - <<: *linux-conan
+      env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7
+
+    - <<: *linux-conan
+      env: CONAN_GCC_VERSIONS=8 CONAN_DOCKER_IMAGE=conanio/gcc8
+
+    - <<: *linux-conan
+      env: CONAN_CLANG_VERSIONS=5.0 CONAN_DOCKER_IMAGE=conanio/clang50
+
+    - <<: *linux-conan
+      env: CONAN_CLANG_VERSIONS=6.0 CONAN_DOCKER_IMAGE=conanio/clang60
+
+    - <<: *linux-conan
+      env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
 
     - language: cpp
       os: osx
