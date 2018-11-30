@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
-from conans import ConanFile, CMake, tools, RunEnvironment
 import os
+from conans import ConanFile, CMake
 
 
 class TestPackageConan(ConanFile):
@@ -19,6 +18,5 @@ class TestPackageConan(ConanFile):
         path = os.path.join(self.deps_cpp_info["taopq"].rootpath, "licenses", "LICENSE")
         assert os.path.isfile(path)
         # Validate package import
-        with tools.environment_append(RunEnvironment(self).vars):
-            bin_path = os.path.join("bin", "test_package")
-            self.run(bin_path)
+        bin_path = os.path.join("bin", "test_package")
+        self.run(bin_path, run_environment=True)
