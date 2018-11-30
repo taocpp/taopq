@@ -37,6 +37,8 @@ class TaopqConan(ConanFile):
         cmake = CMake(self)
         cmake.definitions["TAOPQ_BUILD_TESTS"] = False
         cmake.definitions["TAOPQ_INSTALL_DOC_DIR"] = "licenses"
+        if self.settings.os == 'Windows' and self.settings.compiler == 'Visual Studio':
+            cmake.definitions["CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS"] = self.options.shared
         cmake.configure()
         return cmake
 
