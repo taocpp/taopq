@@ -2,15 +2,15 @@
 // Copyright (c) 2016-2018 Daniel Frey
 
 #include <cstdlib>
-#include <string>
 #include <iostream>
+#include <string>
 
 #include <tao/pq.hpp>
 
 int main()
 {
    try {
-      const std::string dbname = ::getenv("TAOPQ_TEST_DATABASE") ? ::getenv("TAOPQ_TEST_DATABASE") : "dbname=template1";
+      const std::string dbname = ::getenv( "TAOPQ_TEST_DATABASE" ) ? ::getenv( "TAOPQ_TEST_DATABASE" ) : "dbname=template1";
       const auto connection = tao::pq::connection::create( dbname );
       connection->execute( "DROP TABLE IF EXISTS taopq_conan_test" );
       connection->execute( "CREATE TABLE taopq_conan_test ( a INTEGER PRIMARY KEY )" );
