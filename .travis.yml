@@ -77,9 +77,13 @@ matrix:
         - CXX=clang++-7
         - CPPFLAGS=-fms-extensions
 
-    - <<: *osx-conan
+    - language: cpp
+      os: osx
       osx_image: xcode10
-      env: CONAN_APPLE_CLANG_VERSIONS=10.0
+      compiler: clang
+      script:
+        - $CXX --version
+        - make -j3 compile
 
     - <<: *linux-conan
       env: CONAN_GCC_VERSIONS=7 CONAN_DOCKER_IMAGE=conanio/gcc7
@@ -96,13 +100,9 @@ matrix:
     - <<: *linux-conan
       env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
 
-    - language: cpp
-      os: osx
+    - <<: *osx-conan
       osx_image: xcode10
-      compiler: clang
-      script:
-        - $CXX --version
-        - make -j3 compile
+      env: CONAN_APPLE_CLANG_VERSIONS=10.0
 
     - compiler: gcc
       addons:
