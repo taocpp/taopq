@@ -47,21 +47,21 @@ namespace tao
 
          virtual void v_reset() noexcept = 0;
 
-         [[nodiscard]] transaction*& current_transaction() const;
+         [[nodiscard]] transaction*& current_transaction() const noexcept;
          void check_current_transaction() const;
 
       private:
-         [[nodiscard]] result execute_params( const char* statement, const int n_params, const char* const param_values[] );
+         [[nodiscard]] result execute_params( const std::string& statement, const int n_params, const char* const param_values[] );
 
          template< std::size_t... Ns, typename... Ts >
-         [[nodiscard]] result execute_indexed_tuple( const char* statement, const std::index_sequence< Ns... >&, const std::tuple< Ts... >& tuple )
+         [[nodiscard]] result execute_indexed_tuple( const std::string& statement, std::index_sequence< Ns... >, const std::tuple< Ts... >& tuple )
          {
             const char* const param_values[] = { std::get< Ns >( tuple )... };
             return execute_params( statement, sizeof...( Ns ), param_values );
          }
 
          template< typename... Ts >
-         [[nodiscard]] result execute_tuple( const char* statement, const std::tuple< Ts... >& tuple )
+         [[nodiscard]] result execute_tuple( const std::string& statement, const std::tuple< Ts... >& tuple )
          {
             return execute_indexed_tuple( statement, std::index_sequence_for< Ts... >(), tuple );
          }
@@ -76,21 +76,15 @@ namespace tao
          [[nodiscard]] std::shared_ptr< transaction > subtransaction();
 
          template< typename... As >
-         result execute( const char* statement, As&&... as )
+         result execute( const std::string& statement, As&&... as )
          {
             return execute_tuple( statement, std::tuple_cat( parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )()... ) );
          }
 
          // short-cut for no-arguments invocations
-         result execute( const char* statement )
+         result execute( const std::string& statement )
          {
             return execute_params( statement, 0, nullptr );
-         }
-
-         template< typename... As >
-         result execute( const std::string& statement, As&&... as )
-         {
-            return execute( statement.c_str(), std::forward< As >( as )... );
          }
       };
 

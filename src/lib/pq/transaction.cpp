@@ -136,7 +136,7 @@ namespace tao
       {
       }
 
-      transaction*& transaction::current_transaction() const
+      transaction*& transaction::current_transaction() const noexcept
       {
          return connection_->current_transaction_;
       }
@@ -148,7 +148,7 @@ namespace tao
          }
       }
 
-      result transaction::execute_params( const char* statement, const int n_params, const char* const param_values[] )
+      result transaction::execute_params( const std::string& statement, const int n_params, const char* const param_values[] )
       {
          check_current_transaction();
          return connection_->execute_params( statement, n_params, param_values );

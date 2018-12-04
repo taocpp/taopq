@@ -27,7 +27,7 @@ namespace tao
       {
          struct deleter final
          {
-            void operator()( ::PGconn* p ) const;
+            void operator()( ::PGconn* p ) const noexcept;
          };
 
       }  // namespace connection_impl
@@ -46,9 +46,9 @@ namespace tao
 
          [[nodiscard]] std::string error_message() const;
          void check_prepared_name( const std::string& name ) const;
-         [[nodiscard]] bool is_prepared( const char* name ) const;
+         [[nodiscard]] bool is_prepared( const std::string& name ) const noexcept;
 
-         [[nodiscard]] result execute_params( const char* statement, const int n_params, const char* const param_values[] );
+         [[nodiscard]] result execute_params( const std::string& statement, const int n_params, const char* const param_values[] );
 
       public:
          [[nodiscard]] static std::shared_ptr< connection > create( const std::string& connect_info );
@@ -83,13 +83,13 @@ namespace tao
          }
 
          // make sure you include libpq-fe.h before accessing the raw pointer
-         [[nodiscard]] ::PGconn* underlying_raw_ptr()
+         [[nodiscard]] ::PGconn* underlying_raw_ptr() noexcept
          {
             return pgconn_.get();
          }
 
          // make sure you include libpq-fe.h before accessing the raw pointer
-         const ::PGconn* underlying_raw_ptr() const
+         [[nodiscard]] const ::PGconn* underlying_raw_ptr() const noexcept
          {
             return pgconn_.get();
          }

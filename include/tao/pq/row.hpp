@@ -79,7 +79,7 @@ namespace tao
          }
 
          template< typename T >
-         [[nodiscard]] std::enable_if_t< ( result_traits_size< T >> 1 ), T > get( const std::size_t column ) const
+         [[nodiscard]] std::enable_if_t< ( ( result_traits_size< T > ) > 1 ), T > get( const std::size_t column ) const
          {
             return result_traits< T >::from( slice( column, result_traits_size< T > ) );
          }

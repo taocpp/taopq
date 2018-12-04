@@ -16,13 +16,13 @@ namespace tao
    {
       namespace
       {
-         [[nodiscard]] bool is_identifier( const std::string& value )
+         [[nodiscard]] bool is_identifier( const std::string& value ) noexcept
          {
             if( value.empty() || std::isdigit( value[ 0 ] ) ) {
                return false;
             }
             for( auto c : value ) {
-               if( !std::isalnum( c ) && c != '_' ) {
+               if( !std::isalnum( c ) && ( c != '_' ) ) {
                   return false;
                }
             }
@@ -146,7 +146,7 @@ namespace tao
 
       namespace connection_impl
       {
-         void deleter::operator()( ::PGconn* p ) const
+         void deleter::operator()( ::PGconn* p ) const noexcept
          {
             ::PQfinish( p );
          }
@@ -169,21 +169,21 @@ namespace tao
          }
       }
 
-      bool connection::is_prepared( const char* name ) const
+      bool connection::is_prepared( const std::string& name ) const noexcept
       {
          return prepared_statements_.find( name ) != prepared_statements_.end();
       }
 
-      result connection::execute_params( const char* statement, const int n_params, const char* const param_values[] )
+      result connection::execute_params( const std::string& statement, const int n_params, const char* const param_values[] )
       {
          if( n_params > 0 ) {
             assert( param_values );
          }
          if( is_prepared( statement ) ) {
-            return result( ::PQexecPrepared( pgconn_.get(), statement, n_params, param_values, nullptr, nullptr, 0 ) );
+            return result( ::PQexecPrepared( pgconn_.get(), statement.c_str(), n_params, param_values, nullptr, nullptr, 0 ) );
          }
          else {
-            return result( ::PQexecParams( pgconn_.get(), statement, n_params, nullptr, param_values, nullptr, nullptr, 0 ) );
+            return result( ::PQexecParams( pgconn_.get(), statement.c_str(), n_params, nullptr, param_values, nullptr, nullptr, 0 ) );
          }
       }
 
