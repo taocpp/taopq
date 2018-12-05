@@ -29,7 +29,7 @@ namespace tao
             const char* p_;
 
          protected:
-            explicit char_pointer_helper( const char* p )
+            explicit char_pointer_helper( const char* p ) noexcept
                : p_( p )
             {
             }
@@ -48,7 +48,7 @@ namespace tao
 
          protected:
             template< typename... Ts >
-            explicit string_helper( Ts&&... ts )
+            explicit string_helper( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
                : s_( std::forward< Ts >( ts )... )
             {
             }
@@ -77,7 +77,7 @@ namespace tao
       template<>
       struct parameter_traits< null_t >
       {
-         parameter_traits( const null_t& )
+         parameter_traits( const null_t& ) noexcept
          {
          }
 
@@ -91,7 +91,7 @@ namespace tao
       struct parameter_traits< const char* >
          : parameter_traits_impl::char_pointer_helper
       {
-         parameter_traits( const char* p )
+         parameter_traits( const char* p ) noexcept
             : char_pointer_helper( p )
          {
          }
@@ -101,7 +101,7 @@ namespace tao
       struct parameter_traits< std::string >
          : parameter_traits_impl::char_pointer_helper
       {
-         parameter_traits( const std::string& v )
+         parameter_traits( const std::string& v ) noexcept
             : char_pointer_helper( v.c_str() )
          {
          }
@@ -111,7 +111,7 @@ namespace tao
       struct parameter_traits< bool >
          : parameter_traits_impl::char_pointer_helper
       {
-         parameter_traits( const bool v )
+         parameter_traits( const bool v ) noexcept
             : char_pointer_helper( v ? "TRUE" : "FALSE" )
          {
          }
@@ -269,6 +269,13 @@ namespace tao
          {
             if( v ) {
                forwarder_.emplace( *v );
+            }
+         }
+
+         parameter_traits( std::optional< T >&& v )
+         {
+            if( v ) {
+               forwarder_.emplace( std::move( *v ) );
             }
          }
 
