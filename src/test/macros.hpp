@@ -13,10 +13,10 @@
 #define STRINGIFY( ... ) STRINGIFY_INTERNAL( __VA_ARGS__ )
 #define FILE_AND_LINE __FILE__ ":" STRINGIFY( __LINE__ )
 
-#define TEST_EXECUTE_MESSAGE( MESSAGE, ... )                                     \
-   std::cout << "TEST [ " MESSAGE << " ] in [ " FILE_AND_LINE " ]" << std::endl; \
-   do {                                                                          \
-      __VA_ARGS__;                                                               \
+#define TEST_EXECUTE_MESSAGE( MeSSaGe, ... )                                        \
+   do {                                                                             \
+      std::cout << "TEST [ " MeSSaGe << " ] in [ " FILE_AND_LINE " ]" << std::endl; \
+      __VA_ARGS__;                                                                  \
    } while( false )
 
 #define TEST_FAILED                                                     \
@@ -25,14 +25,14 @@
       std::exit( 1 );                                                   \
    } while( false )
 
-#define TEST_ASSERT_MESSAGE( MESSAGE, ... )                          \
-   TEST_EXECUTE_MESSAGE( MESSAGE,                                    \
+#define TEST_ASSERT_MESSAGE( MeSSaGe, ... )                          \
+   TEST_EXECUTE_MESSAGE( MeSSaGe,                                    \
                          if( !static_cast< bool >( __VA_ARGS__ ) ) { \
                             TEST_FAILED;                             \
                          } )
 
-#define TEST_THROWS_MESSAGE( MESSAGE, ... )                                                                          \
-   TEST_EXECUTE_MESSAGE( MESSAGE,                                                                                    \
+#define TEST_THROWS_MESSAGE( MeSSaGe, ... )                                                                          \
+   TEST_EXECUTE_MESSAGE( MeSSaGe,                                                                                    \
                          try {                                                                                       \
                             __VA_ARGS__;                                                                             \
                             TEST_FAILED;                                                                             \
