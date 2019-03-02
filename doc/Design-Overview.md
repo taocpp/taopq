@@ -14,7 +14,7 @@ The base class for all transactions. Like connections, transactions are handled 
 
 ### Execution of SQL statements
 
-Executing an SQL statement is done by calling `execute()` on either a transaction or on a connection directly. Calling it on a connection is equivalent of creating an auto-commit transaction and forwarding the `execute()` call to that transaction. Transaction order/nesting is checked before any statement is executed.
+Executing an SQL statement is done by calling `execute()` on either a transaction or on a connection directly. Calling it on a connection is equivalent of creating animplicit auto-commit transaction and forwarding the `execute()` call to that transaction. Transaction order/nesting is checked before any statement is executed.
 
 The statement may contain placeholders `$1`, `$2`, ... which are passed as additional parameters to `execute()`. By *not* concatenating parameters into the SQL statement string, you gain two major advantages: It is more efficient and you don't have to worry about SQL injection attacks - the latter is simply not possible when using placeholders.
 
@@ -24,19 +24,19 @@ On a connection, you can prepare statements with a symbolic name by calling `pre
 
 ### `tao::pq::result`
 
-Each execution of an SQL command returns a result. A result is a non-modifiable container which contains either the number of rows affected by an INSERT/UPDATE/DELETE statement or any number of rows returned from a SELECT statement. It is usually clear which type of result is returned from a statement, in case of doubt (or for a more generic result handler), you can call `has_rows_affected()`.
+Each execution of an SQL command returns a result. A result is a non-modifiable container which contains either the number of rows affected by an INSERT/UPDATE/DELETE statement or a result set which contains any number of rows returned from a SELECT statement. It is usually clear which type of result is returned from a statement, in case of doubt (or for a more generic result handler), you can call `has_rows_affected()`.
 
 ### `tao::pq::row`
 
-A single row from a result. Each row has one or more fields, accessible either by index or by name.
+A single row from a result set. Each row has one or more fields, accessible either by index or by name.
 
 ### `tao::pq::field`
 
-A single field from a result row. Each field can be converted to different data types.
+A single field from a result set's row. Each field can be converted to different data types.
 
 ### SQL `NULL`
 
-SQL `NULL` can be supplied as `tao::pq::null` as a parameter to a statement and it can be mapped to `std::optional` for results.
+SQL `NULL` can be supplied as `tao::pq::null` as a parameter to a statement explicitly or implicitly when passing a `std::optional` as a parameter. Result fields can be queried explicitly by using `is_null()` or implicitly returning `std::optional`s.
 
 ### Data Types
 

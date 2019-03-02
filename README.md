@@ -4,6 +4,7 @@
 [![TravisCI](https://travis-ci.org/taocpp/taopq.svg)](https://travis-ci.org/taocpp/taopq)
 [![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/taopq?svg=true)](https://ci.appveyor.com/project/taocpp/taopq)
 [![Coverage](https://img.shields.io/coveralls/taocpp/taopq.svg)](https://coveralls.io/github/taocpp/taopq)
+[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/taocpp/taopq.svg)](https://lgtm.com/projects/g/taocpp/taopq/context:cpp)
 
 `taopq` is a light-weight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
 It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `libpq` client library.
