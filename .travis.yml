@@ -22,7 +22,6 @@ linux-conan: &linux-conan
 
 osx-conan: &osx-conan
   os: osx
-  language: generic
   install:
     - .conan/travis/install.sh
   script:
@@ -110,8 +109,8 @@ matrix:
     - <<: *linux-conan
       env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
 
-    - <<: *linux-conan
-      env: CONAN_CLANG_VERSIONS=8.0 CONAN_DOCKER_IMAGE=conanio/clang8
+#    - <<: *linux-conan
+#      env: CONAN_CLANG_VERSIONS=8.0 CONAN_DOCKER_IMAGE=conanio/clang8
 
     - <<: *osx-conan
       osx_image: xcode10
