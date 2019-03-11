@@ -1,6 +1,6 @@
 language: generic
 os: linux
-dist: trusty
+dist: xenial
 
 branches:
   only:
@@ -8,7 +8,6 @@ branches:
 
 linux-conan: &linux-conan
   os: linux
-  dist: xenial
   language: python
   python: "3.7"
   services:
@@ -47,7 +46,7 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-5.0']
           packages: ['clang-5.0', 'g++-7']
       env:
         - CXX=clang++-5.0
@@ -55,7 +54,7 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-6.0']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-6.0']
           packages: ['clang-6.0', 'g++-7']
       env:
         - CXX=clang++-6.0
@@ -63,7 +62,7 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-7']
           packages: ['clang-7', 'g++-7']
       env:
         - CXX=clang++-7
@@ -71,15 +70,23 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-7']
-          packages: ['clang-7', 'g++-7']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'g++-8']
       env:
-        - CXX=clang++-7
+        - CXX=clang++-8
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'g++-8']
+      env:
+        - CXX=clang++-8
         - CPPFLAGS=-fms-extensions
 
     - language: cpp
       os: osx
-      osx_image: xcode10
+      osx_image: xcode10.1
       compiler: clang
       script:
         - $CXX --version
@@ -99,6 +106,9 @@ matrix:
 
     - <<: *linux-conan
       env: CONAN_CLANG_VERSIONS=7.0 CONAN_DOCKER_IMAGE=conanio/clang7
+
+    - <<: *linux-conan
+      env: CONAN_CLANG_VERSIONS=8.0 CONAN_DOCKER_IMAGE=conanio/clang8
 
     - <<: *osx-conan
       osx_image: xcode10
