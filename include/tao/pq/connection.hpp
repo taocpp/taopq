@@ -21,14 +21,14 @@ namespace tao::pq
    class connection_pool;
    class table_writer;
 
-   namespace connection_impl
+   namespace internal
    {
       struct deleter final
       {
          void operator()( ::PGconn* p ) const noexcept;
       };
 
-   }  // namespace connection_impl
+   }  // namespace internal
 
    class connection final
       : public std::enable_shared_from_this< connection >
@@ -38,7 +38,7 @@ namespace tao::pq
       friend class pq::transaction;
       friend class table_writer;
 
-      const std::unique_ptr< PGconn, connection_impl::deleter > pgconn_;
+      const std::unique_ptr< PGconn, internal::deleter > pgconn_;
       pq::transaction* current_transaction_;
       std::unordered_set< std::string > prepared_statements_;
 

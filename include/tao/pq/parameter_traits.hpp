@@ -19,7 +19,7 @@ namespace tao::pq
    template< typename, typename = void >
    struct parameter_traits;
 
-   namespace parameter_traits_impl
+   namespace internal
    {
       class char_pointer_helper
       {
@@ -70,7 +70,7 @@ namespace tao::pq
          return ( v < 0 ) ? "-INF" : "INF";
       }
 
-   }  // namespace parameter_traits_impl
+   }  // namespace internal
 
    template<>
    struct parameter_traits< null_t >
@@ -87,7 +87,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< const char* >
-      : parameter_traits_impl::char_pointer_helper
+      : internal::char_pointer_helper
    {
       parameter_traits( const char* p ) noexcept
          : char_pointer_helper( p )
@@ -97,7 +97,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< std::string >
-      : parameter_traits_impl::char_pointer_helper
+      : internal::char_pointer_helper
    {
       parameter_traits( const std::string& v ) noexcept
          : char_pointer_helper( v.c_str() )
@@ -107,7 +107,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< bool >
-      : parameter_traits_impl::char_pointer_helper
+      : internal::char_pointer_helper
    {
       parameter_traits( const bool v ) noexcept
          : char_pointer_helper( v ? "TRUE" : "FALSE" )
@@ -117,7 +117,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< char >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const char v )
          : string_helper( 1, v )
@@ -127,7 +127,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< signed char >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const signed char v )
          : string_helper( internal::printf( "%hhd", v ) )
@@ -137,7 +137,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< unsigned char >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const unsigned char v )
          : string_helper( internal::printf( "%hhu", v ) )
@@ -147,7 +147,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< short >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const short v )
          : string_helper( internal::printf( "%hd", v ) )
@@ -157,7 +157,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< unsigned short >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const unsigned short v )
          : string_helper( internal::printf( "%hu", v ) )
@@ -167,7 +167,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< int >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const int v )
          : string_helper( internal::printf( "%d", v ) )
@@ -177,7 +177,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< unsigned >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const unsigned v )
          : string_helper( internal::printf( "%u", v ) )
@@ -187,7 +187,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< long >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const long v )
          : string_helper( internal::printf( "%ld", v ) )
@@ -197,7 +197,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< unsigned long >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const unsigned long v )
          : string_helper( internal::printf( "%lu", v ) )
@@ -207,7 +207,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< long long >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const long long v )
          : string_helper( internal::printf( "%lld", v ) )
@@ -217,7 +217,7 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< unsigned long long >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const unsigned long long v )
          : string_helper( internal::printf( "%llu", v ) )
@@ -227,30 +227,30 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< float >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const float v )
-         : string_helper( parameter_traits_impl::printf_helper( "%.9g", v ) )
+         : string_helper( internal::printf_helper( "%.9g", v ) )
       {
       }
    };
 
    template<>
    struct parameter_traits< double >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const double v )
-         : string_helper( parameter_traits_impl::printf_helper( "%.17g", v ) )
+         : string_helper( internal::printf_helper( "%.17g", v ) )
       {
       }
    };
 
    template<>
    struct parameter_traits< long double >
-      : parameter_traits_impl::string_helper
+      : internal::string_helper
    {
       parameter_traits( const long double v )
-         : string_helper( parameter_traits_impl::printf_helper( "%.21Lg", v ) )
+         : string_helper( internal::printf_helper( "%.21Lg", v ) )
       {
       }
    };

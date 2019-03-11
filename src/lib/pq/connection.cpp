@@ -140,15 +140,17 @@ namespace tao::pq
             execute( "ROLLBACK TRANSACTION" );
          }
       };
+
    }  // namespace
 
-   namespace connection_impl
+   namespace internal
    {
       void deleter::operator()( ::PGconn* p ) const noexcept
       {
          ::PQfinish( p );
       }
-   }  // namespace connection_impl
+
+   }  // namespace internal
 
    std::string connection::error_message() const
    {
@@ -186,7 +188,7 @@ namespace tao::pq
    }
 
    connection::connection( const connection::private_key&, const std::string& connect_info )
-      : pgconn_( ::PQconnectdb( connect_info.c_str() ), connection_impl::deleter() ),
+      : pgconn_( ::PQconnectdb( connect_info.c_str() ), internal::deleter() ),
         current_transaction_( nullptr )
    {
       if( !is_open() ) {
