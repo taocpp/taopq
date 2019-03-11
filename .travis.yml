@@ -2,6 +2,9 @@ language: generic
 os: linux
 dist: xenial
 
+services:
+  - postgresql
+
 branches:
   only:
     - master
