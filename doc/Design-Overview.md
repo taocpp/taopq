@@ -42,4 +42,4 @@ SQL `NULL` can be supplied as `tao::pq::null` as a parameter to a statement expl
 
 A set of predefined data types is available for both parameters (converting a type `T` into a string for PostgreSQL's API) and for results (converting a string returned from the database into a type `T`). The user can specialize both `tao::pq::parameter_traits` as well as `tao::pq::result_traits` to extend the API. Each data type may correspond to one or more result fields.
 
-Copyright (c) 2016-2018 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch

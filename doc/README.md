@@ -317,4 +317,4 @@ TODO
 
 TODO
 
-Copyright (c) 2016-2018 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch

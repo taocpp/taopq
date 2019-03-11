@@ -1,5 +1,5 @@
-// The Art of C++ / Utility
-// Copyright (c) 2016-2018 Daniel Frey
+// The Art of C++ / taopq
+// Copyright (c) 2016-2019 Daniel Frey
 
 #ifdef WIN32
 int main() {}

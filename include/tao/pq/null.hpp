@@ -1,22 +1,18 @@
 // The Art of C++ / taopq
-// Copyright (c) 2016-2018 Daniel Frey
+// Copyright (c) 2016-2019 Daniel Frey
 
 #ifndef TAO_PQ_NULL_HPP
 #define TAO_PQ_NULL_HPP
 
-namespace tao
+namespace tao::pq
 {
-   namespace pq
+   struct null_t
    {
-      struct null_t
-      {
-         explicit constexpr null_t( int /*unused*/ ) {}
-      };
+      explicit constexpr null_t( int /*unused*/ ) {}
+   };
 
-      constexpr null_t null{ 0 };
+   constexpr null_t null{ 0 };
 
-   }  // namespace pq
-
-}  // namespace tao
+}  // namespace tao::pq
 
 #endif

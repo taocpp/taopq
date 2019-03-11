@@ -1,5 +1,5 @@
 // The Art of C++ / taopq
-// Copyright (c) 2016-2018 Daniel Frey
+// Copyright (c) 2016-2019 Daniel Frey
 
 #ifndef SRC_TEST_MACROS_HPP
 #define SRC_TEST_MACROS_HPP
