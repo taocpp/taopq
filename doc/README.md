@@ -1,4 +1,4 @@
-# `taopq` Documentation
+# taoPQ Documentation
 
 ## Table of content
 

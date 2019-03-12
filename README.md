@@ -1,4 +1,4 @@
-# Welcome to `taopq`
+# Welcome to taoPQ
 
 [![Release](https://img.shields.io/github/release/taocpp/taopq.svg)](https://github.com/taocpp/taopq/releases/latest)
 [![TravisCI](https://travis-ci.org/taocpp/taopq.svg)](https://travis-ci.org/taocpp/taopq)
@@ -6,7 +6,7 @@
 [![Coverage](https://img.shields.io/coveralls/taocpp/taopq.svg)](https://coveralls.io/github/taocpp/taopq)
 [![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/taocpp/taopq.svg)](https://lgtm.com/projects/g/taocpp/taopq/context:cpp)
 
-`taopq` is a light-weight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
+taoPQ is a light-weight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
 It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `libpq` client library.
 
 ## Documentation
@@ -73,13 +73,13 @@ int main()
 
 ## Contact
 
-`taopq` is part of [The Art of C++].
+taoPQ is part of [The Art of C++].
 
-For questions and suggestions about `taopq` please contact the authors at `taocpp(at)icemx.net`.
+For questions and suggestions about taoPQ please contact the authors at `taocpp(at)icemx.net`.
 
 ## License
 
-`taopq` is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
+taoPQ is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
 It may be used for any purpose, including commercial purposes, at absolutely no cost.
 It is distributed under the terms of the [MIT license](http://www.opensource.org/licenses/mit-license.html) reproduced here.
 
