@@ -10,7 +10,6 @@ branches:
     - master
 
 linux-conan: &linux-conan
-  os: linux
   language: python
   python: "3.7"
   services:
@@ -116,6 +115,16 @@ matrix:
       osx_image: xcode10
       env: CONAN_APPLE_CLANG_VERSIONS=10.0
 
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
+          packages: ['clang-8', 'clang-tools-8']
+      env:
+        - CXX=clang++-8
+      script:
+        - scan-build-8 make -kj3
+
     - compiler: gcc
       addons:
         apt:
@@ -131,4 +140,4 @@ matrix:
 
 script:
   - $CXX --version
-  - make -j3
+  - make -kj3
