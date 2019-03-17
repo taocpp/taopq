@@ -15,9 +15,9 @@ It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `li
 
 ## Example
 
-Here is a small "getting started" example.
-The library has many more features and possibilities to offer.
-The "best practice" often diverges from the style of this introductory example.
+The following is an introductory example to "get started" and to show the basic look-and-feel.
+The library offers many more features and possibilities.
+What is considered "best practice" often diverges from the style shown below.
 
 ```c++
 #include <tao/pq.hpp>
@@ -27,47 +27,50 @@ The "best practice" often diverges from the style of this introductory example.
 
 int main()
 {
-  // open a connection
+  // Open a connection
   const auto conn = tao::pq::connection::create( "dbname=template1" );
 
-  // execute statements directly
+  // Directly execute SQL statements
   conn->execute( "DROP TABLE IF EXISTS taopq_example" );
   conn->execute( "CREATE TABLE taopq_example ( a INTEGER PRIMARY KEY, b INTEGER, c TEXT NOT NULL )" );
 
-  // preparing a statement is optional, but often recommended
+  // Prepare a statement
   conn->prepare( "insert", "INSERT INTO taopq_example VALUES ( $1, $2, $3 )" );
 
-  // use a transaction if needed
+  // Begin a transaction
   {
     const auto tr = conn->transaction();
 
-    // execute statement with parameters directly
+    // Execute statement with parameters
     tr->execute( "INSERT INTO taopq_example VALUES ( $1, $2, $3 )", 1, 42, "foo" );
 
-    // execute prepared statement with parameters
+    // Execute previously prepared statement with parameters (recommended)
     tr->execute( "insert", 2, tao::pq::null, "Hello, world!" );
 
+    // Commit the transaction (rollback() available, too)
     tr->commit();
   }
 
-  // insert/update/delete statements return a result which can be queried for the rows affected
+  // insert/update/delete statements return an object that contains the number of rows affected
   {
     const auto res = conn->execute( "insert", 3, 3, "drei" );
     assert( res.rows_affected() == 1 );
   }
 
-  // queries have a result as well, it contains the returned data
+  // Queries return an object that contains the result set
   const auto res = conn->execute( "SELECT * FROM taopq_example" );
   assert( res.size() == 3 );
 
-  // iterate over a result
+  // Iterate over a query result...
   for( const auto& row : res ) {
-    // access fields by index or (less efficiently) by name
+    // Access fields by index (faster) or by name (slower)
     std::cout << row[ 0 ].as< int >() << ": " << row[ "c" ].as< std::string >() << std::endl;
   }
 
-  // or convert a result into a container
+  // ... or convert it into a container
   const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
+  
+  // More advanced use cases include support for custom data types and nested transactions
 }
 ```
 
