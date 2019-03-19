@@ -64,7 +64,7 @@ namespace tao::pq::internal
          v_push_before( *up );
          if( v_is_valid( *up ) ) {
             std::shared_ptr< T > sp( up.release(), deleter() );
-            v_push_success( *up );
+            v_push_success( *sp );
             const std::lock_guard lock( m_mutex );
             m_items.emplace_back( std::move( sp ) );
          }
@@ -130,8 +130,7 @@ namespace tao::pq::internal
          auto it = m_items.begin();
          while( it != m_items.end() ) {
             if( !v_is_valid( **it ) ) {
-               const auto ti = it++;
-               deferred_delete.splice( deferred_delete.end(), m_items, ti );
+               deferred_delete.splice( deferred_delete.end(), m_items, it++ );
             }
             else {
                ++it;
