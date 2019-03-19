@@ -15,7 +15,7 @@
 
 namespace tao::pq
 {
-   class connection_pool final
+   class connection_pool
       : public internal::pool< pq::connection >
    {
    private:

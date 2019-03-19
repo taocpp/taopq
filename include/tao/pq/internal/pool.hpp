@@ -42,14 +42,11 @@ namespace tao::pq::internal
 
    protected:
       pool() = default;
-      ~pool() = default;
+      virtual ~pool() = default;
 
       // create a new T
       [[nodiscard]] virtual std::unique_ptr< T > v_create() const = 0;
-      [[nodiscard]] virtual bool v_is_valid( T& ) const
-      {
-         return true;
-      }
+      [[nodiscard]] virtual bool v_is_valid( T& ) const = 0;
 
       void push( std::unique_ptr< T >& up )
       {
