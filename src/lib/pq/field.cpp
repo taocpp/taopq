@@ -8,17 +8,17 @@ namespace tao::pq
 {
    std::string field::name() const
    {
-      return row_.name( column_ );
+      return m_row.name( m_column );
    }
 
    bool field::is_null() const
    {
-      return row_.is_null( column_ );
+      return m_row.is_null( m_column );
    }
 
    const char* field::get() const
    {
-      return row_.get( column_ );
+      return m_row.get( m_column );
    }
 
 }  // namespace tao::pq

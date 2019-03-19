@@ -19,12 +19,12 @@ namespace tao::pq
    private:
       friend class row;
 
-      const row& row_;
-      const std::size_t column_;
+      const row& m_row;
+      const std::size_t m_column;
 
       field( const row& row, const std::size_t column )
-         : row_( row ),
-           column_( column )
+         : m_row( row ),
+           m_column( column )
       {
       }
 
@@ -56,7 +56,17 @@ namespace tao::pq
       return f.is_null();
    }
 
+   [[nodiscard]] inline bool operator==( const null_t&, const field& f )
+   {
+      return f.is_null();
+   }
+
    [[nodiscard]] inline bool operator!=( const field& f, const null_t& )
+   {
+      return !f.is_null();
+   }
+
+   [[nodiscard]] inline bool operator!=( const null_t&, const field& f )
    {
       return !f.is_null();
    }

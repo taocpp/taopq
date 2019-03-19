@@ -24,16 +24,16 @@ namespace tao::pq
    protected:
       friend class result;
 
-      const result& result_;
-      std::size_t row_;
-      const std::size_t offset_;
-      const std::size_t columns_;
+      const result& m_result;
+      std::size_t m_row;
+      const std::size_t m_offset;
+      const std::size_t m_columns;
 
       row( const result& in_result, const std::size_t in_row, const std::size_t in_offset, const std::size_t in_columns )
-         : result_( in_result ),
-           row_( in_row ),
-           offset_( in_offset ),
-           columns_( in_columns )
+         : m_result( in_result ),
+           m_row( in_row ),
+           m_offset( in_offset ),
+           m_columns( in_columns )
       {
       }
 
@@ -44,7 +44,7 @@ namespace tao::pq
 
       [[nodiscard]] std::size_t columns() const
       {
-         return columns_;
+         return m_columns;
       }
 
       [[nodiscard]] std::string name( const std::size_t column ) const;
@@ -91,8 +91,8 @@ namespace tao::pq
       template< typename T >
       [[nodiscard]] T as() const
       {
-         if( result_traits_size< T > != columns_ ) {
-            throw std::runtime_error( internal::printf( "datatype (%s) requires %zu columns, but row/slice has %zu columns", internal::demangle< T >().c_str(), result_traits_size< T >, columns_ ) );
+         if( result_traits_size< T > != m_columns ) {
+            throw std::runtime_error( internal::printf( "datatype (%s) requires %zu columns, but row/slice has %zu columns", internal::demangle< T >().c_str(), result_traits_size< T >, m_columns ) );
          }
          return get< T >( 0 );
       }
@@ -118,7 +118,7 @@ namespace tao::pq
       [[nodiscard]] field operator[]( const std::size_t column ) const
       {
          ensure_column( column );
-         return field( *this, offset_ + column );
+         return field( *this, m_offset + column );
       }
 
       [[nodiscard]] field operator[]( const std::string& in_name ) const
@@ -133,7 +133,7 @@ namespace tao::pq
    template< typename T >
    std::enable_if_t< result_traits_size< T > == 1, T > field::as() const
    {
-      return row_.get< T >( column_ );
+      return m_row.get< T >( m_column );
    }
 
 }  // namespace tao::pq

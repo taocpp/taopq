@@ -24,37 +24,37 @@ namespace tao::pq
       class char_pointer_helper
       {
       private:
-         const char* p_;
+         const char* m_p;
 
       protected:
          explicit char_pointer_helper( const char* p ) noexcept
-            : p_( p )
+            : m_p( p )
          {
          }
 
       public:
          [[nodiscard]] std::tuple< const char* > operator()() const
          {
-            return std::tuple< const char* >( p_ );
+            return std::tuple< const char* >( m_p );
          }
       };
 
       class string_helper
       {
       private:
-         std::string s_;
+         std::string m_s;
 
       protected:
          template< typename... Ts >
          explicit string_helper( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
-            : s_( std::forward< Ts >( ts )... )
+            : m_s( std::forward< Ts >( ts )... )
          {
          }
 
       public:
          [[nodiscard]] std::tuple< const char* > operator()() const
          {
-            return std::tuple< const char* >( s_.c_str() );
+            return std::tuple< const char* >( m_s.c_str() );
          }
       };
 
@@ -259,27 +259,27 @@ namespace tao::pq
    struct parameter_traits< std::optional< T > >
    {
    private:
-      std::optional< parameter_traits< std::decay_t< T > > > forwarder_;
-      using result_type = decltype( ( *forwarder_ )() );
+      std::optional< parameter_traits< std::decay_t< T > > > m_forwarder;
+      using result_type = decltype( ( *m_forwarder )() );
 
    public:
       parameter_traits( const std::optional< T >& v )
       {
          if( v ) {
-            forwarder_.emplace( *v );
+            m_forwarder.emplace( *v );
          }
       }
 
       parameter_traits( std::optional< T >&& v )
       {
          if( v ) {
-            forwarder_.emplace( std::move( *v ) );
+            m_forwarder.emplace( std::move( *v ) );
          }
       }
 
       [[nodiscard]] result_type operator()() const
       {
-         return forwarder_ ? ( *forwarder_ )() : result_type();
+         return m_forwarder ? ( *m_forwarder )() : result_type();
       }
    };
 

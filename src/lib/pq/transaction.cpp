@@ -16,20 +16,20 @@ namespace tao::pq
          : public transaction
       {
       private:
-         const std::shared_ptr< transaction > previous_;
+         const std::shared_ptr< transaction > m_previous;
 
       protected:
          explicit transaction_base( const std::shared_ptr< pq::connection >& connection )
             : transaction( connection ),
-              previous_( current_transaction()->shared_from_this() )
+              m_previous( current_transaction()->shared_from_this() )
          {
             current_transaction() = this;
          }
 
          ~transaction_base()
          {
-            if( connection_ ) {
-               current_transaction() = previous_.get();  // LCOV_EXCL_LINE
+            if( m_connection ) {
+               current_transaction() = m_previous.get();  // LCOV_EXCL_LINE
             }
          }
 
@@ -40,8 +40,8 @@ namespace tao::pq
 
          void v_reset() noexcept
          {
-            current_transaction() = previous_.get();
-            connection_.reset();
+            current_transaction() = m_previous.get();
+            m_connection.reset();
          }
       };
 
@@ -57,7 +57,7 @@ namespace tao::pq
 
          ~top_level_transaction()
          {
-            if( connection_ && connection_->is_open() ) {
+            if( m_connection && m_connection->is_open() ) {
                try {
                   rollback();
                }
@@ -96,7 +96,7 @@ namespace tao::pq
 
          ~nested_transaction()
          {
-            if( connection_ && connection_->is_open() ) {
+            if( m_connection && m_connection->is_open() ) {
                try {
                   rollback();
                }
@@ -126,7 +126,7 @@ namespace tao::pq
    }  // namespace
 
    transaction::transaction( const std::shared_ptr< pq::connection >& connection )
-      : connection_( connection )
+      : m_connection( connection )
    {
    }
 
@@ -136,12 +136,12 @@ namespace tao::pq
 
    transaction*& transaction::current_transaction() const noexcept
    {
-      return connection_->current_transaction_;
+      return m_connection->m_current_transaction;
    }
 
    void transaction::check_current_transaction() const
    {
-      if( !connection_ || this != current_transaction() ) {
+      if( !m_connection || this != current_transaction() ) {
          throw std::logic_error( "transaction order error" );
       }
    }
@@ -149,7 +149,7 @@ namespace tao::pq
    result transaction::execute_params( const std::string& statement, const int n_params, const char* const param_values[] )
    {
       check_current_transaction();
-      return connection_->execute_params( statement, n_params, param_values );
+      return m_connection->execute_params( statement, n_params, param_values );
    }
 
    void transaction::commit()
@@ -186,10 +186,10 @@ namespace tao::pq
    {
       check_current_transaction();
       if( v_is_direct() ) {
-         return std::make_shared< top_level_transaction >( connection_ );
+         return std::make_shared< top_level_transaction >( m_connection );
       }
       else {
-         return std::make_shared< nested_transaction >( connection_ );
+         return std::make_shared< nested_transaction >( m_connection );
       }
    }
 

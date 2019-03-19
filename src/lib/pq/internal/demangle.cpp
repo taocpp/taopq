@@ -1,13 +1,13 @@
 // Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#include <tao/pq/internal/demangle.hpp>
-
 #ifndef WIN32
 #include <cstdlib>
 #include <cxxabi.h>
 #include <memory>
 #endif
+
+#include <tao/pq/internal/demangle.hpp>
 
 namespace tao::pq::internal
 {

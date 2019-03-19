@@ -8,6 +8,7 @@
 #include <list>
 #include <memory>
 #include <mutex>
+#include <utility>
 
 namespace tao::pq::internal
 {
@@ -16,24 +17,24 @@ namespace tao::pq::internal
       : public std::enable_shared_from_this< pool< T > >
    {
    private:
-      std::list< std::shared_ptr< T > > items_;
-      std::mutex mutex_;
+      std::list< std::shared_ptr< T > > m_items;
+      std::mutex m_mutex;
 
       struct deleter
       {
-         std::weak_ptr< pool > pool_;
+         std::weak_ptr< pool > m_pool;
 
          deleter() noexcept = default;
 
-         explicit deleter( const std::shared_ptr< pool >& p ) noexcept
-            : pool_( p )
+         explicit deleter( std::weak_ptr< pool >&& p ) noexcept
+            : m_pool( std::move( p ) )
          {
          }
 
          void operator()( T* item ) const
          {
             std::unique_ptr< T > up( item );
-            if( const auto p = pool_.lock() ) {
+            if( const auto p = m_pool.lock() ) {
                p->push( up );
             }
          }
@@ -63,9 +64,9 @@ namespace tao::pq::internal
          v_push_before( *up );
          if( v_is_valid( *up ) ) {
             std::shared_ptr< T > sp( up.release(), deleter() );
-            v_push_success( *sp );
-            const std::lock_guard lock( mutex_ );
-            items_.emplace_back( std::move( sp ) );
+            v_push_success( *up );
+            const std::lock_guard lock( m_mutex );
+            m_items.emplace_back( std::move( sp ) );
          }
          else {
             v_push_failure( *up );
@@ -75,10 +76,10 @@ namespace tao::pq::internal
       [[nodiscard]] std::shared_ptr< T > pull() noexcept
       {
          std::shared_ptr< T > nrv;
-         const std::lock_guard lock( mutex_ );
-         if( !items_.empty() ) {
-            nrv = std::move( items_.back() );
-            items_.pop_back();
+         const std::lock_guard lock( m_mutex );
+         if( !m_items.empty() ) {
+            nrv = std::move( m_items.back() );
+            m_items.pop_back();
          }
          return nrv;
       }
@@ -87,24 +88,24 @@ namespace tao::pq::internal
       pool( const pool& ) = delete;
       void operator=( const pool& ) = delete;
 
-      static void attach( const std::shared_ptr< T >& sp, const std::shared_ptr< pool >& p ) noexcept
+      static void attach( const std::shared_ptr< T >& sp, std::weak_ptr< pool >&& p ) noexcept
       {
          deleter* d = std::get_deleter< deleter >( sp );
          assert( d );
-         d->pool_ = p;
+         d->m_pool = std::move( p );
       }
 
       static void detach( const std::shared_ptr< T >& sp ) noexcept
       {
          deleter* d = std::get_deleter< deleter >( sp );
          assert( d );
-         d->pool_.reset();
+         d->m_pool.reset();
       }
 
       // create a new T which is put into the pool when no longer used
       [[nodiscard]] std::shared_ptr< T > create()
       {
-         return { v_create().release(), deleter( this->shared_from_this() ) };
+         return { v_create().release(), deleter( this->weak_from_this() ) };
       }
 
       // get an instance from the pool or create a new one if necessary
@@ -113,13 +114,11 @@ namespace tao::pq::internal
          while( const auto sp = pull() ) {
             v_pull_before( *sp );
             if( v_is_valid( *sp ) ) {
-               attach( sp, this->shared_from_this() );
+               attach( sp, this->weak_from_this() );
                v_pull_success( *sp );
                return sp;
             }
-            else {
-               v_pull_failure( *sp );
-            }
+            v_pull_failure( *sp );
          }
          return create();
       }
@@ -127,12 +126,12 @@ namespace tao::pq::internal
       void erase_invalid()
       {
          std::list< std::shared_ptr< T > > deferred_delete;
-         const std::lock_guard lock( mutex_ );
-         auto it = items_.begin();
-         while( it != items_.end() ) {
+         const std::lock_guard lock( m_mutex );
+         auto it = m_items.begin();
+         while( it != m_items.end() ) {
             if( !v_is_valid( **it ) ) {
-               deferred_delete.emplace_back( std::move( *it ) );
-               it = items_.erase( it );
+               const auto ti = it++;
+               deferred_delete.splice( deferred_delete.end(), m_items, ti );
             }
             else {
                ++it;

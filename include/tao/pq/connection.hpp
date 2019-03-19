@@ -38,9 +38,9 @@ namespace tao::pq
       friend class pq::transaction;
       friend class table_writer;
 
-      const std::unique_ptr< PGconn, internal::deleter > pgconn_;
-      pq::transaction* current_transaction_;
-      std::unordered_set< std::string > prepared_statements_;
+      const std::unique_ptr< PGconn, internal::deleter > m_pgconn;
+      pq::transaction* m_current_transaction;
+      std::unordered_set< std::string > m_prepared_statements;
 
       [[nodiscard]] std::string error_message() const;
       void check_prepared_name( const std::string& name ) const;
@@ -83,13 +83,13 @@ namespace tao::pq
       // make sure you include libpq-fe.h before accessing the raw pointer
       [[nodiscard]] ::PGconn* underlying_raw_ptr() noexcept
       {
-         return pgconn_.get();
+         return m_pgconn.get();
       }
 
       // make sure you include libpq-fe.h before accessing the raw pointer
       [[nodiscard]] const ::PGconn* underlying_raw_ptr() const noexcept
       {
-         return pgconn_.get();
+         return m_pgconn.get();
       }
    };
 

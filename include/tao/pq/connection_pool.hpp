@@ -19,7 +19,7 @@ namespace tao::pq
       : public internal::pool< pq::connection >
    {
    private:
-      const std::string connection_info_;
+      const std::string m_connection_info;
 
       [[nodiscard]] std::unique_ptr< pq::connection > v_create() const override;
       [[nodiscard]] bool v_is_valid( pq::connection& c ) const override;

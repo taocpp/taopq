@@ -14,7 +14,7 @@ namespace tao::pq
    class table_writer
    {
    private:
-      std::shared_ptr< transaction > transaction_;
+      std::shared_ptr< transaction > m_transaction;
 
    public:
       table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement );

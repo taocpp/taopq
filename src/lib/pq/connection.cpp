@@ -1,14 +1,14 @@
 // Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#include <tao/pq/connection.hpp>
-
 #include <cassert>
 #include <cctype>
 #include <cstring>
 #include <stdexcept>
 
 #include <libpq-fe.h>
+
+#include <tao/pq/connection.hpp>
 
 namespace tao::pq
 {
@@ -42,7 +42,7 @@ namespace tao::pq
 
          ~transaction_base()
          {
-            if( connection_ ) {
+            if( m_connection ) {
                current_transaction() = nullptr;
             }
          }
@@ -50,7 +50,7 @@ namespace tao::pq
          void v_reset() noexcept
          {
             current_transaction() = nullptr;
-            connection_.reset();
+            m_connection.reset();
          }
       };
 
@@ -109,7 +109,7 @@ namespace tao::pq
 
          ~top_level_transaction()
          {
-            if( connection_ && connection_->is_open() ) {
+            if( m_connection && m_connection->is_open() ) {
                try {
                   rollback();
                }
@@ -154,7 +154,7 @@ namespace tao::pq
 
    std::string connection::error_message() const
    {
-      const char* message = ::PQerrorMessage( pgconn_.get() );
+      const char* message = ::PQerrorMessage( m_pgconn.get() );
       assert( message );
       const std::size_t size = std::strlen( message );
       assert( size > 0 );
@@ -171,7 +171,7 @@ namespace tao::pq
 
    bool connection::is_prepared( const std::string& name ) const noexcept
    {
-      return prepared_statements_.find( name ) != prepared_statements_.end();
+      return m_prepared_statements.find( name ) != m_prepared_statements.end();
    }
 
    result connection::execute_params( const std::string& statement, const int n_params, const char* const param_values[] )
@@ -180,21 +180,21 @@ namespace tao::pq
          assert( param_values );
       }
       if( is_prepared( statement ) ) {
-         return result( ::PQexecPrepared( pgconn_.get(), statement.c_str(), n_params, param_values, nullptr, nullptr, 0 ) );
+         return result( ::PQexecPrepared( m_pgconn.get(), statement.c_str(), n_params, param_values, nullptr, nullptr, 0 ) );
       }
       else {
-         return result( ::PQexecParams( pgconn_.get(), statement.c_str(), n_params, nullptr, param_values, nullptr, nullptr, 0 ) );
+         return result( ::PQexecParams( m_pgconn.get(), statement.c_str(), n_params, nullptr, param_values, nullptr, nullptr, 0 ) );
       }
    }
 
    connection::connection( const connection::private_key&, const std::string& connect_info )
-      : pgconn_( ::PQconnectdb( connect_info.c_str() ), internal::deleter() ),
-        current_transaction_( nullptr )
+      : m_pgconn( ::PQconnectdb( connect_info.c_str() ), internal::deleter() ),
+        m_current_transaction( nullptr )
    {
       if( !is_open() ) {
          throw std::runtime_error( "connection failed: " + error_message() );
       }
-      const auto protocol_version = ::PQprotocolVersion( pgconn_.get() );
+      const auto protocol_version = ::PQprotocolVersion( m_pgconn.get() );
       if( protocol_version < 3 ) {
          throw std::runtime_error( "protocol version 3 required" );  // LCOV_EXCL_LINE
       }
@@ -208,14 +208,14 @@ namespace tao::pq
 
    bool connection::is_open() const noexcept
    {
-      return ::PQstatus( pgconn_.get() ) == CONNECTION_OK;
+      return ::PQstatus( m_pgconn.get() ) == CONNECTION_OK;
    }
 
    void connection::prepare( const std::string& name, const std::string& statement )
    {
       check_prepared_name( name );
-      result( ::PQprepare( pgconn_.get(), name.c_str(), statement.c_str(), 0, nullptr ) );
-      prepared_statements_.insert( name );
+      result( ::PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );
+      m_prepared_statements.insert( name );
    }
 
    void connection::deallocate( const std::string& name )
@@ -225,7 +225,7 @@ namespace tao::pq
          throw std::runtime_error( "prepared statement name not found: " + name );
       }
       execute( "DEALLOCATE " + name );
-      prepared_statements_.erase( name );
+      m_prepared_statements.erase( name );
    }
 
    std::shared_ptr< transaction > connection::direct()

@@ -1,9 +1,6 @@
 // Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#include <tao/pq/internal/printf.hpp>
-#include <tao/pq/internal/strtox.hpp>
-
 #include <cassert>
 #include <cctype>
 #include <cerrno>
@@ -12,6 +9,9 @@
 #include <stdexcept>
 #include <string>
 #include <type_traits>
+
+#include <tao/pq/internal/printf.hpp>
+#include <tao/pq/internal/strtox.hpp>
 
 namespace tao::pq::internal
 {

@@ -4,12 +4,12 @@
 #ifndef TAO_PQ_RESULT_TRAITS_TUPLE_HPP
 #define TAO_PQ_RESULT_TRAITS_TUPLE_HPP
 
-#include <tao/pq/result_traits.hpp>
-#include <tao/pq/row.hpp>
-
 #include <tuple>
 #include <type_traits>
 #include <utility>
+
+#include <tao/pq/result_traits.hpp>
+#include <tao/pq/row.hpp>
 
 namespace tao::pq
 {

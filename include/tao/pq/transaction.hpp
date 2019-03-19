@@ -33,7 +33,7 @@ namespace tao::pq
       friend class table_writer;
 
    protected:
-      std::shared_ptr< connection > connection_;
+      std::shared_ptr< connection > m_connection;
 
       explicit transaction( const std::shared_ptr< pq::connection >& connection );
       virtual ~transaction() = 0;

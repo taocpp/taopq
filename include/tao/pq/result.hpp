@@ -45,9 +45,9 @@ namespace tao::pq
       friend class connection;
       friend class table_writer;
 
-      const std::shared_ptr< PGresult > pgresult_;
-      const std::size_t columns_;
-      const std::size_t rows_;
+      const std::shared_ptr< PGresult > m_pgresult;
+      const std::size_t m_columns;
+      const std::size_t m_rows;
 
       void check_has_result_set() const;
       void check_row( const std::size_t row ) const;
@@ -65,7 +65,7 @@ namespace tao::pq
 
       [[nodiscard]] std::size_t columns() const
       {
-         return columns_;
+         return m_columns;
       }
 
       [[nodiscard]] std::string name( const std::size_t column ) const;
@@ -88,12 +88,12 @@ namespace tao::pq
       public:
          [[nodiscard]] friend bool operator!=( const const_iterator& lhs, const const_iterator& rhs )
          {
-            return lhs.row_ != rhs.row_;
+            return lhs.m_row != rhs.m_row;
          }
 
          const_iterator& operator++()
          {
-            ++row_;
+            ++m_row;
             return *this;
          }
 
@@ -111,7 +111,7 @@ namespace tao::pq
 
       [[nodiscard]] row operator[]( const std::size_t row ) const
       {
-         return pq::row( *this, row, 0, columns_ );
+         return pq::row( *this, row, 0, m_columns );
       }
 
       [[nodiscard]] row at( const std::size_t row ) const;
@@ -120,7 +120,7 @@ namespace tao::pq
       [[nodiscard]] T as() const
       {
          if( size() != 1 ) {
-            throw std::runtime_error( internal::printf( "invalid result size: %zu rows, expected 1 row", rows_ ) );
+            throw std::runtime_error( internal::printf( "invalid result size: %zu rows, expected 1 row", m_rows ) );
          }
          return ( *this )[ 0 ].as< T >();
       }
@@ -232,13 +232,13 @@ namespace tao::pq
       // make sure you include libpq-fe.h before accessing the raw pointer
       [[nodiscard]] ::PGresult* underlying_raw_ptr()
       {
-         return pgresult_.get();
+         return m_pgresult.get();
       }
 
       // make sure you include libpq-fe.h before accessing the raw pointer
       [[nodiscard]] const ::PGresult* underlying_raw_ptr() const
       {
-         return pgresult_.get();
+         return m_pgresult.get();
       }
    };
 

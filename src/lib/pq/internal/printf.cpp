@@ -1,10 +1,10 @@
 // Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#include <tao/pq/internal/printf.hpp>
-
 #include <cassert>
 #include <cstdarg>
+
+#include <tao/pq/internal/printf.hpp>
 
 namespace tao::pq::internal
 {
@@ -13,21 +13,21 @@ namespace tao::pq::internal
       class va_deleter
       {
       private:
-         va_list& ap_;
+         va_list& m_ap;
 
       public:
          explicit va_deleter( va_list& ap )
-            : ap_( ap )
+            : m_ap( ap )
          {
          }
 
          ~va_deleter()
          {
-            va_end( ap_ );
+            va_end( m_ap );
          }
       };
 
-      int vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap )
+      [[nodiscard]] int vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap )
       {
          s.resize( size );
          char* buffer = &s[ 0 ];
