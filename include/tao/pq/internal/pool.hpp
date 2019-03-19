@@ -42,7 +42,7 @@ namespace tao::pq::internal
 
    protected:
       pool() = default;
-      virtual ~pool() = default;
+      ~pool() = default;
 
       // create a new T
       [[nodiscard]] virtual std::unique_ptr< T > v_create() const = 0;
@@ -51,25 +51,12 @@ namespace tao::pq::internal
          return true;
       }
 
-      virtual void v_push_before( T& ) const noexcept {}
-      virtual void v_push_success( T& ) const noexcept {}
-      virtual void v_push_failure( T& ) const noexcept {}
-
-      virtual void v_pull_before( T& ) const noexcept {}
-      virtual void v_pull_success( T& ) const noexcept {}
-      virtual void v_pull_failure( T& ) const noexcept {}
-
       void push( std::unique_ptr< T >& up )
       {
-         v_push_before( *up );
          if( v_is_valid( *up ) ) {
             std::shared_ptr< T > sp( up.release(), deleter() );
-            v_push_success( *sp );
             const std::lock_guard lock( m_mutex );
             m_items.emplace_back( std::move( sp ) );
-         }
-         else {
-            v_push_failure( *up );
          }
       }
 
@@ -112,13 +99,10 @@ namespace tao::pq::internal
       [[nodiscard]] std::shared_ptr< T > get()
       {
          while( const auto sp = pull() ) {
-            v_pull_before( *sp );
             if( v_is_valid( *sp ) ) {
                attach( sp, this->weak_from_this() );
-               v_pull_success( *sp );
                return sp;
             }
-            v_pull_failure( *sp );
          }
          return create();
       }
