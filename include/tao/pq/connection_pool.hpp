@@ -22,7 +22,7 @@ namespace tao::pq
       const std::string m_connection_info;
 
       [[nodiscard]] std::unique_ptr< pq::connection > v_create() const override;
-      [[nodiscard]] bool v_is_valid( pq::connection& c ) const override;
+      [[nodiscard]] bool v_is_valid( pq::connection& c ) const noexcept override;
 
    public:
       [[nodiscard]] static std::shared_ptr< connection_pool > create( const std::string& connection_info );
