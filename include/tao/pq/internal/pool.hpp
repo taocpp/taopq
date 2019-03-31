@@ -31,7 +31,7 @@ namespace tao::pq::internal
          {
          }
 
-         void operator()( T* item ) const
+         void operator()( T* item ) const noexcept
          {
             std::unique_ptr< T > up( item );
             if( const auto p = m_pool.lock() ) {
@@ -46,13 +46,14 @@ namespace tao::pq::internal
 
       // create a new T
       [[nodiscard]] virtual std::unique_ptr< T > v_create() const = 0;
-      [[nodiscard]] virtual bool v_is_valid( T& ) const = 0;
+      [[nodiscard]] virtual bool v_is_valid( T& ) const noexcept = 0;
 
-      void push( std::unique_ptr< T >& up )
+      void push( std::unique_ptr< T >& up ) noexcept
       {
          if( v_is_valid( *up ) ) {
             std::shared_ptr< T > sp( up.release(), deleter() );
             const std::lock_guard lock( m_mutex );
+            // potentially throws -> calls abort() due to noexcept!
             m_items.emplace_back( std::move( sp ) );
          }
       }

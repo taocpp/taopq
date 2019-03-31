@@ -15,7 +15,7 @@ namespace tao::pq
       return std::make_unique< pq::connection >( connection::private_key(), m_connection_info );
    }
 
-   bool connection_pool::v_is_valid( pq::connection& c ) const
+   bool connection_pool::v_is_valid( pq::connection& c ) const noexcept
    {
       return c.is_open();
    }
