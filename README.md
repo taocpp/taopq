@@ -13,41 +13,42 @@ It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `li
 
  * [Version 1.x](doc/README.md) (requires C++17)
 
-## Example
+## Introduction
 
-The following is an introductory example to "get started" and to show the basic look-and-feel.
-The library offers many more features and possibilities.
-What is considered "best practice" often diverges from the style shown below.
+This library provides classes for database connections and transactions, as well as connection pools and table writers.
+It also supports for prepared statements and nested transaction.
+An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types.
+The following example shows the basic look and feel of the library.
 
 ```c++
-#include <tao/pq.hpp>
-
 #include <cassert>
 #include <iostream>
 
+#include <tao/pq.hpp>
+
 int main()
 {
-  // Open a connection
+  // Open connection
   const auto conn = tao::pq::connection::create( "dbname=template1" );
 
-  // Directly execute SQL statements
+  // Execute SQL statement
   conn->execute( "DROP TABLE IF EXISTS taopq_example" );
   conn->execute( "CREATE TABLE taopq_example ( a INTEGER PRIMARY KEY, b INTEGER, c TEXT NOT NULL )" );
 
-  // Prepare a statement
-  conn->prepare( "insert", "INSERT INTO taopq_example VALUES ( $1, $2, $3 )" );
+  // Prepare statement
+  conn->prepare( "my_stmt", "INSERT INTO taopq_example VALUES ( $1, $2, $3 )" );
 
-  // Begin a transaction
   {
+    // Begin transaction
     const auto tr = conn->transaction();
 
     // Execute statement with parameters
     tr->execute( "INSERT INTO taopq_example VALUES ( $1, $2, $3 )", 1, 42, "foo" );
 
     // Execute previously prepared statement with parameters (recommended)
-    tr->execute( "insert", 2, tao::pq::null, "Hello, world!" );
+    tr->execute( "my_stmt", 2, tao::pq::null, "Hello, world!" );
 
-    // Commit the transaction (rollback() available, too)
+    // Commit transaction
     tr->commit();
   }
 
@@ -57,22 +58,16 @@ int main()
     assert( res.rows_affected() == 1 );
   }
 
-  // Queries return an object that contains the result set
+  // Queries return object with result set
   const auto res = conn->execute( "SELECT * FROM taopq_example" );
   assert( res.size() == 3 );
 
-  // Iterate over a query result...
-  for( const auto& row : res ) {
-    // Access fields by index (faster) or by name (slower)
-    std::cout << row[ 0 ].as< int >() << ": " << row[ "c" ].as< std::string >() << std::endl;
-  }
-
-  // ... or convert it into a container
+  // Conveniently convert result into C++ container
   const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
-
-  // More advanced use cases include support for custom data types and nested transactions
 }
 ```
+
+## Status
 
 ## Contact
 
