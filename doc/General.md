@@ -82,21 +82,19 @@ A prepared statement can also be removed with a call to `c->deallocate( name )`.
 ## Results
 
 The return value of `execute()` is of type `tao::pq::result`.
-This class can be used in one of two ways, depending on whether the kind of SQL statement it is a result of.
 
-For a `SELECT` statement the result will contain the result set and its description.
-
-For `UPDATE`, `INSERT`, `DELETE` and other statements that operate on rows the result will contain the number of affected rows.
-
-All other statements like `CREATE TABLE` will behave like a statement that affected zero rows.
-
-The number of affected rows can be queried as follows.
+For statements like `SELECT` or `UPDATE` the result can be used to query the number of affected or returned rows.
+A complete list of statements for which this number is available can be found in the [PostgreSQL documentation](https://www.postgresql.org/docs/11/libpq-exec.html), see `PQcmdTuples()`.
 
 ```c++
 const auto r2 = tr->execute( "DeleteUser", 42 );
 assert( r2.has_affected_rows() );
 std::cout << r2.affected_rows() << std::endl;
 ```
+
+For all other statements, nothing useful can be done with the result.
+
+For `SELECT` statements the result also contains the data returned by the query, the result set, and its description.
 
 Working with a result set is documented on the [Result Sets](Result-Sets.md) page.
 
