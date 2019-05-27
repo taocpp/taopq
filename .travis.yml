@@ -44,6 +44,14 @@ matrix:
       env:
         - CXX=g++-8
 
+    - compiler: gcc
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test']
+          packages: ['g++-9']
+      env:
+        - CXX=g++-9
+
     - compiler: clang
       addons:
         apt:
