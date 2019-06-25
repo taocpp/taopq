@@ -69,6 +69,14 @@ int main()
 
 ## Status
 
+The library was successfully tested with
+
+- GCC 7+
+- Clang 5+
+- Visual Studio 2017 (v15.9)
+
+Older versions of Visual Studio might work, 15.4 is known *not* to work. Let us know if you try any version between 15.4 and 15.9 and whether it works or not.
+
 ## Contact
 
 taoPQ is part of [The Art of C++].
