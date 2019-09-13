@@ -15,6 +15,50 @@
 
 namespace tao::pq
 {
+   namespace internal
+   {
+      // TODO: move these helpers to their own header?
+      template< typename S, typename = std::make_index_sequence< S::size() > >
+      struct inclusive_scan;
+
+      template< typename T, T... Ns, std::size_t... Is >
+      struct inclusive_scan< std::integer_sequence< T, Ns... >, std::index_sequence< Is... > >
+      {
+         template< std::size_t I >
+         static constexpr T part = ( T( 0 ) + ... + ( ( Is < I ) ? Ns : T( 0 ) ) );
+
+         using type = std::integer_sequence< T, part< Is >... >;
+      };
+
+      template< typename S >
+      using inclusive_scan_t = typename inclusive_scan< S >::type;
+
+      template< std::size_t I, typename S, typename = std::make_index_sequence< S::size() > >
+      struct select;
+
+      template< std::size_t I, typename T, T... Ns, std::size_t... Is >
+      struct select< I, std::integer_sequence< T, Ns... >, std::index_sequence< Is... > >
+         : std::integral_constant< T, ( T( 0 ) + ... + ( ( Is == I ) ? Ns : T( 0 ) ) ) >
+      {};
+
+      template< typename, typename >
+      struct make;
+
+      template< std::size_t... Is, std::size_t... Ns >
+      struct make< std::index_sequence< Is... >, std::index_sequence< Ns... > >
+      {
+         template< std::size_t I >
+         static constexpr std::size_t count = ( 0 + ... + ( ( Ns < I ) ? 1 : 0 ) );
+
+         using outer = std::index_sequence< count< Is >... >;
+         using inner = std::index_sequence< ( Is - select< count< Is >, std::index_sequence< Ns... > >::value )... >;
+      };
+
+      template< std::size_t... Ns >
+      using gen = make< std::make_index_sequence< ( 0 + ... + Ns ) >, inclusive_scan_t< std::index_sequence< Ns... > > >;
+
+   }  // namespace internal
+
    class connection;
    class table_writer;
 
@@ -49,19 +93,29 @@ namespace tao::pq
       void check_current_transaction() const;
 
    private:
-      [[nodiscard]] result execute_params( const std::string& statement, const int n_params, const char* const param_values[] );
+      [[nodiscard]] result execute_params( const std::string& statement,
+                                           const int n_params,
+                                           const char* const param_values[],
+                                           const int param_lengths[],
+                                           const int param_formats[] );
 
-      template< std::size_t... Ns, typename... Ts >
-      [[nodiscard]] result execute_indexed_tuple( const std::string& statement, std::index_sequence< Ns... >, const std::tuple< Ts... >& tuple )
+      template< std::size_t... Os, std::size_t... Is, typename... Ts >
+      [[nodiscard]] result execute_indexed( const std::string& statement,
+                                            std::index_sequence< Os... > /*unused*/,
+                                            std::index_sequence< Is... > /*unused*/,
+                                            const std::tuple< Ts... >& tuple )
       {
-         const char* const param_values[] = { std::get< Ns >( tuple )... };
-         return execute_params( statement, sizeof...( Ns ), param_values );
+         const char* const param_values[] = { std::get< Os >( tuple ).template c_str< Is >()... };
+         const int param_lengths[] = { std::get< Os >( tuple ).template size< Is >()... };
+         const int param_formats[] = { std::get< Os >( tuple ).template format< Is >()... };
+         return execute_params( statement, sizeof...( Os ), param_values, param_lengths, param_formats );
       }
 
       template< typename... Ts >
-      [[nodiscard]] result execute_tuple( const std::string& statement, const std::tuple< Ts... >& tuple )
+      [[nodiscard]] result execute_traits( const std::string& statement, const Ts&... ts )
       {
-         return execute_indexed_tuple( statement, std::index_sequence_for< Ts... >(), tuple );
+         using gen = internal::gen< Ts::columns... >;
+         return execute_indexed( statement, typename gen::outer(), typename gen::inner(), std::tie( ts... ) );
       }
 
    public:
@@ -76,13 +130,13 @@ namespace tao::pq
       template< typename... As >
       result execute( const std::string& statement, As&&... as )
       {
-         return execute_tuple( statement, std::tuple_cat( parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )()... ) );
+         return execute_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
       }
 
       // short-cut for no-arguments invocations
       result execute( const std::string& statement )
       {
-         return execute_params( statement, 0, nullptr );
+         return execute_params( statement, 0, nullptr, nullptr, nullptr );
       }
    };
 

@@ -11,11 +11,34 @@
 #include <type_traits>
 #include <utility>
 
+#include <byteswap.h>
+#include <cstring>
+
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/null.hpp>
 
 namespace tao::pq
 {
+   inline int ftoi( const float v )
+   {
+      static_assert( sizeof( float ) == 4 );
+      static_assert( sizeof( int ) == 4 );
+
+      int r;
+      std::memcpy( (char*)&r, (char*)&v, 4 );
+      return r;
+   }
+
+   inline long dtol( const double v )
+   {
+      static_assert( sizeof( double ) == 8 );
+      static_assert( sizeof( long ) == 8 );
+
+      long r;
+      std::memcpy( (char*)&r, (char*)&v, 8 );
+      return r;
+   }
+
    template< typename, typename = void >
    struct parameter_traits;
 
@@ -33,9 +56,27 @@ namespace tao::pq
          }
 
       public:
-         [[nodiscard]] std::tuple< const char* > operator()() const
+         static constexpr std::size_t columns = 1;
+
+         template< std::size_t I >
+         const char* c_str() const noexcept
          {
-            return std::tuple< const char* >( m_p );
+            static_assert( I < columns );
+            return m_p;
+         }
+
+         template< std::size_t I >
+         constexpr int size() const noexcept
+         {
+            static_assert( I < columns );
+            return 0;
+         }
+
+         template< std::size_t I >
+         constexpr int format() const noexcept
+         {
+            static_assert( I < columns );
+            return 0;
          }
       };
 
@@ -52,9 +93,27 @@ namespace tao::pq
          }
 
       public:
-         [[nodiscard]] std::tuple< const char* > operator()() const
+         static constexpr std::size_t columns = 1;
+
+         template< std::size_t I >
+         const char* c_str() const noexcept
          {
-            return std::tuple< const char* >( m_s.c_str() );
+            static_assert( I < columns );
+            return m_s.c_str();
+         }
+
+         template< std::size_t I >
+         constexpr int size() const noexcept
+         {
+            static_assert( I < columns );
+            return 0;
+         }
+
+         template< std::size_t I >
+         constexpr int format() const noexcept
+         {
+            static_assert( I < columns );
+            return 0;
          }
       };
 
@@ -79,9 +138,27 @@ namespace tao::pq
       {
       }
 
-      [[nodiscard]] std::tuple< const char* > operator()() const
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      constexpr const char* c_str() const noexcept
       {
-         return std::tuple< const char* >( nullptr );
+         static_assert( I < columns );
+         return nullptr;
+      }
+
+      template< std::size_t I >
+      constexpr int size() const noexcept
+      {
+         static_assert( I < columns );
+         return 0;
+      }
+
+      template< std::size_t I >
+      constexpr int format() const noexcept
+      {
+         static_assert( I < columns );
+         return 0;
       }
    };
 
@@ -147,11 +224,37 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< short >
-      : internal::string_helper
    {
-      parameter_traits( const short v )
-         : string_helper( internal::printf( "%hd", v ) )
+      const short m_v;
+
+      static_assert( sizeof( short ) == 2 );
+
+      parameter_traits( const short v ) noexcept
+         : m_v( bswap_16( v ) )
       {
+      }
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      const char* c_str() const noexcept
+      {
+         static_assert( I < columns );
+         return reinterpret_cast< const char* >( &m_v );
+      }
+
+      template< std::size_t I >
+      constexpr int size() const noexcept
+      {
+         static_assert( I < columns );
+         return sizeof( short );
+      }
+
+      template< std::size_t I >
+      constexpr int format() const noexcept
+      {
+         static_assert( I < columns );
+         return 1;
       }
    };
 
@@ -167,11 +270,37 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< int >
-      : internal::string_helper
    {
-      parameter_traits( const int v )
-         : string_helper( internal::printf( "%d", v ) )
+      const int m_v;
+
+      static_assert( sizeof( int ) == 4 );
+
+      parameter_traits( const int v ) noexcept
+         : m_v( bswap_32( v ) )
       {
+      }
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      const char* c_str() const noexcept
+      {
+         static_assert( I < columns );
+         return reinterpret_cast< const char* >( &m_v );
+      }
+
+      template< std::size_t I >
+      constexpr int size() const noexcept
+      {
+         static_assert( I < columns );
+         return sizeof( int );
+      }
+
+      template< std::size_t I >
+      constexpr int format() const noexcept
+      {
+         static_assert( I < columns );
+         return 1;
       }
    };
 
@@ -187,11 +316,37 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< long >
-      : internal::string_helper
    {
-      parameter_traits( const long v )
-         : string_helper( internal::printf( "%ld", v ) )
+      const long m_v;
+
+      static_assert( sizeof( long ) == 8 );
+
+      parameter_traits( const long v ) noexcept
+         : m_v( bswap_64( v ) )
       {
+      }
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      const char* c_str() const noexcept
+      {
+         static_assert( I < columns );
+         return reinterpret_cast< const char* >( &m_v );
+      }
+
+      template< std::size_t I >
+      constexpr int size() const noexcept
+      {
+         static_assert( I < columns );
+         return sizeof( long );
+      }
+
+      template< std::size_t I >
+      constexpr int format() const noexcept
+      {
+         static_assert( I < columns );
+         return 1;
       }
    };
 
@@ -227,20 +382,20 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< float >
-      : internal::string_helper
+      : parameter_traits< int >
    {
-      parameter_traits( const float v )
-         : string_helper( internal::printf_helper( "%.9g", v ) )
+      parameter_traits( const float v ) noexcept
+         : parameter_traits< int >( ftoi( v ) )
       {
       }
    };
 
    template<>
    struct parameter_traits< double >
-      : internal::string_helper
+      : parameter_traits< long >
    {
       parameter_traits( const double v )
-         : string_helper( internal::printf_helper( "%.17g", v ) )
+         : parameter_traits< long >( dtol( v ) )
       {
       }
    };
@@ -259,8 +414,8 @@ namespace tao::pq
    struct parameter_traits< std::optional< T > >
    {
    private:
-      std::optional< parameter_traits< std::decay_t< T > > > m_forwarder;
-      using result_type = decltype( ( *m_forwarder )() );
+      using U = parameter_traits< std::decay_t< T > >;
+      std::optional< U > m_forwarder;
 
    public:
       parameter_traits( const std::optional< T >& v )
@@ -277,9 +432,28 @@ namespace tao::pq
          }
       }
 
-      [[nodiscard]] result_type operator()() const
+      static constexpr std::size_t columns = 1;
+      static_assert( U::columns == 1 );
+
+      template< std::size_t I >
+      constexpr const char* c_str() const noexcept
       {
-         return m_forwarder ? ( *m_forwarder )() : result_type();
+         static_assert( I < columns );
+         return m_forwarder ? m_forwarder->template c_str< I >() : nullptr;
+      }
+
+      template< std::size_t I >
+      constexpr int size() const noexcept
+      {
+         static_assert( I < columns );
+         return m_forwarder ? m_forwarder->template size< I >() : 0;
+      }
+
+      template< std::size_t I >
+      constexpr int format() const noexcept
+      {
+         static_assert( I < columns );
+         return m_forwarder ? m_forwarder->template format< I >() : 0;
       }
    };
 

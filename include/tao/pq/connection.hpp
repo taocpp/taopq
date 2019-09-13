@@ -46,7 +46,11 @@ namespace tao::pq
       void check_prepared_name( const std::string& name ) const;
       [[nodiscard]] bool is_prepared( const std::string& name ) const noexcept;
 
-      [[nodiscard]] result execute_params( const std::string& statement, const int n_params, const char* const param_values[] );
+      [[nodiscard]] result execute_params( const std::string& statement,
+                                           const int n_params,
+                                           const char* const param_values[],
+                                           const int param_lengths[],
+                                           const int param_formats[] );
 
    public:
       [[nodiscard]] static std::shared_ptr< connection > create( const std::string& connect_info );
