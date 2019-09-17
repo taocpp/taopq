@@ -19,31 +19,20 @@
 
 namespace tao::pq
 {
-   inline int ftoi( const float v )
-   {
-      static_assert( sizeof( float ) == 4 );
-      static_assert( sizeof( int ) == 4 );
-
-      int r;
-      std::memcpy( (char*)&r, (char*)&v, 4 );
-      return r;
-   }
-
-   inline long dtol( const double v )
-   {
-      static_assert( sizeof( double ) == 8 );
-      static_assert( sizeof( long ) == 8 );
-
-      long r;
-      std::memcpy( (char*)&r, (char*)&v, 8 );
-      return r;
-   }
-
    template< typename, typename = void >
    struct parameter_traits;
 
    namespace internal
    {
+      template< typename To, typename From >
+      std::enable_if_t< ( sizeof( To ) == sizeof( From ) ) && std::is_trivially_copyable< From >::value && std::is_trivial< To >::value, To >
+      bit_cast( const From& src ) noexcept
+      {
+         To dst;
+         std::memcpy( &dst, &src, sizeof( To ) );
+         return dst;
+      }
+
       class char_pointer_helper
       {
       private:
@@ -134,7 +123,7 @@ namespace tao::pq
    template<>
    struct parameter_traits< null_t >
    {
-      parameter_traits( const null_t& ) noexcept
+      explicit parameter_traits( const null_t& ) noexcept
       {
       }
 
@@ -166,7 +155,7 @@ namespace tao::pq
    struct parameter_traits< const char* >
       : internal::char_pointer_helper
    {
-      parameter_traits( const char* p ) noexcept
+      explicit parameter_traits( const char* p ) noexcept
          : char_pointer_helper( p )
       {
       }
@@ -176,7 +165,7 @@ namespace tao::pq
    struct parameter_traits< std::string >
       : internal::char_pointer_helper
    {
-      parameter_traits( const std::string& v ) noexcept
+      explicit parameter_traits( const std::string& v ) noexcept
          : char_pointer_helper( v.c_str() )
       {
       }
@@ -186,7 +175,7 @@ namespace tao::pq
    struct parameter_traits< bool >
       : internal::char_pointer_helper
    {
-      parameter_traits( const bool v ) noexcept
+      explicit parameter_traits( const bool v ) noexcept
          : char_pointer_helper( v ? "TRUE" : "FALSE" )
       {
       }
@@ -196,7 +185,7 @@ namespace tao::pq
    struct parameter_traits< char >
       : internal::string_helper
    {
-      parameter_traits( const char v )
+      explicit parameter_traits( const char v )
          : string_helper( 1, v )
       {
       }
@@ -206,7 +195,7 @@ namespace tao::pq
    struct parameter_traits< signed char >
       : internal::string_helper
    {
-      parameter_traits( const signed char v )
+      explicit parameter_traits( const signed char v )
          : string_helper( internal::printf( "%hhd", v ) )
       {
       }
@@ -216,7 +205,7 @@ namespace tao::pq
    struct parameter_traits< unsigned char >
       : internal::string_helper
    {
-      parameter_traits( const unsigned char v )
+      explicit parameter_traits( const unsigned char v )
          : string_helper( internal::printf( "%hhu", v ) )
       {
       }
@@ -229,7 +218,7 @@ namespace tao::pq
 
       static_assert( sizeof( short ) == 2 );
 
-      parameter_traits( const short v ) noexcept
+      explicit parameter_traits( const short v ) noexcept
          : m_v( bswap_16( v ) )
       {
       }
@@ -262,7 +251,7 @@ namespace tao::pq
    struct parameter_traits< unsigned short >
       : internal::string_helper
    {
-      parameter_traits( const unsigned short v )
+      explicit parameter_traits( const unsigned short v )
          : string_helper( internal::printf( "%hu", v ) )
       {
       }
@@ -275,7 +264,7 @@ namespace tao::pq
 
       static_assert( sizeof( int ) == 4 );
 
-      parameter_traits( const int v ) noexcept
+      explicit parameter_traits( const int v ) noexcept
          : m_v( bswap_32( v ) )
       {
       }
@@ -308,7 +297,7 @@ namespace tao::pq
    struct parameter_traits< unsigned >
       : internal::string_helper
    {
-      parameter_traits( const unsigned v )
+      explicit parameter_traits( const unsigned v )
          : string_helper( internal::printf( "%u", v ) )
       {
       }
@@ -321,7 +310,7 @@ namespace tao::pq
 
       static_assert( sizeof( long ) == 8 );
 
-      parameter_traits( const long v ) noexcept
+      explicit parameter_traits( const long v ) noexcept
          : m_v( bswap_64( v ) )
       {
       }
@@ -354,7 +343,7 @@ namespace tao::pq
    struct parameter_traits< unsigned long >
       : internal::string_helper
    {
-      parameter_traits( const unsigned long v )
+      explicit parameter_traits( const unsigned long v )
          : string_helper( internal::printf( "%lu", v ) )
       {
       }
@@ -364,7 +353,7 @@ namespace tao::pq
    struct parameter_traits< long long >
       : internal::string_helper
    {
-      parameter_traits( const long long v )
+      explicit parameter_traits( const long long v )
          : string_helper( internal::printf( "%lld", v ) )
       {
       }
@@ -374,7 +363,7 @@ namespace tao::pq
    struct parameter_traits< unsigned long long >
       : internal::string_helper
    {
-      parameter_traits( const unsigned long long v )
+      explicit parameter_traits( const unsigned long long v )
          : string_helper( internal::printf( "%llu", v ) )
       {
       }
@@ -384,8 +373,8 @@ namespace tao::pq
    struct parameter_traits< float >
       : parameter_traits< int >
    {
-      parameter_traits( const float v ) noexcept
-         : parameter_traits< int >( ftoi( v ) )
+      explicit parameter_traits( const float v ) noexcept
+         : parameter_traits< int >( internal::bit_cast< int >( v ) )
       {
       }
    };
@@ -394,8 +383,8 @@ namespace tao::pq
    struct parameter_traits< double >
       : parameter_traits< long >
    {
-      parameter_traits( const double v )
-         : parameter_traits< long >( dtol( v ) )
+      explicit parameter_traits( const double v )
+         : parameter_traits< long >( internal::bit_cast< long >( v ) )
       {
       }
    };
@@ -404,7 +393,7 @@ namespace tao::pq
    struct parameter_traits< long double >
       : internal::string_helper
    {
-      parameter_traits( const long double v )
+      explicit parameter_traits( const long double v )
          : string_helper( internal::printf_helper( "%.21Lg", v ) )
       {
       }
@@ -418,14 +407,14 @@ namespace tao::pq
       std::optional< U > m_forwarder;
 
    public:
-      parameter_traits( const std::optional< T >& v )
+      explicit parameter_traits( const std::optional< T >& v )
       {
          if( v ) {
             m_forwarder.emplace( *v );
          }
       }
 
-      parameter_traits( std::optional< T >&& v )
+      explicit parameter_traits( std::optional< T >&& v )
       {
          if( v ) {
             m_forwarder.emplace( std::move( *v ) );
