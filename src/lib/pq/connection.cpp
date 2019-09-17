@@ -169,22 +169,22 @@ namespace tao::pq
       }
    }
 
-   bool connection::is_prepared( const std::string& name ) const noexcept
+   bool connection::is_prepared( const char* name ) const noexcept
    {
       return m_prepared_statements.find( name ) != m_prepared_statements.end();
    }
 
-   result connection::execute_params( const std::string& statement,
+   result connection::execute_params( const char* statement,
                                       const int n_params,
                                       const char* const param_values[],
                                       const int param_lengths[],
                                       const int param_formats[] )
    {
       if( is_prepared( statement ) ) {
-         return result( ::PQexecPrepared( m_pgconn.get(), statement.c_str(), n_params, param_values, param_lengths, param_formats, 0 ) );
+         return result( ::PQexecPrepared( m_pgconn.get(), statement, n_params, param_values, param_lengths, param_formats, 0 ) );
       }
       else {
-         return result( ::PQexecParams( m_pgconn.get(), statement.c_str(), n_params, nullptr, param_values, param_lengths, param_formats, 0 ) );
+         return result( ::PQexecParams( m_pgconn.get(), statement, n_params, nullptr, param_values, param_lengths, param_formats, 0 ) );
       }
    }
 

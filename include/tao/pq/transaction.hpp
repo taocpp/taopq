@@ -25,9 +25,9 @@ namespace tao::pq
       struct inclusive_scan< std::integer_sequence< T, Ns... >, std::index_sequence< Is... > >
       {
          template< std::size_t I >
-         static constexpr T part = ( T( 0 ) + ... + ( ( Is < I ) ? Ns : T( 0 ) ) );
+         static constexpr T partial_sum = ( T( 0 ) + ... + ( ( Is < I ) ? Ns : T( 0 ) ) );
 
-         using type = std::integer_sequence< T, part< Is >... >;
+         using type = std::integer_sequence< T, partial_sum< Is >... >;
       };
 
       template< typename S >
@@ -93,14 +93,14 @@ namespace tao::pq
       void check_current_transaction() const;
 
    private:
-      [[nodiscard]] result execute_params( const std::string& statement,
+      [[nodiscard]] result execute_params( const char* statement,
                                            const int n_params,
                                            const char* const param_values[],
                                            const int param_lengths[],
                                            const int param_formats[] );
 
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
-      [[nodiscard]] result execute_indexed( const std::string& statement,
+      [[nodiscard]] result execute_indexed( const char* statement,
                                             std::index_sequence< Os... > /*unused*/,
                                             std::index_sequence< Is... > /*unused*/,
                                             const std::tuple< Ts... >& tuple )
@@ -112,7 +112,7 @@ namespace tao::pq
       }
 
       template< typename... Ts >
-      [[nodiscard]] result execute_traits( const std::string& statement, const Ts&... ts )
+      [[nodiscard]] result execute_traits( const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
          return execute_indexed( statement, typename gen::outer(), typename gen::inner(), std::tie( ts... ) );
@@ -128,15 +128,26 @@ namespace tao::pq
       [[nodiscard]] std::shared_ptr< transaction > subtransaction();
 
       template< typename... As >
-      result execute( const std::string& statement, As&&... as )
+      result execute( const char* statement, As&&... as )
       {
          return execute_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
       }
 
+      template< typename... As >
+      result execute( const std::string& statement, As&&... as )
+      {
+         return execute( statement.c_str(), std::forward< As >( as )... );
+      }
+
       // short-cut for no-arguments invocations
-      result execute( const std::string& statement )
+      result execute( const char* statement )
       {
          return execute_params( statement, 0, nullptr, nullptr, nullptr );
+      }
+
+      result execute( const std::string& statement )
+      {
+         return execute( statement.c_str() );
       }
    };
 

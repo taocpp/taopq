@@ -5,8 +5,8 @@
 #define TAO_PQ_CONNECTION_HPP
 
 #include <memory>
+#include <set>
 #include <string>
-#include <unordered_set>
 #include <utility>
 
 #include <tao/pq/result.hpp>
@@ -40,13 +40,13 @@ namespace tao::pq
 
       const std::unique_ptr< PGconn, internal::deleter > m_pgconn;
       pq::transaction* m_current_transaction;
-      std::unordered_set< std::string > m_prepared_statements;
+      std::set< std::string, std::less<> > m_prepared_statements;
 
       [[nodiscard]] std::string error_message() const;
       void check_prepared_name( const std::string& name ) const;
-      [[nodiscard]] bool is_prepared( const std::string& name ) const noexcept;
+      [[nodiscard]] bool is_prepared( const char* name ) const noexcept;
 
-      [[nodiscard]] result execute_params( const std::string& statement,
+      [[nodiscard]] result execute_params( const char* statement,
                                            const int n_params,
                                            const char* const param_values[],
                                            const int param_lengths[],

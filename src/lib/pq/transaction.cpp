@@ -146,7 +146,7 @@ namespace tao::pq
       }
    }
 
-   result transaction::execute_params( const std::string& statement,
+   result transaction::execute_params( const char* statement,
                                        const int n_params,
                                        const char* const param_values[],
                                        const int param_lengths[],
