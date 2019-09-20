@@ -133,21 +133,16 @@ namespace tao::pq
          return execute_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
       }
 
-      template< typename... As >
-      result execute( const std::string& statement, As&&... as )
-      {
-         return execute( statement.c_str(), std::forward< As >( as )... );
-      }
-
       // short-cut for no-arguments invocations
       result execute( const char* statement )
       {
          return execute_params( statement, 0, nullptr, nullptr, nullptr );
       }
 
-      result execute( const std::string& statement )
+      template< typename... As >
+      result execute( const std::string& statement, As&&... as )
       {
-         return execute( statement.c_str() );
+         return execute( statement.c_str(), std::forward< As >( as )... );
       }
    };
 
