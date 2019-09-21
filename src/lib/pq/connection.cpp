@@ -5,6 +5,7 @@
 #include <cctype>
 #include <cstring>
 #include <stdexcept>
+#include <string_view>
 
 #include <libpq-fe.h>
 
@@ -14,12 +15,9 @@ namespace tao::pq
 {
    namespace
    {
-      [[nodiscard]] bool is_identifier( const std::string& value ) noexcept
+      [[nodiscard]] constexpr bool is_identifier( const std::string_view value ) noexcept
       {
-         if( value.empty() || std::isdigit( value[ 0 ] ) ) {
-            return false;
-         }
-         return value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string::npos;
+         return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string::npos ) && !std::isdigit( value[ 0 ] );
       }
 
       class transaction_base
