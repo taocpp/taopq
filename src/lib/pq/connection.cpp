@@ -19,12 +19,7 @@ namespace tao::pq
          if( value.empty() || std::isdigit( value[ 0 ] ) ) {
             return false;
          }
-         for( auto c : value ) {
-            if( !std::isalnum( c ) && ( c != '_' ) ) {
-               return false;
-            }
-         }
-         return true;
+         return value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string::npos;
       }
 
       class transaction_base
