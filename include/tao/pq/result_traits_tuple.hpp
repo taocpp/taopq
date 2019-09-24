@@ -8,30 +8,12 @@
 #include <type_traits>
 #include <utility>
 
+#include <tao/pq/internal/exclusive_scan.hpp>
 #include <tao/pq/result_traits.hpp>
 #include <tao/pq/row.hpp>
 
 namespace tao::pq
 {
-   namespace internal
-   {
-      template< typename, std::size_t... >
-      struct exclusive_scan;
-
-      template< std::size_t... Is, std::size_t... Ns >
-      struct exclusive_scan< std::index_sequence< Is... >, Ns... >
-      {
-         template< std::size_t I >
-         static constexpr std::size_t partial_sum = ( ( ( Is < I ) ? Ns : 0 ) + ... );
-
-         using type = std::index_sequence< partial_sum< Is >... >;
-      };
-
-      template< std::size_t... Ns >
-      using exclusive_scan_t = typename exclusive_scan< std::make_index_sequence< sizeof...( Ns ) >, Ns... >::type;
-
-   }  // namespace internal
-
    template< typename T >
    struct result_traits< std::tuple< T > >
    {
@@ -54,7 +36,7 @@ namespace tao::pq
    {
       static_assert( sizeof...( Ts ) != 0, "conversion to empty std::tuple<> not support" );
 
-      static constexpr std::size_t size{ ( result_traits_size< Ts > + ... + 0 ) };
+      static constexpr std::size_t size = ( 0 + ... + result_traits_size< Ts > );
 
       template< std::size_t... Ns >
       [[nodiscard]] static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > )
@@ -64,7 +46,7 @@ namespace tao::pq
 
       [[nodiscard]] static std::tuple< Ts... > from( const row& row )
       {
-         return from( row, internal::exclusive_scan_t< result_traits_size< Ts >... >() );
+         return from( row, internal::exclusive_scan_t< std::index_sequence< result_traits_size< Ts >... > >() );
       }
    };
 

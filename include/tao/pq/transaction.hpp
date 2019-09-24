@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <utility>
 
+#include <tao/pq/internal/exclusive_scan.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/result.hpp>
 
@@ -17,22 +18,6 @@ namespace tao::pq
 {
    namespace internal
    {
-      // TODO: move these helpers to their own header?
-      template< typename S, typename = std::make_index_sequence< S::size() > >
-      struct inclusive_scan;
-
-      template< typename T, T... Ns, std::size_t... Is >
-      struct inclusive_scan< std::integer_sequence< T, Ns... >, std::index_sequence< Is... > >
-      {
-         template< std::size_t I >
-         static constexpr T partial_sum = ( T( 0 ) + ... + ( ( Is < I ) ? Ns : T( 0 ) ) );
-
-         using type = std::integer_sequence< T, partial_sum< Is >... >;
-      };
-
-      template< typename S >
-      using inclusive_scan_t = typename inclusive_scan< S >::type;
-
       template< std::size_t I, typename S, typename = std::make_index_sequence< S::size() > >
       struct select;
 
@@ -55,7 +40,7 @@ namespace tao::pq
       };
 
       template< std::size_t... Ns >
-      using gen = make< std::make_index_sequence< ( 0 + ... + Ns ) >, inclusive_scan_t< std::index_sequence< Ns... > > >;
+      using gen = make< std::make_index_sequence< ( 0 + ... + Ns ) >, exclusive_scan_t< std::index_sequence< Ns... > > >;
 
    }  // namespace internal
 
