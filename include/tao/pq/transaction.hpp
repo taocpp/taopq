@@ -112,22 +112,23 @@ namespace tao::pq
 
       [[nodiscard]] std::shared_ptr< transaction > subtransaction();
 
-      template< typename... As >
+      template< template< typename... > class Traits = parameter_traits, typename... As >
       result execute( const char* statement, As&&... as )
       {
-         return execute_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
+         return execute_traits( statement, Traits< std::decay_t< As > >( std::forward< As >( as ) )... );
       }
 
       // short-cut for no-arguments invocations
+      template< template< typename... > class Traits = parameter_traits >
       result execute( const char* statement )
       {
          return execute_params( statement, 0, nullptr, nullptr, nullptr );
       }
 
-      template< typename... As >
+      template< template< typename... > class Traits = parameter_traits, typename... As >
       result execute( const std::string& statement, As&&... as )
       {
-         return execute( statement.c_str(), std::forward< As >( as )... );
+         return execute< Traits >( statement.c_str(), std::forward< As >( as )... );
       }
    };
 
