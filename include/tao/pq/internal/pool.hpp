@@ -71,7 +71,9 @@ namespace tao::pq::internal
 
    public:
       pool( const pool& ) = delete;
+      pool( pool&& ) = delete;
       void operator=( const pool& ) = delete;
+      void operator=( pool&& ) = delete;
 
       static void attach( const std::shared_ptr< T >& sp, std::weak_ptr< pool >&& p ) noexcept
       {

@@ -26,23 +26,29 @@ namespace tao::pq
             current_transaction() = this;
          }
 
-         ~transaction_base()
+         ~transaction_base() override
          {
             if( m_connection ) {
                current_transaction() = m_previous.get();  // LCOV_EXCL_LINE
             }
          }
 
-         [[nodiscard]] bool v_is_direct() const
+         [[nodiscard]] bool v_is_direct() const override
          {
             return false;
          }
 
-         void v_reset() noexcept
+         void v_reset() noexcept override
          {
             current_transaction() = m_previous.get();
             m_connection.reset();
          }
+
+      public:
+         transaction_base( const transaction_base& ) = delete;
+         transaction_base( transaction_base&& ) = delete;
+         void operator=( const transaction_base& ) = delete;
+         void operator=( transaction_base&& ) = delete;
       };
 
       class top_level_transaction final
@@ -55,7 +61,7 @@ namespace tao::pq
             execute( "START TRANSACTION" );
          }
 
-         ~top_level_transaction()
+         ~top_level_transaction() override
          {
             if( m_connection && m_connection->is_open() ) {
                try {
@@ -72,13 +78,18 @@ namespace tao::pq
             }
          }
 
+         top_level_transaction( const top_level_transaction& ) = delete;
+         top_level_transaction( top_level_transaction&& ) = delete;
+         void operator=( const top_level_transaction& ) = delete;
+         void operator=( top_level_transaction&& ) = delete;
+
       private:
-         void v_commit()
+         void v_commit() override
          {
             execute( "COMMIT TRANSACTION" );
          }
 
-         void v_rollback()
+         void v_rollback() override
          {
             execute( "ROLLBACK TRANSACTION" );
          }
@@ -94,7 +105,7 @@ namespace tao::pq
             execute( internal::printf( "SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) ) );
          }
 
-         ~nested_transaction()
+         ~nested_transaction() override
          {
             if( m_connection && m_connection->is_open() ) {
                try {
@@ -112,27 +123,31 @@ namespace tao::pq
             }
          }
 
+         nested_transaction( const nested_transaction& ) = delete;
+         nested_transaction( nested_transaction&& ) = delete;
+         void operator=( const nested_transaction& ) = delete;
+         void operator=( nested_transaction&& ) = delete;
+
       private:
-         void v_commit()
+         void v_commit() override
          {
             execute( internal::printf( "RELEASE SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) ) );
          }
 
-         void v_rollback()
+         void v_rollback() override
          {
             execute( internal::printf( "ROLLBACK TO \"TAOPQ_%p\"", static_cast< void* >( this ) ) );
          }
       };
+
    }  // namespace
 
-   transaction::transaction( const std::shared_ptr< pq::connection >& connection )
+   transaction::transaction( const std::shared_ptr< pq::connection >& connection )  // NOLINT(modernize-pass-by-value)
       : m_connection( connection )
    {
    }
 
-   transaction::~transaction()
-   {
-   }
+   transaction::~transaction() = default;
 
    transaction*& transaction::current_transaction() const noexcept
    {
@@ -192,9 +207,7 @@ namespace tao::pq
       if( v_is_direct() ) {
          return std::make_shared< top_level_transaction >( m_connection );
       }
-      else {
-         return std::make_shared< nested_transaction >( m_connection );
-      }
+      return std::make_shared< nested_transaction >( m_connection );
    }
 
 }  // namespace tao::pq

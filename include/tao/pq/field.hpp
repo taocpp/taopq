@@ -51,22 +51,22 @@ namespace tao::pq
       }
    };
 
-   [[nodiscard]] inline bool operator==( const field& f, const null_t& )
+   [[nodiscard]] inline bool operator==( const field& f, const null_t& /*unused*/ )
    {
       return f.is_null();
    }
 
-   [[nodiscard]] inline bool operator==( const null_t&, const field& f )
+   [[nodiscard]] inline bool operator==( const null_t& /*unused*/, const field& f )
    {
       return f.is_null();
    }
 
-   [[nodiscard]] inline bool operator!=( const field& f, const null_t& )
+   [[nodiscard]] inline bool operator!=( const field& f, const null_t& /*unused*/ )
    {
       return !f.is_null();
    }
 
-   [[nodiscard]] inline bool operator!=( const null_t&, const field& f )
+   [[nodiscard]] inline bool operator!=( const null_t& /*unused*/, const field& f )
    {
       return !f.is_null();
    }

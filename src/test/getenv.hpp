@@ -1,7 +1,7 @@
 // Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#ifndef SRC_TEST_GETENV_HPP
+#ifndef SRC_TEST_GETENV_HPP  // NOLINT(llvm-header-guard)
 #define SRC_TEST_GETENV_HPP
 
 // This is an internal header used for unit-tests.
@@ -42,13 +42,13 @@ namespace tao::pq::internal
    [[nodiscard]] inline std::string getenv( const std::string& name )
    {
       const char* result = std::getenv( name.c_str() );
-      return result ? result : throw std::runtime_error( "environment variable not found: " + name );
+      return ( result != nullptr ) ? result : throw std::runtime_error( "environment variable not found: " + name );
    }
 
    [[nodiscard]] inline std::string getenv( const std::string& name, const std::string& default_value )
    {
       const char* result = std::getenv( name.c_str() );
-      return result ? result : default_value;
+      return ( result != nullptr ) ? result : default_value;
    }
 #endif
 

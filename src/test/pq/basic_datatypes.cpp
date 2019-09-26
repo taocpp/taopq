@@ -39,7 +39,7 @@ void check_null( const std::string& datatype )
 
 // clang-format off
 template< typename > struct ptype { static const std::string extension; };
-template< typename T > inline const std::string ptype< T >::extension = "";
+template< typename T > inline const std::string ptype< T >::extension;
 
 template<> inline const std::string ptype< short >::extension = "::smallint";
 template<> inline const std::string ptype< int >::extension = "::integer";
@@ -60,7 +60,7 @@ void check( const std::string& datatype, const T& value )
       TEST_ASSERT( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1" + ptype< T >::extension, value ).rows_affected() == 1 );
    }
    const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
-   if( value == value ) {
+   if( value == value ) {  // NOLINT(misc-redundant-expression)
       if( result[ 0 ][ 0 ].as< T >() != value ) {
          std::cout << "check: " << datatype << " value: " << value << " result: " << result.get( 0, 0 ) << " FAILED!" << std::endl;
          TEST_ASSERT( false );
@@ -139,26 +139,26 @@ void run()
    check_null( "REAL" );
    check< float >( "REAL", std::numeric_limits< float >::lowest() );
    check_null( "REAL" );
-   check< float >( "REAL", -1e37f );
-   check< float >( "REAL", -1.25f );
-   check< float >( "REAL", -1.f );
-   check< float >( "REAL", -0.25f );
-   check< float >( "REAL", -1e-37f );
-   check< float >( "REAL", 0.f );
+   check< float >( "REAL", -1e37F );
+   check< float >( "REAL", -1.25F );
+   check< float >( "REAL", -1.F );
+   check< float >( "REAL", -0.25F );
+   check< float >( "REAL", -1e-37F );
+   check< float >( "REAL", 0.F );
    check< float >( "REAL", std::numeric_limits< float >::min() );
-   check< float >( "REAL", 1e-37f );
+   check< float >( "REAL", 1e-37F );
    {
-      float value = 0.123456f;
+      float value = 0.123456F;
       for( int i = 0; i < 32; ++i ) {
          check< float >( "REAL", value );
          value = std::nextafterf( value, 1 );
       }
    }
-   check< float >( "REAL", 0.25f );
-   check< float >( "REAL", 1.f );
-   check< float >( "REAL", 1.f + std::numeric_limits< float >::epsilon() );
-   check< float >( "REAL", 1.25f );
-   check< float >( "REAL", 1e37f );
+   check< float >( "REAL", 0.25F );
+   check< float >( "REAL", 1.F );
+   check< float >( "REAL", 1.F + std::numeric_limits< float >::epsilon() );
+   check< float >( "REAL", 1.25F );
+   check< float >( "REAL", 1e37F );
    check< float >( "REAL", std::numeric_limits< float >::max() );
    check< float >( "REAL", INFINITY );
    check< float >( "REAL", -INFINITY );
@@ -193,26 +193,26 @@ void run()
    check< double >( "DOUBLE PRECISION", NAN );
 
    // check< float >( "NUMERIC", std::numeric_limits< float >::lowest() );
-   check< float >( "NUMERIC", -1e37f );
-   check< float >( "NUMERIC", -1.25f );
-   check< float >( "NUMERIC", -1.f );
-   check< float >( "NUMERIC", -0.25f );
-   check< float >( "NUMERIC", -1e-37f );
-   check< float >( "NUMERIC", 0.f );
+   check< float >( "NUMERIC", -1e37F );
+   check< float >( "NUMERIC", -1.25F );
+   check< float >( "NUMERIC", -1.F );
+   check< float >( "NUMERIC", -0.25F );
+   check< float >( "NUMERIC", -1e-37F );
+   check< float >( "NUMERIC", 0.F );
    // check< float >( "NUMERIC", std::numeric_limits< float >::min() );
-   check< float >( "NUMERIC", 1e-37f );
+   check< float >( "NUMERIC", 1e-37F );
    // {
-   //    float value = 0.123456f;
+   //    float value = 0.123456F;
    //    for( int i = 0; i < 32; ++i ) {
    //       check< float >( "NUMERIC", value );
    //       value = std::nextafterf( value, 1 );
    //    }
    // }
-   check< float >( "NUMERIC", 0.25f );
-   check< float >( "NUMERIC", 1.f );
-   // check< float >( "NUMERIC", 1.f + std::numeric_limits< float >::epsilon() );
-   check< float >( "NUMERIC", 1.25f );
-   check< float >( "NUMERIC", 1e37f );
+   check< float >( "NUMERIC", 0.25F );
+   check< float >( "NUMERIC", 1.F );
+   // check< float >( "NUMERIC", 1.F + std::numeric_limits< float >::epsilon() );
+   check< float >( "NUMERIC", 1.25F );
+   check< float >( "NUMERIC", 1e37F );
    // check< float >( "NUMERIC", std::numeric_limits< float >::max() );
    check< float >( "NUMERIC", NAN );
 
@@ -278,26 +278,26 @@ void run()
    check_null( "TEXT" );
    check< float >( "TEXT", std::numeric_limits< float >::lowest() );
    check_null( "TEXT" );
-   check< float >( "TEXT", -1e37f );
-   check< float >( "TEXT", -1.25f );
-   check< float >( "TEXT", -1.f );
-   check< float >( "TEXT", -0.25f );
-   check< float >( "TEXT", -1e-37f );
-   check< float >( "TEXT", 0.f );
+   check< float >( "TEXT", -1e37F );
+   check< float >( "TEXT", -1.25F );
+   check< float >( "TEXT", -1.F );
+   check< float >( "TEXT", -0.25F );
+   check< float >( "TEXT", -1e-37F );
+   check< float >( "TEXT", 0.F );
    check< float >( "TEXT", std::numeric_limits< float >::min() );
-   check< float >( "TEXT", 1e-37f );
+   check< float >( "TEXT", 1e-37F );
    {
-      float value = 0.123456f;
+      float value = 0.123456F;
       for( int i = 0; i < 32; ++i ) {
          check< float >( "TEXT", value );
          value = std::nextafterf( value, 1 );
       }
    }
-   check< float >( "TEXT", 0.25f );
-   check< float >( "TEXT", 1.f );
-   check< float >( "TEXT", 1.f + std::numeric_limits< float >::epsilon() );
-   check< float >( "TEXT", 1.25f );
-   check< float >( "TEXT", 1e37f );
+   check< float >( "TEXT", 0.25F );
+   check< float >( "TEXT", 1.F );
+   check< float >( "TEXT", 1.F + std::numeric_limits< float >::epsilon() );
+   check< float >( "TEXT", 1.25F );
+   check< float >( "TEXT", 1e37F );
    check< float >( "TEXT", std::numeric_limits< float >::max() );
    check< float >( "TEXT", INFINITY );
    check< float >( "TEXT", -INFINITY );

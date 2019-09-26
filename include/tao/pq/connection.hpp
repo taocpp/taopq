@@ -14,7 +14,7 @@
 
 // forward-declare libpq structures
 struct pg_conn;
-typedef struct pg_conn PGconn;
+using PGconn = pg_conn;
 
 namespace tao::pq
 {
@@ -53,7 +53,7 @@ namespace tao::pq
                                            const int param_formats[] );
 
    public:
-      [[nodiscard]] static std::shared_ptr< connection > create( const std::string& connect_info );
+      [[nodiscard]] static std::shared_ptr< connection > create( const std::string& connection_info );
 
    private:
       // pass-key idiom
@@ -61,14 +61,18 @@ namespace tao::pq
       {
          private_key() = default;
          friend class connection_pool;
-         friend std::shared_ptr< connection > connection::create( const std::string& connect_info );
+         friend std::shared_ptr< connection > connection::create( const std::string& connection_info );
       };
 
    public:
-      connection( const private_key&, const std::string& connect_info );
+      connection( const private_key& /*unused*/, const std::string& connection_info );
 
       connection( const connection& ) = delete;
+      connection( connection&& ) = delete;
       void operator=( const connection& ) = delete;
+      void operator=( connection&& ) = delete;
+
+      ~connection() = default;
 
       [[nodiscard]] bool is_open() const noexcept;
 

@@ -17,7 +17,7 @@ namespace tao::pq
    {
       [[nodiscard]] constexpr bool is_identifier( const std::string_view value ) noexcept
       {
-         return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && !std::isdigit( value[ 0 ] );
+         return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( value[ 0 ] ) == 0 );
       }
 
       class transaction_base
@@ -27,24 +27,30 @@ namespace tao::pq
          explicit transaction_base( const std::shared_ptr< pq::connection >& connection )
             : transaction( connection )
          {
-            if( current_transaction() ) {
+            if( current_transaction() != nullptr ) {
                throw std::logic_error( "transaction order error" );
             }
             current_transaction() = this;
          }
 
-         ~transaction_base()
+         ~transaction_base() override
          {
             if( m_connection ) {
                current_transaction() = nullptr;
             }
          }
 
-         void v_reset() noexcept
+         void v_reset() noexcept override
          {
             current_transaction() = nullptr;
             m_connection.reset();
          }
+
+      public:
+         transaction_base( const transaction_base& ) = delete;
+         transaction_base( transaction_base&& ) = delete;
+         void operator=( const transaction_base& ) = delete;
+         void operator=( transaction_base&& ) = delete;
       };
 
       class autocommit_transaction final
@@ -57,16 +63,16 @@ namespace tao::pq
          }
 
       private:
-         [[nodiscard]] bool v_is_direct() const
+         [[nodiscard]] bool v_is_direct() const override
          {
             return true;
          }
 
-         void v_commit()
+         void v_commit() override
          {
          }
 
-         void v_rollback()
+         void v_rollback() override
          {
          }
       };
@@ -100,7 +106,7 @@ namespace tao::pq
             execute( isolation_level_to_statement( il ) );
          }
 
-         ~top_level_transaction()
+         ~top_level_transaction() override
          {
             if( m_connection && m_connection->is_open() ) {
                try {
@@ -117,18 +123,23 @@ namespace tao::pq
             }
          }
 
+         top_level_transaction( const top_level_transaction& ) = delete;
+         top_level_transaction( top_level_transaction&& ) = delete;
+         void operator=( const top_level_transaction& ) = delete;
+         void operator=( top_level_transaction&& ) = delete;
+
       private:
-         [[nodiscard]] bool v_is_direct() const
+         [[nodiscard]] bool v_is_direct() const override
          {
             return false;
          }
 
-         void v_commit()
+         void v_commit() override
          {
             execute( "COMMIT TRANSACTION" );
          }
 
-         void v_rollback()
+         void v_rollback() override
          {
             execute( "ROLLBACK TRANSACTION" );
          }
@@ -176,13 +187,11 @@ namespace tao::pq
       if( is_prepared( statement ) ) {
          return result( ::PQexecPrepared( m_pgconn.get(), statement, n_params, param_values, param_lengths, param_formats, 0 ) );
       }
-      else {
-         return result( ::PQexecParams( m_pgconn.get(), statement, n_params, nullptr, param_values, param_lengths, param_formats, 0 ) );
-      }
+      return result( ::PQexecParams( m_pgconn.get(), statement, n_params, nullptr, param_values, param_lengths, param_formats, 0 ) );
    }
 
-   connection::connection( const connection::private_key&, const std::string& connect_info )
-      : m_pgconn( ::PQconnectdb( connect_info.c_str() ), internal::deleter() ),
+   connection::connection( const connection::private_key& /*unused*/, const std::string& connection_info )
+      : m_pgconn( ::PQconnectdb( connection_info.c_str() ), internal::deleter() ),
         m_current_transaction( nullptr )
    {
       if( !is_open() ) {
@@ -195,9 +204,9 @@ namespace tao::pq
       // TODO: check server version
    }
 
-   std::shared_ptr< connection > connection::create( const std::string& connect_info )
+   std::shared_ptr< connection > connection::create( const std::string& connection_info )
    {
-      return std::make_shared< connection >( private_key(), connect_info );
+      return std::make_shared< connection >( private_key(), connection_info );
    }
 
    bool connection::is_open() const noexcept
@@ -208,7 +217,7 @@ namespace tao::pq
    void connection::prepare( const std::string& name, const std::string& statement )
    {
       check_prepared_name( name );
-      result( ::PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );
+      result( ::PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );  // NOLINT(bugprone-unused-raii)
       m_prepared_statements.insert( name );
    }
 

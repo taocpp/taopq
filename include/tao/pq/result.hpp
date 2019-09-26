@@ -22,7 +22,7 @@
 
 // forward-declare libpq structures
 struct pg_result;
-typedef struct pg_result PGresult;
+using PGresult = pg_result;
 
 namespace tao::pq
 {

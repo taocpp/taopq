@@ -10,7 +10,7 @@ namespace tao::pq::internal
 {
    namespace
    {
-      class va_deleter
+      class va_deleter  // NOLINT(cppcoreguidelines-special-member-functions)
       {
       private:
          va_list& m_ap;
@@ -23,7 +23,7 @@ namespace tao::pq::internal
 
          ~va_deleter()
          {
-            va_end( m_ap );
+            va_end( m_ap );  // NOLINT(clang-analyzer-valist.Uninitialized)
          }
       };
 

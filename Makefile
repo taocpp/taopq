@@ -82,8 +82,8 @@ $(BUILDDIR)/%: $(BUILDDIR)/%.o $(BUILDDIR)/lib/lib$(LIBNAME).a
 	@mkdir -p $(@D)
 	$(CXX) $(CXXSTD) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
-build/%.clang-tidy: %
-	$(CLANG_TIDY) -extra-arg "-Iinclude" -extra-arg "-std=c++17" -checks=*,-google-runtime-references,-google-runtime-int,-google-readability-todo,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-modernize-raw-string-literal,-misc-sizeof-expression -warnings-as-errors=* $< 2>/dev/null
+build/%.clang-tidy: % .clang-tidy
+	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) 2>/dev/null
 	@mkdir -p $(@D)
 	@touch $@
 

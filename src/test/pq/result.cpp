@@ -9,7 +9,7 @@
 #include <tao/pq/result_traits_pair.hpp>
 #include <tao/pq/result_traits_tuple.hpp>
 
-void run()
+void run()  // NOLINT(readability-function-size)
 {
    const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
 
@@ -144,7 +144,7 @@ void run()
    TEST_ASSERT( count == 2 );
 }
 
-int main()
+int main()  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();

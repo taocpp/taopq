@@ -32,11 +32,13 @@ namespace tao::pq
       class private_key
       {
          private_key() = default;
-         friend std::shared_ptr< connection_pool > connection_pool::create( const std::string& connect_info );
+         friend std::shared_ptr< connection_pool > connection_pool::create( const std::string& connection_info );
       };
 
    public:
-      connection_pool( const private_key&, const std::string& connection_info );
+      connection_pool( const private_key& /*unused*/, std::string connection_info ) noexcept
+         : m_connection_info( std::move( connection_info ) )
+      {}
 
       [[nodiscard]] std::shared_ptr< pq::connection > connection()
       {

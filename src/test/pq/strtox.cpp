@@ -92,7 +92,7 @@ void reject_floating_point( const char* input )
    }
 }
 
-void run()
+void run()  // NOLINT(readability-function-size)
 {
    TEST_ASSERT( tao::pq::internal::strtol( "0" ) == 0 );
    TEST_ASSERT( tao::pq::internal::strtol( "+0" ) == 0 );
@@ -301,7 +301,7 @@ void run()
    reject_floating_point< std::underflow_error >( "-1e-10000" );
 }
 
-int main()
+int main()  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();

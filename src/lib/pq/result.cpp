@@ -25,12 +25,10 @@ namespace tao::pq
    {
       check_has_result_set();
       if( !( row < m_rows ) ) {
-         if( m_rows > 0 ) {
-            throw std::out_of_range( internal::printf( "row %zu out of range (0-%zu)", row, m_rows - 1 ) );
-         }
-         else {
+         if( m_rows == 0 ) {
             throw std::out_of_range( internal::printf( "row %zu out of range, result is empty", row ) );
          }
+         throw std::out_of_range( internal::printf( "row %zu out of range (0-%zu)", row, m_rows - 1 ) );
       }
    }
 
@@ -61,7 +59,7 @@ namespace tao::pq
             const std::string res_status = ::PQresStatus( status );
             const char* sql_state = ::PQresultErrorField( pgresult, PG_DIAG_SQLSTATE );
             const char* error_message = ::PQresultErrorMessage( pgresult );
-            throw std::runtime_error( res_status + '/' + ( sql_state ? sql_state : "?" ) + ": " + error_message );
+            throw std::runtime_error( res_status + '/' + ( ( sql_state != nullptr ) ? sql_state : "?" ) + ": " + error_message );
       }
 
       const std::string res_status = ::PQresStatus( status );

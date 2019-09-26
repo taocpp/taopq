@@ -47,21 +47,21 @@ namespace tao::pq
          static constexpr std::size_t columns = 1;
 
          template< std::size_t I >
-         const char* c_str() const noexcept
+         [[nodiscard]] const char* c_str() const noexcept
          {
             static_assert( I < columns );
             return m_p;
          }
 
          template< std::size_t I >
-         constexpr int size() const noexcept
+         [[nodiscard]] constexpr int size() const noexcept
          {
             static_assert( I < columns );
             return 0;
          }
 
          template< std::size_t I >
-         constexpr int format() const noexcept
+         [[nodiscard]] constexpr int format() const noexcept
          {
             static_assert( I < columns );
             return 0;
@@ -84,21 +84,21 @@ namespace tao::pq
          static constexpr std::size_t columns = 1;
 
          template< std::size_t I >
-         const char* c_str() const noexcept
+         [[nodiscard]] const char* c_str() const noexcept
          {
             static_assert( I < columns );
             return m_s.c_str();
          }
 
          template< std::size_t I >
-         constexpr int size() const noexcept
+         [[nodiscard]] constexpr int size() const noexcept
          {
             static_assert( I < columns );
             return 0;
          }
 
          template< std::size_t I >
-         constexpr int format() const noexcept
+         [[nodiscard]] constexpr int format() const noexcept
          {
             static_assert( I < columns );
             return 0;
@@ -122,28 +122,26 @@ namespace tao::pq
    template<>
    struct parameter_traits< null_t >
    {
-      explicit parameter_traits( const null_t& ) noexcept
-      {
-      }
+      explicit parameter_traits( const null_t& /*unused*/ ) noexcept {}
 
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      constexpr const char* c_str() const noexcept
+      [[nodiscard]] constexpr const char* c_str() const noexcept
       {
          static_assert( I < columns );
          return nullptr;
       }
 
       template< std::size_t I >
-      constexpr int size() const noexcept
+      [[nodiscard]] constexpr int size() const noexcept
       {
          static_assert( I < columns );
          return 0;
       }
 
       template< std::size_t I >
-      constexpr int format() const noexcept
+      [[nodiscard]] constexpr int format() const noexcept
       {
          static_assert( I < columns );
          return 0;
@@ -225,21 +223,21 @@ namespace tao::pq
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      const char* c_str() const noexcept
+      [[nodiscard]] const char* c_str() const noexcept
       {
          static_assert( I < columns );
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      constexpr int size() const noexcept
+      [[nodiscard]] constexpr int size() const noexcept
       {
          static_assert( I < columns );
          return sizeof( short );
       }
 
       template< std::size_t I >
-      constexpr int format() const noexcept
+      [[nodiscard]] constexpr int format() const noexcept
       {
          static_assert( I < columns );
          return 1;
@@ -271,21 +269,21 @@ namespace tao::pq
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      const char* c_str() const noexcept
+      [[nodiscard]] const char* c_str() const noexcept
       {
          static_assert( I < columns );
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      constexpr int size() const noexcept
+      [[nodiscard]] constexpr int size() const noexcept
       {
          static_assert( I < columns );
          return sizeof( int );
       }
 
       template< std::size_t I >
-      constexpr int format() const noexcept
+      [[nodiscard]] constexpr int format() const noexcept
       {
          static_assert( I < columns );
          return 1;
@@ -317,21 +315,21 @@ namespace tao::pq
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      const char* c_str() const noexcept
+      [[nodiscard]] const char* c_str() const noexcept
       {
          static_assert( I < columns );
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      constexpr int size() const noexcept
+      [[nodiscard]] constexpr int size() const noexcept
       {
          static_assert( I < columns );
          return sizeof( long );
       }
 
       template< std::size_t I >
-      constexpr int format() const noexcept
+      [[nodiscard]] constexpr int format() const noexcept
       {
          static_assert( I < columns );
          return 1;
@@ -424,21 +422,21 @@ namespace tao::pq
       static_assert( U::columns == 1 );
 
       template< std::size_t I >
-      constexpr const char* c_str() const noexcept
+      [[nodiscard]] constexpr const char* c_str() const noexcept
       {
          static_assert( I < columns );
          return m_forwarder ? m_forwarder->template c_str< I >() : nullptr;
       }
 
       template< std::size_t I >
-      constexpr int size() const noexcept
+      [[nodiscard]] constexpr int size() const noexcept
       {
          static_assert( I < columns );
          return m_forwarder ? m_forwarder->template size< I >() : 0;
       }
 
       template< std::size_t I >
-      constexpr int format() const noexcept
+      [[nodiscard]] constexpr int format() const noexcept
       {
          static_assert( I < columns );
          return m_forwarder ? m_forwarder->template format< I >() : 0;

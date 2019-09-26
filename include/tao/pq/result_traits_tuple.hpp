@@ -39,7 +39,7 @@ namespace tao::pq
       static constexpr std::size_t size = ( 0 + ... + result_traits_size< Ts > );
 
       template< std::size_t... Ns >
-      [[nodiscard]] static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > )
+      [[nodiscard]] static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > /*unused*/ )
       {
          return std::tuple< Ts... >( row.get< Ts >( Ns )... );
       }

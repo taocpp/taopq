@@ -105,7 +105,9 @@ namespace tao::pq
 
    public:
       transaction( const transaction& ) = delete;
+      transaction( transaction&& ) = delete;
       void operator=( const transaction& ) = delete;
+      void operator=( transaction&& ) = delete;
 
       void commit();
       void rollback();

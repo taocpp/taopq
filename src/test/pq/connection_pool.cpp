@@ -27,7 +27,7 @@ void run()
    TEST_ASSERT( pool2->connection()->execute( "SELECT 6" ).as< int >() == 6 );
 }
 
-int main()
+int main()  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();
