@@ -45,10 +45,10 @@ namespace tao::pq
          return this->get();
       }
 
-      template< typename... Ts >
+      template< template< typename... > class Traits = parameter_traits, typename... Ts >
       result execute( Ts&&... ts )
       {
-         return this->connection()->direct()->execute( std::forward< Ts >( ts )... );
+         return this->connection()->direct()->execute< Traits >( std::forward< Ts >( ts )... );
       }
    };
 
