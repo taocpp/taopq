@@ -18,14 +18,6 @@ namespace tao::pq
 {
    namespace internal
    {
-      template< std::size_t I, typename S, typename = std::make_index_sequence< S::size() > >
-      struct select;
-
-      template< std::size_t I, typename T, T... Ns, std::size_t... Is >
-      struct select< I, std::integer_sequence< T, Ns... >, std::index_sequence< Is... > >
-         : std::integral_constant< T, ( T( 0 ) + ... + ( ( Is == I ) ? Ns : T( 0 ) ) ) >
-      {};
-
       template< typename, typename >
       struct make;
 
@@ -35,8 +27,11 @@ namespace tao::pq
          template< std::size_t I >
          static constexpr std::size_t count = ( 0 + ... + ( ( Ns < I ) ? 1 : 0 ) );
 
+         template< std::size_t I >
+         static constexpr std::size_t select = ( 0 + ... + ( ( Is == I ) ? Ns : 0 ) );
+
          using outer = std::index_sequence< count< Is >... >;
-         using inner = std::index_sequence< ( Is - select< count< Is >, std::index_sequence< Ns... > >::value )... >;
+         using inner = std::index_sequence< (Is - select< count< Is > >)... >;
       };
 
       template< std::size_t... Ns >
