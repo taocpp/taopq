@@ -24,7 +24,7 @@ namespace tao::pq::internal
       {
          std::weak_ptr< pool > m_pool;
 
-         deleter() noexcept = default;
+         deleter() = default;
 
          explicit deleter( std::weak_ptr< pool >&& p ) noexcept
             : m_pool( std::move( p ) )
