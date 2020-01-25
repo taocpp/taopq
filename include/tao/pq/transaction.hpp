@@ -10,41 +10,12 @@
 #include <type_traits>
 #include <utility>
 
-#include <tao/pq/internal/exclusive_scan.hpp>
+#include <tao/pq/internal/gen.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/result.hpp>
 
 namespace tao::pq
 {
-   namespace internal
-   {
-      template< typename, typename, typename >
-      struct make;
-
-      template< std::size_t... Is,
-                std::size_t... Js,
-                std::size_t... Ns >
-      struct make< std::index_sequence< Is... >,
-                   std::index_sequence< Js... >,
-                   std::index_sequence< Ns... > >
-      {
-         template< std::size_t I >
-         static constexpr std::size_t count = ( 0 + ... + ( ( Ns <= I ) ? 1 : 0 ) ) - 1;
-
-         template< std::size_t J >
-         static constexpr std::size_t select = ( 0 + ... + ( ( Js == J ) ? Ns : 0 ) );
-
-         using outer = std::index_sequence< count< Is >... >;
-         using inner = std::index_sequence< (Is - select< count< Is > >)... >;
-      };
-
-      template< std::size_t... Ns >
-      using gen = make< std::make_index_sequence< ( 0 + ... + Ns ) >,
-                        std::make_index_sequence< sizeof...( Ns ) >,
-                        exclusive_scan_t< std::index_sequence< Ns... > > >;
-
-   }  // namespace internal
-
    class connection;
    class table_writer;
 
@@ -101,7 +72,7 @@ namespace tao::pq
       [[nodiscard]] result execute_traits( const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         return execute_indexed( statement, typename gen::outer(), typename gen::inner(), std::tie( ts... ) );
+         return execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
    public:

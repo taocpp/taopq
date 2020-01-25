@@ -13,6 +13,7 @@
 #include <byteswap.h>
 #include <cstring>
 
+#include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/null.hpp>
 
@@ -40,8 +41,7 @@ namespace tao::pq
       protected:
          explicit char_pointer_helper( const char* p ) noexcept
             : m_p( p )
-         {
-         }
+         {}
 
       public:
          static constexpr std::size_t columns = 1;
@@ -54,14 +54,14 @@ namespace tao::pq
          }
 
          template< std::size_t I >
-         [[nodiscard]] constexpr int size() const noexcept
+         [[nodiscard]] static constexpr int size() noexcept
          {
             static_assert( I < columns );
             return 0;
          }
 
          template< std::size_t I >
-         [[nodiscard]] constexpr int format() const noexcept
+         [[nodiscard]] static constexpr int format() noexcept
          {
             static_assert( I < columns );
             return 0;
@@ -91,14 +91,14 @@ namespace tao::pq
          }
 
          template< std::size_t I >
-         [[nodiscard]] constexpr int size() const noexcept
+         [[nodiscard]] static constexpr int size() noexcept
          {
             static_assert( I < columns );
             return 0;
          }
 
          template< std::size_t I >
-         [[nodiscard]] constexpr int format() const noexcept
+         [[nodiscard]] static constexpr int format() noexcept
          {
             static_assert( I < columns );
             return 0;
@@ -134,14 +134,14 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int size() const noexcept
+      [[nodiscard]] static constexpr int size() noexcept
       {
          static_assert( I < columns );
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int format() const noexcept
+      [[nodiscard]] static constexpr int format() noexcept
       {
          static_assert( I < columns );
          return 0;
@@ -230,14 +230,14 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int size() const noexcept
+      [[nodiscard]] static constexpr int size() noexcept
       {
          static_assert( I < columns );
          return sizeof( short );
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int format() const noexcept
+      [[nodiscard]] static constexpr int format() noexcept
       {
          static_assert( I < columns );
          return 1;
@@ -276,14 +276,14 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int size() const noexcept
+      [[nodiscard]] static constexpr int size() noexcept
       {
          static_assert( I < columns );
          return sizeof( int );
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int format() const noexcept
+      [[nodiscard]] static constexpr int format() noexcept
       {
          static_assert( I < columns );
          return 1;
@@ -322,14 +322,14 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int size() const noexcept
+      [[nodiscard]] static constexpr int size() noexcept
       {
          static_assert( I < columns );
          return sizeof( long );
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int format() const noexcept
+      [[nodiscard]] static constexpr int format() noexcept
       {
          static_assert( I < columns );
          return 1;
@@ -440,6 +440,47 @@ namespace tao::pq
       {
          static_assert( I < columns );
          return m_forwarder ? m_forwarder->template format< I >() : 0;
+      }
+   };
+
+   template< typename... Ts >
+   struct parameter_traits< std::tuple< Ts... > >
+   {
+   private:
+      std::tuple< parameter_traits< std::decay_t< Ts > >... > m_tuple;
+
+      using gen = internal::gen< parameter_traits< std::decay_t< Ts > >::columns... >;
+
+   public:
+      explicit parameter_traits( const std::tuple< Ts... >& tuple )
+         : m_tuple( tuple )
+      {}
+
+      explicit parameter_traits( std::tuple< Ts... >&& tuple )
+         : m_tuple( std::move( tuple ) )
+      {}
+
+      static constexpr std::size_t columns = ( 0 + ... + parameter_traits< std::decay_t< Ts > >::columns );
+
+      template< std::size_t I >
+      [[nodiscard]] const char* c_str() const noexcept
+      {
+         static_assert( I < columns );
+         return std::get< gen::template outer< I > >( m_tuple ).template c_str< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr int size() const noexcept
+      {
+         static_assert( I < columns );
+         return std::get< gen::template outer< I > >( m_tuple ).template size< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr int format() const noexcept
+      {
+         static_assert( I < columns );
+         return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
       }
    };
 
