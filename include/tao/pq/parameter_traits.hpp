@@ -19,8 +19,31 @@
 
 namespace tao::pq
 {
-   template< typename, typename = void >
-   struct parameter_traits;
+   template< typename T, typename = void >
+   struct parameter_traits
+   {
+      static constexpr std::size_t columns = 1;
+
+      static_assert( sizeof( T ) == 0, "data type not specialized for use as DB parameter" );
+
+      template< std::size_t I >
+      [[nodiscard]] static const char* c_str() noexcept
+      {
+         return nullptr;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr int size() noexcept
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr int format() noexcept
+      {
+         return 0;
+      }
+   };
 
    namespace internal
    {
@@ -447,16 +470,17 @@ namespace tao::pq
    struct parameter_traits< std::tuple< Ts... > >
    {
    private:
-      std::tuple< parameter_traits< std::decay_t< Ts > >... > m_tuple;
+      using tuple_t = std::tuple< parameter_traits< std::decay_t< Ts > >... >;
+      tuple_t m_tuple;
 
       using gen = internal::gen< parameter_traits< std::decay_t< Ts > >::columns... >;
 
    public:
-      explicit parameter_traits( const std::tuple< Ts... >& tuple )
+      explicit parameter_traits( const std::tuple< Ts... >& tuple ) noexcept( noexcept( tuple_t( tuple ) ) )
          : m_tuple( tuple )
       {}
 
-      explicit parameter_traits( std::tuple< Ts... >&& tuple )
+      explicit parameter_traits( std::tuple< Ts... >&& tuple ) noexcept( noexcept( tuple_t( std::move( tuple ) ) ) )
          : m_tuple( std::move( tuple ) )
       {}
 
@@ -482,6 +506,16 @@ namespace tao::pq
          static_assert( I < columns );
          return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
       }
+   };
+
+   // detect free function to_taopq_param() found via ADL, simplify user-defined traits
+   template< typename T >
+   struct parameter_traits< T, std::void_t< decltype( to_taopq_param( std::declval< const T& >() ) ) > >
+      : parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >
+   {
+      explicit parameter_traits( const T& t ) noexcept( noexcept( parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >( to_taopq_param( t ) ) ) )
+         : parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >( to_taopq_param( t ) )
+      {}
    };
 
 }  // namespace tao::pq
