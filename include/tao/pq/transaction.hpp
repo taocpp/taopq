@@ -29,7 +29,7 @@ namespace tao::pq
                    std::index_sequence< Ns... > >
       {
          template< std::size_t I >
-         static constexpr std::size_t count = ( 0 + ... + ( ( Ns < I ) ? 1 : 0 ) );
+         static constexpr std::size_t count = ( 0 + ... + ( ( Ns <= I ) ? 1 : 0 ) ) - 1;
 
          template< std::size_t J >
          static constexpr std::size_t select = ( 0 + ... + ( ( Js == J ) ? Ns : 0 ) );
