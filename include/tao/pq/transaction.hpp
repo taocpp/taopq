@@ -62,10 +62,10 @@ namespace tao::pq
                                             std::index_sequence< Is... > /*unused*/,
                                             const std::tuple< Ts... >& tuple )
       {
-         const char* const param_values[] = { std::get< Os >( tuple ).template c_str< Is >()... };
-         constexpr const int param_lengths[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template size< Is >()... };
-         constexpr const int param_formats[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template format< Is >()... };
-         return execute_params( statement, sizeof...( Os ), param_values, param_lengths, param_formats );
+         const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
+         static constexpr int lengths[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template length< Is >()... };
+         static constexpr int formats[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template format< Is >()... };
+         return execute_params( statement, sizeof...( Os ), values, lengths, formats );
       }
 
       template< typename... Ts >
