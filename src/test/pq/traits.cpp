@@ -17,11 +17,18 @@ public:
       : a( i ), b( i + 1 ), c( i + 2 ), d( i + 3 )
    {}
 
-   friend auto to_taopq_param( const user& u ) noexcept
+   // add a member function (simple)...
+   auto to_taopq_param() const noexcept
    {
-      return std::tie( u.a, u.b, u.c, u.d );
+      return std::tie( a, b, c, d );
    }
 };
+
+// ...or a free function if you can't/won't modify user
+// auto to_taopq_param( const user& v ) noexcept
+// {
+//    return std::tie( v.a, v.b, v.c, v.d );  // wouldn't work as the members are private
+// }
 
 void run()
 {

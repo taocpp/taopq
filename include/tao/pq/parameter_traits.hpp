@@ -520,4 +520,11 @@ namespace tao::pq
 
 }  // namespace tao::pq
 
+template< typename T >
+auto to_taopq_param( const T& t ) noexcept( noexcept( t.to_taopq_param() ) )
+   -> decltype( t.to_taopq_param() )
+{
+   return t.to_taopq_param();
+}
+
 #endif
