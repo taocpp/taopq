@@ -452,17 +452,17 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int size() const noexcept
+      [[nodiscard]] static constexpr int size() noexcept
       {
          static_assert( I < columns );
-         return m_forwarder ? m_forwarder->template size< I >() : 0;
+         return U::template size< I >();
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int format() const noexcept
+      [[nodiscard]] static constexpr int format() noexcept
       {
          static_assert( I < columns );
-         return m_forwarder ? m_forwarder->template format< I >() : 0;
+         return U::template format< I >();
       }
    };
 
@@ -494,17 +494,17 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int size() const noexcept
+      [[nodiscard]] static constexpr int size() noexcept
       {
          static_assert( I < columns );
-         return std::get< gen::template outer< I > >( m_tuple ).template size< gen::template inner< I > >();
+         return std::decay_t< std::tuple_element_t< gen::template outer< I >, tuple_t > >::template size< gen::template inner< I > >();
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int format() const noexcept
+      [[nodiscard]] static constexpr int format() noexcept
       {
          static_assert( I < columns );
-         return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
+         return std::decay_t< std::tuple_element_t< gen::template outer< I >, tuple_t > >::template format< gen::template inner< I > >();
       }
    };
 

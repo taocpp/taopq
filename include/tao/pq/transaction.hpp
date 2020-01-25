@@ -63,8 +63,8 @@ namespace tao::pq
                                             const std::tuple< Ts... >& tuple )
       {
          const char* const param_values[] = { std::get< Os >( tuple ).template c_str< Is >()... };
-         const int param_lengths[] = { std::get< Os >( tuple ).template size< Is >()... };
-         const int param_formats[] = { std::get< Os >( tuple ).template format< Is >()... };
+         constexpr const int param_lengths[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template size< Is >()... };
+         constexpr const int param_formats[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template format< Is >()... };
          return execute_params( statement, sizeof...( Os ), param_values, param_lengths, param_formats );
       }
 
