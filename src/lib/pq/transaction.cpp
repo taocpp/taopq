@@ -163,12 +163,13 @@ namespace tao::pq
 
    result transaction::execute_params( const char* statement,
                                        const int n_params,
-                                       const char* const param_values[],
-                                       const int param_lengths[],
-                                       const int param_formats[] )
+                                       const Oid types[],
+                                       const char* const values[],
+                                       const int lengths[],
+                                       const int formats[] )
    {
       check_current_transaction();
-      return m_connection->execute_params( statement, n_params, param_values, param_lengths, param_formats );
+      return m_connection->execute_params( statement, n_params, types, values, lengths, formats );
    }
 
    void transaction::commit()

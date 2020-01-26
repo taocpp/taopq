@@ -37,27 +37,15 @@ void check_null( const std::string& datatype )
    TEST_ASSERT( result[ 0 ][ 0 ].is_null() );
 }
 
-// clang-format off
-template< typename > struct ptype { static const std::string extension; };
-template< typename T > inline const std::string ptype< T >::extension;
-
-template<> inline const std::string ptype< short >::extension = "::smallint";
-template<> inline const std::string ptype< int >::extension = "::integer";
-template<> inline const std::string ptype< long >::extension = "::bigint";
-
-template<> inline const std::string ptype< float >::extension = "::real";
-template<> inline const std::string ptype< double >::extension = "::float";
-// clang-format on
-
 template< typename T >
 void check( const std::string& datatype, const T& value )
 {
    std::cout << "check: " << datatype << " value: " << value << std::endl;
    if( prepare_datatype( datatype ) ) {
-      TEST_ASSERT( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1" + ptype< T >::extension + " )", value ).rows_affected() == 1 );
+      TEST_ASSERT( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", value ).rows_affected() == 1 );
    }
    else {
-      TEST_ASSERT( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1" + ptype< T >::extension, value ).rows_affected() == 1 );
+      TEST_ASSERT( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", value ).rows_affected() == 1 );
    }
    const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
    if( value == value ) {  // NOLINT(misc-redundant-expression)

@@ -52,9 +52,10 @@ namespace tao::pq
    private:
       [[nodiscard]] result execute_params( const char* statement,
                                            const int n_params,
-                                           const char* const param_values[],
-                                           const int param_lengths[],
-                                           const int param_formats[] );
+                                           const Oid types[],
+                                           const char* const values[],
+                                           const int lengths[],
+                                           const int formats[] );
 
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
       [[nodiscard]] result execute_indexed( const char* statement,
@@ -62,10 +63,11 @@ namespace tao::pq
                                             std::index_sequence< Is... > /*unused*/,
                                             const std::tuple< Ts... >& tuple )
       {
+         static constexpr Oid types[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template type< Is >()... };
          const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
          static constexpr int lengths[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template length< Is >()... };
          static constexpr int formats[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template format< Is >()... };
-         return execute_params( statement, sizeof...( Os ), values, lengths, formats );
+         return execute_params( statement, sizeof...( Os ), types, values, lengths, formats );
       }
 
       template< typename... Ts >
@@ -96,7 +98,7 @@ namespace tao::pq
       template< template< typename... > class Traits = parameter_traits >
       result execute( const char* statement )
       {
-         return execute_params( statement, 0, nullptr, nullptr, nullptr );
+         return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
       }
 
       template< template< typename... > class Traits = parameter_traits, typename... As >

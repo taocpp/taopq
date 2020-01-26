@@ -48,8 +48,8 @@ void run()  // NOLINT(readability-function-size)
    TEST_ASSERT( !connection->execute( "SELECT 64 WHERE FALSE" ).optional< int >() );
    TEST_ASSERT( !connection->execute( "SELECT NULL" ).as< std::optional< int > >() );
 
-   TEST_ASSERT( connection->execute( "SELECT $1::INTEGER", std::optional< int >( 42 ) ).as< std::optional< int > >() == 42 );
-   TEST_ASSERT( !connection->execute( "SELECT $1::INTEGER", std::optional< int >() ).as< std::optional< int > >() );
+   TEST_ASSERT( connection->execute( "SELECT $1", std::optional< int >( 42 ) ).as< std::optional< int > >() == 42 );
+   TEST_ASSERT( !connection->execute( "SELECT $1", std::optional< int >() ).as< std::optional< int > >() );
 
    TEST_ASSERT( connection->execute( "SELECT 42" ).tuple< int >() == std::tuple< int >( 42 ) );
 

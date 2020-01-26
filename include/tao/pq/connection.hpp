@@ -48,9 +48,10 @@ namespace tao::pq
 
       [[nodiscard]] result execute_params( const char* statement,
                                            const int n_params,
-                                           const char* const param_values[],
-                                           const int param_lengths[],
-                                           const int param_formats[] );
+                                           const Oid types[],
+                                           const char* const values[],
+                                           const int lengths[],
+                                           const int formats[] );
 
    public:
       [[nodiscard]] static std::shared_ptr< connection > create( const std::string& connection_info );

@@ -180,14 +180,15 @@ namespace tao::pq
 
    result connection::execute_params( const char* statement,
                                       const int n_params,
-                                      const char* const param_values[],
-                                      const int param_lengths[],
-                                      const int param_formats[] )
+                                      const Oid types[],
+                                      const char* const values[],
+                                      const int lengths[],
+                                      const int formats[] )
    {
       if( is_prepared( statement ) ) {
-         return result( ::PQexecPrepared( m_pgconn.get(), statement, n_params, param_values, param_lengths, param_formats, 0 ) );
+         return result( ::PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) );
       }
-      return result( ::PQexecParams( m_pgconn.get(), statement, n_params, nullptr, param_values, param_lengths, param_formats, 0 ) );
+      return result( ::PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) );
    }
 
    connection::connection( const connection::private_key& /*unused*/, const std::string& connection_info )
