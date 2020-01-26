@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch
+// Copyright (c) 2016-2020 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
 #ifndef SRC_TEST_GETENV_HPP  // NOLINT(llvm-header-guard)

@@ -44,4 +44,4 @@ enum class isolation_level
 
 TODO - here?
 
-Copyright (c) 2019 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2019-2020 Daniel Frey and Dr. Colin Hirsch

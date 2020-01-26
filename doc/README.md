@@ -24,4 +24,4 @@
    * [Shared Pointers](Design-Decisions.md#shared-pointers)
    * [Direct Transactions](Design-Decisions.md#direct-transactions)
 
-Copyright (c) 2016-2019 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2016-2020 Daniel Frey and Dr. Colin Hirsch

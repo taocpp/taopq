@@ -29,4 +29,4 @@ The `get` function returns a `const char*`, which is valid for the lifetime of (
 
 ## ...
 
-Copyright (c) 2019 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2019-2020 Daniel Frey and Dr. Colin Hirsch

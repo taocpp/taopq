@@ -1,5 +1,5 @@
 // The Art of C++ / taopq
-// Copyright (c) 2016-2019 Daniel Frey
+// Copyright (c) 2016-2020 Daniel Frey
 
 #include <cstdlib>
 #include <iostream>

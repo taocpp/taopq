@@ -1,5 +1,5 @@
 # The Art of C++
-# Copyright (c) 2016-2019 Daniel Frey
+# Copyright (c) 2016-2020 Daniel Frey
 # Please see LICENSE for license or visit https://github.com/taocpp/taopq
 
 .SUFFIXES:
