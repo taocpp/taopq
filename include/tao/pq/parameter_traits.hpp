@@ -24,7 +24,7 @@ namespace tao::pq
    {
       static constexpr std::size_t columns = 1;
 
-      static_assert( sizeof( T ) == 0, "data type not specialized for use as DB parameter" );
+      static_assert( sizeof( T ) == 0, "data type T not registered as taopq parameter" );
 
       template< std::size_t I >
       [[nodiscard]] static const char* value() noexcept
@@ -508,6 +508,14 @@ namespace tao::pq
       }
    };
 
+   // default free function to detect member function to_taopq_param()
+   template< typename T >
+   auto to_taopq_param( const T& t ) noexcept( noexcept( t.to_taopq_param() ) )
+      -> decltype( t.to_taopq_param() )
+   {
+      return t.to_taopq_param();
+   }
+
    // detect free function to_taopq_param() found via ADL, simplify user-defined traits
    template< typename T >
    struct parameter_traits< T, std::void_t< decltype( to_taopq_param( std::declval< const T& >() ) ) > >
@@ -519,12 +527,5 @@ namespace tao::pq
    };
 
 }  // namespace tao::pq
-
-template< typename T >
-auto to_taopq_param( const T& t ) noexcept( noexcept( t.to_taopq_param() ) )
-   -> decltype( t.to_taopq_param() )
-{
-   return t.to_taopq_param();
-}
 
 #endif
