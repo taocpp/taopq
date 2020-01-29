@@ -65,7 +65,7 @@ namespace tao::pq
       {
          static constexpr Oid types[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template type< Is >()... };
          const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
-         static constexpr int lengths[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template length< Is >()... };
+         const int lengths[] = { std::get< Os >( tuple ).template length< Is >()... };
          static constexpr int formats[] = { std::decay_t< std::tuple_element_t< Os, std::tuple< Ts... > > >::template format< Is >()... };
          return execute_params( statement, sizeof...( Os ), types, values, lengths, formats );
       }

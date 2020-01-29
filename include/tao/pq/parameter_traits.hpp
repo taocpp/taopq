@@ -114,8 +114,7 @@ namespace tao::pq
          template< typename... Ts >
          explicit string_helper( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
             : m_s( std::forward< Ts >( ts )... )
-         {
-         }
+         {}
 
       public:
          static constexpr std::size_t columns = 1;
@@ -203,8 +202,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const char* p ) noexcept
          : char_pointer_helper( p )
-      {
-      }
+      {}
    };
 
    template<>
@@ -213,8 +211,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const std::string& v ) noexcept
          : char_pointer_helper( v.c_str() )
-      {
-      }
+      {}
    };
 
    template<>
@@ -224,8 +221,7 @@ namespace tao::pq
 
       explicit parameter_traits( const bool v ) noexcept
          : m_v( v )
-      {
-      }
+      {}
 
       static constexpr std::size_t columns = 1;
 
@@ -264,8 +260,7 @@ namespace tao::pq
 
       explicit parameter_traits( const char v ) noexcept
          : m_v( v )
-      {
-      }
+      {}
 
       static constexpr std::size_t columns = 1;
 
@@ -303,8 +298,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const signed char v )
          : string_helper( internal::printf( "%hhd", v ) )
-      {
-      }
+      {}
    };
 
    template<>
@@ -313,8 +307,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const unsigned char v )
          : string_helper( internal::printf( "%hhu", v ) )
-      {
-      }
+      {}
    };
 
    template<>
@@ -326,8 +319,7 @@ namespace tao::pq
 
       explicit parameter_traits( const short v ) noexcept
          : m_v( bswap_16( v ) )
-      {
-      }
+      {}
 
       static constexpr std::size_t columns = 1;
 
@@ -365,8 +357,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const unsigned short v )
          : string_helper( internal::printf( "%hu", v ) )
-      {
-      }
+      {}
    };
 
    template<>
@@ -378,8 +369,7 @@ namespace tao::pq
 
       explicit parameter_traits( const int v ) noexcept
          : m_v( bswap_32( v ) )
-      {
-      }
+      {}
 
       static constexpr std::size_t columns = 1;
 
@@ -417,8 +407,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const unsigned v )
          : string_helper( internal::printf( "%u", v ) )
-      {
-      }
+      {}
    };
 
    template<>
@@ -430,8 +419,7 @@ namespace tao::pq
 
       explicit parameter_traits( const long v ) noexcept
          : m_v( bswap_64( v ) )
-      {
-      }
+      {}
 
       static constexpr std::size_t columns = 1;
 
@@ -469,8 +457,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const unsigned long v )
          : string_helper( internal::printf( "%lu", v ) )
-      {
-      }
+      {}
    };
 
    template<>
@@ -479,8 +466,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const long long v )
          : string_helper( internal::printf( "%lld", v ) )
-      {
-      }
+      {}
    };
 
    template<>
@@ -489,8 +475,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const unsigned long long v )
          : string_helper( internal::printf( "%llu", v ) )
-      {
-      }
+      {}
    };
 
    template<>
@@ -515,8 +500,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const double v )
          : parameter_traits< long >( internal::bit_cast< long >( v ) )
-      {
-      }
+      {}
 
       template< std::size_t I >
       [[nodiscard]] static constexpr Oid type() noexcept
@@ -531,8 +515,7 @@ namespace tao::pq
    {
       explicit parameter_traits( const long double v )
          : string_helper( internal::printf_helper( "%.21Lg", v ) )
-      {
-      }
+      {}
    };
 
    template< typename T >
@@ -624,10 +607,10 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] constexpr int length() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >() ) )
       {
          static_assert( I < columns );
-         return std::decay_t< std::tuple_element_t< gen::template outer< I >, tuple_t > >::template length< gen::template inner< I > >();
+         return std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >();
       }
 
       template< std::size_t I >
