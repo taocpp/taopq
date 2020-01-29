@@ -462,20 +462,18 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< long long >
-      : internal::string_helper
+      : parameter_traits< long >
    {
-      explicit parameter_traits( const long long v )
-         : string_helper( internal::printf( "%lld", v ) )
-      {}
+      using parameter_traits< long >::parameter_traits;
+      static_assert( sizeof( long long ) == 8 );
    };
 
    template<>
    struct parameter_traits< unsigned long long >
-      : internal::string_helper
+      : parameter_traits< unsigned long >
    {
-      explicit parameter_traits( const unsigned long long v )
-         : string_helper( internal::printf( "%llu", v ) )
-      {}
+      using parameter_traits< unsigned long >::parameter_traits;
+      static_assert( sizeof( unsigned long long ) == 8 );
    };
 
    template<>
@@ -540,8 +538,7 @@ namespace tao::pq
          }
       }
 
-      static constexpr std::size_t columns = 1;
-      static_assert( U::columns == 1 );
+      static constexpr std::size_t columns = U::columns;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr Oid type() noexcept
@@ -551,17 +548,17 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr const char* value() const noexcept
+      [[nodiscard]] constexpr const char* value() const noexcept( noexcept( m_forwarder ? m_forwarder->template value< I >() : nullptr ) )
       {
          static_assert( I < columns );
          return m_forwarder ? m_forwarder->template value< I >() : nullptr;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] constexpr int length() const noexcept( noexcept( m_forwarder ? m_forwarder->template length< I >() : 0 ) )
       {
          static_assert( I < columns );
-         return U::template length< I >();
+         return m_forwarder ? m_forwarder->template length< I >() : 0;
       }
 
       template< std::size_t I >
@@ -600,7 +597,7 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] const char* value() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >() ) )
       {
          static_assert( I < columns );
          return std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >();
