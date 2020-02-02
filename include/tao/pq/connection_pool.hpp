@@ -36,7 +36,7 @@ namespace tao::pq
       };
 
    public:
-      connection_pool( const private_key& /*unused*/, const std::string& connection_info ) noexcept
+      connection_pool( const private_key& /*unused*/, const std::string& connection_info ) noexcept  // NOLINT(modernize-pass-by-value)
          : m_connection_info( connection_info )
       {}
 

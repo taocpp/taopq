@@ -140,7 +140,7 @@ namespace tao::pq
       static_assert( sizeof( short ) == 2 );
 
       explicit parameter_binary_traits( const short v ) noexcept
-         : m_v( bswap_16( v ) )
+         : m_v( bswap_16( v ) )  // NOLINT(readability-isolate-declaration)
       {}
 
       static constexpr std::size_t columns = 1;
@@ -178,7 +178,7 @@ namespace tao::pq
       static_assert( sizeof( int ) == 4 );
 
       explicit parameter_binary_traits( const int v ) noexcept
-         : m_v( bswap_32( v ) )
+         : m_v( bswap_32( v ) )  // NOLINT(readability-isolate-declaration)
       {}
 
       static constexpr std::size_t columns = 1;
@@ -216,7 +216,7 @@ namespace tao::pq
       static_assert( sizeof( long ) == 8 );
 
       explicit parameter_binary_traits( const long v ) noexcept
-         : m_v( bswap_64( v ) )
+         : m_v( bswap_64( v ) )  // NOLINT(readability-isolate-declaration)
       {}
 
       static constexpr std::size_t columns = 1;
