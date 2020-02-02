@@ -32,7 +32,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-7']
+          packages: ['g++-7', 'libpq-dev']
       env:
         - CXX=g++-7
 
@@ -40,7 +40,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-8']
+          packages: ['g++-8', 'libpq-dev']
       env:
         - CXX=g++-8
 
@@ -48,7 +48,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-9']
+          packages: ['g++-9', 'libpq-dev']
       env:
         - CXX=g++-9
 
@@ -56,7 +56,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-5.0']
-          packages: ['clang-5.0', 'g++-7']
+          packages: ['clang-5.0', 'g++-7', 'libpq-dev']
       env:
         - CXX=clang++-5.0
 
@@ -64,7 +64,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-6.0']
-          packages: ['clang-6.0', 'g++-7']
+          packages: ['clang-6.0', 'g++-7', 'libpq-dev']
       env:
         - CXX=clang++-6.0
 
@@ -72,7 +72,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-7']
-          packages: ['clang-7', 'g++-7']
+          packages: ['clang-7', 'g++-7', 'libpq-dev']
       env:
         - CXX=clang++-7
 
@@ -80,7 +80,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'g++-8']
+          packages: ['clang-8', 'g++-8', 'libpq-dev']
       env:
         - CXX=clang++-8
 
@@ -88,7 +88,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'g++-8']
+          packages: ['clang-8', 'g++-8', 'libpq-dev']
       env:
         - CXX=clang++-8
         - CPPFLAGS=-fms-extensions
@@ -127,7 +127,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'clang-tools-8', 'g++-8']
+          packages: ['clang-8', 'clang-tools-8', 'g++-8', 'libpq-dev']
       script:
         - scan-build-8 --use-c++=clang++-8 --status-bugs make -kj3
 
@@ -135,7 +135,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'clang-tidy-8', 'g++-8']
+          packages: ['clang-8', 'clang-tidy-8', 'g++-8', 'libpq-dev']
       env:
         - CLANG_TIDY=clang-tidy-8
       script:
@@ -145,7 +145,7 @@ matrix:
       addons:
         apt:
           sources: ['ubuntu-toolchain-r-test']
-          packages: ['g++-7']
+          packages: ['g++-7', 'libpq-dev']
       env:
         - CXX=g++-7
         - CXXFLAGS="-O0 --coverage"
