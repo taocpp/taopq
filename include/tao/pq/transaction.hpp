@@ -39,7 +39,7 @@ namespace tao::pq
       explicit transaction( const std::shared_ptr< pq::connection >& connection );
       virtual ~transaction() = 0;
 
-      virtual bool v_is_direct() const = 0;
+      [[nodiscard]] virtual bool v_is_direct() const noexcept = 0;
 
       virtual void v_commit() = 0;
       virtual void v_rollback() = 0;

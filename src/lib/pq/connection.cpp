@@ -63,7 +63,7 @@ namespace tao::pq
          }
 
       private:
-         [[nodiscard]] bool v_is_direct() const override
+         [[nodiscard]] bool v_is_direct() const noexcept override
          {
             return true;
          }
@@ -129,7 +129,7 @@ namespace tao::pq
          void operator=( top_level_transaction&& ) = delete;
 
       private:
-         [[nodiscard]] bool v_is_direct() const override
+         [[nodiscard]] bool v_is_direct() const noexcept override
          {
             return false;
          }

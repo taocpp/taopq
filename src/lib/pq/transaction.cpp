@@ -33,7 +33,7 @@ namespace tao::pq
             }
          }
 
-         [[nodiscard]] bool v_is_direct() const override
+         [[nodiscard]] bool v_is_direct() const noexcept override
          {
             return false;
          }

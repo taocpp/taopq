@@ -36,8 +36,8 @@ namespace tao::pq
       };
 
    public:
-      connection_pool( const private_key& /*unused*/, std::string connection_info ) noexcept
-         : m_connection_info( std::move( connection_info ) )
+      connection_pool( const private_key& /*unused*/, const std::string& connection_info ) noexcept
+         : m_connection_info( connection_info )
       {}
 
       [[nodiscard]] std::shared_ptr< pq::connection > connection()
