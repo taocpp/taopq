@@ -19,7 +19,7 @@ namespace example
          : a( i ), b( i + 1 ), c( i + 2 ), d( i + 3 )
       {}
 
-      auto to_taopq_param() const noexcept
+      [[nodiscard]] auto to_taopq_param() const noexcept
       {
          return std::tie( a, b, c, d );
       }
@@ -34,7 +34,7 @@ namespace example
       {}
    };
 
-   auto to_taopq_param( const user2& v ) noexcept
+   [[nodiscard]] auto to_taopq_param( const user2& v ) noexcept
    {
       return std::tie( v.a, v.b, v.c, v.d );
    }
@@ -87,7 +87,7 @@ void run()
    }
 }
 
-int main()
+int main()  //NOLINT(bugprone-exception-escape)
 {
    try {
       run();
