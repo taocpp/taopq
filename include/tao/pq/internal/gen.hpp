@@ -32,9 +32,16 @@ namespace tao::pq::internal
    };
 
    template< std::size_t... Ns >
-   using gen = make< std::make_index_sequence< ( 0 + ... + Ns ) >,
-                     std::make_index_sequence< sizeof...( Ns ) >,
-                     exclusive_scan_t< std::index_sequence< Ns... > > >;
+   struct gen2
+   {
+      using S1 = std::make_index_sequence< ( 0 + ... + Ns ) >;
+      using S2 = std::make_index_sequence< sizeof...( Ns ) >;
+      using S3 = exclusive_scan_t< std::index_sequence< Ns... > >;
+      using type = make< S1, S2, S3 >;
+   };
+
+   template< std::size_t... Ns >
+   using gen = typename gen2< Ns... >::type;
 
 }  // namespace tao::pq::internal
 
