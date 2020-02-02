@@ -4,167 +4,36 @@
 #ifndef TAO_PQ_PARAMETER_TRAITS_HPP
 #define TAO_PQ_PARAMETER_TRAITS_HPP
 
-#include <cmath>
+#include <cstddef>
 #include <optional>
 #include <string>
+#include <string_view>
+#include <tuple>
 #include <type_traits>
 #include <utility>
 
-#include <byteswap.h>
-#include <cstring>
+#include <libpq-fe.h>
 
 #include <tao/pq/internal/gen.hpp>
-#include <tao/pq/internal/printf.hpp>
+#include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/null.hpp>
-
-#include <libpq-fe.h>
+#include <tao/pq/parameter_text_traits.hpp>
 
 namespace tao::pq
 {
+   // select which traits you want (TODO: this is just a hack, improve it!)
    template< typename T, typename = void >
    struct parameter_traits
+      : parameter_text_traits< T >
    {
-      static constexpr std::size_t columns = 1;
-
-      static_assert( sizeof( T ) == 0, "data type T not registered as taopq parameter" );
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static const char* value() noexcept
-      {
-         return nullptr;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
-      {
-         return 0;
-      }
+      using parameter_text_traits< T >::parameter_text_traits;
    };
-
-   namespace internal
-   {
-      template< typename To, typename From >
-      std::enable_if_t< ( sizeof( To ) == sizeof( From ) ) && std::is_trivially_copyable< From >::value && std::is_trivial< To >::value, To >
-      bit_cast( const From& src ) noexcept
-      {
-         To dst;
-         std::memcpy( &dst, &src, sizeof( To ) );
-         return dst;
-      }
-
-      class char_pointer_helper
-      {
-      private:
-         const char* m_p;
-
-      protected:
-         explicit char_pointer_helper( const char* p ) noexcept
-            : m_p( p )
-         {}
-
-      public:
-         static constexpr std::size_t columns = 1;
-
-         template< std::size_t I >
-         [[nodiscard]] static constexpr Oid type() noexcept
-         {
-            return 0;
-         }
-
-         template< std::size_t I >
-         [[nodiscard]] const char* value() const noexcept
-         {
-            static_assert( I < columns );
-            return m_p;
-         }
-
-         template< std::size_t I >
-         [[nodiscard]] static constexpr int length() noexcept
-         {
-            static_assert( I < columns );
-            return 0;
-         }
-
-         template< std::size_t I >
-         [[nodiscard]] static constexpr int format() noexcept
-         {
-            static_assert( I < columns );
-            return 0;
-         }
-      };
-
-      class string_helper
-      {
-      private:
-         std::string m_s;
-
-      protected:
-         template< typename... Ts >
-         explicit string_helper( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
-            : m_s( std::forward< Ts >( ts )... )
-         {}
-
-      public:
-         static constexpr std::size_t columns = 1;
-
-         template< std::size_t I >
-         [[nodiscard]] static constexpr Oid type() noexcept
-         {
-            return 0;
-         }
-
-         template< std::size_t I >
-         [[nodiscard]] const char* value() const noexcept
-         {
-            static_assert( I < columns );
-            return m_s.c_str();
-         }
-
-         template< std::size_t I >
-         [[nodiscard]] static constexpr int length() noexcept
-         {
-            static_assert( I < columns );
-            return 0;
-         }
-
-         template< std::size_t I >
-         [[nodiscard]] static constexpr int format() noexcept
-         {
-            static_assert( I < columns );
-            return 0;
-         }
-      };
-
-      template< typename T >
-      [[nodiscard]] std::string printf_helper( const char* format, const T v )
-      {
-         if( std::isfinite( v ) ) {
-            return internal::printf( format, v );
-         }
-         if( std::isnan( v ) ) {
-            return "NAN";
-         }
-         return ( v < 0 ) ? "-INF" : "INF";
-      }
-
-   }  // namespace internal
 
    template<>
    struct parameter_traits< null_t >
    {
-      explicit parameter_traits( const null_t& /*unused*/ ) noexcept {}
+      explicit parameter_traits( const null_t& /*unused*/ ) noexcept
+      {}
 
       static constexpr std::size_t columns = 1;
 
@@ -175,23 +44,20 @@ namespace tao::pq
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr const char* value() const noexcept
+      [[nodiscard]] static constexpr const char* value() noexcept
       {
-         static_assert( I < columns );
          return nullptr;
       }
 
       template< std::size_t I >
       [[nodiscard]] static constexpr int length() noexcept
       {
-         static_assert( I < columns );
          return 0;
       }
 
       template< std::size_t I >
       [[nodiscard]] static constexpr int format() noexcept
       {
-         static_assert( I < columns );
          return 0;
       }
    };
@@ -214,305 +80,14 @@ namespace tao::pq
       {}
    };
 
+   // libpq has no way to accept a non-null-terminated string,
+   // hence we are required to create a copy just to add a null-byte.
    template<>
-   struct parameter_traits< bool >
-   {
-      const bool m_v;
-
-      explicit parameter_traits( const bool v ) noexcept
-         : m_v( v )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 16;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
-      {
-         static_assert( I < columns );
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
-      {
-         static_assert( I < columns );
-         return 1;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
-      {
-         static_assert( I < columns );
-         return 1;
-      }
-   };
-
-   template<>
-   struct parameter_traits< char >
-   {
-      const char m_v;
-
-      explicit parameter_traits( const char v ) noexcept
-         : m_v( v )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 18;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
-      {
-         static_assert( I < columns );
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
-      {
-         static_assert( I < columns );
-         return 1;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
-      {
-         static_assert( I < columns );
-         return 1;
-      }
-   };
-
-   template<>
-   struct parameter_traits< signed char >
+   struct parameter_traits< std::string_view >
       : internal::string_helper
    {
-      explicit parameter_traits( const signed char v )
-         : string_helper( internal::printf( "%hhd", v ) )
-      {}
-   };
-
-   template<>
-   struct parameter_traits< unsigned char >
-      : internal::string_helper
-   {
-      explicit parameter_traits( const unsigned char v )
-         : string_helper( internal::printf( "%hhu", v ) )
-      {}
-   };
-
-   template<>
-   struct parameter_traits< short >
-   {
-      const short m_v;
-
-      static_assert( sizeof( short ) == 2 );
-
-      explicit parameter_traits( const short v ) noexcept
-         : m_v( bswap_16( v ) )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 21;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
-      {
-         static_assert( I < columns );
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
-      {
-         static_assert( I < columns );
-         return sizeof( short );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
-      {
-         static_assert( I < columns );
-         return 1;
-      }
-   };
-
-   template<>
-   struct parameter_traits< unsigned short >
-      : internal::string_helper
-   {
-      explicit parameter_traits( const unsigned short v )
-         : string_helper( internal::printf( "%hu", v ) )
-      {}
-   };
-
-   template<>
-   struct parameter_traits< int >
-   {
-      const int m_v;
-
-      static_assert( sizeof( int ) == 4 );
-
-      explicit parameter_traits( const int v ) noexcept
-         : m_v( bswap_32( v ) )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 23;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
-      {
-         static_assert( I < columns );
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
-      {
-         static_assert( I < columns );
-         return sizeof( int );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
-      {
-         static_assert( I < columns );
-         return 1;
-      }
-   };
-
-   template<>
-   struct parameter_traits< unsigned >
-      : internal::string_helper
-   {
-      explicit parameter_traits( const unsigned v )
-         : string_helper( internal::printf( "%u", v ) )
-      {}
-   };
-
-   template<>
-   struct parameter_traits< long >
-   {
-      const long m_v;
-
-      static_assert( sizeof( long ) == 8 );
-
-      explicit parameter_traits( const long v ) noexcept
-         : m_v( bswap_64( v ) )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 20;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
-      {
-         static_assert( I < columns );
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
-      {
-         static_assert( I < columns );
-         return sizeof( long );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
-      {
-         static_assert( I < columns );
-         return 1;
-      }
-   };
-
-   template<>
-   struct parameter_traits< unsigned long >
-      : internal::string_helper
-   {
-      explicit parameter_traits( const unsigned long v )
-         : string_helper( internal::printf( "%lu", v ) )
-      {}
-   };
-
-   template<>
-   struct parameter_traits< long long >
-      : parameter_traits< long >
-   {
-      using parameter_traits< long >::parameter_traits;
-      static_assert( sizeof( long long ) == 8 );
-   };
-
-   template<>
-   struct parameter_traits< unsigned long long >
-      : parameter_traits< unsigned long >
-   {
-      using parameter_traits< unsigned long >::parameter_traits;
-      static_assert( sizeof( unsigned long long ) == 8 );
-   };
-
-   template<>
-   struct parameter_traits< float >
-      : parameter_traits< int >
-   {
-      explicit parameter_traits( const float v ) noexcept
-         : parameter_traits< int >( internal::bit_cast< int >( v ) )
-      {
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 700;
-      }
-   };
-
-   template<>
-   struct parameter_traits< double >
-      : parameter_traits< long >
-   {
-      explicit parameter_traits( const double v )
-         : parameter_traits< long >( internal::bit_cast< long >( v ) )
-      {}
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
-      {
-         return 701;
-      }
-   };
-
-   template<>
-   struct parameter_traits< long double >
-      : internal::string_helper
-   {
-      explicit parameter_traits( const long double v )
-         : string_helper( internal::printf_helper( "%.21Lg", v ) )
+      explicit parameter_traits( const std::string_view v ) noexcept
+         : string_helper( v )
       {}
    };
 
@@ -543,28 +118,24 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr Oid type() noexcept
       {
-         static_assert( I < columns );
          return U::template type< I >();
       }
 
       template< std::size_t I >
       [[nodiscard]] constexpr const char* value() const noexcept( noexcept( m_forwarder ? m_forwarder->template value< I >() : nullptr ) )
       {
-         static_assert( I < columns );
          return m_forwarder ? m_forwarder->template value< I >() : nullptr;
       }
 
       template< std::size_t I >
       [[nodiscard]] constexpr int length() const noexcept( noexcept( m_forwarder ? m_forwarder->template length< I >() : 0 ) )
       {
-         static_assert( I < columns );
          return m_forwarder ? m_forwarder->template length< I >() : 0;
       }
 
       template< std::size_t I >
       [[nodiscard]] static constexpr int format() noexcept
       {
-         static_assert( I < columns );
          return U::template format< I >();
       }
    };
@@ -590,31 +161,27 @@ namespace tao::pq
       static constexpr std::size_t columns = ( 0 + ... + parameter_traits< std::decay_t< Ts > >::columns );
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] constexpr Oid type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) )
       {
-         static_assert( I < columns );
-         return std::decay_t< std::tuple_element_t< gen::template outer< I >, tuple_t > >::template type< gen::template inner< I > >();
+         return std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >();
       }
 
       template< std::size_t I >
       [[nodiscard]] const char* value() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >() ) )
       {
-         static_assert( I < columns );
          return std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >();
       }
 
       template< std::size_t I >
       [[nodiscard]] constexpr int length() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >() ) )
       {
-         static_assert( I < columns );
          return std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >();
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] constexpr int format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >() ) )
       {
-         static_assert( I < columns );
-         return std::decay_t< std::tuple_element_t< gen::template outer< I >, tuple_t > >::template format< gen::template inner< I > >();
+         return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
       }
    };
 
@@ -631,7 +198,7 @@ namespace tao::pq
    struct parameter_traits< T, std::void_t< decltype( to_taopq_param( std::declval< const T& >() ) ) > >
       : parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >
    {
-      explicit parameter_traits( const T& t ) noexcept( noexcept( parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >( to_taopq_param( t ) ) ) )
+      explicit parameter_traits( const T& t ) noexcept( noexcept( parameter_traits< decltype( to_taopq_param( t ) ) >( to_taopq_param( t ) ) ) )
          : parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >( to_taopq_param( t ) )
       {}
    };
