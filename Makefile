@@ -83,7 +83,7 @@ $(BUILDDIR)/%: $(BUILDDIR)/%.o $(BUILDDIR)/lib/lib$(LIBNAME).a
 	$(CXX) $(CXXSTD) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
 
 build/%.clang-tidy: % .clang-tidy
-	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) -Iinclude $(CPPFLAGS) $(CXXFLAGS) 2>/dev/null
+	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) $(INCFLAGS) $(CPPFLAGS) $(CXXFLAGS) 2>/dev/null
 	@mkdir -p $(@D)
 	@touch $@
 
