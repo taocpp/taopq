@@ -196,10 +196,14 @@ namespace tao::pq
    // detect free function to_taopq_param() found via ADL, simplify user-defined traits
    template< typename T >
    struct parameter_traits< T, std::void_t< decltype( to_taopq_param( std::declval< const T& >() ) ) > >
-      : parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >
+      : private std::tuple< decltype( to_taopq_param( std::declval< const T& >() ) ) >,
+        public parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >
    {
-      explicit parameter_traits( const T& t ) noexcept( noexcept( parameter_traits< decltype( to_taopq_param( t ) ) >( to_taopq_param( t ) ) ) )
-         : parameter_traits< decltype( to_taopq_param( std::declval< const T& >() ) ) >( to_taopq_param( t ) )
+      using R = decltype( to_taopq_param( std::declval< const T& >() ) );
+
+      explicit parameter_traits( const T& t ) noexcept( noexcept( std::tuple< R >( to_taopq_param( t ) ), parameter_traits< R >( std::get< 0 >( std::declval< std::tuple< R >& >() ) ) ) )
+         : std::tuple< R >( to_taopq_param( t ) ),
+           parameter_traits< R >( std::get< 0 >( *this ) )
       {}
    };
 
