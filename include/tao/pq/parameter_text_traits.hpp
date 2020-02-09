@@ -5,6 +5,7 @@
 #define TAO_PQ_PARAMETER_TEXT_TRAITS_HPP
 
 #include <cstddef>
+#include <string>
 #include <utility>
 
 #include <tao/pq/internal/parameter_traits_helper.hpp>
@@ -178,6 +179,15 @@ namespace tao::pq
    {
       parameter_text_traits( const long double v )
          : string_helper( internal::printf( "%.21Lg", v ) )
+      {}
+   };
+
+   template<>
+   struct parameter_text_traits< std::string >
+      : internal::char_pointer_helper
+   {
+      explicit parameter_text_traits( const std::string& v ) noexcept
+         : char_pointer_helper( v.c_str() )
       {}
    };
 

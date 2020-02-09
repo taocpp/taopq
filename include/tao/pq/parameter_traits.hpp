@@ -6,8 +6,6 @@
 
 #include <cstddef>
 #include <optional>
-#include <string>
-#include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -17,17 +15,26 @@
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/null.hpp>
+#include <tao/pq/parameter_binary_traits.hpp>
 #include <tao/pq/parameter_text_traits.hpp>
 
 namespace tao::pq
 {
    // select which traits you want (TODO: this is just a hack, improve it!)
+
    template< typename T, typename = void >
    struct parameter_traits
       : parameter_text_traits< T >
    {
       using parameter_text_traits< T >::parameter_text_traits;
    };
+
+   // template< typename T, typename = void >
+   // struct parameter_traits
+   //    : parameter_binary_traits< T >
+   // {
+   //    using parameter_binary_traits< T >::parameter_binary_traits;
+   // };
 
    template<>
    struct parameter_traits< null_t >
@@ -68,26 +75,6 @@ namespace tao::pq
    {
       explicit parameter_traits( const char* p ) noexcept
          : char_pointer_helper( p )
-      {}
-   };
-
-   template<>
-   struct parameter_traits< std::string >
-      : internal::char_pointer_helper
-   {
-      explicit parameter_traits( const std::string& v ) noexcept
-         : char_pointer_helper( v.c_str() )
-      {}
-   };
-
-   // libpq has no way to accept a non-null-terminated string,
-   // hence we are required to create a copy just to add a null-byte.
-   template<>
-   struct parameter_traits< std::string_view >
-      : internal::string_helper
-   {
-      explicit parameter_traits( const std::string_view v )
-         : string_helper( v )
       {}
    };
 

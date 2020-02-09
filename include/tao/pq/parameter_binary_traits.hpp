@@ -5,6 +5,8 @@
 #define TAO_PQ_PARAMETER_BINARY_TRAITS_HPP
 
 #include <cstddef>
+#include <string>
+#include <string_view>
 #include <type_traits>
 #include <utility>
 
@@ -283,6 +285,54 @@ namespace tao::pq
       {
          return 701;
       }
+   };
+
+   template<>
+   struct parameter_binary_traits< std::string_view >
+   {
+   private:
+      const std::string_view m_v;
+
+   protected:
+      explicit parameter_binary_traits( const std::string_view v ) noexcept
+         : m_v( v )
+      {}
+
+   public:
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr Oid type() noexcept
+      {
+         return 25;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] const char* value() const noexcept
+      {
+         return m_v.data();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] int length() const noexcept
+      {
+         return static_cast< int >( m_v.size() );
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr int format() noexcept
+      {
+         return 1;
+      }
+   };
+
+   template<>
+   struct parameter_binary_traits< std::string >
+      : parameter_binary_traits< std::string_view >
+   {
+      explicit parameter_binary_traits( const std::string& v ) noexcept
+         : parameter_binary_traits< std::string_view >( v )
+      {}
    };
 
 }  // namespace tao::pq
