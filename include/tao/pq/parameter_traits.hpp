@@ -86,7 +86,7 @@ namespace tao::pq
    struct parameter_traits< std::string_view >
       : internal::string_helper
    {
-      explicit parameter_traits( const std::string_view v ) noexcept
+      explicit parameter_traits( const std::string_view v )
          : string_helper( v )
       {}
    };
