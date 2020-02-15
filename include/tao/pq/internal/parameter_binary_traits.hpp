@@ -1,8 +1,8 @@
 // Copyright (c) 2019-2020 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#ifndef TAO_PQ_PARAMETER_BINARY_TRAITS_HPP
-#define TAO_PQ_PARAMETER_BINARY_TRAITS_HPP
+#ifndef TAO_PQ_INTERNAL_PARAMETER_BINARY_TRAITS_HPP
+#define TAO_PQ_INTERNAL_PARAMETER_BINARY_TRAITS_HPP
 
 #include <cstddef>
 #include <string>
@@ -15,20 +15,16 @@
 
 #include <libpq-fe.h>
 
-namespace tao::pq
+namespace tao::pq::internal
 {
-   namespace internal
+   template< typename To, typename From >
+   std::enable_if_t< ( sizeof( To ) == sizeof( From ) ) && std::is_trivially_copyable< From >::value && std::is_trivial< To >::value, To >
+   bit_cast( const From& src ) noexcept
    {
-      template< typename To, typename From >
-      std::enable_if_t< ( sizeof( To ) == sizeof( From ) ) && std::is_trivially_copyable< From >::value && std::is_trivial< To >::value, To >
-      bit_cast( const From& src ) noexcept
-      {
-         To dst;
-         std::memcpy( &dst, &src, sizeof( To ) );
-         return dst;
-      }
-
-   }  // namespace internal
+      To dst;
+      std::memcpy( &dst, &src, sizeof( To ) );
+      return dst;
+   }
 
    template< typename T >
    struct parameter_binary_traits
@@ -173,13 +169,12 @@ namespace tao::pq
    };
 
    template<>
-   struct parameter_binary_traits< int >
+   struct parameter_binary_traits< std::conditional_t< sizeof( long ) == sizeof( int ), long, int > >
    {
-      const int m_v;
+      using int4 = std::conditional_t< sizeof( long ) == sizeof( int ), long, int >;
+      const int4 m_v;
 
-      static_assert( sizeof( int ) == 4 );
-
-      explicit parameter_binary_traits( const int v ) noexcept
+      explicit parameter_binary_traits( const int4 v ) noexcept
          : m_v( bswap_32( v ) )  // NOLINT(readability-isolate-declaration)
       {}
 
@@ -200,7 +195,7 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr int length() noexcept
       {
-         return sizeof( int );
+         return sizeof( int4 );
       }
 
       template< std::size_t I >
@@ -211,13 +206,13 @@ namespace tao::pq
    };
 
    template<>
-   struct parameter_binary_traits< long >
+   struct parameter_binary_traits< long long >
    {
-      const long m_v;
+      const long long m_v;
 
-      static_assert( sizeof( long ) == 8 );
+      static_assert( sizeof( long long ) == 8 );
 
-      explicit parameter_binary_traits( const long v ) noexcept
+      explicit parameter_binary_traits( const long long v ) noexcept
          : m_v( bswap_64( v ) )  // NOLINT(readability-isolate-declaration)
       {}
 
@@ -238,7 +233,7 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr int length() noexcept
       {
-         return sizeof( long );
+         return sizeof( long long );
       }
 
       template< std::size_t I >
@@ -249,11 +244,10 @@ namespace tao::pq
    };
 
    template<>
-   struct parameter_binary_traits< long long >
-      : parameter_binary_traits< long >
+   struct parameter_binary_traits< std::conditional_t< sizeof( long ) == sizeof( int ), int, long > >
+      : parameter_binary_traits< std::conditional_t< sizeof( long ) == sizeof( int ), long, long long > >
    {
-      using parameter_binary_traits< long >::parameter_binary_traits;
-      static_assert( sizeof( long long ) == 8 );
+      using parameter_binary_traits< std::conditional_t< sizeof( long ) == sizeof( int ), long, long long > >::parameter_binary_traits;
    };
 
    template<>
@@ -261,7 +255,7 @@ namespace tao::pq
       : parameter_binary_traits< int >
    {
       explicit parameter_binary_traits( const float v ) noexcept
-         : parameter_binary_traits< int >( internal::bit_cast< int >( v ) )
+         : parameter_binary_traits< int >( bit_cast< int >( v ) )
       {
       }
 
@@ -277,7 +271,7 @@ namespace tao::pq
       : parameter_binary_traits< long >
    {
       explicit parameter_binary_traits( const double v )
-         : parameter_binary_traits< long >( internal::bit_cast< long >( v ) )
+         : parameter_binary_traits< long >( bit_cast< long >( v ) )
       {}
 
       template< std::size_t I >
@@ -335,6 +329,6 @@ namespace tao::pq
       {}
    };
 
-}  // namespace tao::pq
+}  // namespace tao::pq::internal
 
 #endif

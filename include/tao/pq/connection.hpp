@@ -83,7 +83,7 @@ namespace tao::pq
       [[nodiscard]] std::shared_ptr< pq::transaction > direct();
       [[nodiscard]] std::shared_ptr< pq::transaction > transaction( const transaction::isolation_level il = transaction::isolation_level::default_isolation_level );
 
-      template< template< typename... > class Traits = parameter_traits, typename... Ts >
+      template< template< typename... > class Traits = parameter_text_traits, typename... Ts >
       result execute( Ts&&... ts )
       {
          return direct()->execute< Traits >( std::forward< Ts >( ts )... );
