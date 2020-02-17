@@ -3,6 +3,7 @@ foreach(testsourcefile ${testsources})
   get_filename_component(exename taopq-test-${testsourcefile} NAME_WE)
   add_executable(${exename} ${testsourcefile})
   target_link_libraries(${exename} PRIVATE taocpp::taopq)
+  target_include_directories(${exename} PRIVATE ${PostgreSQL_INCLUDE_DIRS})
   set_target_properties(${exename} PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
