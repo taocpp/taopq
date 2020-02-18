@@ -186,7 +186,7 @@ namespace tao::pq::internal
    {
       using typename parameter_holder< T >::result_t;
 
-      explicit parameter_traits( const T& t ) noexcept( noexcept( parameter_holder< T >( t ), parameter_traits< Traits, result_t >( this->result ) ) )
+      explicit parameter_traits( const T& t ) noexcept( noexcept( parameter_holder< T >( t ), parameter_traits< Traits, result_t >( std::declval< result_t >() ) ) )
          : parameter_holder< T >( t ),
            parameter_traits< Traits, result_t >( this->result )
       {}
