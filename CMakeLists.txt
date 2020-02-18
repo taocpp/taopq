@@ -62,9 +62,9 @@ target_include_directories(taopq
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    ${PostgreSQL_INCLUDE_DIRS}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
-    ${PostgreSQL_INCLUDE_DIRS}
 )
 
 target_link_libraries(taopq PUBLIC ${PostgreSQL_LIBRARIES})
