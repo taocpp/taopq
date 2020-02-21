@@ -4,30 +4,28 @@
 #ifndef TAO_PQ_INTERNAL_ENDIAN_WIN_HPP
 #define TAO_PQ_INTERNAL_ENDIAN_WIN_HPP
 
-#include <cstdint>
-#include <cstdlib>
-#include <cstring>
+#include <stdlib.h>
 
 namespace tao::pq::internal
 {
    // We assume that all Windows systems are little endian.
 
-   [[nodiscard]] constexpr unsigned short hton( const unsigned short v ) noexcept
+   [[nodiscard]] inline unsigned short hton( const unsigned short v ) noexcept
    {
       return _byteswap_ushort( v );
    }
 
-   [[nodiscard]] constexpr unsigned int hton( const unsigned int v ) noexcept
+   [[nodiscard]] inline unsigned int hton( const unsigned int v ) noexcept
    {
       return _byteswap_ulong( v );
    }
 
-   [[nodiscard]] constexpr unsigned long hton( const unsigned long v ) noexcept
+   [[nodiscard]] inline unsigned long hton( const unsigned long v ) noexcept
    {
       return _byteswap_ulong( v );
    }
 
-   [[nodiscard]] constexpr unsigned long long hton( const unsigned long long v ) noexcept
+   [[nodiscard]] inline unsigned long long hton( const unsigned long long v ) noexcept
    {
       return _byteswap_uint64( n );
    }

@@ -4,7 +4,7 @@
 #ifndef TAO_PQ_INTERNAL_ENDIAN_HPP
 #define TAO_PQ_INTERNAL_ENDIAN_HPP
 
-#include <cstddef>
+#include <cstdint>
 #include <cstring>
 #include <type_traits>
 
