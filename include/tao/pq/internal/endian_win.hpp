@@ -4,7 +4,7 @@
 #ifndef TAO_PQ_INTERNAL_ENDIAN_WIN_HPP
 #define TAO_PQ_INTERNAL_ENDIAN_WIN_HPP
 
-#include <stdlib.h>
+#include <cstdlib>
 
 namespace tao::pq::internal
 {
@@ -12,22 +12,22 @@ namespace tao::pq::internal
 
    [[nodiscard]] inline unsigned short hton( const unsigned short v ) noexcept
    {
-      return _byteswap_ushort( v );
+      return _byteswap_ushort( v );  // NOLINT
    }
 
    [[nodiscard]] inline unsigned int hton( const unsigned int v ) noexcept
    {
-      return _byteswap_ulong( v );
+      return _byteswap_ulong( v );  // NOLINT
    }
 
    [[nodiscard]] inline unsigned long hton( const unsigned long v ) noexcept
    {
-      return _byteswap_ulong( v );
+      return _byteswap_ulong( v );  // NOLINT
    }
 
    [[nodiscard]] inline unsigned long long hton( const unsigned long long v ) noexcept
    {
-      return _byteswap_uint64( v );
+      return _byteswap_uint64( v );  // NOLINT
    }
 
 }  // namespace tao::pq::internal
