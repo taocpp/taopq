@@ -27,7 +27,7 @@ namespace tao::pq::internal
 
    [[nodiscard]] inline unsigned long long hton( const unsigned long long v ) noexcept
    {
-      return _byteswap_uint64( n );
+      return _byteswap_uint64( v );
    }
 
 }  // namespace tao::pq::internal
