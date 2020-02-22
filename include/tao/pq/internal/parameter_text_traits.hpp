@@ -4,6 +4,7 @@
 #ifndef TAO_PQ_INTERNAL_PARAMETER_TEXT_TRAITS_HPP
 #define TAO_PQ_INTERNAL_PARAMETER_TEXT_TRAITS_HPP
 
+#include <cmath>
 #include <cstddef>
 #include <string>
 #include <utility>
@@ -15,6 +16,18 @@
 
 namespace tao::pq::internal
 {
+   template< typename T >
+   [[nodiscard]] std::string printf_helper( const char* format, const T v )
+   {
+      if( std::isfinite( v ) ) {
+         return printf( format, v );
+      }
+      if( std::isnan( v ) ) {
+         return "NAN";
+      }
+      return ( v < 0 ) ? "-INF" : "INF";
+   }
+
    template< typename T >
    struct parameter_text_traits
    {
@@ -160,7 +173,7 @@ namespace tao::pq::internal
       : string_helper
    {
       parameter_text_traits( const float v )
-         : string_helper( printf( "%.9g", v ) )
+         : string_helper( printf_helper( "%.9g", v ) )
       {}
    };
 
@@ -169,7 +182,7 @@ namespace tao::pq::internal
       : string_helper
    {
       parameter_text_traits( const double v )
-         : string_helper( printf( "%.17g", v ) )
+         : string_helper( printf_helper( "%.17g", v ) )
       {}
    };
 
@@ -178,7 +191,7 @@ namespace tao::pq::internal
       : string_helper
    {
       parameter_text_traits( const long double v )
-         : string_helper( printf( "%.21Lg", v ) )
+         : string_helper( printf_helper( "%.21Lg", v ) )
       {}
    };
 
