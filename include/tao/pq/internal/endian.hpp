@@ -39,9 +39,9 @@ namespace tao::pq::internal
       static_assert( std::is_trivial_v< V > );
 
       U u;
-      std::memcpy( &u, &v, 8 );
+      std::memcpy( &u, &v, sizeof( U ) );
       u = internal::hton( u );
-      std::memcpy( &v, &u, 8 );
+      std::memcpy( &v, &u, sizeof( U ) );
       return v;
    }
 
