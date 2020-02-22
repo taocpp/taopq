@@ -36,7 +36,7 @@ namespace tao::pq
    {
       static_assert( sizeof...( Ts ) != 0, "conversion to empty std::tuple<> not support" );
 
-      static constexpr std::size_t size = ( 0 + ... + result_traits_size< Ts > );
+      static constexpr std::size_t size{ (0 + ... + result_traits_size< Ts >)};
 
       template< std::size_t... Ns >
       [[nodiscard]] static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > /*unused*/ )
