@@ -37,14 +37,15 @@ LIBS ?= -lpq
 
 BUILDDIR ?= build
 
-CLANG_TIDY ?= clang-tidy
-
 HEADERS := $(shell find include -name '*.hpp') $(filter-out src/test/macros.hpp,$(shell find src -name '*.hpp'))
 SOURCES := $(shell find src -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=$(BUILDDIR)/%.d)
 BINARIES := $(SOURCES:%.cpp=$(BUILDDIR)/%)
 
 UNIT_TESTS := $(filter $(BUILDDIR)/src/test/%,$(BINARIES))
+
+CLANG_TIDY ?= clang-tidy
+CLANG_TIDY_HEADERS := $(filter-out include/tao/pq/internal/endian_win.hpp,$(HEADERS))
 
 LIBSOURCES := $(filter src/lib/%,$(SOURCES))
 LIBNAME := taopq
@@ -88,8 +89,8 @@ build/%.clang-tidy: % .clang-tidy
 	@touch $@
 
 .PHONY: clang-tidy
-clang-tidy: $(HEADERS:%=build/%.clang-tidy) $(SOURCES:%=build/%.clang-tidy)
-	@echo "All $(words $(HEADERS) $(SOURCES)) clang-tidy tests passed."
+clang-tidy: $(CLANG_TIDY_HEADERS:%=build/%.clang-tidy) $(SOURCES:%=build/%.clang-tidy)
+	@echo "All $(words $(CLANG_TIDY_HEADERS) $(SOURCES)) clang-tidy tests passed."
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)
 -include $(DEPENDS)

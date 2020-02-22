@@ -12,22 +12,22 @@ namespace tao::pq::internal
 
    [[nodiscard]] inline unsigned short hton( const unsigned short v ) noexcept
    {
-      return _byteswap_ushort( v );  // NOLINT
+      return _byteswap_ushort( v );
    }
 
    [[nodiscard]] inline unsigned int hton( const unsigned int v ) noexcept
    {
-      return _byteswap_ulong( v );  // NOLINT
+      return _byteswap_ulong( v );
    }
 
    [[nodiscard]] inline unsigned long hton( const unsigned long v ) noexcept
    {
-      return _byteswap_ulong( v );  // NOLINT
+      return _byteswap_ulong( v );
    }
 
    [[nodiscard]] inline unsigned long long hton( const unsigned long long v ) noexcept
    {
-      return _byteswap_uint64( v );  // NOLINT
+      return _byteswap_uint64( v );
    }
 
 }  // namespace tao::pq::internal
