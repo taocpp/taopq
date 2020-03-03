@@ -77,6 +77,14 @@ The library was successfully tested with
 
 Older versions of Visual Studio might work, 15.4 is known *not* to work. Let us know if you try any version between 15.4 and 15.9 and whether it works or not.
 
+## Package Managers
+
+You can download and install EASTL using the [Conan](https://github.com/conan-io/conan) package manager:
+
+    conan install taocpp-taopq/20200215@
+
+The taopq package in conan is kept up to date by Conan team members and community contributors. If the version is out-of-date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the Conan Center Index repository.
+
 ## Contact
 
 taoPQ is part of [The Art of C++].
