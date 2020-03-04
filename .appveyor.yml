@@ -13,9 +13,6 @@ configuration:
 environment:
   PGUSER: postgres
   PGPASSWORD: Password12!
-  matrix:
-    - GENERATOR: Visual Studio 15 2017 Win64
-    - CONAN_VISUAL_VERSIONS: 15
 
 init: []
 
@@ -33,20 +30,3 @@ build_script:
 test_script:
 - PATH=C:\Program Files\PostgreSQL\9.6\bin\;%PATH%
 - ctest -C "%CONFIGURATION%" --output-on-failure
-
-for:
-  -
-    matrix:
-      only:
-        - CONAN_VISUAL_VERSIONS: 15
-    environment:
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      PYTHON: "C:\\Python37"
-      CONAN_BUILD_TYPES: "%CONFIGURATION%"
-    build: false
-    install:
-      - set PATH=%PATH%;%PYTHON%/Scripts/
-      - pip.exe install --upgrade conan conan_package_tools
-    test_script:
-      - python .conan/build.py
-
