@@ -22,7 +22,7 @@ before_build:
 - if defined BINDIR (set "PATH=%BINDIR%;%PATH:C:\Program Files\Git\usr\bin;=%")
 - md build
 - cd build
-- cmake -Wno-dev --config "%CONFIGURATION%" -G "%GENERATOR%" ..
+- cmake -Wno-dev --config "%CONFIGURATION%" -G "Visual Studio 15 2017 Win64" ..
 
 build_script:
 - cmake --build . --config "%CONFIGURATION%"
