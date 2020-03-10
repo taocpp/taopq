@@ -2,11 +2,6 @@ cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
 
 project(taopq VERSION 1.0.0 LANGUAGES CXX)
 
-if(EXISTS "${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  include("${CMAKE_BINARY_DIR}/conanbuildinfo.cmake")
-  conan_basic_setup()
-endif()
-
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
 find_package(PostgreSQL REQUIRED)
