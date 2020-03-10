@@ -79,7 +79,7 @@ Older versions of Visual Studio might work, 15.4 is known *not* to work. Let us 
 
 ## Package Managers
 
-You can download and install EASTL using the [Conan](https://github.com/conan-io/conan) package manager:
+You can download and install taopq using the [Conan](https://github.com/conan-io/conan) package manager:
 
     conan install taocpp-taopq/20200215@
 
