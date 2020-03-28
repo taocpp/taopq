@@ -436,7 +436,7 @@ namespace tao::pq::internal
       template< std::size_t I >
       [[nodiscard]] constexpr int length() const noexcept
       {
-         return m_v.size();
+         return static_cast< int >( m_v.size() );
       }
 
       template< std::size_t I >
