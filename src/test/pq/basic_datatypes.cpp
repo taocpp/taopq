@@ -27,7 +27,7 @@ namespace tao::pq
       explicit bytea( const char* value )
          : m_size( 0 ), m_data( PQunescapeBytea( (unsigned char*)value, &m_size ) )  //NOLINT
       {
-         if( !m_data ) {
+         if( m_data == nullptr ) {
             throw std::bad_alloc();
          }
       }

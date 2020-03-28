@@ -208,16 +208,16 @@ namespace tao::pq::internal
    };
 
    template< typename ElementType, std::size_t Extent >
-   struct parameter_text_traits< tao::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType >::value > >
+   struct parameter_text_traits< tao::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType >::value > >  // NOLINT(cppcoreguidelines-special-member-functions)
    {
    private:
       unsigned char* m_data;
 
    public:
       explicit parameter_text_traits( PGconn* c, const tao::span< const ElementType, Extent > v, std::size_t dummy = 0 )
-         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )
+         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )  // NOLINT
       {
-         if( !m_data ) {
+         if( m_data == nullptr ) {
             throw std::bad_alloc();
          }
       }
