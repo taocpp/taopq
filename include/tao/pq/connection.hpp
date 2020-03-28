@@ -25,7 +25,7 @@ namespace tao::pq
    {
       struct deleter final
       {
-         void operator()( ::PGconn* p ) const noexcept;
+         void operator()( PGconn* p ) const noexcept;
       };
 
    }  // namespace internal
@@ -96,7 +96,7 @@ namespace tao::pq
       }
 
       // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] const ::PGconn* underlying_raw_ptr() const noexcept
+      [[nodiscard]] const PGconn* underlying_raw_ptr() const noexcept
       {
          return m_pgconn.get();
       }

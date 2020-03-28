@@ -149,16 +149,16 @@ namespace tao::pq
 
    namespace internal
    {
-      void deleter::operator()( ::PGconn* p ) const noexcept
+      void deleter::operator()( PGconn* p ) const noexcept
       {
-         ::PQfinish( p );
+         PQfinish( p );
       }
 
    }  // namespace internal
 
    std::string connection::error_message() const
    {
-      const char* message = ::PQerrorMessage( m_pgconn.get() );
+      const char* message = PQerrorMessage( m_pgconn.get() );
       assert( message );
       const std::size_t size = std::strlen( message );
       assert( size > 0 );
@@ -186,19 +186,19 @@ namespace tao::pq
                                       const int formats[] )
    {
       if( is_prepared( statement ) ) {
-         return result( ::PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) );
+         return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) );
       }
-      return result( ::PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) );
+      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) );
    }
 
    connection::connection( const connection::private_key& /*unused*/, const std::string& connection_info )
-      : m_pgconn( ::PQconnectdb( connection_info.c_str() ), internal::deleter() ),
+      : m_pgconn( PQconnectdb( connection_info.c_str() ), internal::deleter() ),
         m_current_transaction( nullptr )
    {
       if( !is_open() ) {
          throw std::runtime_error( "connection failed: " + error_message() );
       }
-      const auto protocol_version = ::PQprotocolVersion( m_pgconn.get() );
+      const auto protocol_version = PQprotocolVersion( m_pgconn.get() );
       if( protocol_version < 3 ) {
          throw std::runtime_error( "protocol version 3 required" );  // LCOV_EXCL_LINE
       }
@@ -212,13 +212,13 @@ namespace tao::pq
 
    bool connection::is_open() const noexcept
    {
-      return ::PQstatus( m_pgconn.get() ) == CONNECTION_OK;
+      return PQstatus( m_pgconn.get() ) == CONNECTION_OK;
    }
 
    void connection::prepare( const std::string& name, const std::string& statement )
    {
       check_prepared_name( name );
-      result( ::PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );  // NOLINT(bugprone-unused-raii)
+      result( PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );  // NOLINT(bugprone-unused-raii)
       m_prepared_statements.insert( name );
    }
 

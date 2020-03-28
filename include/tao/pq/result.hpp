@@ -57,7 +57,7 @@ namespace tao::pq
          expect_ok,
          expect_copy_in
       };
-      result( ::PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
+      result( PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
 
    public:
       [[nodiscard]] bool has_rows_affected() const;
@@ -230,13 +230,13 @@ namespace tao::pq
       }
 
       // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] ::PGresult* underlying_raw_ptr()
+      [[nodiscard]] PGresult* underlying_raw_ptr()
       {
          return m_pgresult.get();
       }
 
       // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] const ::PGresult* underlying_raw_ptr() const
+      [[nodiscard]] const PGresult* underlying_raw_ptr() const
       {
          return m_pgresult.get();
       }
