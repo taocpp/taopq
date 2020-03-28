@@ -95,7 +95,7 @@ namespace tao
    }  // namespace internal
 
    template< typename ElementType, std::size_t Extent >
-   class span
+   class span  // NOLINT(cppcoreguidelines-special-member-functions)
    {
    public:
       static_assert( !std::is_abstract_v< ElementType > );
@@ -155,12 +155,12 @@ namespace tao
 
       constexpr span& operator=( const span& ) = default;
 
-      constexpr size_type size() const noexcept
+      constexpr size_type size() const noexcept  // NOLINT(modernize-use-nodiscard)
       {
          return Extent;
       }
 
-      constexpr size_type size_bytes() const noexcept
+      constexpr size_type size_bytes() const noexcept  // NOLINT(modernize-use-nodiscard)
       {
          return Extent * sizeof( element_type );
       }
@@ -270,7 +270,7 @@ namespace tao
    };
 
    template< typename ElementType >
-   class span< ElementType, dynamic_extent >
+   class span< ElementType, dynamic_extent >  // NOLINT(cppcoreguidelines-special-member-functions)
    {
    public:
       static_assert( !std::is_abstract_v< ElementType > );
@@ -336,12 +336,12 @@ namespace tao
 
       constexpr span& operator=( const span& ) = default;
 
-      constexpr size_type size() const noexcept
+      constexpr size_type size() const noexcept  // NOLINT(modernize-use-nodiscard)
       {
          return m_size;
       }
 
-      constexpr size_type size_bytes() const noexcept
+      constexpr size_type size_bytes() const noexcept  // NOLINT(modernize-use-nodiscard)
       {
          return size() * sizeof( element_type );
       }
@@ -448,7 +448,7 @@ namespace tao
 
    private:
       pointer m_data;
-      size_type m_size;
+      size_type m_size;  // NOLINT(modernize-use-default-member-init)
    };
 
    template< typename ElementType, std::size_t Extent >
