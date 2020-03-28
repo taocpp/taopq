@@ -16,7 +16,7 @@ std::shared_ptr< tao::pq::connection > connection;
 
 namespace tao::pq
 {
-   class bytea
+   class bytea  // NOLINT
    {
    private:
       std::size_t m_size;
@@ -24,7 +24,7 @@ namespace tao::pq
 
    public:
       explicit bytea( const char* value ) noexcept
-         : m_size( 0 ), m_data( PQunescapeBytea( (unsigned char*)value, &m_size ) )
+         : m_size( 0 ), m_data( PQunescapeBytea( (unsigned char*)value, &m_size ) )  //NOLINT
       {}
 
       ~bytea()
@@ -35,17 +35,17 @@ namespace tao::pq
       bytea( const bytea& ) = delete;
       bytea& operator=( const bytea& ) = delete;
 
-      std::size_t size() const noexcept
+      [[nodiscard]] std::size_t size() const noexcept
       {
          return m_size;
       }
 
-      const unsigned char* data() const noexcept
+      [[nodiscard]] const unsigned char* data() const noexcept
       {
          return m_data;
       }
 
-      unsigned char operator[]( const std::size_t idx ) const noexcept
+      [[nodiscard]] unsigned char operator[]( const std::size_t idx ) const noexcept
       {
          return m_data[ idx ];
       }
