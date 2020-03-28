@@ -5,6 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <stdexcept>
 #include <vector>
 
 #include "../getenv.hpp"
@@ -23,9 +24,13 @@ namespace tao::pq
       unsigned char* m_data;
 
    public:
-      explicit bytea( const char* value ) noexcept
+      explicit bytea( const char* value )
          : m_size( 0 ), m_data( PQunescapeBytea( (unsigned char*)value, &m_size ) )  //NOLINT
-      {}
+      {
+         if( !m_data ) {
+            throw std::bad_alloc();
+         }
+      }
 
       ~bytea()
       {
@@ -135,10 +140,10 @@ typename std::enable_if_t< std::is_unsigned_v< T > > check( const std::string& d
    check< T >( datatype, std::numeric_limits< T >::max() );
 }
 
-template< typename T >
+template< template< typename... > class Traits, typename T >
 void check_bytea( T&& t )
 {
-   TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( std::forward< T >( t ) ) ).rows_affected() == 1 );
+   TEST_ASSERT( connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( std::forward< T >( t ) ) ).rows_affected() == 1 );
 
    const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
    TEST_ASSERT( result.size() == 7 );
@@ -149,6 +154,13 @@ void check_bytea( T&& t )
    TEST_ASSERT( result[ 4 ] == static_cast< unsigned char >( t[ 4 ] ) );
    TEST_ASSERT( result[ 5 ] == static_cast< unsigned char >( t[ 5 ] ) );
    TEST_ASSERT( result[ 6 ] == static_cast< unsigned char >( t[ 6 ] ) );
+}
+
+template< typename T >
+void check_bytea( T&& t )
+{
+   check_bytea< tao::pq::parameter_text_traits >( std::forward< T >( t ) );
+   check_bytea< tao::pq::parameter_binary_traits >( std::forward< T >( t ) );
 }
 
 void run()

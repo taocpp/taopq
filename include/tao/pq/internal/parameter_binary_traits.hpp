@@ -13,8 +13,9 @@
 
 #include <libpq-fe.h>
 
-#include "../span.hpp"
-#include "endian.hpp"
+#include <tao/pq/internal/endian.hpp>
+#include <tao/pq/internal/is_bytea_parameter.hpp>
+#include <tao/pq/span.hpp>
 
 namespace tao::pq::internal
 {
@@ -397,16 +398,6 @@ namespace tao::pq::internal
          : parameter_binary_traits< std::string_view >( v )
       {}
    };
-
-   // clang-format off
-   template< typename > struct is_bytea_parameter : std::false_type {};
-   template< typename T > struct is_bytea_parameter< const T > : is_bytea_parameter< T > {};
-
-   template<> struct is_bytea_parameter< char > : std::true_type {};
-   template<> struct is_bytea_parameter< signed char > : std::true_type {};
-   template<> struct is_bytea_parameter< unsigned char > : std::true_type {};
-   template<> struct is_bytea_parameter< std::byte > : std::true_type {};
-   // clang-format on
 
    template< typename ElementType, std::size_t Extent >
    struct parameter_binary_traits< tao::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType >::value > >

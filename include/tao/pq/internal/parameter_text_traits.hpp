@@ -6,9 +6,11 @@
 
 #include <cmath>
 #include <cstddef>
+#include <stdexcept>
 #include <string>
 #include <utility>
 
+#include <tao/pq/internal/is_bytea_parameter.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/printf.hpp>
 
@@ -28,7 +30,7 @@ namespace tao::pq::internal
       return ( v < 0 ) ? "-INF" : "INF";
    }
 
-   template< typename T >
+   template< typename T, typename = void >
    struct parameter_text_traits
    {
       static_assert( sizeof( T ) == 0, "data type T not registered as taopq parameter" );
@@ -202,6 +204,53 @@ namespace tao::pq::internal
       explicit parameter_text_traits( const std::string& v ) noexcept
          : char_pointer_helper( v.c_str() )
       {}
+   };
+
+   template< typename ElementType, std::size_t Extent >
+   struct parameter_text_traits< tao::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType >::value > >
+   {
+   private:
+      unsigned char* m_data;
+
+   public:
+      explicit parameter_text_traits( PGconn* c, const tao::span< const ElementType, Extent > v, std::size_t dummy = 0 )
+         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )
+      {
+         if( !m_data ) {
+            throw std::bad_alloc();
+         }
+      }
+
+      ~parameter_text_traits()
+      {
+         PQfreemem( m_data );
+      }
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr Oid type() noexcept
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr const char* value() const noexcept
+      {
+         return reinterpret_cast< const char* >( m_data );
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr int length() noexcept
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr int format() noexcept
+      {
+         return 0;
+      }
    };
 
 }  // namespace tao::pq::internal

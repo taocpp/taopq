@@ -172,6 +172,11 @@ namespace tao::pq
       return m_connection->execute_params( statement, n_params, types, values, lengths, formats );
    }
 
+   PGconn* transaction::underlying_raw_ptr() const noexcept
+   {
+      return m_connection->underlying_raw_ptr();
+   }
+
    void transaction::commit()
    {
       check_current_transaction();

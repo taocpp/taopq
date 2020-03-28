@@ -90,7 +90,7 @@ namespace tao::pq
       }
 
       // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] ::PGconn* underlying_raw_ptr() noexcept
+      [[nodiscard]] PGconn* underlying_raw_ptr() noexcept
       {
          return m_pgconn.get();
       }

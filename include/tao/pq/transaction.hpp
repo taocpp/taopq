@@ -77,6 +77,23 @@ namespace tao::pq
          return execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
+      [[nodiscard]] PGconn* underlying_raw_ptr() const noexcept;
+
+      template< template< typename... > class Traits, typename A >
+      auto to_traits( A&& a ) const
+      {
+         using T = Traits< std::decay_t< A > >;
+         if constexpr( std::is_constructible_v< T, decltype( std::forward< A >( a ) ) > ) {
+            return T( std::forward< A >( a ) );
+         }
+         else if constexpr( std::is_constructible_v< T, PGconn*, decltype( std::forward< A >( a ) ) > ) {
+            return T( underlying_raw_ptr(), std::forward< A >( a ) );
+         }
+         else {
+            static_assert( std::is_void_v< T >, "no valid conversion from A to Traits" );
+         }
+      }
+
    public:
       transaction( const transaction& ) = delete;
       transaction( transaction&& ) = delete;
@@ -91,7 +108,7 @@ namespace tao::pq
       template< template< typename... > class Traits = parameter_text_traits, typename... As >
       result execute( const char* statement, As&&... as )
       {
-         return execute_traits( statement, Traits< std::decay_t< As > >( std::forward< As >( as ) )... );
+         return execute_traits( statement, to_traits< Traits >( std::forward< As >( as ) )... );
       }
 
       // short-cut for no-arguments invocations
