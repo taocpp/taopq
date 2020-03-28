@@ -440,12 +440,12 @@ void run()
    }
 
    {
-      std::array< char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      std::array< char, 7 > bdata( { 'x', 1, 42, 0, 'a', 0, 'b' } );
       check_bytea( bdata );
    }
 
    {
-      std::array< const char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      std::array< const char, 7 > bdata( { 'x', 1, 42, 0, 'a', 0, 'b' } );
       check_bytea( bdata );
    }
 
@@ -465,12 +465,12 @@ void run()
    }
 
    {
-      std::array< signed char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      std::array< signed char, 7 > bdata( { 'x', 1, 42, 0, 'a', 0, 'b' } );
       check_bytea( bdata );
    }
 
    {
-      std::array< const signed char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      std::array< const signed char, 7 > bdata( { 'x', 1, 42, 0, 'a', 0, 'b' } );
       check_bytea( bdata );
    }
 
@@ -490,12 +490,12 @@ void run()
    }
 
    {
-      std::array< unsigned char, 7 > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
+      std::array< unsigned char, 7 > bdata( { 'x', 1, 255, 0, 'a', 0, 'b' } );
       check_bytea( bdata );
    }
 
    {
-      std::array< const unsigned char, 7 > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
+      std::array< const unsigned char, 7 > bdata( { 'x', 1, 255, 0, 'a', 0, 'b' } );
       check_bytea( bdata );
    }
 
@@ -515,12 +515,12 @@ void run()
    }
 
    {
-      std::array< std::byte, 7 > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
+      std::array< std::byte, 7 > bdata( { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) } );
       check_bytea( bdata );
    }
 
    {
-      std::array< const std::byte, 7 > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
+      std::array< const std::byte, 7 > bdata( { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) } );
       check_bytea( bdata );
    }
 
