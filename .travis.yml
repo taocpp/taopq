@@ -70,15 +70,31 @@ matrix:
     - compiler: clang
       addons:
         apt:
-          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-8']
-          packages: ['clang-8', 'g++-8', 'libpq-dev']
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
+          packages: ['clang-9', 'g++-9', 'libpq-dev']
       env:
-        - CXX=clang++-8
+        - CXX=clang++-9
+
+    - compiler: clang
+      addons:
+        apt:
+          sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-xenial-9']
+          packages: ['clang-9', 'g++-9', 'libpq-dev']
+      env:
+        - CXX=clang++-9
         - CPPFLAGS=-fms-extensions
 
     - language: cpp
       os: osx
-      osx_image: xcode10.1
+      osx_image: xcode10.3
+      compiler: clang
+      script:
+        - $CXX --version
+        - make -j3 compile
+
+    - language: cpp
+      os: osx
+      osx_image: xcode11.2
       compiler: clang
       script:
         - $CXX --version
