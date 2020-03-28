@@ -13,6 +13,7 @@
 #include <tao/pq/internal/is_bytea_parameter.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/printf.hpp>
+#include <tao/pq/span.hpp>
 
 #include <libpq-fe.h>
 
