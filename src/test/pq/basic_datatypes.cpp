@@ -1,9 +1,11 @@
 // Copyright (c) 2016-2020 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
+#include <array>
 #include <cmath>
 #include <iostream>
 #include <limits>
+#include <vector>
 
 #include "../getenv.hpp"
 #include "../macros.hpp"
@@ -11,6 +13,54 @@
 #include <tao/pq/connection.hpp>
 
 std::shared_ptr< tao::pq::connection > connection;
+
+namespace tao::pq
+{
+   class bytea
+   {
+   private:
+      std::size_t m_size;
+      unsigned char* m_data;
+
+   public:
+      explicit bytea( const char* value ) noexcept
+         : m_size( 0 ), m_data( PQunescapeBytea( (unsigned char*)value, &m_size ) )
+      {}
+
+      ~bytea()
+      {
+         PQfreemem( m_data );
+      }
+
+      bytea( const bytea& ) = delete;
+      bytea& operator=( const bytea& ) = delete;
+
+      std::size_t size() const noexcept
+      {
+         return m_size;
+      }
+
+      const unsigned char* data() const noexcept
+      {
+         return m_data;
+      }
+
+      unsigned char operator[]( const std::size_t idx ) const noexcept
+      {
+         return m_data[ idx ];
+      }
+   };
+
+   template<>
+   struct result_traits< bytea >
+   {
+      [[nodiscard]] static bytea from( const char* value )
+      {
+         return bytea( value );
+      }
+   };
+
+}  // namespace tao::pq
 
 bool prepare_datatype( const std::string& datatype )
 {
@@ -359,6 +409,156 @@ void run()
    check< std::string >( "TEXT", "𝄞" );
    check< std::string >( "TEXT", "äöüÄÖÜß€𝄞" );
    check< std::string >( "TEXT", "ä\tö\nü\1Ä\"Ö;Ü'ß#€𝄞" );
+
+   // use std::span / tao::span to pass binary data as parameters (works for char, signed char, unsigned char, and std::byte)
+
+   check_null( "BYTEA" );
+   {
+      char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      const char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< const char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::vector< char > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      signed char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      const signed char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< signed char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< const signed char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::vector< signed char > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      unsigned char bdata[] = { 'x', 1, 255, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+      TEST_ASSERT( result[ 0 ] == bdata[ 0 ] );
+      TEST_ASSERT( result[ 1 ] == bdata[ 1 ] );
+      TEST_ASSERT( result[ 2 ] == bdata[ 2 ] );
+      TEST_ASSERT( result[ 3 ] == bdata[ 3 ] );
+      TEST_ASSERT( result[ 4 ] == bdata[ 4 ] );
+      TEST_ASSERT( result[ 5 ] == bdata[ 5 ] );
+      TEST_ASSERT( result[ 6 ] == bdata[ 6 ] );
+   }
+
+   {
+      const unsigned char bdata[] = { 'x', 1, 255, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< unsigned char, 7 > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< const unsigned char, 7 > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::vector< unsigned char > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::byte bdata[ 7 ] = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      const std::byte bdata[ 7 ] = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< std::byte, 7 > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::array< const std::byte, 7 > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
+
+   {
+      std::vector< std::byte > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
+      TEST_ASSERT( connection->execute< tao::pq::parameter_binary_traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( bdata ) ).rows_affected() == 1 );
+      const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+      TEST_ASSERT( result.size() == 7 );
+   }
 }
 
 int main()

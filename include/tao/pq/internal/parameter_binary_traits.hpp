@@ -13,6 +13,7 @@
 
 #include <libpq-fe.h>
 
+#include "../span.hpp"
 #include "endian.hpp"
 
 namespace tao::pq::internal
@@ -395,6 +396,54 @@ namespace tao::pq::internal
       explicit parameter_binary_traits( const std::string& v ) noexcept
          : parameter_binary_traits< std::string_view >( v )
       {}
+   };
+
+   // clang-format off
+   template< typename > struct is_bytea_parameter : std::false_type {};
+   template< typename T > struct is_bytea_parameter< const T > : is_bytea_parameter< T > {};
+
+   template<> struct is_bytea_parameter< char > : std::true_type {};
+   template<> struct is_bytea_parameter< signed char > : std::true_type {};
+   template<> struct is_bytea_parameter< unsigned char > : std::true_type {};
+   template<> struct is_bytea_parameter< std::byte > : std::true_type {};
+   // clang-format on
+
+   template< typename ElementType, std::size_t Extent >
+   struct parameter_binary_traits< tao::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType >::value > >
+   {
+   private:
+      const tao::span< const ElementType, Extent > m_v;
+
+   public:
+      explicit parameter_binary_traits( const tao::span< const ElementType, Extent > v ) noexcept
+         : m_v( v )
+      {}
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr Oid type() noexcept
+      {
+         return 17;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr const char* value() const noexcept
+      {
+         return reinterpret_cast< const char* >( m_v.data() );
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr int length() const noexcept
+      {
+         return m_v.size();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr int format() noexcept
+      {
+         return 1;
+      }
    };
 
 }  // namespace tao::pq::internal
