@@ -38,7 +38,7 @@ namespace tao::pq
       }
 
       bytea( const bytea& ) = delete;
-      bytea& operator=( const bytea& ) = delete;
+      auto operator=( const bytea& ) -> bytea& = delete;
 
       [[nodiscard]] auto size() const noexcept
       {
