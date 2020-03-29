@@ -73,7 +73,7 @@ void run()
    connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
 }
 
-int main()  // NOLINT(bugprone-exception-escape)
+auto main() -> int  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();

@@ -77,7 +77,7 @@ namespace tao::pq
          return execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
-      [[nodiscard]] PGconn* underlying_raw_ptr() const noexcept;
+      [[nodiscard]] auto underlying_raw_ptr() const noexcept -> PGconn*;
 
       template< template< typename... > class Traits, typename A >
       auto to_traits( A&& a ) const
@@ -103,7 +103,7 @@ namespace tao::pq
       void commit();
       void rollback();
 
-      [[nodiscard]] std::shared_ptr< transaction > subtransaction();
+      [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
       template< template< typename... > class Traits = parameter_text_traits, typename... As >
       auto execute( const char* statement, As&&... as )

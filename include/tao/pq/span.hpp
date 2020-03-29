@@ -521,7 +521,7 @@ namespace std
 
    // TODO: this is probably illegal. keep it?
    template< size_t I, typename ElementType, size_t Extent >
-   constexpr ElementType& get( tao::span< ElementType, Extent > s ) noexcept
+   constexpr auto get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&
    {
       static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
       return s[ I ];

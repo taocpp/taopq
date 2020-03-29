@@ -553,7 +553,7 @@ void run()
 #endif
 }
 
-int main()
+auto main() -> int
 {
    try {
       run();

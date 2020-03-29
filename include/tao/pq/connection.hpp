@@ -41,7 +41,7 @@ namespace tao::pq
       std::set< std::string, std::less<> > m_prepared_statements;
 
       [[nodiscard]] auto error_message() const -> std::string;
-      void check_prepared_name( const std::string& name ) const;
+      static void check_prepared_name( const std::string& name );
       [[nodiscard]] auto is_prepared( const char* name ) const noexcept -> bool;
 
       [[nodiscard]] auto execute_params( const char* statement,

@@ -78,7 +78,7 @@ namespace tao::pq
          : public transaction_base
       {
       private:
-         [[nodiscard]] auto isolation_level_to_statement( const transaction::isolation_level il ) -> const char*
+         [[nodiscard]] static constexpr auto isolation_level_to_statement( const transaction::isolation_level il ) -> const char*
          {
             switch( il ) {
                case transaction::isolation_level::default_isolation_level:
@@ -163,7 +163,7 @@ namespace tao::pq
       return std::string( message, size - 1 );
    }
 
-   void connection::check_prepared_name( const std::string& name ) const
+   void connection::check_prepared_name( const std::string& name )
    {
       if( !pq::is_identifier( name ) ) {
          throw std::invalid_argument( "invalid prepared statement name" );

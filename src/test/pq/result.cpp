@@ -141,7 +141,7 @@ void run()  // NOLINT(readability-function-size)
    TEST_ASSERT( count == 2 );
 }
 
-int main()  // NOLINT(bugprone-exception-escape)
+auto main() -> int  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();

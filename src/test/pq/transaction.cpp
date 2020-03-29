@@ -109,7 +109,7 @@ void run()
    TEST_EXECUTE( check_nested( connection, connection->transaction() ) );
 }
 
-int main()
+auto main() -> int
 {
    try {
       run();

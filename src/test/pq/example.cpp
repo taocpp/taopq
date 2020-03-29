@@ -52,7 +52,7 @@ void run()
    const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
 }
 
-int main()
+auto main() -> int
 {
    try {
       run();

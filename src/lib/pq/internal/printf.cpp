@@ -42,7 +42,7 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   std::string printf( const char* format, ... )
+   std::string printf( const char* format, ... )  // NOLINT(modernize-use-trailing-return-type)
    {
       va_list ap;
       va_start( ap, format );
@@ -50,7 +50,7 @@ namespace tao::pq::internal
       return vprintf( format, ap );
    }
 
-   std::string vprintf( const char* format, va_list ap )
+   std::string vprintf( const char* format, va_list ap )  // NOLINT(modernize-use-trailing-return-type)
    {
       std::string s;
       static constexpr int initial_size = 32;

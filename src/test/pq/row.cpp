@@ -84,7 +84,7 @@ void run()
    TEST_THROWS( row2.slice( 2, 2 ) );
 }
 
-int main()  // NOLINT(bugprone-exception-escape)
+auto main() -> int  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();

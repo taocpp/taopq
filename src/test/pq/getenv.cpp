@@ -22,7 +22,7 @@ void run()
    TEST_ASSERT( tao::pq::internal::getenv( "TAOPQ_DOESNOTEXIST", "DEFAULT VALUE" ) == "DEFAULT VALUE" );
 }
 
-int main()
+auto main() -> int
 {
    try {
       run();

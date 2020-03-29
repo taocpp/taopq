@@ -2,7 +2,7 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
 #ifdef WIN32
-int main() {}
+auto main() -> int {}
 #else
 
 #include "../macros.hpp"
@@ -301,7 +301,7 @@ void run()  // NOLINT(readability-function-size)
    reject_floating_point< std::underflow_error >( "-1e-10000" );
 }
 
-int main()  // NOLINT(bugprone-exception-escape)
+auto main() -> int  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();
