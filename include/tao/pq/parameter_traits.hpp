@@ -11,7 +11,7 @@
 namespace tao::pq
 {
    template< typename T, typename = void >
-   using parameter_text_traits
+   struct parameter_text_traits
       : internal::parameter_traits< internal::parameter_text_traits, T >
    {
       using internal::parameter_traits< internal::parameter_text_traits, T >::parameter_traits;
