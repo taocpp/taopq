@@ -158,17 +158,17 @@ namespace tao
 
       constexpr auto operator=( const span& ) -> span& = default;
 
-      constexpr auto size() const noexcept  // NOLINT(modernize-use-nodiscard)
+      constexpr auto size() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return Extent;
       }
 
-      constexpr auto size_bytes() const noexcept  // NOLINT(modernize-use-nodiscard)
+      constexpr auto size_bytes() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return Extent * sizeof( element_type );
       }
 
-      [[nodiscard]] constexpr auto empty() const noexcept
+      [[nodiscard]] constexpr auto empty() const noexcept -> bool
       {
          return Extent == 0;
       }
@@ -191,7 +191,7 @@ namespace tao
          return *( data() + ( Extent - 1 ) );
       }
 
-      constexpr auto data() const noexcept
+      constexpr auto data() const noexcept -> pointer
       {
          return m_data;
       }
@@ -206,24 +206,14 @@ namespace tao
          return data() + Extent;
       }
 
-      constexpr auto rbegin() const noexcept
+      constexpr auto rbegin() const noexcept -> reverse_iterator
       {
          return reverse_iterator( end() );
       }
 
-      constexpr auto rend() const noexcept
+      constexpr auto rend() const noexcept -> reverse_iterator
       {
          return reverse_iterator( begin() );
-      }
-
-      friend constexpr auto begin( span s ) noexcept -> iterator
-      {
-         return s.begin();
-      }
-
-      friend constexpr auto end( span s ) noexcept -> iterator
-      {
-         return s.end();
       }
 
       template< std::size_t Count >
@@ -344,17 +334,17 @@ namespace tao
 
       constexpr auto operator=( const span& ) -> span& = default;
 
-      constexpr auto size() const noexcept  // NOLINT(modernize-use-nodiscard)
+      constexpr auto size() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return m_size;
       }
 
-      constexpr auto size_bytes() const noexcept  // NOLINT(modernize-use-nodiscard)
+      constexpr auto size_bytes() const noexcept -> size_type  // NOLINT(modernize-use-nodiscard)
       {
          return size() * sizeof( element_type );
       }
 
-      [[nodiscard]] constexpr auto empty() const noexcept
+      [[nodiscard]] constexpr auto empty() const noexcept -> bool
       {
          return size() == 0;
       }
@@ -377,7 +367,7 @@ namespace tao
          return *( data() + ( size() - 1 ) );
       }
 
-      constexpr auto data() const noexcept
+      constexpr auto data() const noexcept -> pointer
       {
          return m_data;
       }
@@ -392,24 +382,14 @@ namespace tao
          return data() + size();
       }
 
-      constexpr auto rbegin() const noexcept
+      constexpr auto rbegin() const noexcept -> reverse_iterator
       {
          return reverse_iterator( end() );
       }
 
-      constexpr auto rend() const noexcept
+      constexpr auto rend() const noexcept -> reverse_iterator
       {
          return reverse_iterator( begin() );
-      }
-
-      friend constexpr auto begin( span s ) noexcept -> iterator
-      {
-         return s.begin();
-      }
-
-      friend constexpr auto end( span s ) noexcept -> iterator
-      {
-         return s.end();
       }
 
       template< std::size_t Count >
