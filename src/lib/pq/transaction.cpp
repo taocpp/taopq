@@ -144,8 +144,7 @@ namespace tao::pq
 
    transaction::transaction( const std::shared_ptr< pq::connection >& connection )  // NOLINT(modernize-pass-by-value)
       : m_connection( connection )
-   {
-   }
+   {}
 
    transaction::~transaction() = default;
 
