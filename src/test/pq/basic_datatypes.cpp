@@ -40,17 +40,17 @@ namespace tao::pq
       bytea( const bytea& ) = delete;
       bytea& operator=( const bytea& ) = delete;
 
-      [[nodiscard]] std::size_t size() const noexcept
+      [[nodiscard]] auto size() const noexcept
       {
          return m_size;
       }
 
-      [[nodiscard]] const unsigned char* data() const noexcept
+      [[nodiscard]] auto data() const noexcept -> const unsigned char*
       {
          return m_data;
       }
 
-      [[nodiscard]] unsigned char operator[]( const std::size_t idx ) const noexcept
+      [[nodiscard]] auto operator[]( const std::size_t idx ) const noexcept -> unsigned char
       {
          return m_data[ idx ];
       }
@@ -59,7 +59,7 @@ namespace tao::pq
    template<>
    struct result_traits< bytea >
    {
-      [[nodiscard]] static bytea from( const char* value )
+      [[nodiscard]] static auto from( const char* value )
       {
          return bytea( value );
       }
@@ -67,7 +67,7 @@ namespace tao::pq
 
 }  // namespace tao::pq
 
-bool prepare_datatype( const std::string& datatype )
+auto prepare_datatype( const std::string& datatype ) -> bool
 {
    static std::string last;
    if( datatype == last ) {
@@ -116,7 +116,8 @@ void check( const std::string& datatype, const T& value )
 }
 
 template< typename T >
-typename std::enable_if_t< std::is_signed_v< T > > check( const std::string& datatype )
+auto check( const std::string& datatype )
+   -> std::enable_if_t< std::is_signed_v< T > >
 {
    check_null( datatype );
    check< T >( datatype, std::numeric_limits< T >::min() );
@@ -130,7 +131,8 @@ typename std::enable_if_t< std::is_signed_v< T > > check( const std::string& dat
 }
 
 template< typename T >
-typename std::enable_if_t< std::is_unsigned_v< T > > check( const std::string& datatype )
+auto check( const std::string& datatype )
+   -> std::enable_if_t< std::is_unsigned_v< T > >
 {
    check_null( datatype );
    check< T >( datatype, 0 );

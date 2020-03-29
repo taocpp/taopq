@@ -17,7 +17,7 @@ namespace tao::pq
    struct result_traits
    {
       static_assert( !std::is_same< T, T >::value, "tao::pq::result_traits<T> not specialized for T" );
-      static T from( const char* value );
+      static auto from( const char* value ) noexcept -> T;
    };
 
    template< typename T, typename = void >
@@ -35,7 +35,7 @@ namespace tao::pq
    template<>
    struct result_traits< const char* >
    {
-      [[nodiscard]] static const char* from( const char* value )
+      [[nodiscard]] static auto from( const char* value ) -> const char*
       {
          return value;
       }
@@ -44,7 +44,7 @@ namespace tao::pq
    template<>
    struct result_traits< std::string >
    {
-      [[nodiscard]] static std::string from( const char* value )
+      [[nodiscard]] static auto from( const char* value ) -> std::string
       {
          return value;
       }
@@ -53,91 +53,91 @@ namespace tao::pq
    template<>
    struct result_traits< bool >
    {
-      [[nodiscard]] static bool from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> bool;
    };
 
    template<>
    struct result_traits< char >
    {
-      [[nodiscard]] static char from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> char;
    };
 
    template<>
    struct result_traits< signed char >
    {
-      [[nodiscard]] static signed char from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> signed char;
    };
 
    template<>
    struct result_traits< unsigned char >
    {
-      [[nodiscard]] static unsigned char from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> unsigned char;
    };
 
    template<>
    struct result_traits< short >
    {
-      [[nodiscard]] static short from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> short;
    };
 
    template<>
    struct result_traits< unsigned short >
    {
-      [[nodiscard]] static unsigned short from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> unsigned short;
    };
 
    template<>
    struct result_traits< int >
    {
-      [[nodiscard]] static int from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> int;
    };
 
    template<>
    struct result_traits< unsigned >
    {
-      [[nodiscard]] static unsigned from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> unsigned;
    };
 
    template<>
    struct result_traits< long >
    {
-      [[nodiscard]] static long from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> long;
    };
 
    template<>
    struct result_traits< unsigned long >
    {
-      [[nodiscard]] static unsigned long from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> unsigned long;
    };
 
    template<>
    struct result_traits< long long >
    {
-      [[nodiscard]] static long long from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> long long;
    };
 
    template<>
    struct result_traits< unsigned long long >
    {
-      [[nodiscard]] static unsigned long long from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> unsigned long long;
    };
 
    template<>
    struct result_traits< float >
    {
-      [[nodiscard]] static float from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> float;
    };
 
    template<>
    struct result_traits< double >
    {
-      [[nodiscard]] static double from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> double;
    };
 
    template<>
    struct result_traits< long double >
    {
-      [[nodiscard]] static long double from( const char* value );
+      [[nodiscard]] static auto from( const char* value ) -> long double;
    };
 
 }  // namespace tao::pq

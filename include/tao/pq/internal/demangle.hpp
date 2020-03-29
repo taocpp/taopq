@@ -9,11 +9,11 @@
 
 namespace tao::pq::internal
 {
-   [[nodiscard]] std::string demangle( const char* const symbol );
-   [[nodiscard]] std::string demangle( const std::type_info& type_info );
+   [[nodiscard]] auto demangle( const char* const symbol ) -> std::string;
+   [[nodiscard]] auto demangle( const std::type_info& type_info ) -> std::string;
 
    template< typename T >
-   [[nodiscard]] std::string demangle()
+   [[nodiscard]] auto demangle() -> std::string
    {
       return demangle( typeid( T ) );
    }

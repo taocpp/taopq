@@ -15,7 +15,7 @@ namespace tao::pq
 {
    namespace
    {
-      [[nodiscard]] constexpr bool is_identifier( const std::string_view value ) noexcept
+      [[nodiscard]] constexpr auto is_identifier( const std::string_view value ) noexcept -> bool
       {
          return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( value[ 0 ] ) == 0 );
       }
@@ -59,29 +59,26 @@ namespace tao::pq
       public:
          explicit autocommit_transaction( const std::shared_ptr< pq::connection >& connection )
             : transaction_base( connection )
-         {
-         }
+         {}
 
       private:
-         [[nodiscard]] bool v_is_direct() const noexcept override
+         [[nodiscard]] auto v_is_direct() const noexcept -> bool override
          {
             return true;
          }
 
          void v_commit() override
-         {
-         }
+         {}
 
          void v_rollback() override
-         {
-         }
+         {}
       };
 
       class top_level_transaction final
          : public transaction_base
       {
       private:
-         [[nodiscard]] const char* isolation_level_to_statement( const transaction::isolation_level il )
+         [[nodiscard]] auto isolation_level_to_statement( const transaction::isolation_level il ) -> const char*
          {
             switch( il ) {
                case transaction::isolation_level::default_isolation_level:
@@ -129,7 +126,7 @@ namespace tao::pq
          void operator=( top_level_transaction&& ) = delete;
 
       private:
-         [[nodiscard]] bool v_is_direct() const noexcept override
+         [[nodiscard]] auto v_is_direct() const noexcept -> bool override
          {
             return false;
          }
@@ -156,7 +153,7 @@ namespace tao::pq
 
    }  // namespace internal
 
-   std::string connection::error_message() const
+   auto connection::error_message() const -> std::string
    {
       const char* message = PQerrorMessage( m_pgconn.get() );
       assert( message );
@@ -173,17 +170,17 @@ namespace tao::pq
       }
    }
 
-   bool connection::is_prepared( const char* name ) const noexcept
+   auto connection::is_prepared( const char* name ) const noexcept -> bool
    {
       return m_prepared_statements.find( name ) != m_prepared_statements.end();
    }
 
-   result connection::execute_params( const char* statement,
-                                      const int n_params,
-                                      const Oid types[],
-                                      const char* const values[],
-                                      const int lengths[],
-                                      const int formats[] )
+   auto connection::execute_params( const char* statement,
+                                    const int n_params,
+                                    const Oid types[],
+                                    const char* const values[],
+                                    const int lengths[],
+                                    const int formats[] ) -> result
    {
       if( is_prepared( statement ) ) {
          return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) );
@@ -205,12 +202,12 @@ namespace tao::pq
       // TODO: check server version
    }
 
-   std::shared_ptr< connection > connection::create( const std::string& connection_info )
+   auto connection::create( const std::string& connection_info ) -> std::shared_ptr< connection >
    {
       return std::make_shared< connection >( private_key(), connection_info );
    }
 
-   bool connection::is_open() const noexcept
+   auto connection::is_open() const noexcept -> bool
    {
       return PQstatus( m_pgconn.get() ) == CONNECTION_OK;
    }
@@ -232,12 +229,12 @@ namespace tao::pq
       m_prepared_statements.erase( name );
    }
 
-   std::shared_ptr< transaction > connection::direct()
+   auto connection::direct() -> std::shared_ptr< pq::transaction >
    {
       return std::make_shared< autocommit_transaction >( shared_from_this() );
    }
 
-   std::shared_ptr< transaction > connection::transaction( const transaction::isolation_level il )
+   auto connection::transaction( const transaction::isolation_level il ) -> std::shared_ptr< pq::transaction >
    {
       return std::make_shared< top_level_transaction >( il, shared_from_this() );
    }

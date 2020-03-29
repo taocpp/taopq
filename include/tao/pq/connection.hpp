@@ -9,12 +9,10 @@
 #include <string>
 #include <utility>
 
+#include <libpq-fe.h>
+
 #include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
-
-// forward-declare libpq structures
-struct pg_conn;
-using PGconn = pg_conn;
 
 namespace tao::pq
 {
@@ -42,19 +40,19 @@ namespace tao::pq
       pq::transaction* m_current_transaction;
       std::set< std::string, std::less<> > m_prepared_statements;
 
-      [[nodiscard]] std::string error_message() const;
+      [[nodiscard]] auto error_message() const -> std::string;
       void check_prepared_name( const std::string& name ) const;
-      [[nodiscard]] bool is_prepared( const char* name ) const noexcept;
+      [[nodiscard]] auto is_prepared( const char* name ) const noexcept -> bool;
 
-      [[nodiscard]] result execute_params( const char* statement,
-                                           const int n_params,
-                                           const Oid types[],
-                                           const char* const values[],
-                                           const int lengths[],
-                                           const int formats[] );
+      [[nodiscard]] auto execute_params( const char* statement,
+                                         const int n_params,
+                                         const Oid types[],
+                                         const char* const values[],
+                                         const int lengths[],
+                                         const int formats[] ) -> result;
 
    public:
-      [[nodiscard]] static std::shared_ptr< connection > create( const std::string& connection_info );
+      [[nodiscard]] static auto create( const std::string& connection_info ) -> std::shared_ptr< connection >;
 
    private:
       // pass-key idiom
@@ -62,7 +60,7 @@ namespace tao::pq
       {
          private_key() = default;
          friend class connection_pool;
-         friend std::shared_ptr< connection > connection::create( const std::string& connection_info );
+         friend auto connection::create( const std::string& connection_info ) -> std::shared_ptr< connection >;
       };
 
    public:
@@ -75,28 +73,26 @@ namespace tao::pq
 
       ~connection() = default;
 
-      [[nodiscard]] bool is_open() const noexcept;
+      [[nodiscard]] auto is_open() const noexcept -> bool;
 
       void prepare( const std::string& name, const std::string& statement );
       void deallocate( const std::string& name );
 
-      [[nodiscard]] std::shared_ptr< pq::transaction > direct();
-      [[nodiscard]] std::shared_ptr< pq::transaction > transaction( const transaction::isolation_level il = transaction::isolation_level::default_isolation_level );
+      [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
+      [[nodiscard]] auto transaction( const transaction::isolation_level il = transaction::isolation_level::default_isolation_level ) -> std::shared_ptr< pq::transaction >;
 
       template< template< typename... > class Traits = parameter_text_traits, typename... Ts >
-      result execute( Ts&&... ts )
+      auto execute( Ts&&... ts )
       {
          return direct()->execute< Traits >( std::forward< Ts >( ts )... );
       }
 
-      // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] PGconn* underlying_raw_ptr() noexcept
+      [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {
          return m_pgconn.get();
       }
 
-      // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] const PGconn* underlying_raw_ptr() const noexcept
+      [[nodiscard]] auto underlying_raw_ptr() const noexcept -> const PGconn*
       {
          return m_pgconn.get();
       }

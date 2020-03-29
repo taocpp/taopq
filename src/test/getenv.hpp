@@ -17,7 +17,8 @@
 namespace tao::pq::internal
 {
 #if defined( _MSC_VER )
-   [[nodiscard]] inline std::string getenv( const std::string& name )
+
+   [[nodiscard]] inline auto getenv( const std::string& name ) -> std::string
    {
       char* buf = nullptr;
       std::size_t sz = 0;
@@ -28,7 +29,7 @@ namespace tao::pq::internal
       throw std::runtime_error( "environment variable not found: " + name );
    }
 
-   [[nodiscard]] inline std::string getenv( const std::string& name, const std::string& default_value )
+   [[nodiscard]] inline auto getenv( const std::string& name, const std::string& default_value ) -> std::string
    {
       char* buf = nullptr;
       std::size_t sz = 0;
@@ -38,18 +39,21 @@ namespace tao::pq::internal
       }
       return default_value;
    }
+
 #else
-   [[nodiscard]] inline std::string getenv( const std::string& name )
+
+   [[nodiscard]] inline auto getenv( const std::string& name ) -> std::string
    {
       const char* result = std::getenv( name.c_str() );
       return ( result != nullptr ) ? result : throw std::runtime_error( "environment variable not found: " + name );
    }
 
-   [[nodiscard]] inline std::string getenv( const std::string& name, const std::string& default_value )
+   [[nodiscard]] inline auto getenv( const std::string& name, const std::string& default_value ) -> std::string
    {
       const char* result = std::getenv( name.c_str() );
       return ( result != nullptr ) ? result : default_value;
    }
+
 #endif
 
 }  // namespace tao::pq::internal

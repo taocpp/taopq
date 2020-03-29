@@ -10,39 +10,39 @@ namespace tao::pq::internal
 #error No byte order defined!
 #elif __BYTE_ORDER__ == __ORDER_BIG_ENDIAN__
 
-   [[nodiscard]] constexpr unsigned short hton( const unsigned short v ) noexcept
+   [[nodiscard]] constexpr auto hton( const unsigned short v ) noexcept -> unsigned short
    {
       return v;
    }
 
-   [[nodiscard]] constexpr unsigned int hton( const unsigned int v ) noexcept
+   [[nodiscard]] constexpr auto hton( const unsigned int v ) noexcept -> unsigned int
    {
       return v;
    }
 
-   [[nodiscard]] constexpr unsigned long hton( const unsigned long v ) noexcept
+   [[nodiscard]] constexpr auto hton( const unsigned long v ) noexcept -> unsigned long
    {
       return v;
    }
 
-   [[nodiscard]] constexpr unsigned long long hton( const unsigned long long v ) noexcept
+   [[nodiscard]] constexpr auto hton( const unsigned long long v ) noexcept -> unsigned long long
    {
       return v;
    }
 
 #elif __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
 
-   [[nodiscard]] inline unsigned short hton( const unsigned short v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned short v ) noexcept -> unsigned short
    {
       return __builtin_bswap16( v );
    }
 
-   [[nodiscard]] inline unsigned int hton( const unsigned int v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned int v ) noexcept -> unsigned int
    {
       return __builtin_bswap32( v );
    }
 
-   [[nodiscard]] inline unsigned long hton( const unsigned long v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned long v ) noexcept -> unsigned long
    {
       static_assert( ( sizeof( unsigned long ) == 4 ) || ( sizeof( unsigned long ) == 8 ) );
       if constexpr( sizeof( unsigned long ) == 4 ) {
@@ -56,7 +56,7 @@ namespace tao::pq::internal
       }
    }
 
-   [[nodiscard]] inline unsigned long long hton( const unsigned long long v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned long long v ) noexcept -> unsigned long long
    {
       return __builtin_bswap64( v );
    }

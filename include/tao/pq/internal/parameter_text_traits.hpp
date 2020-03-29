@@ -20,7 +20,7 @@
 namespace tao::pq::internal
 {
    template< typename T >
-   [[nodiscard]] std::string printf_helper( const char* format, const T v )
+   [[nodiscard]] auto printf_helper( const char* format, const T v ) -> std::string
    {
       if( std::isfinite( v ) ) {
          return printf( format, v );
@@ -39,25 +39,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr const char* value() noexcept
+      [[nodiscard]] static constexpr auto value() noexcept -> const char*
       {
          return nullptr;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
       }
@@ -230,25 +230,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( m_data );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
       }

@@ -6,17 +6,17 @@
 
 namespace tao::pq
 {
-   std::string field::name() const
+   auto field::name() const -> std::string
    {
       return m_row.name( m_column );
    }
 
-   bool field::is_null() const
+   auto field::is_null() const -> bool
    {
       return m_row.is_null( m_column );
    }
 
-   const char* field::get() const
+   auto field::get() const -> const char*
    {
       return m_row.get( m_column );
    }

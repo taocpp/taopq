@@ -34,25 +34,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr const char* value() noexcept
+      [[nodiscard]] static constexpr auto value() noexcept -> const char*
       {
          return nullptr;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
       }
@@ -92,25 +92,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = U::columns;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return U::template type< I >();
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr const char* value() const noexcept( noexcept( m_forwarder ? m_forwarder->template value< I >() : nullptr ) )
+      [[nodiscard]] constexpr auto value() const noexcept( noexcept( m_forwarder ? m_forwarder->template value< I >() : nullptr ) ) -> const char*
       {
          return m_forwarder ? m_forwarder->template value< I >() : nullptr;
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int length() const noexcept( noexcept( m_forwarder ? m_forwarder->template length< I >() : 0 ) )
+      [[nodiscard]] constexpr auto length() const noexcept( noexcept( m_forwarder ? m_forwarder->template length< I >() : 0 ) ) -> int
       {
          return m_forwarder ? m_forwarder->template length< I >() : 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return U::template format< I >();
       }
@@ -137,25 +137,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns{ ( 0 + ... + parameter_traits< Traits, std::decay_t< Ts > >::columns ) };
 
       template< std::size_t I >
-      [[nodiscard]] constexpr Oid type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) )
+      [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) ) -> Oid
       {
          return std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >();
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >() ) )
+      [[nodiscard]] constexpr auto value() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >() ) ) -> const char*
       {
          return std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >();
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int length() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >() ) )
+      [[nodiscard]] constexpr auto length() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >() ) ) -> int
       {
          return std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >();
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >() ) )
+      [[nodiscard]] constexpr auto format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >() ) ) -> int
       {
          return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
       }

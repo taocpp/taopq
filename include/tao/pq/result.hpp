@@ -17,12 +17,10 @@
 #include <utility>
 #include <vector>
 
+#include <libpq-fe.h>
+
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/row.hpp>
-
-// forward-declare libpq structures
-struct pg_result;
-using PGresult = pg_result;
 
 namespace tao::pq
 {
@@ -60,19 +58,19 @@ namespace tao::pq
       result( PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
 
    public:
-      [[nodiscard]] bool has_rows_affected() const;
-      [[nodiscard]] std::size_t rows_affected() const;
+      [[nodiscard]] auto has_rows_affected() const noexcept -> bool;
+      [[nodiscard]] auto rows_affected() const -> std::size_t;
 
-      [[nodiscard]] std::size_t columns() const
+      [[nodiscard]] auto columns() const noexcept -> std::size_t
       {
          return m_columns;
       }
 
-      [[nodiscard]] std::string name( const std::size_t column ) const;
-      [[nodiscard]] std::size_t index( const std::string& in_name ) const;
+      [[nodiscard]] auto name( const std::size_t column ) const -> std::string;
+      [[nodiscard]] auto index( const std::string& in_name ) const -> std::size_t;
 
-      [[nodiscard]] bool empty() const;
-      [[nodiscard]] std::size_t size() const;
+      [[nodiscard]] auto empty() const -> bool;
+      [[nodiscard]] auto size() const -> std::size_t;
 
       class const_iterator
          : private row
@@ -80,44 +78,43 @@ namespace tao::pq
       private:
          friend class result;
 
-         const_iterator( const row& r )
+         const_iterator( const row& r ) noexcept
             : row( r )
-         {
-         }
+         {}
 
       public:
-         [[nodiscard]] friend bool operator!=( const const_iterator& lhs, const const_iterator& rhs )
+         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
          {
             return lhs.m_row != rhs.m_row;
          }
 
-         const_iterator& operator++()
+         auto operator++() noexcept -> const_iterator&
          {
             ++m_row;
             return *this;
          }
 
-         [[nodiscard]] const row& operator*() const
+         [[nodiscard]] auto operator*() const noexcept -> const row&
          {
             return *this;
          }
       };
 
-      [[nodiscard]] const_iterator begin() const;
-      [[nodiscard]] const_iterator end() const;
+      [[nodiscard]] auto begin() const -> const_iterator;
+      [[nodiscard]] auto end() const -> const_iterator;
 
-      [[nodiscard]] bool is_null( const std::size_t row, const std::size_t column ) const;
-      [[nodiscard]] const char* get( const std::size_t row, const std::size_t column ) const;
+      [[nodiscard]] auto is_null( const std::size_t row, const std::size_t column ) const -> bool;
+      [[nodiscard]] auto get( const std::size_t row, const std::size_t column ) const -> const char*;
 
-      [[nodiscard]] row operator[]( const std::size_t row ) const
+      [[nodiscard]] auto operator[]( const std::size_t row ) const noexcept
       {
          return pq::row( *this, row, 0, m_columns );
       }
 
-      [[nodiscard]] row at( const std::size_t row ) const;
+      [[nodiscard]] auto at( const std::size_t row ) const -> pq::row;
 
       template< typename T >
-      [[nodiscard]] T as() const
+      [[nodiscard]] auto as() const -> T
       {
          if( size() != 1 ) {
             throw std::runtime_error( internal::printf( "invalid result size: %zu rows, expected 1 row", m_rows ) );
@@ -126,7 +123,7 @@ namespace tao::pq
       }
 
       template< typename T >
-      [[nodiscard]] std::optional< T > optional() const
+      [[nodiscard]] auto optional() const -> std::optional< T >
       {
          if( empty() ) {
             return {};
@@ -135,33 +132,24 @@ namespace tao::pq
       }
 
       template< typename T, typename U >
-      [[nodiscard]] std::pair< T, U > pair() const
+      [[nodiscard]] auto pair() const
       {
          return as< std::pair< T, U > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::tuple< Ts... > tuple() const
+      [[nodiscard]] auto tuple() const
       {
          return as< std::tuple< Ts... > >();
       }
 
       template< typename T >
-      [[nodiscard]] std::enable_if_t< internal::has_reserve< T >, T > as_container() const
+      [[nodiscard]] auto as_container() const -> T
       {
          T nrv;
-         nrv.reserve( size() );
-         check_has_result_set();
-         for( const auto& row : *this ) {
-            nrv.insert( nrv.end(), row.as< typename T::value_type >() );
+         if constexpr( internal::has_reserve< T > ) {
+            nrv.reserve( size() );
          }
-         return nrv;
-      }
-
-      template< typename T >
-      [[nodiscard]] std::enable_if_t< !internal::has_reserve< T >, T > as_container() const
-      {
-         T nrv;
          check_has_result_set();
          for( const auto& row : *this ) {
             nrv.insert( nrv.end(), row.as< typename T::value_type >() );
@@ -170,73 +158,71 @@ namespace tao::pq
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::vector< Ts... > vector() const
+      [[nodiscard]] auto vector() const
       {
          return as_container< std::vector< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::list< Ts... > list() const
+      [[nodiscard]] auto list() const
       {
          return as_container< std::list< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::set< Ts... > set() const
+      [[nodiscard]] auto set() const
       {
          return as_container< std::set< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::multiset< Ts... > multiset() const
+      [[nodiscard]] auto multiset() const
       {
          return as_container< std::multiset< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::unordered_set< Ts... > unordered_set() const
+      [[nodiscard]] auto unordered_set() const
       {
          return as_container< std::unordered_set< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::unordered_multiset< Ts... > unordered_multiset() const
+      [[nodiscard]] auto unordered_multiset() const
       {
          return as_container< std::unordered_multiset< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::map< Ts... > map() const
+      [[nodiscard]] auto map() const
       {
          return as_container< std::map< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::multimap< Ts... > multimap() const
+      [[nodiscard]] auto multimap() const
       {
          return as_container< std::multimap< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::unordered_map< Ts... > unordered_map() const
+      [[nodiscard]] auto unordered_map() const
       {
          return as_container< std::unordered_map< Ts... > >();
       }
 
       template< typename... Ts >
-      [[nodiscard]] std::unordered_multimap< Ts... > unordered_multimap() const
+      [[nodiscard]] auto unordered_multimap() const
       {
          return as_container< std::unordered_multimap< Ts... > >();
       }
 
-      // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] PGresult* underlying_raw_ptr()
+      [[nodiscard]] auto underlying_raw_ptr() -> PGresult*
       {
          return m_pgresult.get();
       }
 
-      // make sure you include libpq-fe.h before accessing the raw pointer
-      [[nodiscard]] const PGresult* underlying_raw_ptr() const
+      [[nodiscard]] auto underlying_raw_ptr() const -> const PGresult*
       {
          return m_pgresult.get();
       }

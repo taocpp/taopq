@@ -39,29 +39,29 @@ namespace tao::pq
       explicit transaction( const std::shared_ptr< pq::connection >& connection );
       virtual ~transaction() = 0;
 
-      [[nodiscard]] virtual bool v_is_direct() const noexcept = 0;
+      [[nodiscard]] virtual auto v_is_direct() const noexcept -> bool = 0;
 
       virtual void v_commit() = 0;
       virtual void v_rollback() = 0;
 
       virtual void v_reset() noexcept = 0;
 
-      [[nodiscard]] transaction*& current_transaction() const noexcept;
+      [[nodiscard]] auto current_transaction() const noexcept -> transaction*&;
       void check_current_transaction() const;
 
    private:
-      [[nodiscard]] result execute_params( const char* statement,
-                                           const int n_params,
-                                           const Oid types[],
-                                           const char* const values[],
-                                           const int lengths[],
-                                           const int formats[] );
+      [[nodiscard]] auto execute_params( const char* statement,
+                                         const int n_params,
+                                         const Oid types[],
+                                         const char* const values[],
+                                         const int lengths[],
+                                         const int formats[] ) -> result;
 
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
-      [[nodiscard]] result execute_indexed( const char* statement,
-                                            std::index_sequence< Os... > /*unused*/,
-                                            std::index_sequence< Is... > /*unused*/,
-                                            const std::tuple< Ts... >& tuple )
+      [[nodiscard]] auto execute_indexed( const char* statement,
+                                          std::index_sequence< Os... > /*unused*/,
+                                          std::index_sequence< Is... > /*unused*/,
+                                          const std::tuple< Ts... >& tuple )
       {
          const Oid types[] = { std::get< Os >( tuple ).template type< Is >()... };
          const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
@@ -71,7 +71,7 @@ namespace tao::pq
       }
 
       template< typename... Ts >
-      [[nodiscard]] result execute_traits( const char* statement, const Ts&... ts )
+      [[nodiscard]] auto execute_traits( const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
          return execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
@@ -106,20 +106,20 @@ namespace tao::pq
       [[nodiscard]] std::shared_ptr< transaction > subtransaction();
 
       template< template< typename... > class Traits = parameter_text_traits, typename... As >
-      result execute( const char* statement, As&&... as )
+      auto execute( const char* statement, As&&... as )
       {
          return execute_traits( statement, to_traits< Traits >( std::forward< As >( as ) )... );
       }
 
       // short-cut for no-arguments invocations
       template< template< typename... > class Traits = parameter_text_traits >
-      result execute( const char* statement )
+      auto execute( const char* statement )
       {
          return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
       }
 
       template< template< typename... > class Traits = parameter_text_traits, typename... As >
-      result execute( const std::string& statement, As&&... as )
+      auto execute( const std::string& statement, As&&... as )
       {
          return execute< Traits >( statement.c_str(), std::forward< As >( as )... );
       }

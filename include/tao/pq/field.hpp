@@ -25,48 +25,49 @@ namespace tao::pq
       field( const row& row, const std::size_t column )
          : m_row( row ),
            m_column( column )
-      {
-      }
+      {}
 
    public:
-      [[nodiscard]] std::string name() const;
+      [[nodiscard]] auto name() const -> std::string;
 
-      [[nodiscard]] bool is_null() const;
-      [[nodiscard]] const char* get() const;
+      [[nodiscard]] auto is_null() const -> bool;
+      [[nodiscard]] auto get() const -> const char*;
 
       template< typename T >
-      [[nodiscard]] std::enable_if_t< result_traits_size< T > != 1, T > as() const
+      [[nodiscard]] auto as() const noexcept
+         -> std::enable_if_t< result_traits_size< T > != 1, T >
       {
          static_assert( !std::is_same_v< T, T >, "tao::pq::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
          __builtin_unreachable();
       }
 
       template< typename T >
-      [[nodiscard]] std::enable_if_t< result_traits_size< T > == 1, T > as() const;  // implemented in row.hpp
+      [[nodiscard]] auto as() const
+         -> std::enable_if_t< result_traits_size< T > == 1, T >;  // implemented in row.hpp
 
       template< typename T >
-      [[nodiscard]] std::optional< T > optional() const
+      [[nodiscard]] auto optional() const
       {
          return as< std::optional< T > >();
       }
    };
 
-   [[nodiscard]] inline bool operator==( const field& f, const null_t& /*unused*/ )
+   [[nodiscard]] inline auto operator==( const field& f, const null_t& /*unused*/ )
    {
       return f.is_null();
    }
 
-   [[nodiscard]] inline bool operator==( const null_t& /*unused*/, const field& f )
+   [[nodiscard]] inline auto operator==( const null_t& /*unused*/, const field& f )
    {
       return f.is_null();
    }
 
-   [[nodiscard]] inline bool operator!=( const field& f, const null_t& /*unused*/ )
+   [[nodiscard]] inline auto operator!=( const field& f, const null_t& /*unused*/ )
    {
       return !f.is_null();
    }
 
-   [[nodiscard]] inline bool operator!=( const null_t& /*unused*/, const field& f )
+   [[nodiscard]] inline auto operator!=( const null_t& /*unused*/, const field& f )
    {
       return !f.is_null();
    }

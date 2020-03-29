@@ -66,13 +66,13 @@ namespace tao::pq
       throw std::runtime_error( "unexpected result: " + res_status );
    }
 
-   bool result::has_rows_affected() const
+   auto result::has_rows_affected() const noexcept -> bool
    {
       const char* str = PQcmdTuples( m_pgresult.get() );
       return str[ 0 ] != '\0';
    }
 
-   std::size_t result::rows_affected() const
+   auto result::rows_affected() const -> std::size_t
    {
       const char* str = PQcmdTuples( m_pgresult.get() );
       if( str[ 0 ] == '\0' ) {
@@ -81,7 +81,7 @@ namespace tao::pq
       return internal::strtoul( str, 10 );
    }
 
-   std::string result::name( const std::size_t column ) const
+   auto result::name( const std::size_t column ) const -> std::string
    {
       if( column >= m_columns ) {
          throw std::out_of_range( internal::printf( "column %zu out of range (0-%zu)", column, m_columns - 1 ) );
@@ -89,7 +89,7 @@ namespace tao::pq
       return PQfname( m_pgresult.get(), static_cast< int >( column ) );
    }
 
-   std::size_t result::index( const std::string& in_name ) const
+   auto result::index( const std::string& in_name ) const -> std::size_t
    {
       const int column = PQfnumber( m_pgresult.get(), in_name.c_str() );
       if( column < 0 ) {
@@ -100,28 +100,28 @@ namespace tao::pq
       return column;
    }
 
-   bool result::empty() const
+   auto result::empty() const -> bool
    {
       return size() == 0;
    }
 
-   std::size_t result::size() const
+   auto result::size() const -> std::size_t
    {
       check_has_result_set();
       return m_rows;
    }
 
-   result::const_iterator result::begin() const
+   auto result::begin() const -> result::const_iterator
    {
       return row( *this, 0, 0, m_columns );
    }
 
-   result::const_iterator result::end() const
+   auto result::end() const -> result::const_iterator
    {
       return row( *this, size(), 0, m_columns );
    }
 
-   bool result::is_null( const std::size_t row, const std::size_t column ) const
+   auto result::is_null( const std::size_t row, const std::size_t column ) const -> bool
    {
       check_row( row );
       if( column >= m_columns ) {
@@ -130,7 +130,7 @@ namespace tao::pq
       return PQgetisnull( m_pgresult.get(), static_cast< int >( row ), static_cast< int >( column ) ) != 0;
    }
 
-   const char* result::get( const std::size_t row, const std::size_t column ) const
+   auto result::get( const std::size_t row, const std::size_t column ) const -> const char*
    {
       if( is_null( row, column ) ) {
          throw std::runtime_error( internal::printf( "unexpected NULL value in row %zu column %zu = %s", row, column, name( column ).c_str() ) );
@@ -138,7 +138,7 @@ namespace tao::pq
       return PQgetvalue( m_pgresult.get(), static_cast< int >( row ), static_cast< int >( column ) );
    }
 
-   row result::at( const std::size_t row ) const
+   auto result::at( const std::size_t row ) const -> pq::row
    {
       check_row( row );
       return ( *this )[ row ];

@@ -32,7 +32,7 @@ namespace tao::pq
       }
    }
 
-   std::size_t table_writer::finish()
+   auto table_writer::finish() -> std::size_t
    {
       const auto connection = m_transaction->m_connection;
       const int r = PQputCopyEnd( connection->m_pgconn.get(), nullptr );

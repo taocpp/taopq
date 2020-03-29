@@ -28,8 +28,7 @@ namespace tao::pq::internal
 
          explicit deleter( std::weak_ptr< pool >&& p ) noexcept
             : m_pool( std::move( p ) )
-         {
-         }
+         {}
 
          void operator()( T* item ) const noexcept
          {
@@ -45,8 +44,8 @@ namespace tao::pq::internal
       virtual ~pool() = default;
 
       // create a new T
-      [[nodiscard]] virtual std::unique_ptr< T > v_create() const = 0;
-      [[nodiscard]] virtual bool v_is_valid( T& ) const noexcept = 0;
+      [[nodiscard]] virtual auto v_create() const -> std::unique_ptr< T > = 0;
+      [[nodiscard]] virtual auto v_is_valid( T& ) const noexcept -> bool = 0;
 
       void push( std::unique_ptr< T >& up ) noexcept
       {
@@ -58,7 +57,7 @@ namespace tao::pq::internal
          }
       }
 
-      [[nodiscard]] std::shared_ptr< T > pull() noexcept
+      [[nodiscard]] auto pull() noexcept
       {
          std::shared_ptr< T > nrv;
          const std::lock_guard lock( m_mutex );
@@ -90,13 +89,13 @@ namespace tao::pq::internal
       }
 
       // create a new T which is put into the pool when no longer used
-      [[nodiscard]] std::shared_ptr< T > create()
+      [[nodiscard]] auto create() -> std::shared_ptr< T >
       {
          return { v_create().release(), deleter( this->weak_from_this() ) };
       }
 
       // get an instance from the pool or create a new one if necessary
-      [[nodiscard]] std::shared_ptr< T > get()
+      [[nodiscard]] auto get() -> std::shared_ptr< T >
       {
          while( const auto sp = pull() ) {
             if( v_is_valid( *sp ) ) {

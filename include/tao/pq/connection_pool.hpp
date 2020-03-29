@@ -21,18 +21,19 @@ namespace tao::pq
    private:
       const std::string m_connection_info;
 
-      [[nodiscard]] std::unique_ptr< pq::connection > v_create() const override;
-      [[nodiscard]] bool v_is_valid( pq::connection& c ) const noexcept override;
+      [[nodiscard]] auto v_create() const -> std::unique_ptr< pq::connection > override;
+
+      [[nodiscard]] auto v_is_valid( pq::connection& c ) const noexcept -> bool override;
 
    public:
-      [[nodiscard]] static std::shared_ptr< connection_pool > create( const std::string& connection_info );
+      [[nodiscard]] static auto create( const std::string& connection_info ) -> std::shared_ptr< connection_pool >;
 
    private:
       // pass-key idiom
       class private_key
       {
          private_key() = default;
-         friend std::shared_ptr< connection_pool > connection_pool::create( const std::string& connection_info );
+         friend auto connection_pool::create( const std::string& connection_info ) -> std::shared_ptr< connection_pool >;
       };
 
    public:
@@ -40,13 +41,13 @@ namespace tao::pq
          : m_connection_info( connection_info )
       {}
 
-      [[nodiscard]] std::shared_ptr< pq::connection > connection()
+      [[nodiscard]] auto connection()
       {
          return this->get();
       }
 
       template< template< typename... > class Traits = parameter_text_traits, typename... Ts >
-      result execute( Ts&&... ts )
+      auto execute( Ts&&... ts )
       {
          return this->connection()->direct()->execute< Traits >( std::forward< Ts >( ts )... );
       }

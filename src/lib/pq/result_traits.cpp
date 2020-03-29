@@ -10,7 +10,7 @@
 
 namespace tao::pq
 {
-   bool result_traits< bool >::from( const char* value )
+   auto result_traits< bool >::from( const char* value ) -> bool
    {
       if( value[ 0 ] != '\0' && value[ 1 ] == '\0' ) {
          if( value[ 0 ] == 't' ) {
@@ -23,7 +23,7 @@ namespace tao::pq
       throw std::runtime_error( "invalid value in tao::pq::result_traits<bool> for input: " + std::string( value ) );
    }
 
-   char result_traits< char >::from( const char* value )
+   auto result_traits< char >::from( const char* value ) -> char
    {
       if( value[ 0 ] == '\0' || value[ 1 ] != '\0' ) {
          throw std::runtime_error( "invalid value in tao::pq::result_traits<char> for input: " + std::string( value ) );
@@ -31,7 +31,7 @@ namespace tao::pq
       return value[ 0 ];
    }
 
-   signed char result_traits< signed char >::from( const char* value )
+   auto result_traits< signed char >::from( const char* value ) -> signed char
    {
       const long v = internal::strtol( value, 10 );
       if( v < std::numeric_limits< signed char >::min() ) {
@@ -43,7 +43,7 @@ namespace tao::pq
       return static_cast< signed char >( v );
    }
 
-   unsigned char result_traits< unsigned char >::from( const char* value )
+   auto result_traits< unsigned char >::from( const char* value ) -> unsigned char
    {
       const unsigned long v = internal::strtoul( value, 10 );
       if( v > std::numeric_limits< unsigned char >::max() ) {
@@ -52,7 +52,7 @@ namespace tao::pq
       return static_cast< unsigned char >( v );
    }
 
-   short result_traits< short >::from( const char* value )
+   auto result_traits< short >::from( const char* value ) -> short
    {
       const long v = internal::strtol( value, 10 );
       if( v < std::numeric_limits< short >::min() ) {
@@ -64,7 +64,7 @@ namespace tao::pq
       return static_cast< short >( v );
    }
 
-   unsigned short result_traits< unsigned short >::from( const char* value )
+   auto result_traits< unsigned short >::from( const char* value ) -> unsigned short
    {
       const unsigned long v = internal::strtoul( value, 10 );
       if( v > std::numeric_limits< unsigned short >::max() ) {
@@ -73,7 +73,7 @@ namespace tao::pq
       return static_cast< unsigned short >( v );
    }
 
-   int result_traits< int >::from( const char* value )
+   auto result_traits< int >::from( const char* value ) -> int
    {
       const long v = internal::strtol( value, 10 );
       if( v < std::numeric_limits< int >::min() ) {
@@ -85,7 +85,7 @@ namespace tao::pq
       return static_cast< int >( v );
    }
 
-   unsigned result_traits< unsigned >::from( const char* value )
+   auto result_traits< unsigned >::from( const char* value ) -> unsigned
    {
       const unsigned long v = internal::strtoul( value, 10 );
       if( v > std::numeric_limits< unsigned >::max() ) {
@@ -94,37 +94,37 @@ namespace tao::pq
       return static_cast< unsigned >( v );
    }
 
-   long result_traits< long >::from( const char* value )
+   auto result_traits< long >::from( const char* value ) -> long
    {
       return internal::strtol( value, 10 );
    }
 
-   unsigned long result_traits< unsigned long >::from( const char* value )
+   auto result_traits< unsigned long >::from( const char* value ) -> unsigned long
    {
       return internal::strtoul( value, 10 );
    }
 
-   long long result_traits< long long >::from( const char* value )
+   auto result_traits< long long >::from( const char* value ) -> long long
    {
       return internal::strtoll( value, 10 );
    }
 
-   unsigned long long result_traits< unsigned long long >::from( const char* value )
+   auto result_traits< unsigned long long >::from( const char* value ) -> unsigned long long
    {
       return internal::strtoull( value, 10 );
    }
 
-   float result_traits< float >::from( const char* value )
+   auto result_traits< float >::from( const char* value ) -> float
    {
       return internal::strtof( value );
    }
 
-   double result_traits< double >::from( const char* value )
+   auto result_traits< double >::from( const char* value ) -> double
    {
       return internal::strtod( value );
    }
 
-   long double result_traits< long double >::from( const char* value )
+   auto result_traits< long double >::from( const char* value ) -> long double
    {
       return internal::strtold( value );
    }

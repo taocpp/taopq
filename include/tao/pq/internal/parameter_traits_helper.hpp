@@ -18,7 +18,7 @@ namespace tao::pq::internal
       const char* const m_p;
 
    protected:
-      explicit char_pointer_helper( const char* p ) noexcept
+      explicit constexpr char_pointer_helper( const char* p ) noexcept
          : m_p( p )
       {}
 
@@ -26,25 +26,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] constexpr auto value() const noexcept -> const char*
       {
          return m_p;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
       }
@@ -65,25 +65,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return m_s.c_str();
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
       }

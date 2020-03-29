@@ -18,8 +18,7 @@ namespace tao::pq::internal
       public:
          explicit va_deleter( va_list& ap )
             : m_ap( ap )
-         {
-         }
+         {}
 
          ~va_deleter()
          {
@@ -27,7 +26,7 @@ namespace tao::pq::internal
          }
       };
 
-      [[nodiscard]] int vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap )
+      [[nodiscard]] auto vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap ) -> int
       {
          s.resize( size );
          char* buffer = &s[ 0 ];

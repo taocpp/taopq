@@ -35,61 +35,61 @@ namespace tao::pq::internal
       // clang-format on
 
       template< typename T >
-      [[nodiscard]] std::string failure_message( const char* input )
+      [[nodiscard]] auto failure_message( const char* input ) -> std::string
       {
          return message< T >::value + input;
       }
 
       template< typename T >
-      [[nodiscard]] T call_integral( const char* nptr, char** endptr, int base );
+      [[nodiscard]] auto call_integral( const char* nptr, char** endptr, int base ) -> T;
 
       template<>
-      [[nodiscard]] long call_integral< long >( const char* nptr, char** endptr, int base )
+      [[nodiscard]] auto call_integral< long >( const char* nptr, char** endptr, int base ) -> long
       {
          return std::strtol( nptr, endptr, base );
       }
 
       template<>
-      [[nodiscard]] unsigned long call_integral< unsigned long >( const char* nptr, char** endptr, int base )
+      [[nodiscard]] auto call_integral< unsigned long >( const char* nptr, char** endptr, int base ) -> unsigned long
       {
          return std::strtoul( nptr, endptr, base );
       }
 
       template<>
-      [[nodiscard]] long long call_integral< long long >( const char* nptr, char** endptr, int base )
+      [[nodiscard]] auto call_integral< long long >( const char* nptr, char** endptr, int base ) -> long long
       {
          return std::strtoll( nptr, endptr, base );
       }
 
       template<>
-      [[nodiscard]] unsigned long long call_integral< unsigned long long >( const char* nptr, char** endptr, int base )
+      [[nodiscard]] auto call_integral< unsigned long long >( const char* nptr, char** endptr, int base ) -> unsigned long long
       {
          return std::strtoull( nptr, endptr, base );
       }
 
       template< typename T >
-      [[nodiscard]] T call_floating_point( const char* nptr, char** endptr );
+      [[nodiscard]] auto call_floating_point( const char* nptr, char** endptr ) -> T;
 
       template<>
-      [[nodiscard]] float call_floating_point< float >( const char* nptr, char** endptr )
+      [[nodiscard]] auto call_floating_point< float >( const char* nptr, char** endptr ) -> float
       {
          return std::strtof( nptr, endptr );
       }
 
       template<>
-      [[nodiscard]] double call_floating_point< double >( const char* nptr, char** endptr )
+      [[nodiscard]] auto call_floating_point< double >( const char* nptr, char** endptr ) -> double
       {
          return std::strtod( nptr, endptr );
       }
 
       template<>
-      [[nodiscard]] long double call_floating_point< long double >( const char* nptr, char** endptr )
+      [[nodiscard]] auto call_floating_point< long double >( const char* nptr, char** endptr ) -> long double
       {
          return std::strtold( nptr, endptr );
       }
 
       template< typename T >
-      [[nodiscard]] T str_to_integral( const char* input, const int base )
+      [[nodiscard]] auto str_to_integral( const char* input, const int base ) -> T
       {
          assert( input );
          if( *input == '\0' || std::isspace( *input ) ) {
@@ -122,7 +122,7 @@ namespace tao::pq::internal
       }
 
       template< typename T >
-      [[nodiscard]] T str_to_floating_point( const char* input )
+      [[nodiscard]] auto str_to_floating_point( const char* input ) -> T
       {
          assert( input );
          if( *input == '\0' || std::isspace( *input ) ) {
@@ -151,37 +151,37 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   [[nodiscard]] long strtol( const char* input, const int base )
+   auto strtol( const char* input, const int base ) -> long
    {
       return str_to_integral< long >( input, base );
    }
 
-   unsigned long strtoul( const char* input, const int base )
+   auto strtoul( const char* input, const int base ) -> unsigned long
    {
       return str_to_integral< unsigned long >( input, base );
    }
 
-   long long strtoll( const char* input, const int base )
+   auto strtoll( const char* input, const int base ) -> long long
    {
       return str_to_integral< long long >( input, base );
    }
 
-   unsigned long long strtoull( const char* input, const int base )
+   auto strtoull( const char* input, const int base ) -> unsigned long long
    {
       return str_to_integral< unsigned long long >( input, base );
    }
 
-   float strtof( const char* input )
+   auto strtof( const char* input ) -> float
    {
       return str_to_floating_point< float >( input );
    }
 
-   double strtod( const char* input )
+   auto strtod( const char* input ) -> double
    {
       return str_to_floating_point< double >( input );
    }
 
-   long double strtold( const char* input )
+   auto strtold( const char* input ) -> long double
    {
       return str_to_floating_point< long double >( input );
    }

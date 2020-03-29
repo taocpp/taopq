@@ -20,7 +20,7 @@ namespace tao::pq
 
       static constexpr std::size_t size = result_traits_size< DT > + result_traits_size< DU >;
 
-      [[nodiscard]] static std::pair< T, U > from( const row& row )
+      [[nodiscard]] static auto from( const row& row )
       {
          return std::pair< T, U >( row.get< DT >( 0 ), row.get< DU >( result_traits_size< DT > ) );
       }

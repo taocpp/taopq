@@ -20,12 +20,13 @@ namespace tao::pq
       static constexpr std::size_t size = result_traits_size< T >;
 
       template< typename U = T >
-      [[nodiscard]] static std::enable_if_t< std::is_same_v< T, U > && result_traits_has_null< T >, std::tuple< T > > null()
+      [[nodiscard]] static auto null()
+         -> std::enable_if_t< std::is_same_v< T, U > && result_traits_has_null< T >, std::tuple< T > >
       {
          return std::tuple< T >( result_traits< T >::null() );
       }
 
-      [[nodiscard]] static std::tuple< T > from( const char* value )
+      [[nodiscard]] static auto from( const char* value )
       {
          return std::tuple< T >( result_traits< T >::from( value ) );
       }
@@ -39,12 +40,12 @@ namespace tao::pq
       static constexpr std::size_t size{ (0 + ... + result_traits_size< Ts >)};
 
       template< std::size_t... Ns >
-      [[nodiscard]] static std::tuple< Ts... > from( const row& row, std::index_sequence< Ns... > /*unused*/ )
+      [[nodiscard]] static auto from( const row& row, std::index_sequence< Ns... > /*unused*/ )
       {
          return std::tuple< Ts... >( row.get< Ts >( Ns )... );
       }
 
-      [[nodiscard]] static std::tuple< Ts... > from( const row& row )
+      [[nodiscard]] static auto from( const row& row )
       {
          return from( row, internal::exclusive_scan_t< std::index_sequence< result_traits_size< Ts >... > >() );
       }

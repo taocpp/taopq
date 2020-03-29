@@ -33,7 +33,7 @@ namespace tao::pq
             }
          }
 
-         [[nodiscard]] bool v_is_direct() const noexcept override
+         [[nodiscard]] auto v_is_direct() const noexcept -> bool override
          {
             return false;
          }
@@ -149,7 +149,7 @@ namespace tao::pq
 
    transaction::~transaction() = default;
 
-   transaction*& transaction::current_transaction() const noexcept
+   auto transaction::current_transaction() const noexcept -> transaction*&
    {
       return m_connection->m_current_transaction;
    }
@@ -161,18 +161,18 @@ namespace tao::pq
       }
    }
 
-   result transaction::execute_params( const char* statement,
-                                       const int n_params,
-                                       const Oid types[],
-                                       const char* const values[],
-                                       const int lengths[],
-                                       const int formats[] )
+   auto transaction::execute_params( const char* statement,
+                                     const int n_params,
+                                     const Oid types[],
+                                     const char* const values[],
+                                     const int lengths[],
+                                     const int formats[] ) -> result
    {
       check_current_transaction();
       return m_connection->execute_params( statement, n_params, types, values, lengths, formats );
    }
 
-   PGconn* transaction::underlying_raw_ptr() const noexcept
+   auto transaction::underlying_raw_ptr() const noexcept -> PGconn*
    {
       return m_connection->underlying_raw_ptr();
    }
@@ -207,7 +207,7 @@ namespace tao::pq
       v_reset();
    }
 
-   std::shared_ptr< transaction > transaction::subtransaction()
+   auto transaction::subtransaction() -> std::shared_ptr< transaction >
    {
       check_current_transaction();
       if( v_is_direct() ) {

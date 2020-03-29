@@ -27,7 +27,7 @@ namespace tao::pq
       table_writer& operator=( table_writer&& ) = delete;
 
       void insert( const std::string& data );
-      std::size_t finish();
+      auto finish() -> std::size_t;
    };
 
 }  // namespace tao::pq

@@ -11,7 +11,7 @@
 
 namespace tao::pq::internal
 {
-   std::string demangle( const char* const symbol )
+   auto demangle( const char* const symbol ) -> std::string
    {
 #ifdef WIN32
       return symbol;
@@ -21,7 +21,7 @@ namespace tao::pq::internal
 #endif
    }
 
-   std::string demangle( const std::type_info& type_info )
+   auto demangle( const std::type_info& type_info ) -> std::string
    {
       return demangle( type_info.name() );
    }

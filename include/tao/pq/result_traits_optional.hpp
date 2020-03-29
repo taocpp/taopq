@@ -16,17 +16,17 @@ namespace tao::pq
    {
       static constexpr std::size_t size = result_traits_size< T >;
 
-      [[nodiscard]] static std::optional< T > null()
+      [[nodiscard]] static auto null() noexcept -> std::optional< T >
       {
          return {};
       }
 
-      [[nodiscard]] static std::optional< T > from( const char* value )
+      [[nodiscard]] static auto from( const char* value ) -> std::optional< T >
       {
          return result_traits< T >::from( value );
       }
 
-      [[nodiscard]] static std::optional< T > from( const row& row )
+      [[nodiscard]] static auto from( const row& row ) -> std::optional< T >
       {
          for( std::size_t column = 0; column < row.columns(); ++column ) {
             if( !row.is_null( column ) ) {

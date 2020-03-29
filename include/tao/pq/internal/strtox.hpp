@@ -6,14 +6,14 @@
 
 namespace tao::pq::internal
 {
-   [[nodiscard]] long strtol( const char* input, const int base = 0 );
-   [[nodiscard]] unsigned long strtoul( const char* input, const int base = 0 );
-   [[nodiscard]] long long strtoll( const char* input, const int base = 0 );
-   [[nodiscard]] unsigned long long strtoull( const char* input, const int base = 0 );
+   [[nodiscard]] auto strtol( const char* input, const int base = 0 ) -> long;
+   [[nodiscard]] auto strtoul( const char* input, const int base = 0 ) -> unsigned long;
+   [[nodiscard]] auto strtoll( const char* input, const int base = 0 ) -> long long;
+   [[nodiscard]] auto strtoull( const char* input, const int base = 0 ) -> unsigned long long;
 
-   [[nodiscard]] float strtof( const char* input );
-   [[nodiscard]] double strtod( const char* input );
-   [[nodiscard]] long double strtold( const char* input );
+   [[nodiscard]] auto strtof( const char* input ) -> float;
+   [[nodiscard]] auto strtod( const char* input ) -> double;
+   [[nodiscard]] auto strtold( const char* input ) -> long double;
 
 }  // namespace tao::pq::internal
 

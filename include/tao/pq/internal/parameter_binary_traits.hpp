@@ -27,25 +27,25 @@ namespace tao::pq::internal
       static_assert( sizeof( T ) == 0, "data type T not registered as taopq parameter" );
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr const char* value() noexcept
+      [[nodiscard]] static constexpr auto value() noexcept -> const char*
       {
          return nullptr;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 0;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
       }
@@ -63,25 +63,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 16;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 1;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -99,25 +99,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 18;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return 1;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -137,25 +137,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 21;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return sizeof( short );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -175,25 +175,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 23;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return sizeof( int );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -213,25 +213,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return ( sizeof( long ) == 4 ) ? 23 : 20;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return sizeof( long );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -251,25 +251,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 20;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return sizeof( long long );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -289,25 +289,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 700;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return sizeof( float );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -327,25 +327,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 701;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( &m_v );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int length() noexcept
+      [[nodiscard]] static constexpr auto length() noexcept -> int
       {
          return sizeof( double );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -366,25 +366,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 25;
       }
 
       template< std::size_t I >
-      [[nodiscard]] const char* value() const noexcept
+      [[nodiscard]] auto value() const noexcept -> const char*
       {
          return m_v.data();
       }
 
       template< std::size_t I >
-      [[nodiscard]] int length() const noexcept
+      [[nodiscard]] auto length() const noexcept -> int
       {
          return static_cast< int >( m_v.size() );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }
@@ -413,25 +413,25 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr Oid type() noexcept
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
       {
          return 17;
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr const char* value() const noexcept
+      [[nodiscard]] constexpr auto value() const noexcept -> const char*
       {
          return reinterpret_cast< const char* >( m_v.data() );
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr int length() const noexcept
+      [[nodiscard]] constexpr auto length() const noexcept -> int
       {
          return static_cast< int >( m_v.size() );
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr int format() noexcept
+      [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 1;
       }

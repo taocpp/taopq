@@ -16,23 +16,23 @@
 
 namespace tao::pq::internal
 {
-   [[nodiscard]] constexpr char hton( const char v ) noexcept
+   [[nodiscard]] constexpr auto hton( const char v ) noexcept -> char
    {
       return v;
    }
 
-   [[nodiscard]] constexpr signed char hton( const signed char v ) noexcept
+   [[nodiscard]] constexpr auto hton( const signed char v ) noexcept -> signed char
    {
       return v;
    }
 
-   [[nodiscard]] constexpr unsigned char hton( const unsigned char v ) noexcept
+   [[nodiscard]] constexpr auto hton( const unsigned char v ) noexcept -> unsigned char
    {
       return v;
    }
 
    template< typename U, typename V >
-   [[nodiscard]] V hton_impl( V v ) noexcept
+   [[nodiscard]] auto hton_impl( V v ) noexcept -> V
    {
       static_assert( sizeof( U ) == sizeof( V ) );
       static_assert( std::is_trivial_v< U > );
@@ -45,33 +45,33 @@ namespace tao::pq::internal
       return v;
    }
 
-   [[nodiscard]] inline short hton( const short v ) noexcept
+   [[nodiscard]] inline auto hton( const short v ) noexcept -> short
    {
       return hton_impl< std::uint16_t >( v );
    }
 
-   [[nodiscard]] inline int hton( const int v ) noexcept
+   [[nodiscard]] inline auto hton( const int v ) noexcept -> int
    {
       return hton_impl< std::uint32_t >( v );
    }
 
-   [[nodiscard]] inline long hton( const long v ) noexcept
+   [[nodiscard]] inline auto hton( const long v ) noexcept -> long
    {
       static_assert( ( sizeof( long ) == 4 ) || ( sizeof( long ) == 8 ) );
       return hton_impl< std::conditional_t< sizeof( long ) == 4, std::uint32_t, std::uint64_t > >( v );
    }
 
-   [[nodiscard]] inline long long hton( const long long v ) noexcept
+   [[nodiscard]] inline auto hton( const long long v ) noexcept -> long long
    {
       return hton_impl< std::uint64_t >( v );
    }
 
-   [[nodiscard]] inline float hton( const float v ) noexcept
+   [[nodiscard]] inline auto hton( const float v ) noexcept -> float
    {
       return hton_impl< std::uint32_t >( v );
    }
 
-   [[nodiscard]] inline double hton( const double v ) noexcept
+   [[nodiscard]] inline auto hton( const double v ) noexcept -> double
    {
       return hton_impl< std::uint64_t >( v );
    }

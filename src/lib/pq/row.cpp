@@ -13,7 +13,7 @@ namespace tao::pq
       }
    }
 
-   row row::slice( const std::size_t offset, const std::size_t in_columns ) const
+   auto row::slice( const std::size_t offset, const std::size_t in_columns ) const -> row
    {
       if( in_columns == 0 ) {
          throw std::invalid_argument( "slice requires at least one column" );
@@ -24,12 +24,12 @@ namespace tao::pq
       return row( m_result, m_row, m_offset + offset, in_columns );
    }
 
-   std::string row::name( const std::size_t column ) const
+   auto row::name( const std::size_t column ) const -> std::string
    {
       return m_result.name( m_offset + column );
    }
 
-   std::size_t row::index( const std::string& in_name ) const
+   auto row::index( const std::string& in_name ) const -> std::size_t
    {
       const std::size_t n = m_result.index( in_name );
       if( n >= m_offset ) {
@@ -48,13 +48,13 @@ namespace tao::pq
       throw std::out_of_range( "column not found: " + in_name );
    }
 
-   bool row::is_null( const std::size_t column ) const
+   auto row::is_null( const std::size_t column ) const -> bool
    {
       ensure_column( column );
       return m_result.is_null( m_row, m_offset + column );
    }
 
-   const char* row::get( const std::size_t column ) const
+   auto row::get( const std::size_t column ) const -> const char*
    {
       ensure_column( column );
       return m_result.get( m_row, m_offset + column );

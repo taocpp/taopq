@@ -10,22 +10,22 @@ namespace tao::pq::internal
 {
    // We assume that all Windows systems are little endian.
 
-   [[nodiscard]] inline unsigned short hton( const unsigned short v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned short v ) noexcept -> unsigned short
    {
       return _byteswap_ushort( v );
    }
 
-   [[nodiscard]] inline unsigned int hton( const unsigned int v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned int v ) noexcept -> unsigned int
    {
       return _byteswap_ulong( v );
    }
 
-   [[nodiscard]] inline unsigned long hton( const unsigned long v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned long v ) noexcept -> unsigned long
    {
       return _byteswap_ulong( v );
    }
 
-   [[nodiscard]] inline unsigned long long hton( const unsigned long long v ) noexcept
+   [[nodiscard]] inline auto hton( const unsigned long long v ) noexcept -> unsigned long long
    {
       return _byteswap_uint64( v );
    }
