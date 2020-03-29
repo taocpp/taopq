@@ -10,14 +10,14 @@
 
 namespace tao::pq
 {
-   template< typename T >
-   struct parameter_text_traits
+   template< typename T, typename = void >
+   using parameter_text_traits
       : internal::parameter_traits< internal::parameter_text_traits, T >
    {
       using internal::parameter_traits< internal::parameter_text_traits, T >::parameter_traits;
    };
 
-   template< typename T >
+   template< typename T, typename = void >
    struct parameter_binary_traits
       : internal::parameter_traits< internal::parameter_binary_traits, T >
    {
