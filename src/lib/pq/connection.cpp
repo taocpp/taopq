@@ -78,7 +78,7 @@ namespace tao::pq
          : public transaction_base
       {
       private:
-         [[nodiscard]] static constexpr auto isolation_level_to_statement( const transaction::isolation_level il ) -> const char*
+         [[nodiscard]] static auto isolation_level_to_statement( const transaction::isolation_level il ) -> const char*
          {
             switch( il ) {
                case transaction::isolation_level::default_isolation_level:
