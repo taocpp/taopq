@@ -57,7 +57,11 @@ namespace tao::pq
          -> std::enable_if_t< result_traits_size< T > == 0, T >
       {
          static_assert( !std::is_same< T, T >::value, "tao::pq::result_traits<T>::size yields zero" );
+#ifdef _WIN32
+         __assume(false);
+#else
          __builtin_unreachable();
+#endif
       }
 
       template< typename T >
