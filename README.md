@@ -15,7 +15,7 @@ It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `li
 
 ## Documentation
 
- * [Version 1.x](doc/README.md) (requires C++17)
+ * [Version 1.x](doc/README.md)
 
 ## Introduction
 
