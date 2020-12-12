@@ -58,7 +58,7 @@ namespace tao::pq
       {
          static_assert( !std::is_same< T, T >::value, "tao::pq::result_traits<T>::size yields zero" );
 #ifdef _WIN32
-         __assume(false);
+         __assume( false );
 #else
          __builtin_unreachable();
 #endif

@@ -25,22 +25,24 @@
       std::exit( 1 );                                                   \
    } while( false )
 
-#define TEST_ASSERT_MESSAGE( MeSSaGe, ... )                          \
-   TEST_EXECUTE_MESSAGE( MeSSaGe,                                    \
-                         if( !static_cast< bool >( __VA_ARGS__ ) ) { \
-                            TEST_FAILED;                             \
-                         } )
+#define TEST_ASSERT_MESSAGE( MeSSaGe, ... )       \
+   TEST_EXECUTE_MESSAGE(                          \
+      MeSSaGe,                                    \
+      if( !static_cast< bool >( __VA_ARGS__ ) ) { \
+         TEST_FAILED;                             \
+      } )
 
-#define TEST_THROWS_MESSAGE( MeSSaGe, ... )                                                                          \
-   TEST_EXECUTE_MESSAGE( MeSSaGe,                                                                                    \
-                         try {                                                                                       \
-                            __VA_ARGS__;                                                                             \
-                            TEST_FAILED;                                                                             \
-                         } catch( const std::exception& e ) {                                                        \
-                            std::cout << "TEST caught [ " << e.what() << " ] in [ " FILE_AND_LINE " ]" << std::endl; \
-                         } catch( ... ) {                                                                            \
-                            std::cout << "TEST caught unknown exception in [ " FILE_AND_LINE " ]" << std::endl;      \
-                         } )
+#define TEST_THROWS_MESSAGE( MeSSaGe, ... )                                                       \
+   TEST_EXECUTE_MESSAGE(                                                                          \
+      MeSSaGe,                                                                                    \
+      try {                                                                                       \
+         __VA_ARGS__;                                                                             \
+         TEST_FAILED;                                                                             \
+      } catch( const std::exception& e ) {                                                        \
+         std::cout << "TEST caught [ " << e.what() << " ] in [ " FILE_AND_LINE " ]" << std::endl; \
+      } catch( ... ) {                                                                            \
+         std::cout << "TEST caught unknown exception in [ " FILE_AND_LINE " ]" << std::endl;      \
+      } )
 
 #define TEST_EXECUTE( ... ) TEST_EXECUTE_MESSAGE( "EXECUTE " #__VA_ARGS__, __VA_ARGS__ )
 #define TEST_ASSERT( ... ) TEST_ASSERT_MESSAGE( "ASSERT " #__VA_ARGS__, __VA_ARGS__ )
