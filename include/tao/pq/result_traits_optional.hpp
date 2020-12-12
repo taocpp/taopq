@@ -18,7 +18,14 @@ namespace tao::pq
 
       [[nodiscard]] static auto null() noexcept -> std::optional< T >
       {
+#if defined( __GNUC__ ) && !defined( __clang__ )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
          return {};
+#if defined( __GNUC__ ) && !defined( __clang__ )
+#pragma GCC diagnostic pop
+#endif
       }
 
       [[nodiscard]] static auto from( const char* value ) -> std::optional< T >
