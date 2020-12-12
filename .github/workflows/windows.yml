@@ -61,9 +61,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        visual_studio:
-          - 'Visual Studio 15 2017'
-          - 'Visual Studio 15 2017 Win64'
         build_type: [Debug, Release]
 
     runs-on: windows-2016
@@ -77,7 +74,7 @@ jobs:
     - name: Configure
       shell: bash
       working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "${{ matrix.visual_studio }}"
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 15 2017 Win64"
 
     - name: Build
       working-directory: build/
