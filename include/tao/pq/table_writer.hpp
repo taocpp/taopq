@@ -23,8 +23,10 @@ namespace tao::pq
       table_writer( const table_writer& ) = delete;
       table_writer( table_writer&& ) = delete;
 
-      table_writer& operator=( const table_writer& ) = delete;
-      table_writer& operator=( table_writer&& ) = delete;
+      // clang-format off
+      auto operator=( const table_writer& ) -> table_writer& = delete;
+      auto operator=( table_writer&& ) -> table_writer& = delete;
+      // clang-format on
 
       void insert( const std::string& data );
       auto finish() -> std::size_t;
