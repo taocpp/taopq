@@ -1,10 +1,14 @@
 # Welcome to taoPQ
 
-[![Release](https://img.shields.io/github/release/taocpp/taopq.svg)](https://github.com/taocpp/taopq/releases/latest)
-[![TravisCI](https://travis-ci.org/taocpp/taopq.svg)](https://travis-ci.org/taocpp/taopq)
-[![AppVeyor](https://ci.appveyor.com/api/projects/status/github/taocpp/taopq?svg=true)](https://ci.appveyor.com/project/taocpp/taopq)
-[![Coverage](https://img.shields.io/coveralls/taocpp/taopq.svg)](https://coveralls.io/github/taocpp/taopq)
-[![Language grade: C/C++](https://img.shields.io/lgtm/grade/cpp/g/taocpp/taopq.svg)](https://lgtm.com/projects/g/taocpp/taopq/context:cpp)
+[![Windows CI](https://github.com/taocpp/taopq/workflows/Windows/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3AWindows)
+[![macOS CI](https://github.com/taocpp/taopq/workflows/macOS/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3AmacOS)
+[![Linux CI](https://github.com/taocpp/taopq/workflows/Linux/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3ALinux)
+<br>
+[![clang-analyze](https://github.com/taocpp/taopq/workflows/clang-analyze/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3Aclang-analyze)
+[![clang-tidy](https://github.com/taocpp/taopq/workflows/clang-tidy/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3Aclang-tidy)
+[![Sanitizer](https://github.com/taocpp/taopq/workflows/Sanitizer/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3ASanitizer)
+[![CodeQL](https://github.com/taocpp/taopq/workflows/CodeQL/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3ACodeQL)
+[![Code Coverage](https://codecov.io/gh/taocpp/taopq/branch/master/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/taopq)
 
 taoPQ is a light-weight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
 It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `libpq` client library.
@@ -66,24 +70,6 @@ int main()
   const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
 }
 ```
-
-## Status
-
-The library was successfully tested with
-
-- GCC 7+
-- Clang 5+
-- Visual Studio 2017 (v15.9)
-
-Older versions of Visual Studio might work, 15.4 is known *not* to work. Let us know if you try any version between 15.4 and 15.9 and whether it works or not.
-
-## Package Managers
-
-You can download and install taopq using the [Conan](https://github.com/conan-io/conan) package manager:
-
-    conan install taocpp-taopq/20200215@
-
-The taopq package in conan is kept up to date by Conan team members and community contributors. If the version is out-of-date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the Conan Center Index repository.
 
 ## Contact
 
