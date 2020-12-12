@@ -12,9 +12,6 @@ jobs:
 
     runs-on: macos-latest
 
-    env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
-
     steps:
     - uses: actions/checkout@v2
 
@@ -33,6 +30,6 @@ jobs:
       working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
 
-    - name: Test
-      working-directory: build/
-      run: ctest --config ${{ matrix.build_type }} --output-on-failure
+#    - name: Test
+#      working-directory: build/
+#      run: ctest --config ${{ matrix.build_type }} --output-on-failure
