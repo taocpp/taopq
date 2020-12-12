@@ -33,6 +33,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install libpq-dev
+      run: sudo apt-get update && sudo apt-get install -yq libpq-dev
+
     - name: Create Build Environment
       run: cmake -E make_directory build
 
@@ -64,6 +67,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Install libpq-dev
+      run: sudo apt-get update && sudo apt-get install -yq libpq-dev
 
     - name: Create Build Environment
       run: cmake -E make_directory build
