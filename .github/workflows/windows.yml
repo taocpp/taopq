@@ -11,25 +11,6 @@ jobs:
 
     runs-on: windows-latest
 
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
-
     steps:
     - uses: actions/checkout@v2
 
@@ -45,9 +26,9 @@ jobs:
       working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
 
-    - name: Test
-      working-directory: build/
-      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+#    - name: Test
+#      working-directory: build/
+#      run: ctest -C ${{ matrix.build_type }} --output-on-failure
 
   vs2019-clang:
     strategy:
@@ -56,25 +37,6 @@ jobs:
         build_type: [Debug, Release]
 
     runs-on: windows-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v2
@@ -91,9 +53,9 @@ jobs:
       working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
 
-    - name: Test
-      working-directory: build/
-      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+#    - name: Test
+#      working-directory: build/
+#      run: ctest -C ${{ matrix.build_type }} --output-on-failure
 
   vs2017:
     strategy:
@@ -105,25 +67,6 @@ jobs:
         build_type: [Debug, Release]
 
     runs-on: windows-2016
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v2
@@ -140,6 +83,6 @@ jobs:
       working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
 
-    - name: Test
-      working-directory: build/
-      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+#    - name: Test
+#      working-directory: build/
+#      run: ctest -C ${{ matrix.build_type }} --output-on-failure
