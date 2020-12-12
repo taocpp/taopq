@@ -9,8 +9,11 @@
 
 void run()
 {
+   // overwrite the default with an environment variable if needed
+   const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );
+
    // open a connection
-   const auto conn = tao::pq::connection::create( "dbname=template1" );
+   const auto conn = tao::pq::connection::create( connection_string );
 
    // execute statements directly
    conn->execute( "DROP TABLE IF EXISTS tao_example" );
