@@ -29,7 +29,7 @@ jobs:
           --health-retries 5
 
     env:
-      TAOPQ_TEST_DATABASE: dbname=postgres user=postgres password=postgres
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     container:
       image: conanio/${{ matrix.image }}
