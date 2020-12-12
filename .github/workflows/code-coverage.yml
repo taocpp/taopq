@@ -13,7 +13,7 @@ jobs:
       run: cmake -E make_directory build
 
     - name: Install libpq-dev
-      run: sudo apt-get update && sudo apt-get install -yq libpq-dev
+      run: sudo apt-get update && sudo apt-get install -yq libpq-dev postgresql-server-dev-all
 
     - name: Configure
       working-directory: build/
