@@ -19,20 +19,20 @@ void reject( const char* input, const int base = 10 )
 {
    try {
       (void)tao::pq::internal::strtol( input, base );
-      throw std::runtime_error( tao::pq::internal::printf( "strtol(): %s (%d)", input, base ) );
+      throw std::runtime_error( tao::pq::internal::printf( "strtol(): %s (%d)", input, base ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtol() failed for input: " + std::string( input ) ) {
-         throw;
+         throw;  // LCOV_EXCL_LINE
       }
    }
    try {
       (void)tao::pq::internal::strtoll( input, base );
-      throw std::runtime_error( tao::pq::internal::printf( "strtoll(): %s (%d)", input, base ) );
+      throw std::runtime_error( tao::pq::internal::printf( "strtoll(): %s (%d)", input, base ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtoll() failed for input: " + std::string( input ) ) {
-         throw;
+         throw;  // LCOV_EXCL_LINE
       }
    }
 }
@@ -42,20 +42,20 @@ void reject_unsigned( const char* input, const int base = 10 )
 {
    try {
       (void)tao::pq::internal::strtoul( input, base );
-      throw std::runtime_error( tao::pq::internal::printf( "strtoul(): %s (%d)", input, base ) );
+      throw std::runtime_error( tao::pq::internal::printf( "strtoul(): %s (%d)", input, base ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtoul() failed for input: " + std::string( input ) ) {
-         throw;
+         throw;  // LCOV_EXCL_LINE
       }
    }
    try {
       (void)tao::pq::internal::strtoull( input, base );
-      throw std::runtime_error( tao::pq::internal::printf( "strtoull(): %s (%d)", input, base ) );
+      throw std::runtime_error( tao::pq::internal::printf( "strtoull(): %s (%d)", input, base ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtoull() failed for input: " + std::string( input ) ) {
-         throw;
+         throw;  // LCOV_EXCL_LINE
       }
    }
 }
@@ -65,29 +65,29 @@ void reject_floating_point( const char* input )
 {
    try {
       (void)tao::pq::internal::strtof( input );
-      throw std::runtime_error( tao::pq::internal::printf( "strtof(): %s", input ) );
+      throw std::runtime_error( tao::pq::internal::printf( "strtof(): %s", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtof() failed for input: " + std::string( input ) ) {
-         throw;
+         throw;  // LCOV_EXCL_LINE
       }
    }
    try {
       (void)tao::pq::internal::strtod( input );
-      throw std::runtime_error( tao::pq::internal::printf( "strtod(): %s", input ) );
+      throw std::runtime_error( tao::pq::internal::printf( "strtod(): %s", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtod() failed for input: " + std::string( input ) ) {
-         throw;
+         throw;  // LCOV_EXCL_LINE
       }
    }
    try {
       (void)tao::pq::internal::strtold( input );
-      throw std::runtime_error( tao::pq::internal::printf( "strtold(): %s", input ) );
+      throw std::runtime_error( tao::pq::internal::printf( "strtold(): %s", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtold() failed for input: " + std::string( input ) ) {
-         throw;
+         throw;  // LCOV_EXCL_LINE
       }
    }
 }
@@ -306,6 +306,7 @@ auto main() -> int  // NOLINT(bugprone-exception-escape)
    try {
       run();
    }
+   // LCOV_EXCL_START
    catch( const std::exception& e ) {
       std::cerr << "exception: " << e.what() << std::endl;
       throw;
@@ -314,6 +315,7 @@ auto main() -> int  // NOLINT(bugprone-exception-escape)
       std::cerr << "unknown exception" << std::endl;
       throw;
    }
+   // LCOV_EXCL_END
 }
 
 #endif

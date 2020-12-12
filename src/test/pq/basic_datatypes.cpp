@@ -28,7 +28,7 @@ namespace tao::pq
          : m_size( 0 ), m_data( PQunescapeBytea( (unsigned char*)value, &m_size ) )  //NOLINT
       {
          if( m_data == nullptr ) {
-            throw std::bad_alloc();
+            throw std::bad_alloc();  // LCOV_EXCL_LINE
          }
       }
 
@@ -105,8 +105,10 @@ void check( const std::string& datatype, const T& value )
    const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
    if( value == value ) {  // NOLINT(misc-redundant-expression)
       if( result[ 0 ][ 0 ].as< T >() != value ) {
+         // LCOV_EXCL_START
          std::cout << "check: " << datatype << " value: " << value << " result: " << result.get( 0, 0 ) << " FAILED!" << std::endl;
          TEST_ASSERT( false );
+         // LCOV_EXCL_END
       }
    }
    else {
@@ -558,6 +560,7 @@ auto main() -> int
    try {
       run();
    }
+   // LCOV_EXCL_START
    catch( const std::exception& e ) {
       std::cerr << "exception: " << e.what() << std::endl;
       throw;
@@ -566,4 +569,5 @@ auto main() -> int
       std::cerr << "unknown exception" << std::endl;
       throw;
    }
+   // LCOV_EXCL_START
 }

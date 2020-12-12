@@ -92,6 +92,7 @@ auto main() -> int  //NOLINT(bugprone-exception-escape)
    try {
       run();
    }
+   // LCOV_EXCL_START
    catch( const std::exception& e ) {
       std::cerr << "exception: " << e.what() << std::endl;
       throw;
@@ -100,4 +101,5 @@ auto main() -> int  //NOLINT(bugprone-exception-escape)
       std::cerr << "unknown exception" << std::endl;
       throw;
    }
+   // LCOV_EXCL_END
 }

@@ -218,7 +218,7 @@ namespace tao::pq::internal
          : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )  // NOLINT
       {
          if( m_data == nullptr ) {
-            throw std::bad_alloc();
+            throw std::bad_alloc();  // LCOV_EXCL_LINE
          }
       }
 
