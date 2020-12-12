@@ -13,7 +13,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Install clang-tidy-10
-      run: sudo apt-get update && sudo apt-get install -yq clang-tidy-10
+      run: sudo apt-get update && sudo apt-get install -yq clang-tidy-10 libpq-dev postgresql-server-dev-all
 
     - name: Check Headers
       run: find include/ -name '*.hpp' | grep -vF endian_win.hpp | xargs -I '{}' clang-tidy-10 --quiet '{}' -- --std=c++17 -Iinclude
