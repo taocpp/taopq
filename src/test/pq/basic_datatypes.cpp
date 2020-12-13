@@ -13,7 +13,7 @@
 
 #include <tao/pq/connection.hpp>
 
-std::shared_ptr< tao::pq::connection > connection;
+std::shared_ptr< tao::pq::connection > my_connection;
 
 namespace tao::pq
 {
@@ -74,8 +74,8 @@ auto prepare_datatype( const std::string& datatype ) -> bool
       return false;
    }
    last = datatype;
-   connection->execute( "DROP TABLE IF EXISTS tao_basic_datatypes_test" );
-   connection->execute( "CREATE TABLE tao_basic_datatypes_test ( a " + datatype + " )" );
+   my_connection->execute( "DROP TABLE IF EXISTS tao_basic_datatypes_test" );
+   my_connection->execute( "CREATE TABLE tao_basic_datatypes_test ( a " + datatype + " )" );
    return true;
 }
 
@@ -83,12 +83,12 @@ void check_null( const std::string& datatype )
 {
    std::cout << "check null: " << datatype << std::endl;
    if( prepare_datatype( datatype ) ) {
-      TEST_ASSERT( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", tao::pq::null ).rows_affected() == 1 );
+      TEST_ASSERT( my_connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", tao::pq::null ).rows_affected() == 1 );
    }
    else {
-      TEST_ASSERT( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", tao::pq::null ).rows_affected() == 1 );
+      TEST_ASSERT( my_connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", tao::pq::null ).rows_affected() == 1 );
    }
-   const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
+   const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
    TEST_ASSERT( result[ 0 ][ 0 ].is_null() );
 }
 
@@ -97,12 +97,12 @@ void check( const std::string& datatype, const T& value )
 {
    std::cout << "check: " << datatype << " value: " << value << std::endl;
    if( prepare_datatype( datatype ) ) {
-      TEST_ASSERT( connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", value ).rows_affected() == 1 );
+      TEST_ASSERT( my_connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", value ).rows_affected() == 1 );
    }
    else {
-      TEST_ASSERT( connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", value ).rows_affected() == 1 );
+      TEST_ASSERT( my_connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", value ).rows_affected() == 1 );
    }
-   const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
+   const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
    if( value == value ) {  // NOLINT(misc-redundant-expression)
       if( result[ 0 ][ 0 ].as< T >() != value ) {
          // LCOV_EXCL_START
@@ -147,9 +147,9 @@ auto check( const std::string& datatype )
 template< template< typename... > class Traits, typename T >
 void check_bytea( T&& t )
 {
-   TEST_ASSERT( connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::pq::span( std::forward< T >( t ) ) ).rows_affected() == 1 );
+   TEST_ASSERT( my_connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::pq::span( std::forward< T >( t ) ) ).rows_affected() == 1 );
 
-   const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+   const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
    TEST_ASSERT( result.size() == 7 );
    TEST_ASSERT( result[ 0 ] == static_cast< unsigned char >( t[ 0 ] ) );
    TEST_ASSERT( result[ 1 ] == static_cast< unsigned char >( t[ 1 ] ) );
@@ -169,7 +169,7 @@ void check_bytea( T&& t )
 
 void run()
 {
-   connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
+   my_connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
 
    check_null( "BOOLEAN" );
    check< bool >( "BOOLEAN", true );
@@ -204,7 +204,7 @@ void run()
    check< unsigned long long >( "NUMERIC" );
 
    // this allows precise floating point values
-   connection->execute( "SET extra_float_digits=3" );
+   my_connection->execute( "SET extra_float_digits=3" );
 
    check_null( "REAL" );
    check< float >( "REAL", std::numeric_limits< float >::lowest() );

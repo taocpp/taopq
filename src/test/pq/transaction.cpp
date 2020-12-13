@@ -6,7 +6,8 @@
 
 #include <tao/pq/connection.hpp>
 
-void check_nested( const std::shared_ptr< tao::pq::connection >& connection, const std::shared_ptr< tao::pq::transaction >& tr )
+template< typename Connection, typename Transaction >
+void check_nested( const std::shared_ptr< Connection >& connection, const std::shared_ptr< Transaction >& tr )
 {
    TEST_THROWS( connection->direct() );
    TEST_THROWS( connection->transaction() );
