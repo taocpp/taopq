@@ -147,7 +147,7 @@ auto check( const std::string& datatype )
 template< template< typename... > class Traits, typename T >
 void check_bytea( T&& t )
 {
-   TEST_ASSERT( connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::span( std::forward< T >( t ) ) ).rows_affected() == 1 );
+   TEST_ASSERT( connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::pq::span( std::forward< T >( t ) ) ).rows_affected() == 1 );
 
    const auto result = connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
    TEST_ASSERT( result.size() == 7 );
@@ -442,7 +442,7 @@ void run()
    check< std::string >( "TEXT", "äöüÄÖÜß€𝄞" );
    check< std::string >( "TEXT", "ä\tö\nü\1Ä\"Ö;Ü'ß#€𝄞" );
 
-   // use std::span / tao::span to pass binary data as parameters (works for char, signed char, unsigned char, and std::byte)
+   // use std::span / tao::pq::span to pass binary data as parameters (works for char, signed char, unsigned char, and std::byte)
 
 #if defined( __clang__ ) && ( __clang_major__ <= 5 )
 #pragma clang diagnostic push

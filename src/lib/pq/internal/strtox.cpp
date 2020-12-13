@@ -18,26 +18,23 @@ namespace tao::pq::internal
    namespace
    {
       template< typename >
-      struct message
-      {
-         static const std::string value;
-      };
+      inline constexpr const char* message = nullptr;
 
       // clang-format off
-      template<> const std::string message< long >::value = "tao::pq::internal::strtol() failed for input: ";
-      template<> const std::string message< unsigned long >::value = "tao::pq::internal::strtoul() failed for input: ";
-      template<> const std::string message< long long >::value = "tao::pq::internal::strtoll() failed for input: ";
-      template<> const std::string message< unsigned long long >::value = "tao::pq::internal::strtoull() failed for input: ";
+      template<> inline constexpr auto message< long > = "tao::pq::internal::strtol() failed for input: ";
+      template<> inline constexpr auto message< unsigned long > = "tao::pq::internal::strtoul() failed for input: ";
+      template<> inline constexpr auto message< long long > = "tao::pq::internal::strtoll() failed for input: ";
+      template<> inline constexpr auto message< unsigned long long > = "tao::pq::internal::strtoull() failed for input: ";
 
-      template<> const std::string message< float >::value = "tao::pq::internal::strtof() failed for input: ";
-      template<> const std::string message< double >::value = "tao::pq::internal::strtod() failed for input: ";
-      template<> const std::string message< long double >::value = "tao::pq::internal::strtold() failed for input: ";
+      template<> inline constexpr auto message< float > = "tao::pq::internal::strtof() failed for input: ";
+      template<> inline constexpr auto message< double > = "tao::pq::internal::strtod() failed for input: ";
+      template<> inline constexpr auto message< long double > = "tao::pq::internal::strtold() failed for input: ";
       // clang-format on
 
       template< typename T >
       [[nodiscard]] auto failure_message( const char* input ) -> std::string
       {
-         return message< T >::value + input;
+         return std::string( message< T > ) + input;
       }
 
       template< typename T >
@@ -103,7 +100,7 @@ namespace tao::pq::internal
                if( *end == '\0' ) {
                   return result;
                }
-               // fall through
+               [[fallthrough]];
 
             case EINVAL:
             case EDOM:  // used by MinGW
@@ -151,37 +148,37 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   auto strtol( const char* input, const int base ) -> long
+   [[nodiscard]] auto strtol( const char* input, const int base ) -> long
    {
       return str_to_integral< long >( input, base );
    }
 
-   auto strtoul( const char* input, const int base ) -> unsigned long
+   [[nodiscard]] auto strtoul( const char* input, const int base ) -> unsigned long
    {
       return str_to_integral< unsigned long >( input, base );
    }
 
-   auto strtoll( const char* input, const int base ) -> long long
+   [[nodiscard]] auto strtoll( const char* input, const int base ) -> long long
    {
       return str_to_integral< long long >( input, base );
    }
 
-   auto strtoull( const char* input, const int base ) -> unsigned long long
+   [[nodiscard]] auto strtoull( const char* input, const int base ) -> unsigned long long
    {
       return str_to_integral< unsigned long long >( input, base );
    }
 
-   auto strtof( const char* input ) -> float
+   [[nodiscard]] auto strtof( const char* input ) -> float
    {
       return str_to_floating_point< float >( input );
    }
 
-   auto strtod( const char* input ) -> double
+   [[nodiscard]] auto strtod( const char* input ) -> double
    {
       return str_to_floating_point< double >( input );
    }
 
-   auto strtold( const char* input ) -> long double
+   [[nodiscard]] auto strtold( const char* input ) -> long double
    {
       return str_to_floating_point< long double >( input );
    }

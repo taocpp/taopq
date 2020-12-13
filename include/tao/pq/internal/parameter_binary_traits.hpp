@@ -13,6 +13,7 @@
 
 #include <libpq-fe.h>
 
+#include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/endian.hpp>
 #include <tao/pq/internal/is_bytea_parameter.hpp>
 #include <tao/pq/span.hpp>
@@ -24,7 +25,7 @@ namespace tao::pq::internal
    {
       static constexpr std::size_t columns = 1;
 
-      static_assert( sizeof( T ) == 0, "data type T not registered as taopq parameter" );
+      static_assert( dependent_false< T >, "data type T not registered as taopq parameter" );
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> Oid
@@ -400,13 +401,13 @@ namespace tao::pq::internal
    };
 
    template< typename ElementType, std::size_t Extent >
-   struct parameter_binary_traits< tao::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType >::value > >
+   struct parameter_binary_traits< tao::pq::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType > > >
    {
    private:
-      const tao::span< const ElementType, Extent > m_v;
+      const tao::pq::span< const ElementType, Extent > m_v;
 
    public:
-      explicit parameter_binary_traits( const tao::span< const ElementType, Extent > v ) noexcept
+      explicit parameter_binary_traits( const tao::pq::span< const ElementType, Extent > v ) noexcept
          : m_v( v )
       {}
 

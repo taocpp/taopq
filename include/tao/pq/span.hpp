@@ -16,7 +16,7 @@
 
 #include <span>
 
-namespace tao
+namespace tao::pq
 {
    using std::dynamic_extent;
    using std::span;
@@ -24,7 +24,7 @@ namespace tao
    using std::as_bytes;
    using std::as_writable_bytes;
 
-}  // namespace tao
+}  // namespace tao::pq
 
 #else
 
@@ -36,7 +36,7 @@ namespace tao
 #include <tuple>
 #include <type_traits>
 
-namespace tao
+namespace tao::pq
 {
    inline constexpr std::size_t dynamic_extent = std::numeric_limits< std::size_t >::max();
 
@@ -116,19 +116,19 @@ namespace tao
          : m_data( arr )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::pq::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::internal::is_span_compatible_ptr< const OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< ( N == Extent ) && tao::pq::internal::is_span_compatible_ptr< const OtherElementType, ElementType > > >
       constexpr span( const std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) )
       {}
 
       constexpr span( const span& ) = default;
 
-      template< typename OtherElementType, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
+      template< typename OtherElementType, typename = std::enable_if_t< tao::pq::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( const span< OtherElementType, Extent >& s ) noexcept
          : m_data( s.data() )
       {}
@@ -282,29 +282,29 @@ namespace tao
          : m_data( arr ), m_size( N )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::pq::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) ), m_size( N )
       {}
 
-      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< const OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t N, typename = std::enable_if_t< tao::pq::internal::is_span_compatible_ptr< const OtherElementType, ElementType > > >
       constexpr span( const std::array< OtherElementType, N >& arr ) noexcept
          : m_data( static_cast< pointer >( arr.data() ) ), m_size( N )
       {}
 
-      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container< Container, ElementType > > >
+      template< typename Container, typename = std::enable_if_t< tao::pq::internal::is_span_compatible_container< Container, ElementType > > >
       constexpr span( Container& cont )
          : m_data( static_cast< pointer >( std::data( cont ) ) ), m_size( std::size( cont ) )
       {}
 
-      template< typename Container, typename = std::enable_if_t< tao::internal::is_span_compatible_container< const Container, ElementType > > >
+      template< typename Container, typename = std::enable_if_t< tao::pq::internal::is_span_compatible_container< const Container, ElementType > > >
       constexpr span( const Container& cont )
          : m_data( static_cast< pointer >( std::data( cont ) ) ), m_size( std::size( cont ) )
       {}
 
       constexpr span( const span& ) = default;
 
-      template< typename OtherElementType, std::size_t OtherExtent, typename = std::enable_if_t< tao::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
+      template< typename OtherElementType, std::size_t OtherExtent, typename = std::enable_if_t< tao::pq::internal::is_span_compatible_ptr< OtherElementType, ElementType > > >
       constexpr span( const span< OtherElementType, OtherExtent >& s ) noexcept
          : m_data( s.data() ), m_size( s.size() )
       {}
@@ -453,7 +453,7 @@ namespace tao
    template< typename Container >
    span( const Container& ) -> span< const typename Container::value_type >;
 
-}  // namespace tao
+}  // namespace tao::pq
 
 namespace std
 {
@@ -463,17 +463,17 @@ namespace std
 #endif
 
    template< typename ElementType, size_t Extent >
-   struct tuple_size< tao::span< ElementType, Extent > >
+   struct tuple_size< tao::pq::span< ElementType, Extent > >
       : integral_constant< size_t, Extent >
    {};
 
    template< typename ElementType >
-   struct tuple_size< tao::span< ElementType, tao::dynamic_extent > >;  // not defined
+   struct tuple_size< tao::pq::span< ElementType, tao::pq::dynamic_extent > >;  // not defined
 
    template< size_t I, typename ElementType, size_t Extent >
-   struct tuple_element< I, tao::span< ElementType, Extent > >
+   struct tuple_element< I, tao::pq::span< ElementType, Extent > >
    {
-      static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
+      static_assert( ( Extent != tao::pq::dynamic_extent ) && ( I < Extent ) );
       using type = ElementType;
    };
 
@@ -483,9 +483,9 @@ namespace std
 
    // TODO: this is probably illegal. keep it?
    template< size_t I, typename ElementType, size_t Extent >
-   constexpr auto get( tao::span< ElementType, Extent > s ) noexcept -> ElementType&
+   constexpr auto get( tao::pq::span< ElementType, Extent > s ) noexcept -> ElementType&
    {
-      static_assert( ( Extent != tao::dynamic_extent ) && ( I < Extent ) );
+      static_assert( ( Extent != tao::pq::dynamic_extent ) && ( I < Extent ) );
       return s[ I ];
    }
 

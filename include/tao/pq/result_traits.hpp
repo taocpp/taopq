@@ -9,6 +9,8 @@
 #include <type_traits>
 #include <utility>
 
+#include <tao/pq/internal/dependent_false.hpp>
+
 namespace tao::pq
 {
    class row;
@@ -16,15 +18,15 @@ namespace tao::pq
    template< typename T, typename = void >
    struct result_traits
    {
-      static_assert( !std::is_same< T, T >::value, "tao::pq::result_traits<T> not specialized for T" );
+      static_assert( internal::dependent_false< T >, "tao::pq::result_traits<T> not specialized for T" );
       static auto from( const char* value ) noexcept -> T;
    };
 
-   template< typename T, typename = void >
+   template< typename T, typename = const std::size_t >
    inline constexpr std::size_t result_traits_size = 1;
 
    template< typename T >
-   inline constexpr std::size_t result_traits_size< T, std::enable_if_t< std::is_same_v< decltype( result_traits< T >::size ), const std::size_t > > > = result_traits< T >::size;
+   inline constexpr std::size_t result_traits_size< T, decltype( result_traits< T >::size ) > = result_traits< T >::size;
 
    template< typename T, typename = void >
    inline constexpr bool result_traits_has_null = false;

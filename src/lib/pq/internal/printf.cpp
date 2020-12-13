@@ -5,6 +5,7 @@
 #include <cstdarg>
 
 #include <tao/pq/internal/printf.hpp>
+#include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq::internal
 {
@@ -60,7 +61,7 @@ namespace tao::pq::internal
       const int result = vnprintf( s, initial_size, format, ap2 );
       if( result >= initial_size ) {
          if( vnprintf( s, result + 1, format, ap ) >= result + 1 ) {
-            assert( !"code should be unreachable" );  // LCOV_EXCL_LINE
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
       }
       return s;

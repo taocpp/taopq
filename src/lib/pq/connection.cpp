@@ -10,6 +10,7 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/connection.hpp>
+#include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq
 {
@@ -92,8 +93,7 @@ namespace tao::pq
                case transaction::isolation_level::read_uncommitted:
                   return "START TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
             }
-            assert( !"code should be unreachable" );                   // LCOV_EXCL_LINE
-            throw std::runtime_error( "code should be unreachable" );  // LCOV_EXCL_LINE
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
 
       public:

@@ -29,23 +29,24 @@ endif
 # Ensure strict standard compliance and no warnings, can be
 # changed if desired.
 
+BUILDDIR ?= build
+
 INCFLAGS ?= -Iinclude $(patsubst %,-I%,$(shell pg_config --includedir))
 CPPFLAGS ?= -pedantic
 CXXFLAGS ?= -Wall -Wextra -Wshadow -Werror -O3 $(MINGW_CXXFLAGS)
 LDFLAGS ?= -rdynamic $(patsubst %,-L%,$(shell pg_config --libdir))
 LIBS ?= -lpq
 
-BUILDDIR ?= build
+CLANG_TIDY ?= clang-tidy
 
-HEADERS := $(shell find include -name '*.hpp') $(filter-out src/test/macros.hpp,$(shell find src -name '*.hpp'))
+HEADERS := $(shell find include -name '*.hpp')
 SOURCES := $(shell find src -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=$(BUILDDIR)/%.d)
 BINARIES := $(SOURCES:%.cpp=$(BUILDDIR)/%)
 
-UNIT_TESTS := $(filter $(BUILDDIR)/src/test/%,$(BINARIES))
-
-CLANG_TIDY ?= clang-tidy
 CLANG_TIDY_HEADERS := $(filter-out include/tao/pq/internal/endian_win.hpp,$(HEADERS))
+
+UNIT_TESTS := $(filter $(BUILDDIR)/src/test/%,$(BINARIES))
 
 LIBSOURCES := $(filter src/lib/%,$(SOURCES))
 LIBNAME := taopq
@@ -57,12 +58,21 @@ all: check
 compile: $(UNIT_TESTS)
 
 .PHONY: check
-check: compile
+check: $(UNIT_TESTS)
 	@set -e; for T in $(UNIT_TESTS); do echo $$T; $$T; done
+
+$(BUILDDIR)/%.clang-tidy: % .clang-tidy
+	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) $(INCFLAGS) $(CPPFLAGS) $(CXXFLAGS) 2>/dev/null
+	@mkdir -p $(@D)
+	@touch $@
+
+.PHONY: clang-tidy
+clang-tidy: $(CLANG_TIDY_HEADERS:%=$(BUILDDIR)/%.clang-tidy) $(SOURCES:%=$(BUILDDIR)/%.clang-tidy)
+	@echo "All $(words $(CLANG_TIDY_HEADERS) $(SOURCES)) clang-tidy tests passed."
 
 .PHONY: clean
 clean:
-	@rm -rf $(BUILDDIR)
+	@rm -rf $(BUILDDIR)/*
 	@find . -name '*~' -delete
 
 $(BUILDDIR)/%.d: %.cpp Makefile
@@ -82,15 +92,6 @@ lib: $(BUILDDIR)/lib/lib$(LIBNAME).a
 $(BUILDDIR)/%: $(BUILDDIR)/%.o $(BUILDDIR)/lib/lib$(LIBNAME).a
 	@mkdir -p $(@D)
 	$(CXX) $(CXXSTD) $(CPPFLAGS) $(CXXFLAGS) $(LDFLAGS) $^ $(LIBS) -o $@
-
-build/%.clang-tidy: % .clang-tidy
-	$(CLANG_TIDY) -quiet $< -- $(CXXSTD) $(INCFLAGS) $(CPPFLAGS) $(CXXFLAGS) 2>/dev/null
-	@mkdir -p $(@D)
-	@touch $@
-
-.PHONY: clang-tidy
-clang-tidy: $(CLANG_TIDY_HEADERS:%=build/%.clang-tidy) $(SOURCES:%=build/%.clang-tidy)
-	@echo "All $(words $(CLANG_TIDY_HEADERS) $(SOURCES)) clang-tidy tests passed."
 
 ifeq ($(findstring $(MAKECMDGOALS),clean),)
 -include $(DEPENDS)

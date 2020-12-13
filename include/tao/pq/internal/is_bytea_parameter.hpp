@@ -10,13 +10,13 @@
 namespace tao::pq::internal
 {
    // clang-format off
-   template< typename > struct is_bytea_parameter : std::false_type {};
-   template< typename T > struct is_bytea_parameter< const T > : is_bytea_parameter< T > {};
+   template< typename > inline constexpr bool is_bytea_parameter = false;
+   template< typename T > inline constexpr bool is_bytea_parameter< const T > = is_bytea_parameter< T >;
 
-   template<> struct is_bytea_parameter< char > : std::true_type {};
-   template<> struct is_bytea_parameter< signed char > : std::true_type {};
-   template<> struct is_bytea_parameter< unsigned char > : std::true_type {};
-   template<> struct is_bytea_parameter< std::byte > : std::true_type {};
+   template<> inline constexpr bool is_bytea_parameter< char > = true;
+   template<> inline constexpr bool is_bytea_parameter< signed char > = true;
+   template<> inline constexpr bool is_bytea_parameter< unsigned char > = true;
+   template<> inline constexpr bool is_bytea_parameter< std::byte > = true;
    // clang-format on
 
 }  // namespace tao::pq::internal

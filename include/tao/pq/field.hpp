@@ -4,11 +4,13 @@
 #ifndef TAO_PQ_FIELD_HPP
 #define TAO_PQ_FIELD_HPP
 
-#include <tao/pq/null.hpp>
-#include <tao/pq/result_traits.hpp>
-
 #include <optional>
 #include <type_traits>
+
+#include <tao/pq/internal/dependent_false.hpp>
+#include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/null.hpp>
+#include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
 {
@@ -37,12 +39,8 @@ namespace tao::pq
       [[nodiscard]] auto as() const noexcept
          -> std::enable_if_t< result_traits_size< T > != 1, T >
       {
-         static_assert( !std::is_same_v< T, T >, "tao::pq::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
-#ifdef _WIN32
-         __assume( false );
-#else
-         __builtin_unreachable();
-#endif
+         static_assert( internal::dependent_false< T >, "tao::pq::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
+         TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
       }
 
       template< typename T >

@@ -8,8 +8,9 @@
 #include <cstddef>
 #include <stdexcept>
 #include <string>
-#include <utility>
+#include <type_traits>
 
+#include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/is_bytea_parameter.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/printf.hpp>
@@ -34,7 +35,7 @@ namespace tao::pq::internal
    template< typename T, typename = void >
    struct parameter_text_traits
    {
-      static_assert( sizeof( T ) == 0, "data type T not registered as taopq parameter" );
+      static_assert( dependent_false< T >, "data type T not registered as taopq parameter" );
 
       static constexpr std::size_t columns = 1;
 
@@ -208,13 +209,13 @@ namespace tao::pq::internal
    };
 
    template< typename ElementType, std::size_t Extent >
-   struct parameter_text_traits< tao::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType >::value > >  // NOLINT(cppcoreguidelines-special-member-functions)
+   struct parameter_text_traits< tao::pq::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType > > >  // NOLINT(cppcoreguidelines-special-member-functions)
    {
    private:
       unsigned char* m_data;
 
    public:
-      explicit parameter_text_traits( PGconn* c, const tao::span< const ElementType, Extent > v, std::size_t dummy = 0 )
+      explicit parameter_text_traits( PGconn* c, const tao::pq::span< const ElementType, Extent > v, std::size_t dummy = 0 )
          : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )  // NOLINT
       {
          if( m_data == nullptr ) {
