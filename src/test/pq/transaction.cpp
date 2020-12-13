@@ -100,10 +100,10 @@ void run()
    TEST_EXECUTE( connection->transaction()->subtransaction()->subtransaction()->commit() );
    TEST_EXECUTE( connection->transaction()->subtransaction()->subtransaction()->rollback() );
 
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::transaction::isolation_level::serializable ) );
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::transaction::isolation_level::repeatable_read ) );
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::transaction::isolation_level::read_committed ) );
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::transaction::isolation_level::read_uncommitted ) );
+   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::serializable ) );
+   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::repeatable_read ) );
+   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::read_committed ) );
+   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::read_uncommitted ) );
 
    TEST_EXECUTE( check_nested( connection, connection->direct() ) );
    TEST_EXECUTE( check_nested( connection, connection->transaction() ) );

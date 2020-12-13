@@ -79,25 +79,25 @@ namespace tao::pq
          : public transaction_base
       {
       private:
-         [[nodiscard]] static auto isolation_level_to_statement( const transaction::isolation_level il ) -> const char*
+         [[nodiscard]] static auto isolation_level_to_statement( const isolation_level il ) -> const char*
          {
             switch( il ) {
-               case transaction::isolation_level::default_isolation_level:
+               case isolation_level::default_isolation_level:
                   return "START TRANSACTION";
-               case transaction::isolation_level::serializable:
+               case isolation_level::serializable:
                   return "START TRANSACTION ISOLATION LEVEL SERIALIZABLE";
-               case transaction::isolation_level::repeatable_read:
+               case isolation_level::repeatable_read:
                   return "START TRANSACTION ISOLATION LEVEL REPEATABLE READ";
-               case transaction::isolation_level::read_committed:
+               case isolation_level::read_committed:
                   return "START TRANSACTION ISOLATION LEVEL READ COMMITTED";
-               case transaction::isolation_level::read_uncommitted:
+               case isolation_level::read_uncommitted:
                   return "START TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
             }
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
 
       public:
-         explicit top_level_transaction( const transaction::isolation_level il, const std::shared_ptr< pq::connection >& connection )
+         explicit top_level_transaction( const isolation_level il, const std::shared_ptr< pq::connection >& connection )
             : transaction_base( connection )
          {
             execute( isolation_level_to_statement( il ) );
@@ -234,7 +234,7 @@ namespace tao::pq
       return std::make_shared< autocommit_transaction >( shared_from_this() );
    }
 
-   auto connection::transaction( const transaction::isolation_level il ) -> std::shared_ptr< pq::transaction >
+   auto connection::transaction( const isolation_level il ) -> std::shared_ptr< pq::transaction >
    {
       return std::make_shared< top_level_transaction >( il, shared_from_this() );
    }

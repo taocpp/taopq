@@ -11,6 +11,7 @@
 
 #include <libpq-fe.h>
 
+#include <tao/pq/isolation_level.hpp>
 #include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
 
@@ -79,7 +80,7 @@ namespace tao::pq
       void deallocate( const std::string& name );
 
       [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
-      [[nodiscard]] auto transaction( const transaction::isolation_level il = transaction::isolation_level::default_isolation_level ) -> std::shared_ptr< pq::transaction >;
+      [[nodiscard]] auto transaction( const isolation_level il = isolation_level::default_isolation_level ) -> std::shared_ptr< pq::transaction >;
 
       template< template< typename... > class Traits = parameter_text_traits, typename... Ts >
       auto execute( Ts&&... ts )

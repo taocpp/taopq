@@ -24,14 +24,6 @@ namespace tao::pq
       : public std::enable_shared_from_this< transaction >
    {
    public:
-      enum class isolation_level
-      {
-         default_isolation_level,
-         serializable,
-         repeatable_read,
-         read_committed,
-         read_uncommitted
-      };
       friend class table_writer;
 
    protected:
