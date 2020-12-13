@@ -13,38 +13,51 @@ option(TAOPQ_BUILD_TESTS "Build test programs" ON)
 set(TAOPQ_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include)
 
 set(TAOPQ_INCLUDE_FILES
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/table_writer.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/null.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/transaction.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/field.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/row.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_tuple.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_optional.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/parameter_traits.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_pair.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/printf.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/pool.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/field.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/dependent_false.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian_gcc.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian_win.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/exclusive_scan.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/gen.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/is_bytea_parameter.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_binary_traits.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_text_traits.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_traits.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_traits_helper.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/pool.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/printf.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/null.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/parameter_traits.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_optional.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_pair.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_tuple.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/row.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/span.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/table_writer.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/transaction.hpp
 )
 
 set(TAOPQ_SOURCE_FILES
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_writer.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection_pool.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/field.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_writer.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction.cpp
 )
 
 source_group("Header Files" FILES ${TAOPQ_INCLUDE_FILES})
