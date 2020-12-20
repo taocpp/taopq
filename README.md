@@ -17,6 +17,12 @@ It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `li
 
  * [Version 1.x](doc/README.md)
 
+## Contact
+
+<a href="https://discord.gg/VQYkppcgqN"><img align="right" src="https://discordapp.com/api/guilds/790164930083028993/embed.png?style=banner2" alt="Join us on Discord"></a>
+
+For questions and suggestions regarding taoPQ, success or failure stories, and any other kind of feedback, please feel free to join our [Discord](https://discord.gg/VQYkppcgqN) server, open a [discussion](https://github.com/taocpp/taopq/discussions), an [issue](https://github.com/taocpp/taopq/issues) or a [pull request](https://github.com/taocpp/taopq/pulls) on GitHub or contact the authors at `taocpp(at)icemx.net`.
+
 ## Introduction
 
 This library provides classes for database connections and transactions, as well as connection pools and table writers.
@@ -71,11 +77,13 @@ int main()
 }
 ```
 
-## Contact
+## The Art of C++
 
-taoPQ is part of [The Art of C++].
+taoPQ is part of [The Art of C++](https://taocpp.github.io/).
 
-For questions and suggestions about taoPQ please contact the authors at `taocpp(at)icemx.net`.
+[<img alt="colinh" src="https://avatars.githubusercontent.com/u/113184" width="120">](https://github.com/colinh)
+[<img alt="d-frey" src="https://avatars.githubusercontent.com/u/3956325" width="120">](https://github.com/d-frey)
+[<img alt="uilianries" src="https://avatars.githubusercontent.com/u/4870173" width="120">](https://github.com/uilianries)
 
 ## License
 
