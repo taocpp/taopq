@@ -24,11 +24,12 @@
 
 namespace tao::pq
 {
-   class connection;
    class table_writer;
 
    namespace internal
    {
+      class connection;
+
       template< typename T, typename = void >
       inline constexpr bool has_reserve = false;
 
@@ -40,7 +41,7 @@ namespace tao::pq
    class result
    {
    private:
-      friend class connection;
+      friend class internal::connection;
       friend class table_writer;
 
       const std::shared_ptr< PGresult > m_pgresult;

@@ -9,15 +9,19 @@
 
 namespace tao::pq
 {
-   class transaction;
+   namespace internal
+   {
+      class transaction;
+
+   }  // namespace internal
 
    class table_writer
    {
    private:
-      std::shared_ptr< transaction > m_transaction;
+      std::shared_ptr< internal::transaction > m_transaction;
 
    public:
-      table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement );
+      table_writer( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement );
       ~table_writer();
 
       table_writer( const table_writer& ) = delete;

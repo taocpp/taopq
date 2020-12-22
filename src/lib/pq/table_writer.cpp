@@ -6,12 +6,12 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/connection.hpp>
+#include <tao/pq/internal/transaction.hpp>
 #include <tao/pq/result.hpp>
-#include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {
-   table_writer::table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement )
+   table_writer::table_writer( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
       : m_transaction( transaction )
    {
       result( PQexecParams( transaction->m_connection->m_pgconn.get(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
@@ -34,13 +34,13 @@ namespace tao::pq
 
    auto table_writer::finish() -> std::size_t
    {
-      const auto connection = m_transaction->m_connection;
-      const int r = PQputCopyEnd( connection->m_pgconn.get(), nullptr );
+      const auto c = m_transaction->m_connection;
+      const int r = PQputCopyEnd( c->m_pgconn.get(), nullptr );
       if( r != 1 ) {
-         throw std::runtime_error( "PQputCopyEnd() failed: " + connection->error_message() );
+         throw std::runtime_error( "PQputCopyEnd() failed: " + c->error_message() );
       }
       m_transaction.reset();
-      return result( PQgetResult( connection->m_pgconn.get() ) ).rows_affected();
+      return result( PQgetResult( c->m_pgconn.get() ) ).rows_affected();
    }
 
 }  // namespace tao::pq

@@ -17,6 +17,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/field.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/connection.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/dependent_false.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian.hpp
@@ -32,6 +33,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/pool.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/printf.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/transaction.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/null.hpp
@@ -48,17 +50,16 @@ set(TAOPQ_INCLUDE_FILES
 )
 
 set(TAOPQ_SOURCE_FILES
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection_pool.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/field.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/connection.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/transaction.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_writer.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction.cpp
 )
 
 source_group("Header Files" FILES ${TAOPQ_INCLUDE_FILES})

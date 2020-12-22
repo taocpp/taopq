@@ -26,7 +26,7 @@ void run()
    // open a connection
    const auto connection = tao::pq::connection::create( connection_string );
 
-   // open a seconds, independent connection (and discard it immediately)
+   // open a second, independent connection (and discard it immediately)
    (void)tao::pq::connection::create( connection_string );
 
    // execute an SQL statement
