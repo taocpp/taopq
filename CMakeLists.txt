@@ -119,7 +119,7 @@ install(FILES
 export(EXPORT taopq-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake NAMESPACE taocpp::)
 export(PACKAGE taopq)
 
-enable_testing()
 if(TAOPQ_BUILD_TESTS)
+  enable_testing()
   add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/test/pq)
 endif()
