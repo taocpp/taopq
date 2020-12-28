@@ -23,8 +23,8 @@ jobs:
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
 
-    - working-directory: build/
-      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+#    - working-directory: build/
+#      run: ctest -C ${{ matrix.build_type }} --output-on-failure
 
   vs2019-clang:
     strategy:
@@ -46,8 +46,8 @@ jobs:
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
 
-    - working-directory: build/
-      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+#    - working-directory: build/
+#      run: ctest -C ${{ matrix.build_type }} --output-on-failure
 
   vs2017:
     strategy:

@@ -9,9 +9,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: sudo apt-get install -yq clang-tidy-10 libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get install -yq clang-tidy libpq-dev postgresql-server-dev-all
 
     - run: find include/ -name '*.hpp' | grep -vF endian_win.hpp | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++17 -Iinclude -I$(pg_config --includedir)
 
     - run: find src/ -name '*.cpp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++17 -Iinclude -I$(pg_config --includedir)
-

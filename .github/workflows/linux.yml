@@ -37,7 +37,7 @@ jobs:
 
     env:
       CXX: ${{ matrix.compiler }}
-      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v2
@@ -81,7 +81,7 @@ jobs:
 
     env:
       CXX: clang++
-      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v2
@@ -119,7 +119,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     services:
       postgres:
