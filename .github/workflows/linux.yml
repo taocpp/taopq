@@ -140,7 +140,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
 
-    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get update && sudo apt-get install -yq libpq-dev postgresql-server-dev-all
 
     - run: cmake -E make_directory build
 
