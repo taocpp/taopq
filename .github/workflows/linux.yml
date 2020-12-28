@@ -118,9 +118,6 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
-
     services:
       postgres:
         image: postgres:latest
@@ -136,6 +133,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+
+    env:
+      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v1
