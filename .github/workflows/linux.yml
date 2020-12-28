@@ -7,24 +7,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        image:
-          # List: https://github.com/conan-io/conan-docker-tools
-          - gcc7
-          - gcc8
-          - gcc9
-          # - gcc9-x86 // the container seems broken!?
-          - gcc10
-          - clang50
-          - clang60
-          - clang7
-          - clang8
-          - clang9
-          - clang9-x86
-          - clang10
-          - clang11
+        compiler:
+          - g++-7
+          - g++-8
+          - g++-9
+          - g++-10
+          - clang++-8
+          - clang++-9
+          - clang++-10
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     services:
       postgres:
@@ -43,42 +36,32 @@ jobs:
           --health-retries 5
 
     env:
+      CXX: ${{ matrix.compiler }}
       TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
-
-    container:
-      image: conanio/${{ matrix.image }}
-      options: --user root
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install libpq-dev
-      run: sudo apt-get update && sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
 
-    - name: Create Build Environment
-      run: cmake -E make_directory build
+    - run: cmake -E make_directory build
 
-    - name: Configure
-      working-directory: build/
+    - working-directory: build/
       run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
 
-    - name: Build
-      working-directory: build/
+    - working-directory: build/
       run: cmake --build .
 
-    - name: Test
-      working-directory: build/
+    - working-directory: build/
       run: ctest --output-on-failure
 
   linux-clang-extra:
     strategy:
       fail-fast: false
       matrix:
-        flags:
-          - "-fms-extensions"
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     services:
       postgres:
@@ -97,29 +80,75 @@ jobs:
           --health-retries 5
 
     env:
+      CXX: clang++
       TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
-
-    container:
-      image: conanio/clang11
-      options: --user root
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install libpq-dev
-      run: sudo apt-get update && sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
 
-    - name: Create Build Environment
-      run: cmake -E make_directory build
+    - run: cmake -E make_directory build
 
-    - name: Configure
-      working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.flags }}"
+    - working-directory: build/
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="-fms-extensions"
 
-    - name: Build
-      working-directory: build/
+    - working-directory: build/
       run: cmake --build .
 
-    - name: Test
-      working-directory: build/
+    - working-directory: build/
+      run: ctest --output-on-failure
+
+  clang-conanio:
+    strategy:
+      fail-fast: false
+      matrix:
+        image:
+          # List: https://github.com/conan-io/conan-docker-tools
+          - clang50
+          - clang60
+          - clang7
+          - clang9-x86
+          - clang11
+        build_type: [Debug, Release]
+
+    container:
+      image: conanio/${{ matrix.image }}
+      options: --user root
+
+    runs-on: ubuntu-latest
+
+    env:
+      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - uses: actions/checkout@v1
+
+    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+
+    - run: cmake -E make_directory build
+
+    - working-directory: build/
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+    - working-directory: build/
+      run: cmake --build .
+
+    - working-directory: build/
       run: ctest --output-on-failure

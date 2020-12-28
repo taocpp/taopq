@@ -4,27 +4,18 @@ on: [push, pull_request]
 
 jobs:
   clang-analyze:
-    strategy:
-      fail-fast: false
-
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v2
 
-    - name: Install clang-tools-10
-      run: sudo apt-get update && sudo apt-get install -yq clang-tools-10
+    - run: sudo apt-get install -yq clang-tools libpq-dev postgresql-server-dev-all
 
-    - name: Install libpq-dev
-      run: sudo apt-get update && sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+    - run: scan-build cmake -E make_directory build
 
-    - name: Create Build Environment
-      run: scan-build-10 cmake -E make_directory build
+    - working-directory: build/
+      run: scan-build cmake $GITHUB_WORKSPACE
 
-    - name: Configure
-      working-directory: build/
-      run: scan-build-10 cmake $GITHUB_WORKSPACE
+    - working-directory: build/
+      run: scan-build cmake --build .
 
-    - name: Build
-      working-directory: build/
-      run: scan-build-10 cmake --build .
