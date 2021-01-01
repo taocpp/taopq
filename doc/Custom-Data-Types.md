@@ -11,4 +11,4 @@ TODO
 
 TODO
 
-Copyright (c) 2019-2020 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2019-2021 Daniel Frey and Dr. Colin Hirsch

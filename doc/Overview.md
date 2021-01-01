@@ -23,4 +23,4 @@ Please **always** pass statement parameters as individual function arguments to 
 
 *Concatenating the string representation of statement parameters with the SQL statement opens the door to SQL-injection attacks, a large family of security issues that has plagued the internet for decades.*
 
-Copyright (c) 2019-2020 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2019-2021 Daniel Frey and Dr. Colin Hirsch

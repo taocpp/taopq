@@ -22,4 +22,4 @@ The connection pool related deleter could be used with a `std::unique_ptr`, albe
 The reason this seemingly redundant kind of transactions exists is to allow writing non-templated code that can execute statements both within the context of a transaction or without a transaction.
 Such code can simply operate on a `std::shared_ptr< tao::pq::transaction >`, which is the static type of both a "real" transaction and a "direct", i.e. "fake" auto-commit transaction.
 
-Copyright (c) 2019-2020 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2019-2021 Daniel Frey and Dr. Colin Hirsch

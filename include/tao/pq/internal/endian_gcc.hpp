@@ -1,4 +1,4 @@
-// Copyright (c) 2020 Daniel Frey and Dr. Colin Hirsch
+// Copyright (c) 2020-2021 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
 #ifndef TAO_PQ_INTERNAL_ENDIAN_GCC_HPP

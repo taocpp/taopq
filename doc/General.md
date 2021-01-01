@@ -100,4 +100,4 @@ Working with a result set is documented on the [Result Sets](Result-Sets.md) pag
 
 Note that `tao::pq::result` has value semantics and is relatively cheap to copy.
 
-Copyright (c) 2019-2020 Daniel Frey and Dr. Colin Hirsch
+Copyright (c) 2019-2021 Daniel Frey and Dr. Colin Hirsch
