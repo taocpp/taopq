@@ -34,7 +34,7 @@ namespace tao::pq
       inline constexpr bool has_reserve = false;
 
       template< typename T >
-      inline constexpr bool has_reserve< T, std::void_t< decltype( T::reserve( std::declval< typename T::size_type >() ) ) > > = true;
+      inline constexpr bool has_reserve< T, std::void_t< decltype( std::declval< T >().reserve( std::declval< typename T::size_type >() ) ) > > = true;
 
    }  // namespace internal
 
