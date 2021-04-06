@@ -8,16 +8,14 @@ jobs:
       fail-fast: false
       matrix:
         compiler:
-          - g++-7
-          - g++-8
           - g++-9
           - g++-10
-          - clang++-8
           - clang++-9
           - clang++-10
+          - clang++-11
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     services:
       postgres:
@@ -55,13 +53,63 @@ jobs:
     - working-directory: build/
       run: ctest --output-on-failure
 
+  linux-old:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - g++-7
+          - g++-8
+          - clang++-6.0
+          - clang++-7
+          - clang++-8
+        build_type: [Debug, Release]
+
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      CXX: ${{ matrix.compiler }}
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all ${{ matrix.compiler }}
+
+    - run: cmake -E make_directory build
+
+    - working-directory: build/
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+    - working-directory: build/
+      run: cmake --build .
+
+    - working-directory: build/
+      run: ctest --output-on-failure
+
   linux-clang-extra:
     strategy:
       fail-fast: false
       matrix:
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     services:
       postgres:
@@ -99,56 +147,3 @@ jobs:
     - working-directory: build/
       run: ctest --output-on-failure
 
-  clang-conanio:
-    strategy:
-      fail-fast: false
-      matrix:
-        image:
-          # List: https://github.com/conan-io/conan-docker-tools
-          - clang50
-          - clang60
-          - clang7
-          - clang9-x86
-          - clang11
-        build_type: [Debug, Release]
-
-    container:
-      image: conanio/${{ matrix.image }}
-      options: --user root
-
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      TAOPQ_TEST_DATABASE: host=postgres dbname=postgres user=postgres password=postgres
-
-    steps:
-    - uses: actions/checkout@v1
-
-    - run: sudo apt-get update && sudo apt-get install -yq libpq-dev postgresql-server-dev-all
-
-    - run: cmake -E make_directory build
-
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-
-    - working-directory: build/
-      run: cmake --build .
-
-    - working-directory: build/
-      run: ctest --output-on-failure
