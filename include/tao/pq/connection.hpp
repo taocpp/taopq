@@ -93,7 +93,7 @@ namespace tao::pq
                case isolation_level::read_uncommitted:
                   return "START TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
             }
-            TAO_PQ_UNREACHABLE;
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
 
       public:

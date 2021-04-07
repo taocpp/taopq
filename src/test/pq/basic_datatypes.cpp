@@ -113,7 +113,12 @@ void check( const std::string& datatype, const T& value )
    }
    else {
       const auto v = result[ 0 ][ 0 ].as< T >();
-      TEST_ASSERT( v != v );
+      if( v == v ) {  // NOLINT(misc-redundant-expression)
+         // LCOV_EXCL_START
+         std::cout << "check: " << datatype << " value: NaN result: " << result.get( 0, 0 ) << " FAILED!" << std::endl;
+         TEST_ASSERT( false );
+         // LCOV_EXCL_END
+      }
    }
 }
 
