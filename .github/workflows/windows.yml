@@ -11,8 +11,24 @@ jobs:
 
     runs-on: windows-latest
 
+    env:
+      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+
     steps:
     - uses: actions/checkout@v2
+
+    - run: |
+        $pgService = Get-Service -Name postgresql*
+        Set-Service -InputObject $pgService -Status running -StartupType automatic
+        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
+
+    - run: |
+        & $env:PGBIN\psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du"
+
+    - run: |
+        & $env:PGBIN\createdb --owner=myuser mydatabase
+        $env:PGPASSWORD = 'mypassword'
+        & $env:PGBIN\psql --username=myuser --host=localhost --list mydatabase
 
     - run: cmake -E make_directory build
 
@@ -23,8 +39,8 @@ jobs:
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
 
-#    - working-directory: build/
-#      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+    - working-directory: build/
+      run: ctest -C ${{ matrix.build_type }} --output-on-failure
 
   vs2019-clang:
     strategy:

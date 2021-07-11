@@ -3,7 +3,7 @@ name: Linux
 on: [push, pull_request]
 
 jobs:
-  linux:
+  linux: &linux
     strategy:
       fail-fast: false
       matrix:
@@ -55,8 +55,8 @@ jobs:
       run: ctest --output-on-failure
 
   linux-old:
+    <<: *linux
     strategy:
-      fail-fast: false
       matrix:
         compiler:
           - g++-7
@@ -65,29 +65,6 @@ jobs:
           - clang++-7
           - clang++-8
           - clang++-9
-        build_type: [Debug, Release]
-
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      CXX: ${{ matrix.compiler }}
-      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v2
@@ -106,32 +83,11 @@ jobs:
       run: ctest --output-on-failure
 
   linux-clang-extra:
+    <<: *linux
     strategy:
-      fail-fast: false
       matrix:
-        build_type: [Debug, Release]
-
-    runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      CXX: clang++
-      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
+        compiler:
+          - clang++
 
     steps:
     - uses: actions/checkout@v2
