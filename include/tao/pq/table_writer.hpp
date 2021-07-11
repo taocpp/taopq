@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 
 namespace tao::pq
 {
@@ -32,7 +33,7 @@ namespace tao::pq
       auto operator=( table_writer&& ) -> table_writer& = delete;
       // clang-format on
 
-      void insert( const std::string& data );
+      void insert( const std::string_view data );
       auto finish() -> std::size_t;
    };
 

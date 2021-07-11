@@ -24,7 +24,7 @@ namespace tao::pq
       }
    }
 
-   void table_writer::insert( const std::string& data )
+   void table_writer::insert( const std::string_view data )
    {
       const int r = PQputCopyData( m_transaction->m_connection->m_pgconn.get(), data.data(), static_cast< int >( data.size() ) );
       if( r != 1 ) {
