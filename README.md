@@ -64,7 +64,7 @@ int main()
 
   // insert/update/delete statements return an object that contains the number of rows affected
   {
-    const auto res = conn->execute( "insert", 3, 3, "drei" );
+    const auto res = conn->execute( "my_stmt", 3, 3, "drei" );
     assert( res.rows_affected() == 1 );
   }
 

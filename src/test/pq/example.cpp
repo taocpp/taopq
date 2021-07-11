@@ -21,7 +21,7 @@ void run()
    conn->execute( "CREATE TABLE tao_example ( a INTEGER PRIMARY KEY, b INTEGER, c TEXT NOT NULL )" );
 
    // preparing a statement is optional, but often recommended
-   conn->prepare( "insert", "INSERT INTO tao_example VALUES ( $1, $2, $3 )" );
+   conn->prepare( "my_stmt", "INSERT INTO tao_example VALUES ( $1, $2, $3 )" );
 
    // use a transaction if needed
    {
@@ -31,14 +31,14 @@ void run()
       tr->execute( "INSERT INTO tao_example VALUES ( $1, $2, $3 )", 1, 42, "foo" );
 
       // execute prepared statement with parameters
-      tr->execute( "insert", 2, tao::pq::null, "Hello, world!" );
+      tr->execute( "my_stmt", 2, tao::pq::null, "Hello, world!" );
 
       tr->commit();
    }
 
    // insert/update/delete statements return a result which can be queried for the rows affected
    {
-      const auto res = conn->execute( "insert", 3, 3, "drei" );
+      const auto res = conn->execute( "my_stmt", 3, 3, "drei" );
       TEST_ASSERT( res.rows_affected() == 1 );
    }
 
