@@ -96,12 +96,9 @@ template< typename T >
 void check( const std::string& datatype, const T& value )
 {
    std::cout << "check: " << datatype << " value: " << value << std::endl;
-   if( prepare_datatype( datatype ) ) {
-      TEST_ASSERT( my_connection->execute( "INSERT INTO tao_basic_datatypes_test VALUES ( $1 )", value ).rows_affected() == 1 );
-   }
-   else {
-      TEST_ASSERT( my_connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", value ).rows_affected() == 1 );
-   }
+   TEST_ASSERT( !prepare_datatype( datatype ) );
+   TEST_ASSERT( my_connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", value ).rows_affected() == 1 );
+
    const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" );
    if( value == value ) {  // NOLINT(misc-redundant-expression)
       if( result[ 0 ][ 0 ].as< T >() != value ) {
@@ -267,52 +264,53 @@ void run()
    check< double >( "DOUBLE PRECISION", -INFINITY );
    check< double >( "DOUBLE PRECISION", NAN );
 
-   // check< float >( "NUMERIC", std::numeric_limits< float >::lowest() );
+   check_null( "NUMERIC" );
+   check< float >( "NUMERIC", std::numeric_limits< float >::lowest() );
    check< float >( "NUMERIC", -1e37F );
    check< float >( "NUMERIC", -1.25F );
    check< float >( "NUMERIC", -1.F );
    check< float >( "NUMERIC", -0.25F );
    check< float >( "NUMERIC", -1e-37F );
    check< float >( "NUMERIC", 0.F );
-   // check< float >( "NUMERIC", std::numeric_limits< float >::min() );
+   check< float >( "NUMERIC", std::numeric_limits< float >::min() );
    check< float >( "NUMERIC", 1e-37F );
-   // {
-   //    float value = 0.123456F;
-   //    for( int i = 0; i < 32; ++i ) {
-   //       check< float >( "NUMERIC", value );
-   //       value = std::nextafterf( value, 1 );
-   //    }
-   // }
+   {
+      float value = 0.123456F;
+      for( int i = 0; i < 32; ++i ) {
+         check< float >( "NUMERIC", value );
+         value = std::nextafterf( value, 1 );
+      }
+   }
    check< float >( "NUMERIC", 0.25F );
    check< float >( "NUMERIC", 1.F );
-   // check< float >( "NUMERIC", 1.F + std::numeric_limits< float >::epsilon() );
+   check< float >( "NUMERIC", 1.F + std::numeric_limits< float >::epsilon() );
    check< float >( "NUMERIC", 1.25F );
    check< float >( "NUMERIC", 1e37F );
-   // check< float >( "NUMERIC", std::numeric_limits< float >::max() );
+   check< float >( "NUMERIC", std::numeric_limits< float >::max() );
    check< float >( "NUMERIC", NAN );
 
-   // check< double >( "NUMERIC", std::numeric_limits< double >::lowest() );
+   check< double >( "NUMERIC", std::numeric_limits< double >::lowest() );
    check< double >( "NUMERIC", -1e308 );
    check< double >( "NUMERIC", -1.25 );
    check< double >( "NUMERIC", -1 );
    check< double >( "NUMERIC", -0.25 );
    check< double >( "NUMERIC", -1e-307 );
    check< double >( "NUMERIC", 0 );
-   // check< double >( "NUMERIC", std::numeric_limits< double >::min() );
+   check< double >( "NUMERIC", std::numeric_limits< double >::min() );
    check< double >( "NUMERIC", 1e-307 );
-   // {
-   //    double value = 0.123456789012345;
-   //    for( int i = 0; i < 32; ++i ) {
-   //       check< double >( "NUMERIC", value );
-   //       value = std::nextafter( value, 1 );
-   //    }
-   // }
+   {
+      double value = 0.123456789012345;
+      for( int i = 0; i < 32; ++i ) {
+         check< double >( "NUMERIC", value );
+         value = std::nextafter( value, 1 );
+      }
+   }
    check< double >( "NUMERIC", 0.25 );
    check< double >( "NUMERIC", 1 );
-   // check< double >( "NUMERIC", 1 + std::numeric_limits< double >::epsilon() );
+   check< double >( "NUMERIC", 1 + std::numeric_limits< double >::epsilon() );
    check< double >( "NUMERIC", 1.25 );
    check< double >( "NUMERIC", 1e308 );
-   // check< double >( "NUMERIC", std::numeric_limits< double >::max() );
+   check< double >( "NUMERIC", std::numeric_limits< double >::max() );
    check< double >( "NUMERIC", NAN );
 
    check< long double >( "NUMERIC", std::numeric_limits< long double >::lowest() );
@@ -449,11 +447,6 @@ void run()
 
    // use std::span / tao::pq::span to pass binary data as parameters (works for char, signed char, unsigned char, and std::byte)
 
-#if defined( __clang__ ) && ( __clang_major__ <= 5 )
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wmissing-braces"
-#endif
-
    check_null( "BYTEA" );
    {
       char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
@@ -554,10 +547,6 @@ void run()
       std::vector< std::byte > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
       check_bytea( bdata );
    }
-
-#if defined( __clang__ ) && ( __clang_major__ <= 5 )
-#pragma clang diagnostic pop
-#endif
 }
 
 auto main() -> int
