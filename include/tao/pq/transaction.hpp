@@ -11,7 +11,6 @@
 #include <utility>
 
 #include <tao/pq/internal/dependent_false.hpp>
-#include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/transaction.hpp>
 
@@ -27,42 +26,6 @@ namespace tao::pq
    class transaction
       : public internal::transaction
    {
-   private:
-      template< std::size_t... Os, std::size_t... Is, typename... Ts >
-      [[nodiscard]] auto execute_indexed( const char* statement,
-                                          std::index_sequence< Os... > /*unused*/,
-                                          std::index_sequence< Is... > /*unused*/,
-                                          const std::tuple< Ts... >& tuple )
-      {
-         const Oid types[] = { std::get< Os >( tuple ).template type< Is >()... };
-         const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
-         const int lengths[] = { std::get< Os >( tuple ).template length< Is >()... };
-         const int formats[] = { std::get< Os >( tuple ).template format< Is >()... };
-         return execute_params( statement, sizeof...( Os ), types, values, lengths, formats );
-      }
-
-      template< typename... Ts >
-      [[nodiscard]] auto execute_traits( const char* statement, const Ts&... ts )
-      {
-         using gen = internal::gen< Ts::columns... >;
-         return execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
-      }
-
-      template< template< typename... > class Traits, typename A >
-      auto to_traits( A&& a ) const
-      {
-         using T = Traits< std::decay_t< A > >;
-         if constexpr( std::is_constructible_v< T, decltype( std::forward< A >( a ) ) > ) {
-            return T( std::forward< A >( a ) );
-         }
-         else if constexpr( std::is_constructible_v< T, PGconn*, decltype( std::forward< A >( a ) ) > ) {
-            return T( this->underlying_raw_ptr(), std::forward< A >( a ) );
-         }
-         else {
-            static_assert( internal::dependent_false< T >, "no valid conversion from A to Traits" );
-         }
-      }
-
    public:
       explicit transaction( const std::shared_ptr< internal::connection >& connection )
          : internal::transaction( connection )
