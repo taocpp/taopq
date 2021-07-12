@@ -43,7 +43,7 @@ namespace tao::pq
 
          [[nodiscard]] auto error_message() const -> std::string;
          static void check_prepared_name( const std::string_view name );
-         [[nodiscard]] auto is_prepared( const char* name ) const noexcept -> bool;
+         [[nodiscard]] auto is_prepared( const std::string_view name ) const noexcept -> bool;
 
          [[nodiscard]] auto execute_params( const char* statement,
                                             const int n_params,

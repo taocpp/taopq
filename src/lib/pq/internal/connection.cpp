@@ -39,7 +39,7 @@ namespace tao::pq::internal
       }
    }
 
-   auto connection::is_prepared( const char* name ) const noexcept -> bool
+   auto connection::is_prepared( const std::string_view name ) const noexcept -> bool
    {
       return m_prepared_statements.find( name ) != m_prepared_statements.end();
    }
@@ -68,7 +68,6 @@ namespace tao::pq::internal
       if( protocol_version < 3 ) {
          throw std::runtime_error( "protocol version 3 required" );  // LCOV_EXCL_LINE
       }
-      // TODO: check server version
    }
 
    auto connection::is_open() const noexcept -> bool
@@ -86,7 +85,7 @@ namespace tao::pq::internal
    void connection::deallocate( const std::string& name )
    {
       check_prepared_name( name );
-      if( !is_prepared( name.c_str() ) ) {
+      if( !is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement name not found: " + name );
       }
       (void)execute_params( ( "DEALLOCATE " + name ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
