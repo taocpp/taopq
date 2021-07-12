@@ -89,7 +89,7 @@ namespace tao::pq::internal
       if( !is_prepared( name.c_str() ) ) {
          throw std::runtime_error( "prepared statement name not found: " + name );
       }
-      // TODO: this->execute( "DEALLOCATE " + name );
+      (void)execute_params( ( "DEALLOCATE " + name ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
       m_prepared_statements.erase( name );
    }
 
