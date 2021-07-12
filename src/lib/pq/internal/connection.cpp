@@ -32,7 +32,7 @@ namespace tao::pq::internal
       return std::string( message, size - 1 );
    }
 
-   void connection::check_prepared_name( const std::string& name )
+   void connection::check_prepared_name( const std::string_view name )
    {
       if( !is_identifier( name ) ) {
          throw std::invalid_argument( "invalid prepared statement name" );

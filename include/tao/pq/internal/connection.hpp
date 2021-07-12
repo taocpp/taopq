@@ -8,6 +8,7 @@
 #include <memory>
 #include <set>
 #include <string>
+#include <string_view>
 
 #include <libpq-fe.h>
 
@@ -41,7 +42,7 @@ namespace tao::pq
          std::set< std::string, std::less<> > m_prepared_statements;
 
          [[nodiscard]] auto error_message() const -> std::string;
-         static void check_prepared_name( const std::string& name );
+         static void check_prepared_name( const std::string_view name );
          [[nodiscard]] auto is_prepared( const char* name ) const noexcept -> bool;
 
          [[nodiscard]] auto execute_params( const char* statement,
