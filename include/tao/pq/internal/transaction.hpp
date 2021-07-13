@@ -12,6 +12,7 @@
 
 #include <libpq-fe.h>
 
+#include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/result.hpp>
 
@@ -56,11 +57,11 @@ namespace tao::pq
          [[nodiscard]] auto to_traits( A&& a ) const
          {
             using T = Traits< std::decay_t< A > >;
-            if constexpr( std::is_constructible_v< T, decltype( std::forward< A >( a ) ) > ) {
-               return T( std::forward< A >( a ) );
-            }
-            else if constexpr( std::is_constructible_v< T, PGconn*, decltype( std::forward< A >( a ) ) > ) {
+            if constexpr( std::is_constructible_v< T, PGconn*, decltype( std::forward< A >( a ) ) > ) {
                return T( underlying_raw_ptr(), std::forward< A >( a ) );
+            }
+            else if constexpr( std::is_constructible_v< T, decltype( std::forward< A >( a ) ) > ) {
+               return T( std::forward< A >( a ) );
             }
             else {
                static_assert( internal::dependent_false< T >, "no valid conversion from A to Traits" );

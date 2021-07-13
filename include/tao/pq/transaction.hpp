@@ -10,7 +10,6 @@
 #include <type_traits>
 #include <utility>
 
-#include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/transaction.hpp>
 
@@ -44,14 +43,12 @@ namespace tao::pq
       template< template< typename... > class Traits = DefaultTraits, typename... As >
       auto execute( const char* statement, As&&... as )
       {
-         return execute_traits( statement, to_traits< Traits >( std::forward< As >( as ) )... );
-      }
-
-      // short-cut for no-arguments invocations
-      template< template< typename... > class Traits = DefaultTraits >
-      auto execute( const char* statement )
-      {
-         return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
+         if constexpr( sizeof...( As ) == 0 ) {
+            return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
+         }
+         else {
+            return execute_traits( statement, to_traits< Traits >( std::forward< As >( as ) )... );
+         }
       }
 
       template< template< typename... > class Traits = DefaultTraits, typename... As >
