@@ -11,6 +11,30 @@
 
 namespace tao::pq
 {
+   namespace
+   {
+      // TODO: This is inefficient, improve it!
+      void append_escape( std::string& buffer, const char* data )
+      {
+         while( auto c = *data++ ) {
+            switch( c ) {
+               case '\b':
+               case '\f':
+               case '\n':
+               case '\r':
+               case '\t':
+               case '\v':
+               case '\\':
+                  buffer += '\\';
+                  [[fallthrough]];
+               default:
+                  buffer += c;
+            }
+         }
+      }
+
+   }  // namespace
+
    table_writer::table_writer( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
       : m_transaction( transaction )
    {
@@ -40,7 +64,7 @@ namespace tao::pq
             buffer += "\\N";
          }
          else {
-            buffer += values[ n ];  // TODO: escape
+            append_escape( buffer, values[ n ] );
          }
          buffer += '\t';
       }
