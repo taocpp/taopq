@@ -27,31 +27,22 @@ namespace tao::pq
    private:
       std::shared_ptr< internal::transaction > m_transaction;
 
+      void insert_values( const char* const values[], const std::size_t n_values );
+
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
       void insert_indexed( std::index_sequence< Os... > /*unused*/,
                            std::index_sequence< Is... > /*unused*/,
                            const std::tuple< Ts... >& tuple )
       {
          const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
-         std::string buffer;
-         for( std::size_t n = 0; n < sizeof...( Is ); ++n ) {
-            if( values[ n ] == nullptr ) {
-               buffer += "\\N";
-            }
-            else {
-               buffer += values[ n ];  // TODO: escape
-            }
-            buffer += '\t';
-         }
-         *buffer.rbegin() = '\n';
-         insert_raw( buffer );
+         insert_values( values, sizeof...( Os ) );
       }
 
       template< typename... Ts >
       void insert_traits( const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         return insert_indexed( typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
+         insert_indexed( typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
    public:

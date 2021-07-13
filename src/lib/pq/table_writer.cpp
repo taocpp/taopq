@@ -32,6 +32,22 @@ namespace tao::pq
       }
    }
 
+   void table_writer::insert_values( const char* const values[], const std::size_t n_values )
+   {
+      std::string buffer;
+      for( std::size_t n = 0; n < n_values; ++n ) {
+         if( values[ n ] == nullptr ) {
+            buffer += "\\N";
+         }
+         else {
+            buffer += values[ n ];  // TODO: escape
+         }
+         buffer += '\t';
+      }
+      *buffer.rbegin() = '\n';
+      insert_raw( buffer );
+   }
+
    auto table_writer::finish() -> std::size_t
    {
       const auto c = m_transaction->m_connection;
