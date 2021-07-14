@@ -5,6 +5,8 @@
 
 #include <libpq-fe.h>
 
+#include <cstring>
+
 #include <tao/pq/connection.hpp>
 #include <tao/pq/internal/transaction.hpp>
 #include <tao/pq/result.hpp>
@@ -13,24 +15,15 @@ namespace tao::pq
 {
    namespace
    {
-      // TODO: This is inefficient, improve it!
       void append_escape( std::string& buffer, const char* data )
       {
-         while( auto c = *data++ ) {
-            switch( c ) {
-               case '\b':
-               case '\f':
-               case '\n':
-               case '\r':
-               case '\t':
-               case '\v':
-               case '\\':
-                  buffer += '\\';
-                  [[fallthrough]];
-               default:
-                  buffer += c;
-            }
+         while( const auto p = std::strpbrk( data, "\b\f\n\r\t\v\\" ) ) {
+            buffer.append( data, p );
+            buffer += '\\';
+            buffer += *p;
+            data = p + 1;
          }
+         buffer.append( data );
       }
 
    }  // namespace
