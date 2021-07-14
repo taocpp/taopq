@@ -17,7 +17,7 @@ namespace tao::pq
    {
       void append_escape( std::string& buffer, const char* data )
       {
-         while( const auto p = std::strpbrk( data, "\b\f\n\r\t\v\\" ) ) {
+         while( const auto* const p = std::strpbrk( data, "\b\f\n\r\t\v\\" ) ) {
             buffer.append( data, p );
             buffer += '\\';
             buffer += *p;
