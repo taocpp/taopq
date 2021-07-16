@@ -20,7 +20,7 @@ namespace tao::pq
          while( true ) {
             const auto n = data.find_first_of( "\b\f\n\r\t\v\\" );
             if( n == std::string_view::npos ) {
-               buffer.append( data.data(), data.size() );
+               buffer += data;
                return;
             }
             buffer.append( data.data(), n );
