@@ -61,7 +61,7 @@ namespace tao::pq
             append_escape( buffer, values[ n ] );
          }
          else {
-            buffer.append( values[ n ].data(), values[ n ].size() );
+            buffer += values[ n ];
          }
          buffer += '\t';
       }
