@@ -6,6 +6,8 @@
 
 #include <cstddef>
 #include <optional>
+#include <string>
+#include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -56,6 +58,18 @@ namespace tao::pq::internal
       {
          return 0;
       }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto string_view() noexcept -> std::string_view
+      {
+         return "\\N";
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return false;
+      }
    };
 
    template< template< typename... > class Traits >
@@ -64,6 +78,72 @@ namespace tao::pq::internal
    {
       explicit parameter_traits( const char* p ) noexcept
          : char_pointer_helper( p )
+      {}
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return true;
+      }
+   };
+
+   template< template< typename... > class Traits >
+   struct parameter_traits< Traits, std::string_view >
+   {
+   private:
+      const std::string_view m_v;
+
+   protected:
+      explicit parameter_traits( const std::string_view v ) noexcept
+         : m_v( v )
+      {}
+
+   public:
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      {
+         return 25;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto value() const noexcept -> const char*
+      {
+         return m_v.data();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto length() const noexcept -> int
+      {
+         return static_cast< int >( m_v.size() );
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto format() noexcept -> int
+      {
+         return 1;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto string_view() const noexcept -> std::string_view
+      {
+         return m_v;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return true;
+      }
+   };
+
+   template< template< typename... > class Traits >
+   struct parameter_traits< Traits, std::string >
+      : parameter_traits< Traits, std::string_view >
+   {
+      explicit parameter_traits( const std::string_view v ) noexcept
+         : parameter_traits< Traits, std::string_view >( v )
       {}
    };
 
@@ -114,6 +194,18 @@ namespace tao::pq::internal
       {
          return U::template format< I >();
       }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto string_view() const noexcept -> std::string_view
+      {
+         return m_forwarder ? m_forwarder->template string_view< I >() : "\\N";
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto escape() noexcept -> bool
+      {
+         return m_forwarder ? m_forwarder->template escape< I >() : false;
+      }
    };
 
    template< template< typename... > class Traits, typename... Ts >
@@ -158,6 +250,18 @@ namespace tao::pq::internal
       [[nodiscard]] constexpr auto format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >() ) ) -> int
       {
          return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto string_view() const noexcept -> std::string_view
+      {
+         return std::get< gen::template outer< I > >( m_tuple ).template string_view< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto escape() noexcept -> bool
+      {
+         return std::get< gen::template outer< I > >( m_tuple ).template escape< gen::template inner< I > >();
       }
    };
 

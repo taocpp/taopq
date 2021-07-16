@@ -62,6 +62,18 @@ namespace tao::pq::internal
       {
          return 0;
       }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto string_view() noexcept -> std::string_view
+      {
+         return {};
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return false;
+      }
    };
 
    template<>
@@ -71,6 +83,12 @@ namespace tao::pq::internal
       explicit parameter_text_traits( const bool v ) noexcept
          : char_pointer_helper( v ? "true" : "false" )
       {}
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return false;
+      }
    };
 
    template<>
@@ -82,129 +100,132 @@ namespace tao::pq::internal
       {}
    };
 
-   template<>
-   struct parameter_text_traits< signed char >
+   struct safe_string_helper
       : string_helper
    {
+      using string_helper::string_helper;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return false;
+      }
+   };
+
+   template<>
+   struct parameter_text_traits< signed char >
+      : safe_string_helper
+   {
       parameter_text_traits( const signed char v )
-         : string_helper( printf( "%hhd", v ) )
+         : safe_string_helper( printf( "%hhd", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< unsigned char >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const unsigned char v )
-         : string_helper( printf( "%hhu", v ) )
+         : safe_string_helper( printf( "%hhu", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< short >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const short v )
-         : string_helper( printf( "%hd", v ) )
+         : safe_string_helper( printf( "%hd", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< unsigned short >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const unsigned short v )
-         : string_helper( printf( "%hu", v ) )
+         : safe_string_helper( printf( "%hu", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< int >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const int v )
-         : string_helper( printf( "%d", v ) )
+         : safe_string_helper( printf( "%d", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< unsigned >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const unsigned v )
-         : string_helper( printf( "%u", v ) )
+         : safe_string_helper( printf( "%u", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< long >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const long v )
-         : string_helper( printf( "%ld", v ) )
+         : safe_string_helper( printf( "%ld", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< unsigned long >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const unsigned long v )
-         : string_helper( printf( "%lu", v ) )
+         : safe_string_helper( printf( "%lu", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< long long >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const long long v )
-         : string_helper( printf( "%lld", v ) )
+         : safe_string_helper( printf( "%lld", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< unsigned long long >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const unsigned long long v )
-         : string_helper( printf( "%llu", v ) )
+         : safe_string_helper( printf( "%llu", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< float >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const float v )
-         : string_helper( printf_helper( "%.9g", v ) )
+         : safe_string_helper( printf_helper( "%.9g", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< double >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const double v )
-         : string_helper( printf_helper( "%.17g", v ) )
+         : safe_string_helper( printf_helper( "%.17g", v ) )
       {}
    };
 
    template<>
    struct parameter_text_traits< long double >
-      : string_helper
+      : safe_string_helper
    {
       parameter_text_traits( const long double v )
-         : string_helper( printf_helper( "%.21Lg", v ) )
-      {}
-   };
-
-   template<>
-   struct parameter_text_traits< std::string >
-      : char_pointer_helper
-   {
-      explicit parameter_text_traits( const std::string& v ) noexcept
-         : char_pointer_helper( v.c_str() )
+         : safe_string_helper( printf_helper( "%.21Lg", v ) )
       {}
    };
 
@@ -252,6 +273,18 @@ namespace tao::pq::internal
       [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto string_view() noexcept -> std::string_view
+      {
+         return value();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return false;
       }
    };
 

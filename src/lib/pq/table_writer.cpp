@@ -15,15 +15,19 @@ namespace tao::pq
 {
    namespace
    {
-      void append_escape( std::string& buffer, const char* data )
+      void append_escape( std::string& buffer, std::string_view data )
       {
-         while( const auto* const p = std::strpbrk( data, "\b\f\n\r\t\v\\" ) ) {
-            buffer.append( data, p );
+         while( true ) {
+            const auto n = data.find_first_of( "\b\f\n\r\t\v\\" );
+            if( n == std::string_view::npos ) {
+               buffer.append( data.data(), data.size() );
+               return;
+            }
+            buffer.append( data.data(), n );
             buffer += '\\';
-            buffer += *p;
-            data = p + 1;
+            buffer += data[ n ];
+            data.remove_prefix( n + 1 );
          }
-         buffer.append( data );
       }
 
    }  // namespace
@@ -49,15 +53,15 @@ namespace tao::pq
       }
    }
 
-   void table_writer::insert_values( const char* const values[], const std::size_t n_values )
+   void table_writer::insert_values( const std::string_view values[], const bool escape[], const std::size_t n_values )
    {
       std::string buffer;
       for( std::size_t n = 0; n < n_values; ++n ) {
-         if( values[ n ] == nullptr ) {
-            buffer += "\\N";
+         if( escape[ n ] ) {
+            append_escape( buffer, values[ n ] );
          }
          else {
-            append_escape( buffer, values[ n ] );
+            buffer.append( values[ n ].data(), values[ n ].size() );
          }
          buffer += '\t';
       }

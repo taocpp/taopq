@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include <libpq-fe.h>
@@ -48,6 +49,12 @@ namespace tao::pq::internal
       {
          return 0;
       }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto string_view() const noexcept -> std::string_view
+      {
+         return m_p;
+      }
    };
 
    class string_helper
@@ -86,6 +93,12 @@ namespace tao::pq::internal
       [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto string_view() const noexcept -> std::string_view
+      {
+         return m_s;
       }
    };
 

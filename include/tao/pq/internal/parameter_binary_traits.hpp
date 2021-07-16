@@ -352,54 +352,6 @@ namespace tao::pq::internal
       }
    };
 
-   template<>
-   struct parameter_binary_traits< std::string_view >
-   {
-   private:
-      const std::string_view m_v;
-
-   protected:
-      explicit parameter_binary_traits( const std::string_view v ) noexcept
-         : m_v( v )
-      {}
-
-   public:
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
-      {
-         return 25;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return m_v.data();
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto length() const noexcept -> int
-      {
-         return static_cast< int >( m_v.size() );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
-   };
-
-   template<>
-   struct parameter_binary_traits< std::string >
-      : parameter_binary_traits< std::string_view >
-   {
-      explicit parameter_binary_traits( const std::string& v ) noexcept
-         : parameter_binary_traits< std::string_view >( v )
-      {}
-   };
-
    template< typename ElementType, std::size_t Extent >
    struct parameter_binary_traits< tao::pq::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType > > >
    {
