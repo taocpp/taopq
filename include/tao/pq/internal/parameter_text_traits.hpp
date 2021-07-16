@@ -276,7 +276,7 @@ namespace tao::pq::internal
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto string_view() noexcept -> std::string_view
+      [[nodiscard]] auto string_view() const noexcept -> std::string_view
       {
          return value();
       }
