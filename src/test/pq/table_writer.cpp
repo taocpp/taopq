@@ -4,8 +4,7 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
-#include <tao/pq/connection.hpp>
-#include <tao/pq/table_writer.hpp>
+#include <tao/pq.hpp>
 
 void run()
 {
@@ -18,8 +17,18 @@ void run()
       tw.insert( n, n + 23.45, "EUR" );
    }
 
-   TEST_ASSERT_MESSAGE( "validate reported result size", tw.finish() == 100000 );
-   TEST_ASSERT_MESSAGE( "validate actual result size", connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 100000 );
+   tw.insert( 123456, tao::pq::null, "EUR\nUSD\"FOO\\BAR" );
+
+   TEST_ASSERT_MESSAGE( "validate reported result size", tw.finish() == 100001 );
+   TEST_ASSERT_MESSAGE( "validate actual result size", connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 100001 );
+
+   {
+      const auto [ a, b, c ] = connection->execute( "SELECT a, b, c FROM tao_table_writer_test WHERE b IS NULL" ).tuple< unsigned, std::optional< double >, std::optional< std::string > >();
+
+      TEST_ASSERT_MESSAGE( "checking 'a' value", a == 123456 );
+      TEST_ASSERT_MESSAGE( "checking 'b' value", !b );
+      TEST_ASSERT_MESSAGE( "checking 'c' value", c == "EUR\nUSD\"FOO\\BAR" );
+   }
 
    TEST_THROWS( tao::pq::table_writer( connection->direct(), "SELECT 42" ) );
    TEST_THROWS( connection->execute( "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" ) );
