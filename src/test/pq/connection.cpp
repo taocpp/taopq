@@ -110,7 +110,7 @@ void run()
    TEST_ASSERT( connection->execute( "SELECT b FROM tao_connection_test WHERE a = 1" )[ 0 ][ 0 ].get() == std::string( "42" ) );
 }
 
-auto main() -> int
+auto main() -> int  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();
