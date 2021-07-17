@@ -36,7 +36,7 @@ namespace tao::pq::internal
    {
       const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
       if( !buffer ) {
-         throw std::runtime_error( "PQescapeIdentifier failed: " + error_message() );
+         throw std::runtime_error( "PQescapeIdentifier failed: " + error_message() );  // LCOV_EXCL_LINE
       }
       return buffer.get();
    }
