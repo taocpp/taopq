@@ -30,7 +30,7 @@ namespace tao::pq::internal
    template< template< typename... > class Traits >
    struct parameter_traits< Traits, null_t >
    {
-      explicit parameter_traits( const null_t& /*unused*/ ) noexcept
+      explicit parameter_traits( null_t /*unused*/ ) noexcept
       {}
 
       static constexpr std::size_t columns = 1;

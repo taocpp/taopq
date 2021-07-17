@@ -24,7 +24,7 @@ namespace tao::pq
       const row& m_row;
       const std::size_t m_column;
 
-      field( const row& row, const std::size_t column )
+      field( const row& row, const std::size_t column ) noexcept
          : m_row( row ),
            m_column( column )
       {}
@@ -54,22 +54,22 @@ namespace tao::pq
       }
    };
 
-   [[nodiscard]] inline auto operator==( const field& f, const null_t& /*unused*/ )
+   [[nodiscard]] inline auto operator==( const field& f, null_t /*unused*/ )
    {
       return f.is_null();
    }
 
-   [[nodiscard]] inline auto operator==( const null_t& /*unused*/, const field& f )
+   [[nodiscard]] inline auto operator==( null_t /*unused*/, const field& f )
    {
       return f.is_null();
    }
 
-   [[nodiscard]] inline auto operator!=( const field& f, const null_t& /*unused*/ )
+   [[nodiscard]] inline auto operator!=( const field& f, null_t /*unused*/ )
    {
       return !f.is_null();
    }
 
-   [[nodiscard]] inline auto operator!=( const null_t& /*unused*/, const field& f )
+   [[nodiscard]] inline auto operator!=( null_t /*unused*/, const field& f )
    {
       return !f.is_null();
    }

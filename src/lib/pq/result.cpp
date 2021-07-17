@@ -113,6 +113,7 @@ namespace tao::pq
 
    auto result::begin() const -> result::const_iterator
    {
+      check_has_result_set();
       return row( *this, 0, 0, m_columns );
    }
 

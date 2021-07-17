@@ -56,6 +56,7 @@ namespace tao::pq
          expect_ok,
          expect_copy_in
       };
+
       result( PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
 
    public:
@@ -218,12 +219,12 @@ namespace tao::pq
          return as_container< std::unordered_multimap< Ts... > >();
       }
 
-      [[nodiscard]] auto underlying_raw_ptr() -> PGresult*
+      [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGresult*
       {
          return m_pgresult.get();
       }
 
-      [[nodiscard]] auto underlying_raw_ptr() const -> const PGresult*
+      [[nodiscard]] auto underlying_raw_ptr() const noexcept -> const PGresult*
       {
          return m_pgresult.get();
       }
