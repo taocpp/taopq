@@ -42,6 +42,8 @@ namespace tao::pq
          std::set< std::string, std::less<> > m_prepared_statements;
 
          [[nodiscard]] auto error_message() const -> std::string;
+         [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::string;
+
          static void check_prepared_name( const std::string_view name );
          [[nodiscard]] auto is_prepared( const std::string_view name ) const noexcept -> bool;
 

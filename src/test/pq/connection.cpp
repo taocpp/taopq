@@ -68,6 +68,32 @@ void run()
    // deallocate must get a valid name
    TEST_THROWS( connection->deallocate( "FOO BAR" ) );
 
+   // test that prepared statement names are case sensitive
+   connection->prepare( "a", "SELECT 1" );
+   connection->prepare( "A", "SELECT 2" );
+
+   TEST_THROWS( connection->prepare( "a", "SELECT 2" ) );
+
+   TEST_ASSERT_MESSAGE( "checking prepared statement 'a'", connection->execute( "a" ).as< int >() == 1 );
+
+   connection->deallocate( "a" );
+
+   TEST_ASSERT_MESSAGE( "checking prepared statement 'A'", connection->execute( "A" ).as< int >() == 2 );
+
+   connection->prepare( "a", "SELECT 3" );
+
+   TEST_ASSERT_MESSAGE( "checking prepared statement 'a'", connection->execute( "a" ).as< int >() == 3 );
+   TEST_ASSERT_MESSAGE( "checking prepared statement 'A'", connection->execute( "A" ).as< int >() == 2 );
+
+   connection->deallocate( "A" );
+
+   TEST_ASSERT_MESSAGE( "checking prepared statement 'a'", connection->execute( "a" ).as< int >() == 3 );
+
+   connection->prepare( "A", "SELECT 4" );
+
+   TEST_ASSERT_MESSAGE( "checking prepared statement 'a'", connection->execute( "a" ).as< int >() == 3 );
+   TEST_ASSERT_MESSAGE( "checking prepared statement 'A'", connection->execute( "A" ).as< int >() == 4 );
+
    // create a test table
    connection->execute( "CREATE TABLE tao_connection_test ( a INTEGER PRIMARY KEY, b INTEGER )" );
 

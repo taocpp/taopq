@@ -32,6 +32,15 @@ namespace tao::pq::internal
       return std::string( message, size - 1 );
    }
 
+   auto connection::escape_identifier( const std::string_view identifier ) const -> std::string
+   {
+      const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
+      if( !buffer ) {
+         throw std::runtime_error( "PQescapeIdentifier failed: " + error_message() );
+      }
+      return buffer.get();
+   }
+
    void connection::check_prepared_name( const std::string_view name )
    {
       if( !is_identifier( name ) ) {
@@ -88,7 +97,7 @@ namespace tao::pq::internal
       if( !is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement name not found: " + name );
       }
-      (void)execute_params( ( "DEALLOCATE " + name ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
+      (void)execute_params( ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
       m_prepared_statements.erase( name );
    }
 
