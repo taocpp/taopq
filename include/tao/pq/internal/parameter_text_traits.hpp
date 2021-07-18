@@ -235,7 +235,7 @@ namespace tao::pq::internal
 
    public:
       parameter_text_traits( PGconn* c, const std::basic_string_view< std::byte > v, std::size_t dummy = 0 )
-         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )
+         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )  // NOLINT
       {
          if( m_data == nullptr ) {
             throw std::bad_alloc();  // LCOV_EXCL_LINE
