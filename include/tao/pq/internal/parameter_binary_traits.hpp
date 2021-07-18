@@ -15,8 +15,6 @@
 
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/endian.hpp>
-#include <tao/pq/internal/is_bytea_parameter.hpp>
-#include <tao/pq/span.hpp>
 
 namespace tao::pq::internal
 {
@@ -352,14 +350,14 @@ namespace tao::pq::internal
       }
    };
 
-   template< typename ElementType, std::size_t Extent >
-   struct parameter_binary_traits< tao::pq::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType > > >
+   template<>
+   struct parameter_binary_traits< std::basic_string_view< std::byte > >
    {
    private:
-      const tao::pq::span< const ElementType, Extent > m_v;
+      const std::basic_string_view< std::byte > m_v;
 
    public:
-      explicit parameter_binary_traits( const tao::pq::span< const ElementType, Extent > v ) noexcept
+      explicit parameter_binary_traits( const std::basic_string_view< std::byte > v ) noexcept
          : m_v( v )
       {}
 
@@ -388,6 +386,15 @@ namespace tao::pq::internal
       {
          return 1;
       }
+   };
+
+   template<>
+   struct parameter_binary_traits< std::basic_string< std::byte > >
+      : parameter_binary_traits< std::basic_string_view< std::byte > >
+   {
+      explicit parameter_binary_traits( const std::basic_string_view< std::byte > v ) noexcept
+         : parameter_binary_traits< std::basic_string_view< std::byte > >( v )
+      {}
    };
 
 }  // namespace tao::pq::internal

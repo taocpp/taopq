@@ -93,12 +93,11 @@ namespace tao::pq::internal
    private:
       const std::string_view m_v;
 
-   protected:
+   public:
       explicit parameter_traits( const std::string_view v ) noexcept
          : m_v( v )
       {}
 
-   public:
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >

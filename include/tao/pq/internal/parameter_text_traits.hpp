@@ -11,10 +11,8 @@
 #include <type_traits>
 
 #include <tao/pq/internal/dependent_false.hpp>
-#include <tao/pq/internal/is_bytea_parameter.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/printf.hpp>
-#include <tao/pq/span.hpp>
 
 #include <libpq-fe.h>
 
@@ -229,15 +227,15 @@ namespace tao::pq::internal
       {}
    };
 
-   template< typename ElementType, std::size_t Extent >
-   struct parameter_text_traits< tao::pq::span< ElementType, Extent >, std::enable_if_t< is_bytea_parameter< ElementType > > >  // NOLINT(cppcoreguidelines-special-member-functions)
+   template<>
+   struct parameter_text_traits< std::basic_string_view< std::byte > >
    {
    private:
       unsigned char* m_data;
 
    public:
-      explicit parameter_text_traits( PGconn* c, const tao::pq::span< const ElementType, Extent > v, std::size_t dummy = 0 )
-         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )  // NOLINT
+      parameter_text_traits( PGconn* c, const std::basic_string_view< std::byte > v, std::size_t dummy = 0 )
+         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )
       {
          if( m_data == nullptr ) {
             throw std::bad_alloc();  // LCOV_EXCL_LINE
@@ -278,7 +276,7 @@ namespace tao::pq::internal
       template< std::size_t I >
       [[nodiscard]] auto string_view() const noexcept -> std::string_view
       {
-         return value();
+         return value< I >();
       }
 
       template< std::size_t I >
@@ -286,6 +284,15 @@ namespace tao::pq::internal
       {
          return false;
       }
+   };
+
+   template<>
+   struct parameter_text_traits< std::basic_string< std::byte > >
+      : parameter_text_traits< std::basic_string_view< std::byte > >
+   {
+      parameter_text_traits( PGconn* c, const std::basic_string_view< std::byte > v )
+         : parameter_text_traits< std::basic_string_view< std::byte > >( c, v )
+      {}
    };
 
 }  // namespace tao::pq::internal

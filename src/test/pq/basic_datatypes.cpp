@@ -149,7 +149,7 @@ auto check( const std::string& datatype )
 template< template< typename... > class Traits, typename T >
 void check_bytea( T&& t )
 {
-   TEST_ASSERT( my_connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", tao::pq::span( std::forward< T >( t ) ) ).rows_affected() == 1 );
+   TEST_ASSERT( my_connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", std::forward< T >( t ) ).rows_affected() == 1 );
 
    const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
    TEST_ASSERT( result.size() == 7 );
@@ -445,107 +445,25 @@ void run()
    check< std::string >( "TEXT", "äöüÄÖÜß€𝄞" );
    check< std::string >( "TEXT", "ä\tö\nü\1Ä\"Ö;Ü'ß#€𝄞" );
 
-   // use std::span / tao::pq::span to pass binary data as parameters (works for char, signed char, unsigned char, and std::byte)
-
    check_null( "BYTEA" );
-   {
-      char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
+
+   const std::byte bdata[] = {
+      std::byte( 'v' ),
+      std::byte( 255 ),
+      std::byte( 0 ),
+      std::byte( 'a' ),
+      std::byte( 1 ),
+      std::byte( 'b' ),
+      std::byte( 0 )
+   };
 
    {
-      const char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
+      const std::basic_string< std::byte > b( std::data( bdata ), std::size( bdata ) );
+      check_bytea( b );
    }
-
    {
-      std::array< char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::array< const char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::vector< char > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      signed char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      const signed char bdata[] = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::array< signed char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::array< const signed char, 7 > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::vector< signed char > bdata = { 'x', 1, 42, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      unsigned char bdata[] = { 'x', 1, 255, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      const unsigned char bdata[] = { 'x', 1, 255, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::array< unsigned char, 7 > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::array< const unsigned char, 7 > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::vector< unsigned char > bdata = { 'x', 1, 255, 0, 'a', 0, 'b' };
-      check_bytea( bdata );
-   }
-
-   {
-      std::byte bdata[ 7 ] = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
-      check_bytea( bdata );
-   }
-
-   {
-      const std::byte bdata[ 7 ] = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
-      check_bytea( bdata );
-   }
-
-   {
-      std::array< std::byte, 7 > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
-      check_bytea( bdata );
-   }
-
-   {
-      std::array< const std::byte, 7 > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
-      check_bytea( bdata );
-   }
-
-   {
-      std::vector< std::byte > bdata = { std::byte( 'v' ), std::byte( 255 ), std::byte( 0 ), std::byte( 'a' ), std::byte( 1 ), std::byte( 'b' ), std::byte( 0 ) };
-      check_bytea( bdata );
+      const std::basic_string_view< std::byte > bv( std::data( bdata ), std::size( bdata ) );
+      check_bytea( bv );
    }
 }
 
