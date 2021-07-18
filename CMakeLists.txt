@@ -25,7 +25,6 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian_win.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/exclusive_scan.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/gen.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/is_bytea_parameter.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_binary_traits.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_text_traits.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_traits.hpp
@@ -44,7 +43,6 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_pair.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_tuple.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/row.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/span.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/table_writer.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/transaction.hpp
 )
