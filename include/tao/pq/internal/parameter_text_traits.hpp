@@ -242,10 +242,16 @@ namespace tao::pq::internal
          }
       }
 
+      parameter_text_traits( const parameter_text_traits& ) = delete;
+      parameter_text_traits( parameter_text_traits&& ) = delete;
+
       ~parameter_text_traits()
       {
          PQfreemem( m_data );
       }
+
+      void operator=( const parameter_text_traits& ) = delete;
+      void operator=( parameter_text_traits&& ) = delete;
 
       static constexpr std::size_t columns = 1;
 
