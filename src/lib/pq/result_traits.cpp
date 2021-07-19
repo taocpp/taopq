@@ -16,11 +16,11 @@ namespace tao::pq
    auto result_traits< std::basic_string< std::byte > >::from( const char* value ) -> std::basic_string< std::byte >
    {
       std::size_t size;
-      const std::unique_ptr< std::byte, decltype( &PQfreemem ) > buffer( (std::byte*)PQunescapeBytea( (unsigned char*)value, &size ), &PQfreemem );
+      const std::unique_ptr< unsigned char, decltype( &PQfreemem ) > buffer( PQunescapeBytea( reinterpret_cast< const unsigned char* >( value ), &size ), &PQfreemem );
       if( !buffer ) {
          throw std::bad_alloc();  // LCOV_EXCL_LINE
       }
-      return std::basic_string< std::byte >( buffer.get(), size );
+      return std::basic_string< std::byte >( reinterpret_cast< std::byte* >( buffer.get() ), size );
    }
 
    auto result_traits< bool >::from( const char* value ) -> bool
