@@ -53,6 +53,12 @@ namespace tao::pq
    };
 
    template<>
+   struct result_traits< std::basic_string< std::byte > >
+   {
+      [[nodiscard]] static auto from( const char* value ) -> std::basic_string< std::byte >;
+   };
+
+   template<>
    struct result_traits< bool >
    {
       [[nodiscard]] static auto from( const char* value ) -> bool;

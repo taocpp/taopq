@@ -4,12 +4,25 @@
 #include <tao/pq/result_traits.hpp>
 
 #include <limits>
+#include <memory>
 #include <stdexcept>
+
+#include <libpq-fe.h>
 
 #include <tao/pq/internal/strtox.hpp>
 
 namespace tao::pq
 {
+   auto result_traits< std::basic_string< std::byte > >::from( const char* value ) -> std::basic_string< std::byte >
+   {
+      std::size_t size;
+      const std::unique_ptr< std::byte, decltype( &PQfreemem ) > buffer( (std::byte*)PQunescapeBytea( (unsigned char*)value, &size ), &PQfreemem );
+      if( !buffer ) {
+         throw std::bad_alloc();  // LCOV_EXCL_LINE
+      }
+      return std::basic_string< std::byte >( buffer.get(), size );
+   }
+
    auto result_traits< bool >::from( const char* value ) -> bool
    {
       if( value[ 0 ] != '\0' && value[ 1 ] == '\0' ) {

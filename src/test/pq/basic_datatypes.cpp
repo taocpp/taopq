@@ -15,58 +15,6 @@
 
 std::shared_ptr< tao::pq::connection > my_connection;
 
-namespace tao::pq
-{
-   class bytea  // NOLINT
-   {
-   private:
-      std::size_t m_size;
-      unsigned char* m_data;
-
-   public:
-      explicit bytea( const char* value )
-         : m_size( 0 ), m_data( PQunescapeBytea( (unsigned char*)value, &m_size ) )  //NOLINT
-      {
-         if( m_data == nullptr ) {
-            throw std::bad_alloc();  // LCOV_EXCL_LINE
-         }
-      }
-
-      ~bytea()
-      {
-         PQfreemem( m_data );
-      }
-
-      bytea( const bytea& ) = delete;
-      auto operator=( const bytea& ) -> bytea& = delete;
-
-      [[nodiscard]] auto size() const noexcept
-      {
-         return m_size;
-      }
-
-      [[nodiscard]] auto data() const noexcept -> const unsigned char*
-      {
-         return m_data;
-      }
-
-      [[nodiscard]] auto operator[]( const std::size_t idx ) const noexcept -> unsigned char
-      {
-         return m_data[ idx ];
-      }
-   };
-
-   template<>
-   struct result_traits< bytea >
-   {
-      [[nodiscard]] static auto from( const char* value )
-      {
-         return bytea( value );
-      }
-   };
-
-}  // namespace tao::pq
-
 auto prepare_datatype( const std::string& datatype ) -> bool
 {
    static std::string last;
@@ -151,15 +99,15 @@ void check_bytea( T&& t )
 {
    TEST_ASSERT( my_connection->execute< Traits >( "UPDATE tao_basic_datatypes_test SET a=$1", std::forward< T >( t ) ).rows_affected() == 1 );
 
-   const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::bytea >();
+   const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< std::basic_string< std::byte > >();
    TEST_ASSERT( result.size() == 7 );
-   TEST_ASSERT( result[ 0 ] == static_cast< unsigned char >( t[ 0 ] ) );
-   TEST_ASSERT( result[ 1 ] == static_cast< unsigned char >( t[ 1 ] ) );
-   TEST_ASSERT( result[ 2 ] == static_cast< unsigned char >( t[ 2 ] ) );
-   TEST_ASSERT( result[ 3 ] == static_cast< unsigned char >( t[ 3 ] ) );
-   TEST_ASSERT( result[ 4 ] == static_cast< unsigned char >( t[ 4 ] ) );
-   TEST_ASSERT( result[ 5 ] == static_cast< unsigned char >( t[ 5 ] ) );
-   TEST_ASSERT( result[ 6 ] == static_cast< unsigned char >( t[ 6 ] ) );
+   TEST_ASSERT( result[ 0 ] == t[ 0 ] );
+   TEST_ASSERT( result[ 1 ] == t[ 1 ] );
+   TEST_ASSERT( result[ 2 ] == t[ 2 ] );
+   TEST_ASSERT( result[ 3 ] == t[ 3 ] );
+   TEST_ASSERT( result[ 4 ] == t[ 4 ] );
+   TEST_ASSERT( result[ 5 ] == t[ 5 ] );
+   TEST_ASSERT( result[ 6 ] == t[ 6 ] );
 }
 
 template< typename T >
