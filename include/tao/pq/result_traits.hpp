@@ -4,6 +4,7 @@
 #ifndef TAO_PQ_RESULT_TRAITS_HPP
 #define TAO_PQ_RESULT_TRAITS_HPP
 
+#include <cstddef>
 #include <string>
 #include <tuple>
 #include <type_traits>
