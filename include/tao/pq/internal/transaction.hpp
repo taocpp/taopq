@@ -19,7 +19,7 @@
 namespace tao::pq
 {
    template< template< typename... > class DefaultTraits >
-   class table_writer;
+   class basic_table_writer;
 
    namespace internal
    {
@@ -33,7 +33,7 @@ namespace tao::pq
          friend class table_writer;
 
          template< template< typename... > class DefaultTraits >
-         friend class pq::table_writer;
+         friend class pq::basic_table_writer;
 
       protected:
          std::shared_ptr< connection > m_connection;

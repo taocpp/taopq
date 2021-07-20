@@ -12,8 +12,8 @@
 
 namespace tao::pq
 {
-   template< template< typename... > class DefaultTraits = parameter_text_traits >
-   class table_writer
+   template< template< typename... > class DefaultTraits >
+   class basic_table_writer
       : public internal::table_writer
    {
    public:
@@ -26,8 +26,7 @@ namespace tao::pq
       }
    };
 
-   template< typename... Ts >
-   table_writer( Ts&&... ) -> table_writer<>;
+   using table_writer = basic_table_writer< parameter_text_traits >;
 
 }  // namespace tao::pq
 
