@@ -16,10 +16,9 @@
 
 namespace tao::pq
 {
-   class table_writer;
-
    namespace internal
    {
+      class table_writer;
       class transaction;
 
       struct deleter final
@@ -35,7 +34,7 @@ namespace tao::pq
       {
       private:
          friend class transaction;
-         friend class pq::table_writer;
+         friend class table_writer;
 
          const std::unique_ptr< PGconn, deleter > m_pgconn;
          transaction* m_current_transaction;

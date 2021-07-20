@@ -18,16 +18,21 @@
 
 namespace tao::pq
 {
+   template< template< typename... > class DefaultTraits >
    class table_writer;
 
    namespace internal
    {
       class connection;
+      class table_writer;
 
       class transaction
          : public std::enable_shared_from_this< transaction >
       {
       public:
+         friend class table_writer;
+
+         template< template< typename... > class DefaultTraits >
          friend class pq::table_writer;
 
       protected:

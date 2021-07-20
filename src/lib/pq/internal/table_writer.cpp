@@ -11,7 +11,7 @@
 #include <tao/pq/internal/transaction.hpp>
 #include <tao/pq/result.hpp>
 
-namespace tao::pq
+namespace tao::pq::internal
 {
    namespace
    {
@@ -80,4 +80,4 @@ namespace tao::pq
       return result( PQgetResult( c->m_pgconn.get() ) ).rows_affected();
    }
 
-}  // namespace tao::pq
+}  // namespace tao::pq::internal
