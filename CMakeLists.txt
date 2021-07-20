@@ -53,11 +53,11 @@ set(TAOPQ_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/table_writer.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/transaction.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_writer.cpp
 )
 
 source_group("Header Files" FILES ${TAOPQ_INCLUDE_FILES})
