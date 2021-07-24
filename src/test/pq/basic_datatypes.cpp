@@ -262,11 +262,11 @@ void run()
    check< double >( "NUMERIC", NAN );
 
    check< long double >( "NUMERIC", std::numeric_limits< long double >::lowest() );
-#ifndef _MSC_VER
-   check< long double >( "NUMERIC", -1e1001L );
-   check< long double >( "NUMERIC", -1e1000L );
-   check< long double >( "NUMERIC", -1e999L );
-#endif
+   if constexpr( sizeof( long double ) > sizeof( double ) ) {
+      check< long double >( "NUMERIC", -1e1001L );
+      check< long double >( "NUMERIC", -1e1000L );
+      check< long double >( "NUMERIC", -1e999L );
+   }
    check< long double >( "NUMERIC", -1e308 );
    check< long double >( "NUMERIC", -1.25 );
    check< long double >( "NUMERIC", -1 );
@@ -288,11 +288,11 @@ void run()
    check< long double >( "NUMERIC", 1 + std::numeric_limits< long double >::epsilon() );
    check< long double >( "NUMERIC", 1.25 );
    check< long double >( "NUMERIC", 1e308 );
-#ifndef _MSC_VER
-   check< long double >( "NUMERIC", 1e999L );
-   check< long double >( "NUMERIC", 1e1000L );
-   check< long double >( "NUMERIC", 1e1001L );
-#endif
+   if constexpr( sizeof( long double ) > sizeof( double ) ) {
+      check< long double >( "NUMERIC", 1e999L );
+      check< long double >( "NUMERIC", 1e1000L );
+      check< long double >( "NUMERIC", 1e1001L );
+   }
    check< long double >( "NUMERIC", std::numeric_limits< long double >::max() );
    check< long double >( "NUMERIC", NAN );
 
