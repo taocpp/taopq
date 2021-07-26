@@ -201,7 +201,7 @@ namespace tao::pq::internal
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr auto escape() noexcept -> bool
+      [[nodiscard]] constexpr auto escape() const noexcept -> bool
       {
          return m_forwarder ? m_forwarder->template escape< I >() : false;
       }
@@ -258,7 +258,7 @@ namespace tao::pq::internal
       }
 
       template< std::size_t I >
-      [[nodiscard]] constexpr auto escape() noexcept -> bool
+      [[nodiscard]] constexpr auto escape() const noexcept -> bool
       {
          return std::get< gen::template outer< I > >( m_tuple ).template escape< gen::template inner< I > >();
       }
