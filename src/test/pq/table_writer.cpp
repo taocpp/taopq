@@ -17,9 +17,9 @@ void run()
       tw.insert( n, n + 23.45, "EUR" );
    }
 
-   tw.insert( 123456, tao::pq::null, "EUR\nUSD\"FOO\\BAR" );
+   tw.insert( std::tuple( 123456, tao::pq::null, "EUR\nUSD\"FOO\\BAR" ) );
 
-   TEST_ASSERT_MESSAGE( "validate reported result size", tw.finish() == 100001 );
+   TEST_ASSERT_MESSAGE( "validate reported result size", tw.commit() == 100001 );
    TEST_ASSERT_MESSAGE( "validate actual result size", connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 100001 );
 
    {
@@ -44,7 +44,7 @@ void run()
       const auto tr = connection->direct();
       tao::pq::table_writer tw2( tr, "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tr->execute( "SELECT 42" );
-      tw2.finish();
+      tw2.commit();
    } );
 
    connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
@@ -52,7 +52,7 @@ void run()
    {
       tao::pq::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tw2.insert_raw( "1\t0\tXXX\n" );
-      tw2.finish();
+      tw2.commit();
    }
    TEST_ASSERT( connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 1 );
    {

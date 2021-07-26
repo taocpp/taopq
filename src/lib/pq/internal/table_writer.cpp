@@ -69,7 +69,7 @@ namespace tao::pq::internal
       insert_raw( buffer );
    }
 
-   auto table_writer::finish() -> std::size_t
+   auto table_writer::commit() -> std::size_t
    {
       const auto c = m_transaction->m_connection;
       const int r = PQputCopyEnd( c->m_pgconn.get(), nullptr );

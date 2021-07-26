@@ -48,13 +48,13 @@ namespace tao::pq::internal
       table_writer( table_writer&& ) = delete;
 
       // clang-format off
-         auto operator=( const table_writer& ) -> table_writer& = delete;
-         auto operator=( table_writer&& ) -> table_writer& = delete;
+      auto operator=( const table_writer& ) -> table_writer& = delete;
+      auto operator=( table_writer&& ) -> table_writer& = delete;
       // clang-format on
 
       void insert_raw( const std::string_view data );
 
-      auto finish() -> std::size_t;
+      auto commit() -> std::size_t;
    };
 
 }  // namespace tao::pq::internal
