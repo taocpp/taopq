@@ -17,7 +17,7 @@ void run()
       tw.insert( n, n + 23.45, "EUR" );
    }
 
-   tw.insert( std::tuple( 123456, tao::pq::null, "EUR\nUSD\"FOO\\BAR" ) );
+   tw.insert( std::make_tuple( 123456, tao::pq::null, "EUR\nUSD\"FOO\\BAR" ) );
 
    TEST_ASSERT_MESSAGE( "validate reported result size", tw.commit() == 100001 );
    TEST_ASSERT_MESSAGE( "validate actual result size", connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 100001 );
