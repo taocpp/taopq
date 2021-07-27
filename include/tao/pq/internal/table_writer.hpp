@@ -19,6 +19,7 @@ namespace tao::pq::internal
    class table_writer
    {
    protected:
+      std::shared_ptr< transaction > m_previous;
       std::shared_ptr< transaction > m_transaction;
 
       void insert_values( const std::string_view values[], const bool escape[], const std::size_t n_values );

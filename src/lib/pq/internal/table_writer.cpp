@@ -10,6 +10,7 @@
 #include <tao/pq/connection.hpp>
 #include <tao/pq/internal/transaction.hpp>
 #include <tao/pq/result.hpp>
+#include <tao/pq/transaction.hpp>
 
 namespace tao::pq::internal
 {
@@ -32,22 +33,61 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   table_writer::table_writer( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
-      : m_transaction( transaction )
+   class table_writer_transaction final
+      : public subtransaction_base< parameter_text_traits >  // note: the traits are never used
    {
-      result( PQexecParams( transaction->m_connection->m_pgconn.get(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
+   public:
+      explicit table_writer_transaction( const std::shared_ptr< connection >& connection )
+         : subtransaction_base< parameter_text_traits >( connection )
+      {}
+
+      ~table_writer_transaction() override
+      {
+         if( this->m_connection && this->m_connection->is_open() ) {
+            try {
+               this->rollback();
+            }
+            // LCOV_EXCL_START
+            catch( const std::exception& ) {
+               // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
+            }
+            catch( ... ) {
+               // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
+            }
+            // LCOV_EXCL_STOP
+         }
+      }
+
+      table_writer_transaction( const table_writer_transaction& ) = delete;
+      table_writer_transaction( table_writer_transaction&& ) = delete;
+      void operator=( const table_writer_transaction& ) = delete;
+      void operator=( table_writer_transaction&& ) = delete;
+
+   private:
+      void v_commit() override
+      {}
+
+      void v_rollback() override
+      {}
+   };
+
+   table_writer::table_writer( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
+      : m_previous( transaction ),
+        m_transaction( std::make_shared< table_writer_transaction >( transaction->m_connection ) )
+   {
+      result( PQexecParams( m_transaction->underlying_raw_ptr(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
    }
 
    table_writer::~table_writer()
    {
       if( m_transaction ) {
-         PQputCopyEnd( m_transaction->m_connection->m_pgconn.get(), "cancelled in dtor" );
+         PQputCopyEnd( m_transaction->underlying_raw_ptr(), "cancelled in dtor" );
       }
    }
 
    void table_writer::insert_raw( const std::string_view data )
    {
-      const int r = PQputCopyData( m_transaction->m_connection->m_pgconn.get(), data.data(), static_cast< int >( data.size() ) );
+      const int r = PQputCopyData( m_transaction->underlying_raw_ptr(), data.data(), static_cast< int >( data.size() ) );
       if( r != 1 ) {
          throw std::runtime_error( "PQputCopyData() failed: " + m_transaction->m_connection->error_message() );
       }
@@ -71,13 +111,14 @@ namespace tao::pq::internal
 
    auto table_writer::commit() -> std::size_t
    {
-      const auto c = m_transaction->m_connection;
-      const int r = PQputCopyEnd( c->m_pgconn.get(), nullptr );
+      const int r = PQputCopyEnd( m_transaction->underlying_raw_ptr(), nullptr );
       if( r != 1 ) {
-         throw std::runtime_error( "PQputCopyEnd() failed: " + c->error_message() );
+         throw std::runtime_error( "PQputCopyEnd() failed: " + m_transaction->m_connection->error_message() );
       }
+      const auto rows_affected = result( PQgetResult( m_transaction->underlying_raw_ptr() ) ).rows_affected();
       m_transaction.reset();
-      return result( PQgetResult( c->m_pgconn.get() ) ).rows_affected();
+      m_previous.reset();
+      return rows_affected;
    }
 
 }  // namespace tao::pq::internal
