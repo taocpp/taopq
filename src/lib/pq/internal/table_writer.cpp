@@ -33,33 +33,9 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   class table_writer_transaction final
-      : public subtransaction_base< parameter_text_traits >  // note: the traits are never used
-   {
-   public:
-      explicit table_writer_transaction( const std::shared_ptr< connection >& connection )
-         : subtransaction_base< parameter_text_traits >( connection )
-      {}
-
-      ~table_writer_transaction() override
-      {}
-
-      table_writer_transaction( const table_writer_transaction& ) = delete;
-      table_writer_transaction( table_writer_transaction&& ) = delete;
-      void operator=( const table_writer_transaction& ) = delete;
-      void operator=( table_writer_transaction&& ) = delete;
-
-   private:
-      void v_commit() override
-      {}
-
-      void v_rollback() override
-      {}
-   };
-
    table_writer::table_writer( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
       : m_previous( transaction ),
-        m_transaction( std::make_shared< table_writer_transaction >( transaction->m_connection ) )
+        m_transaction( std::make_shared< transaction_guard >( transaction->m_connection ) )
    {
       result( PQexecParams( m_transaction->underlying_raw_ptr(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
    }

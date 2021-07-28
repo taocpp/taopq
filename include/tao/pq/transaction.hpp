@@ -191,6 +191,19 @@ namespace tao::pq
          }
       };
 
+      class transaction_guard final
+         : public subtransaction_base< parameter_text_traits >  // note: the traits are never used
+      {
+      public:
+         explicit transaction_guard( const std::shared_ptr< connection >& connection )
+            : subtransaction_base< parameter_text_traits >( connection )
+         {}
+
+      private:
+         void v_commit() override {}
+         void v_rollback() override {}
+      };
+
    }  // namespace internal
 
    template< template< typename... > class DefaultTraits >

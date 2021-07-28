@@ -14,28 +14,6 @@
 
 namespace tao::pq
 {
-   namespace internal
-   {
-      class transaction_guard final
-         : public subtransaction_base< parameter_text_traits >  // note: the traits are never used
-      {
-      public:
-         explicit transaction_guard( const std::shared_ptr< connection >& connection )
-            : subtransaction_base< parameter_text_traits >( connection )
-         {}
-
-         // transaction_guard( const transaction_guard& ) = delete;
-         // transaction_guard( transaction_guard&& ) = delete;
-         // void operator=( const transaction_guard& ) = delete;
-         // void operator=( transaction_guard&& ) = delete;
-
-      private:
-         void v_commit() override {}
-         void v_rollback() override {}
-      };
-
-   }  // namespace internal
-
    table_reader::table_reader( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
       : m_previous( transaction ),
         m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) ),
@@ -51,7 +29,7 @@ namespace tao::pq
       }
    }
 
-   bool table_reader::fetch_next()
+   auto table_reader::fetch_next() -> bool
    {
       char* buffer = nullptr;
       const auto result = PQgetCopyData( m_transaction->underlying_raw_ptr(), &buffer, 0 );
@@ -68,7 +46,7 @@ namespace tao::pq
       return true;
    }
 
-   const char* table_reader::get_data()
+   auto table_reader::get_data() -> const char*
    {
       return static_cast< const char* >( m_buffer.get() );
    }
