@@ -25,7 +25,7 @@ void run()
       TEST_THROWS( connection->direct() );
       std::size_t count = 0;
       while( tr.fetch_next() ) {
-         tr.get_data();
+         (void)tr.get_data();
          ++count;
       }
       TEST_ASSERT_MESSAGE( "validate count", count == 100000 );
