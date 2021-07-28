@@ -48,10 +48,8 @@ namespace tao::pq::internal
       table_writer( const table_writer& ) = delete;
       table_writer( table_writer&& ) = delete;
 
-      // clang-format off
       auto operator=( const table_writer& ) -> table_writer& = delete;
       auto operator=( table_writer&& ) -> table_writer& = delete;
-      // clang-format on
 
       void insert_raw( const std::string_view data );
 

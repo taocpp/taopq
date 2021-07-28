@@ -18,6 +18,8 @@
 
 namespace tao::pq
 {
+   class table_reader;
+
    template< template< typename... > class DefaultTraits >
    class basic_table_writer;
 
@@ -30,6 +32,7 @@ namespace tao::pq
          : public std::enable_shared_from_this< transaction >
       {
       public:
+         friend class pq::table_reader;
          friend class table_writer;
 
          template< template< typename... > class DefaultTraits >

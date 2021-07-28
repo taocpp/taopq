@@ -13,6 +13,7 @@ void run()
    connection->execute( "CREATE TABLE tao_table_writer_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
 
    tao::pq::table_writer tw( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
+   TEST_THROWS( connection->direct() );
    for( unsigned n = 0; n < 100000; ++n ) {
       tw.insert( n, n + 23.45, "EUR" );
    }
@@ -31,20 +32,22 @@ void run()
    }
 
    TEST_THROWS( tao::pq::table_writer( connection->direct(), "SELECT 42" ) );
+   TEST_THROWS( tao::pq::table_writer( connection->direct(), "" ) );
+   TEST_THROWS( tao::pq::table_writer( connection->direct(), "COPY tao_table_writer_test ( a, b, c, d ) FROM STDIN" ) );
+   TEST_THROWS( tao::pq::table_writer( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) TO STDOUT" ) );
+
    TEST_THROWS( connection->execute( "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" ) );
 
    TEST_THROWS_MESSAGE( "mixed usage test #1", {
       const auto tr = connection->direct();
       tao::pq::table_writer tw2( tr, "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tr->execute( "SELECT 42" );
-      tw2.insert_raw( "1\t0\tXXX\n" );
    } );
 
    TEST_THROWS_MESSAGE( "mixed usage test #2", {
-      const auto tr = connection->direct();
+      const auto tr = connection->transaction();
       tao::pq::table_writer tw2( tr, "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tr->execute( "SELECT 42" );
-      tw2.commit();
    } );
 
    connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );

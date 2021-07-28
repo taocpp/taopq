@@ -42,21 +42,7 @@ namespace tao::pq::internal
       {}
 
       ~table_writer_transaction() override
-      {
-         if( this->m_connection && this->m_connection->is_open() ) {
-            try {
-               this->rollback();
-            }
-            // LCOV_EXCL_START
-            catch( const std::exception& ) {
-               // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
-            }
-            catch( ... ) {
-               // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
-            }
-            // LCOV_EXCL_STOP
-         }
-      }
+      {}
 
       table_writer_transaction( const table_writer_transaction& ) = delete;
       table_writer_transaction( table_writer_transaction&& ) = delete;

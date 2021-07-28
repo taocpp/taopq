@@ -16,6 +16,8 @@
 
 namespace tao::pq
 {
+   class table_reader;
+
    namespace internal
    {
       class table_writer;
@@ -33,8 +35,9 @@ namespace tao::pq
          : public std::enable_shared_from_this< connection >
       {
       private:
-         friend class transaction;
+         friend class pq::table_reader;
          friend class table_writer;
+         friend class transaction;
 
          const std::unique_ptr< PGconn, deleter > m_pgconn;
          transaction* m_current_transaction;

@@ -20,6 +20,7 @@
 #include <tao/pq/result_traits_pair.hpp>
 #include <tao/pq/result_traits_tuple.hpp>
 
+#include <tao/pq/table_reader.hpp>
 #include <tao/pq/table_writer.hpp>
 
 #endif

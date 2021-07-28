@@ -52,6 +52,12 @@ namespace tao::pq
             }
             break;
 
+         case PGRES_COPY_OUT:
+            if( mode == mode_t::expect_copy_out ) {
+               return;
+            }
+            break;
+
          case PGRES_EMPTY_QUERY:
             throw std::runtime_error( "empty query" );
 

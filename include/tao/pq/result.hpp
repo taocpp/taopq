@@ -24,6 +24,8 @@
 
 namespace tao::pq
 {
+   class table_reader;
+
    namespace internal
    {
       class table_writer;
@@ -40,8 +42,10 @@ namespace tao::pq
    class result
    {
    private:
-      friend class internal::connection;
+      friend class table_reader;
+
       friend class internal::table_writer;
+      friend class internal::connection;
 
       const std::shared_ptr< PGresult > m_pgresult;
       const std::size_t m_columns;
@@ -53,7 +57,8 @@ namespace tao::pq
       enum class mode_t
       {
          expect_ok,
-         expect_copy_in
+         expect_copy_in,
+         expect_copy_out
       };
 
       result( PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
