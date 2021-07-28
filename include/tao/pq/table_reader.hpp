@@ -14,7 +14,8 @@ namespace tao::pq
    namespace internal
    {
       class transaction;
-   }
+
+   }  // namespace internal
 
    class table_reader
    {
@@ -34,8 +35,8 @@ namespace tao::pq
       auto operator=( table_reader&& ) -> table_reader& = delete;
 
       // this API will change, it is just a placeholder
-      [[nodiscard]] bool fetch_next();
-      [[nodiscard]] const char* get_data();
+      [[nodiscard]] auto fetch_next() -> bool;
+      [[nodiscard]] auto get_data() -> const char*;
    };
 
 }  // namespace tao::pq
