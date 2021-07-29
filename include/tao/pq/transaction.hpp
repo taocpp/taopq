@@ -191,12 +191,15 @@ namespace tao::pq
          }
       };
 
+      template< typename >
+      class unused_traits;
+
       class transaction_guard final
-         : public subtransaction_base< parameter_text_traits >  // note: the traits are never used
+         : public subtransaction_base< unused_traits >
       {
       public:
          explicit transaction_guard( const std::shared_ptr< connection >& connection )
-            : subtransaction_base< parameter_text_traits >( connection )
+            : subtransaction_base< unused_traits >( connection )
          {}
 
       private:
