@@ -1,6 +1,6 @@
 # Installing
 
-The Taopq project is a library, different from other Taocpp projects, this one needs to be built and requires PostgreSQL library installed. On this section will visit some ways how to install Taopq properly. We will use CMake for building, but it does not mean that is the only way.
+The Taopq project is a library, different from other Taocpp projects, this one needs to be built and requires PostgreSQL library installed. On this section we will visit some ways how to install Taopq properly. We will use CMake for building.
 
 ## Using Conan package manager
 
@@ -25,7 +25,7 @@ Now, to install Taopq and its dependencies, run:
 
     conan install .
 
-Where `.` indicated the folder where `conanfile.txt` is installed. You also can pass the file path if you prefer.
+Where `.` indicates the folder where `conanfile.txt` is installed. You also can pass the file path instead.
 
 However, if you do not want to keep a new file, you can simply install the package directly, the result will be the same:
 
@@ -52,13 +52,13 @@ Now, we just need to configure and build our project:
     cmake .
     cmake --build .
 
-Done, your project should be built correctly and linked to Taopq, libpq and libz.
+Once done, your project should be built correctly and linked to Taopq, libpq and libz.
 
 
 ## Using CMake
 
-Since CMake 3.11, the feature [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) can used to download and build project dependencies.
-This mechanism makes our development much easier, but is lacks in terms of reproducibility, so be careful if you are using it for production. Also, we will use `FetchContent_MakeAvailable` which is available since CMake 3.14:
+Since CMake 3.11, the feature [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) can be used to download and build project dependencies.
+This mechanism makes our development much easier, but it lacks in terms of reproducibility, so be careful if you are using it for production. Also, we will use `FetchContent_MakeAvailable` which is available since CMake 3.14:
 
 ```cmake
 cmake_minimum_required(VERSION 3.14)
@@ -86,8 +86,8 @@ Now, we just need to execute CMake as usual:
     cmake --build .
 
 The CMake client will download Taopq source files based on the `main` branch, but is highly recommended using a commit to keep the reproducibility.
-Besides that, PostgreSQL (libpq) is a pre-requirement. You can extend your CMake to download and build libpq too, or just consume from your system.
-When executing the build step, Taopq will be built first, as its target is required by our application, after that, the example will be built too and linked to both libpq and Taopq.
+Besides that, PostgreSQL (libpq) is a pre-requirement. You can extend the `CMakeLists.txt` to download and build libpq too, or just consume from your system.
+When executing the build step, Taopq will be built first, as its target is required by our application, after that, the example application will be built and linked to both libpq and Taopq.
 
 If you want to use `libpq` from your system, there are few ways to install it:
 
