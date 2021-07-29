@@ -3,7 +3,7 @@
  * [Project](https://github.com/taocpp/taopq)
  * [Overview](Overview.md)
    * [Important](Overview.md#important)
- * Installing and Using - TODO
+ * [Installing](Installing.md)
  * [General](General.md)
    * [Connections](General.md#connections)
    * [Transactions](General.md#transactions)
