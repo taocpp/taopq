@@ -32,7 +32,7 @@ namespace tao::pq
          case 0:
             TAO_PQ_UNREACHABLE;
          case -1: {
-            pq::result( PQgetResult( m_transaction->underlying_raw_ptr() ) );
+            (void)pq::result( PQgetResult( m_transaction->underlying_raw_ptr() ) );
             m_transaction.reset();
             m_previous.reset();
             return false;
