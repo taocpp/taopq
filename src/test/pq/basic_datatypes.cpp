@@ -13,6 +13,39 @@
 
 #include <tao/pq/connection.hpp>
 
+namespace tao::pq
+{
+   using binary = std::basic_string< std::byte >;
+   using binary_view = std::basic_string_view< std::byte >;
+
+   template< typename T >
+   binary_view to_binary_view( const T* data, const std::size_t size )
+   {
+      static_assert( sizeof( T ) == 1 );
+      return { reinterpret_cast< const std::byte* >( data ), size };
+   }
+
+   template< typename T >
+   binary_view to_binary_view( const T& data )
+   {
+      return to_binary_view( std::data( data ), std::size( data ) );
+   }
+
+   template< typename T >
+   binary to_binary( const T* data, const std::size_t size )
+   {
+      static_assert( sizeof( T ) == 1 );
+      return { reinterpret_cast< const std::byte* >( data ), size };
+   }
+
+   template< typename T >
+   binary to_binary( const T& data )
+   {
+      return to_binary( std::data( data ), std::size( data ) );
+   }
+
+}  // namespace tao::pq
+
 std::shared_ptr< tao::pq::connection > my_connection;
 
 auto prepare_datatype( const std::string& datatype ) -> bool
@@ -395,14 +428,8 @@ void run()
       std::byte( 0 )
    };
 
-   {
-      const std::basic_string< std::byte > b( std::data( bdata ), std::size( bdata ) );
-      check_bytea( b );
-   }
-   {
-      const std::basic_string_view< std::byte > bv( std::data( bdata ), std::size( bdata ) );
-      check_bytea( bv );
-   }
+   check_bytea( tao::pq::to_binary( bdata ) );
+   check_bytea( tao::pq::to_binary_view( bdata ) );
 }
 
 auto main() -> int
