@@ -9,6 +9,7 @@
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/internal/transaction.hpp>
+#include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
 
@@ -22,13 +23,6 @@ namespace tao::pq
       result( PQexecParams( m_transaction->underlying_raw_ptr(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_out );
    }
 
-   table_reader::~table_reader()
-   {
-      if( m_transaction ) {
-         PQputCopyEnd( m_transaction->underlying_raw_ptr(), "cancelled in dtor" );
-      }
-   }
-
    auto table_reader::fetch_next() -> bool
    {
       char* buffer = nullptr;
@@ -36,10 +30,13 @@ namespace tao::pq
       m_buffer.reset( buffer );
       switch( result ) {
          case 0:
-            // unreachable
-            break;
-         case -1:
+            TAO_PQ_UNREACHABLE;
+         case -1: {
+            pq::result( PQgetResult( m_transaction->underlying_raw_ptr() ) );
+            m_transaction.reset();
+            m_previous.reset();
             return false;
+         }
          case -2:
             throw std::runtime_error( "PQgetCopyData() failed: " + m_transaction->m_connection->error_message() );
       }

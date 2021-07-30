@@ -26,7 +26,7 @@ namespace tao::pq
 
    public:
       table_reader( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement );
-      ~table_reader();
+      ~table_reader() = default;
 
       table_reader( const table_reader& ) = delete;
       table_reader( table_reader&& ) = delete;
