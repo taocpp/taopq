@@ -14,6 +14,7 @@ set(TAOPQ_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include)
 
 set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/access_mode.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/binary.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection_pool.hpp

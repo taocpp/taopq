@@ -69,6 +69,9 @@ void run()
    TEST_EXECUTE( connection->transaction()->subtransaction()->execute( "INSERT INTO tao_transaction_test VALUES ( 3 )" ) );  // not committed
    TEST_ASSERT( connection->execute( "SELECT * FROM tao_transaction_test" ).size() == 2 );
 
+   TEST_THROWS( connection->transaction( tao::pq::access_mode::read_only )->execute( "INSERT INTO tao_transaction_test VALUES ( 3 )" ) );
+   TEST_ASSERT( connection->transaction( tao::pq::access_mode::read_only )->execute( "SELECT * FROM tao_transaction_test" ).size() == 2 );
+
    TEST_THROWS_MESSAGE( "THROWS (void)connection->transaction()", const auto tr = connection->transaction(); (void)connection->transaction() );
    TEST_THROWS_MESSAGE( "THROWS (void)connection->direct()", const auto tr = connection->transaction(); (void)connection->direct() );
    TEST_THROWS_MESSAGE( "THROWS (void)connection->transaction()", const auto tr = connection->direct(); (void)connection->transaction() );
