@@ -293,13 +293,6 @@ namespace tao::pq::internal
       }
    };
 
-   template<>
-   struct parameter_text_traits< binary >
-      : parameter_text_traits< binary_view >
-   {
-      using parameter_text_traits< binary_view >::parameter_text_traits;
-   };
-
 }  // namespace tao::pq::internal
 
 #endif

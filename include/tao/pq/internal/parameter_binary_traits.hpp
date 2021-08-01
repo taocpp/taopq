@@ -389,13 +389,6 @@ namespace tao::pq::internal
       }
    };
 
-   template<>
-   struct parameter_binary_traits< binary >
-      : parameter_binary_traits< binary_view >
-   {
-      using parameter_binary_traits< binary_view >::parameter_binary_traits;
-   };
-
 }  // namespace tao::pq::internal
 
 #endif

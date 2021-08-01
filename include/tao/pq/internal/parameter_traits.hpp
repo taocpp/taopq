@@ -14,6 +14,7 @@
 
 #include <libpq-fe.h>
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/null.hpp>
@@ -141,9 +142,14 @@ namespace tao::pq::internal
    struct parameter_traits< Traits, std::string >
       : parameter_traits< Traits, std::string_view >
    {
-      explicit parameter_traits( const std::string_view v ) noexcept
-         : parameter_traits< Traits, std::string_view >( v )
-      {}
+      using parameter_traits< Traits, std::string_view >::parameter_traits;
+   };
+
+   template< template< typename... > class Traits >
+   struct parameter_traits< Traits, binary >
+      : parameter_traits< Traits, binary_view >
+   {
+      using parameter_traits< Traits, binary_view >::parameter_traits;
    };
 
    template< template< typename... > class Traits, typename T >
