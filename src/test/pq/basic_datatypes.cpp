@@ -54,7 +54,7 @@ void check( const std::string& datatype, const T& value )
          // LCOV_EXCL_START
          std::cout << "check: " << datatype << " value: " << value << " result: " << result.get( 0, 0 ) << " FAILED!" << std::endl;
          TEST_ASSERT( false );
-         // LCOV_EXCL_END
+         // LCOV_EXCL_STOP
       }
    }
    else {
@@ -63,7 +63,7 @@ void check( const std::string& datatype, const T& value )
          // LCOV_EXCL_START
          std::cout << "check: " << datatype << " value: NaN result: " << result.get( 0, 0 ) << " FAILED!" << std::endl;
          TEST_ASSERT( false );
-         // LCOV_EXCL_END
+         // LCOV_EXCL_STOP
       }
    }
 }
@@ -414,5 +414,5 @@ auto main() -> int
       std::cerr << "unknown exception" << std::endl;
       throw;
    }
-   // LCOV_EXCL_END
+   // LCOV_EXCL_STOP
 }

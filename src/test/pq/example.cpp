@@ -70,5 +70,5 @@ auto main() -> int
       std::cerr << "unknown exception" << std::endl;
       throw;
    }
-   // LCOV_EXCL_END
+   // LCOV_EXCL_STOP
 }
