@@ -24,8 +24,7 @@ void run()
       tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" );
       TEST_THROWS( connection->direct() );
       std::size_t count = 0;
-      while( tr.fetch_next() ) {
-         (void)tr.get_data();
+      while( tr.get_row() ) {
          ++count;
       }
       TEST_ASSERT_MESSAGE( "validate count", count == 100000 );
@@ -38,12 +37,31 @@ void run()
 
    TEST_THROWS( connection->execute( "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" ) );
 
+   connection->execute( "DELETE FROM tao_table_reader_test" );
+   connection->execute( "INSERT INTO tao_table_reader_test VALUES( $1, $2, $3 )", 1, 3.141592, "A\bB\fC\"D'E\n\rF\tGH\vI\\J" );
+   connection->execute( "INSERT INTO tao_table_reader_test VALUES( $1, $2, $3 )", 2, tao::pq::null, tao::pq::null );
+   connection->execute( "INSERT INTO tao_table_reader_test VALUES( $1, $2, $3 )", 3, 42, "FOO" );
+
    {
       tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" );
-      TEST_ASSERT( tr.fetch_next() );
-      TEST_ASSERT( tr.fetch_next() );
+      {
+         TEST_ASSERT( tr.get_row() );
+         const auto& fields = tr.fields();
+         TEST_ASSERT( fields.size() == 3 );
+         TEST_ASSERT( fields[ 0 ] == "1" );
+         TEST_ASSERT( fields[ 1 ] == "3.141592" );
+         TEST_ASSERT( fields[ 2 ] == "A\bB\fC\"D'E\n\rF\tGH\vI\\J" );
+      }
+      {
+         TEST_ASSERT( tr.get_row() );
+         const auto& fields = tr.fields();
+         TEST_ASSERT( fields.size() == 3 );
+         TEST_ASSERT( fields[ 0 ] == "2" );
+         TEST_ASSERT( fields[ 1 ].empty() );
+         TEST_ASSERT( fields[ 2 ].empty() );
+      }
       PQclear( PQexec( connection->underlying_raw_ptr(), "SELECT 42" ) );
-      TEST_THROWS( tr.fetch_next() );
+      TEST_THROWS( tr.get_row() );
    }
 }
 
