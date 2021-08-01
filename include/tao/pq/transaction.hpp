@@ -203,8 +203,10 @@ namespace tao::pq
          {}
 
       private:
+         // LCOV_EXCL_START
          void v_commit() override {}
          void v_rollback() override {}
+         // LCOV_EXCL_STOP
       };
 
    }  // namespace internal
