@@ -6,8 +6,6 @@
 
 #include <tao/pq.hpp>
 
-#include <iostream>
-
 void run()
 {
    // overwrite the default with an environment variable if needed
