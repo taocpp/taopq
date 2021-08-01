@@ -37,6 +37,14 @@ void run()
    TEST_THROWS( tao::pq::table_reader( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) FROM STDIN" ) );
 
    TEST_THROWS( connection->execute( "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" ) );
+
+   {
+      tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" );
+      TEST_ASSERT( tr.fetch_next() );
+      TEST_ASSERT( tr.fetch_next() );
+      PQexec( connection->underlying_raw_ptr(), "SELECT 42" );
+      TEST_THROWS( tr.fetch_next() );
+   }
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
