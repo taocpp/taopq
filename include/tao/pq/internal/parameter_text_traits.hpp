@@ -10,6 +10,7 @@
 #include <string>
 #include <type_traits>
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/printf.hpp>
@@ -228,13 +229,13 @@ namespace tao::pq::internal
    };
 
    template<>
-   struct parameter_text_traits< std::basic_string_view< std::byte > >
+   struct parameter_text_traits< binary_view >
    {
    private:
       unsigned char* m_data;
 
    public:
-      parameter_text_traits( PGconn* c, const std::basic_string_view< std::byte > v, std::size_t dummy = 0 )
+      parameter_text_traits( PGconn* c, const binary_view v, std::size_t dummy = 0 )
          : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )  // NOLINT
       {
          if( m_data == nullptr ) {
@@ -293,12 +294,10 @@ namespace tao::pq::internal
    };
 
    template<>
-   struct parameter_text_traits< std::basic_string< std::byte > >
-      : parameter_text_traits< std::basic_string_view< std::byte > >
+   struct parameter_text_traits< binary >
+      : parameter_text_traits< binary_view >
    {
-      parameter_text_traits( PGconn* c, const std::basic_string_view< std::byte > v )
-         : parameter_text_traits< std::basic_string_view< std::byte > >( c, v )
-      {}
+      using parameter_text_traits< binary_view >::parameter_text_traits;
    };
 
 }  // namespace tao::pq::internal

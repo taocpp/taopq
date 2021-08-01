@@ -10,6 +10,7 @@
 #include <type_traits>
 #include <utility>
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 
 namespace tao::pq
@@ -54,9 +55,9 @@ namespace tao::pq
    };
 
    template<>
-   struct result_traits< std::basic_string< std::byte > >
+   struct result_traits< binary >
    {
-      [[nodiscard]] static auto from( const char* value ) -> std::basic_string< std::byte >;
+      [[nodiscard]] static auto from( const char* value ) -> binary;
    };
 
    template<>

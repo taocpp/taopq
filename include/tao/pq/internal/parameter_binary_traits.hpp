@@ -13,6 +13,7 @@
 
 #include <libpq-fe.h>
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/endian.hpp>
 
@@ -351,13 +352,13 @@ namespace tao::pq::internal
    };
 
    template<>
-   struct parameter_binary_traits< std::basic_string_view< std::byte > >
+   struct parameter_binary_traits< binary_view >
    {
    private:
-      const std::basic_string_view< std::byte > m_v;
+      const binary_view m_v;
 
    public:
-      explicit parameter_binary_traits( const std::basic_string_view< std::byte > v ) noexcept
+      explicit parameter_binary_traits( const binary_view v ) noexcept
          : m_v( v )
       {}
 
@@ -389,12 +390,10 @@ namespace tao::pq::internal
    };
 
    template<>
-   struct parameter_binary_traits< std::basic_string< std::byte > >
-      : parameter_binary_traits< std::basic_string_view< std::byte > >
+   struct parameter_binary_traits< binary >
+      : parameter_binary_traits< binary_view >
    {
-      explicit parameter_binary_traits( const std::basic_string_view< std::byte > v ) noexcept
-         : parameter_binary_traits< std::basic_string_view< std::byte > >( v )
-      {}
+      using parameter_binary_traits< binary_view >::parameter_binary_traits;
    };
 
 }  // namespace tao::pq::internal

@@ -4,6 +4,7 @@
 #ifndef TAO_PQ_HPP
 #define TAO_PQ_HPP
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/null.hpp>
 
 #include <tao/pq/connection.hpp>
