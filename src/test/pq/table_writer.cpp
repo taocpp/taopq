@@ -50,7 +50,7 @@ void run()
       tr->execute( "SELECT 42" );
    } );
 
-   connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
+   connection->execute( "DROP TABLE tao_table_writer_test" );
    connection->execute( "CREATE TABLE tao_table_writer_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
    {
       tao::pq::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
@@ -64,7 +64,22 @@ void run()
    }
    TEST_ASSERT( connection->execute( "SELECT COUNT(*) FROM tao_table_writer_test" ).as< std::size_t >() == 1 );
 
-   connection->execute( "DROP TABLE IF EXISTS tao_table_writer_test" );
+   connection->execute( "DROP TABLE tao_table_writer_test" );
+   connection->execute( "CREATE TABLE tao_table_writer_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
+   {
+      tao::pq::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
+      tw2.insert_raw( "3\t0\tXXX\n" );
+      PQexec( connection->underlying_raw_ptr(), "SELECT 42" );
+      TEST_THROWS( tw2.commit() );
+   }
+   {
+      tao::pq::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
+      tw2.insert_raw( "4\t0\tXXX\n" );
+      PQexec( connection->underlying_raw_ptr(), "SELECT 42" );
+      TEST_THROWS( tw2.insert_raw( "5\t0\tXXX\n" ) );
+   }
+
+   connection->execute( "DROP TABLE tao_table_writer_test" );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
