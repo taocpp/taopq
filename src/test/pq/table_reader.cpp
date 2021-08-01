@@ -42,7 +42,7 @@ void run()
       tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" );
       TEST_ASSERT( tr.fetch_next() );
       TEST_ASSERT( tr.fetch_next() );
-      PQexec( connection->underlying_raw_ptr(), "SELECT 42" );
+      PQclear( PQexec( connection->underlying_raw_ptr(), "SELECT 42" ) );
       TEST_THROWS( tr.fetch_next() );
    }
 }

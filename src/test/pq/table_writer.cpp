@@ -69,13 +69,13 @@ void run()
    {
       tao::pq::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tw2.insert_raw( "3\t0\tXXX\n" );
-      PQexec( connection->underlying_raw_ptr(), "SELECT 42" );
+      PQclear( PQexec( connection->underlying_raw_ptr(), "SELECT 42" ) );
       TEST_THROWS( tw2.commit() );
    }
    {
       tao::pq::table_writer tw2( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" );
       tw2.insert_raw( "4\t0\tXXX\n" );
-      PQexec( connection->underlying_raw_ptr(), "SELECT 42" );
+      PQclear( PQexec( connection->underlying_raw_ptr(), "SELECT 42" ) );
       TEST_THROWS( tw2.insert_raw( "5\t0\tXXX\n" ) );
    }
 
