@@ -33,8 +33,8 @@ namespace tao::pq
          return { static_cast< const char* >( buffer ), static_cast< std::size_t >( result ) };
       }
       switch( result ) {
-         case 0:
-            TAO_PQ_UNREACHABLE;
+         case 0:                 // LCOV_EXCL_LINE
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          case -1: {
             (void)pq::result( PQgetResult( m_transaction->underlying_raw_ptr() ) );
             m_transaction.reset();
@@ -44,7 +44,7 @@ namespace tao::pq
          case -2:
             throw std::runtime_error( "PQgetCopyData() failed: " + m_transaction->m_connection->error_message() );
       }
-      TAO_PQ_UNREACHABLE;
+      TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
    auto table_reader::parse_data() noexcept -> bool
@@ -82,8 +82,8 @@ namespace tao::pq
                         case '\n':
                            return true;
 
-                        default:
-                           TAO_PQ_UNREACHABLE;
+                        default:                // LCOV_EXCL_LINE
+                           TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
                      }
                      break;
 
@@ -115,8 +115,8 @@ namespace tao::pq
                      *write++ = '\\';
                      break;
 
-                  default:
-                     TAO_PQ_UNREACHABLE;
+                  default:                // LCOV_EXCL_LINE
+                     TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
                }
                break;
 
@@ -125,11 +125,11 @@ namespace tao::pq
                *write++ = '\0';
                return true;
 
-            default:
-               TAO_PQ_UNREACHABLE;
+            default:                // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
       }
-      TAO_PQ_UNREACHABLE;
+      TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
    auto table_reader::get_row() -> bool
