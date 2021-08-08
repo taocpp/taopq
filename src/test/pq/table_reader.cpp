@@ -26,7 +26,10 @@ void run()
 
       std::size_t count = 0;
       for( const auto& row : tr ) {
-         [[maybe_unused]] auto [ a, b, c ] = row.tuple< int, std::optional< double >, std::optional< std::string_view > >();
+         auto [ a, b, c ] = row.tuple< int, std::optional< double >, std::optional< std::string_view > >();
+         (void)a;
+         (void)b;
+         (void)c;
          ++count;
       }
       TEST_ASSERT_MESSAGE( "validate count", count == 100000 );
