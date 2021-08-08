@@ -52,10 +52,19 @@ void run()
       TEST_ASSERT( tr.columns() == 3 );
       {
          TEST_ASSERT( tr.get_row() );
-         auto [ a, b, c ] = tr.row().tuple< int, std::optional< double >, std::optional< std::string_view > >();
+         const auto& row = tr.row();
+         auto [ a, b, c ] = row.tuple< int, std::optional< double >, std::optional< std::string_view > >();
          TEST_ASSERT( a == 1 );
          TEST_ASSERT( b == 3.141592 );
          TEST_ASSERT( c == "A\bB\fC\"D'E\n\rF\tGH\vI\\J" );
+
+         TEST_ASSERT( row.at( 0 ).as< int >() == 1 );
+         TEST_ASSERT( !row[ 1 ].is_null() );
+         TEST_ASSERT( row[ 1 ].as< double >() == 3.141592 );
+         TEST_THROWS( (void)row.at( 3 ) );
+         TEST_THROWS( (void)row.slice( 0, 0 ) );
+         TEST_THROWS( (void)row.slice( 1, 0 ) );
+         TEST_THROWS( (void)row.slice( 0, 4 ) );
       }
       {
          TEST_ASSERT( tr.get_row() );

@@ -14,7 +14,7 @@ void run()
    const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
 
    TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ].as< int >() == 42 );
-   TEST_ASSERT( connection->execute( "SELECT 1764" )[ 0 ].optional< int >() == 1764 );
+   TEST_ASSERT( connection->execute( "SELECT 1764" ).at( 0 ).optional< int >() == 1764 );
    TEST_ASSERT( !connection->execute( "SELECT NULL" )[ 0 ].as< std::optional< int > >() );
 
    TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ][ 0 ].get() == std::string( "42" ) );
@@ -37,9 +37,9 @@ void run()
    TEST_ASSERT( row.name( 3 ) == "A" );
    TEST_THROWS( row.name( 4 ) );
 
-   TEST_ASSERT( row[ 0 ].name() == "a" );
+   TEST_ASSERT( row.at( 0 ).name() == "a" );
    TEST_ASSERT( row[ 1 ].name() == "b" );
-   TEST_ASSERT( row[ 2 ].name() == "C" );
+   TEST_ASSERT( row.at( 2 ).name() == "C" );
    TEST_ASSERT( row[ 3 ].name() == "A" );
    TEST_THROWS( row.at( 4 ) );
 
