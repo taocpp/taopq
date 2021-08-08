@@ -46,7 +46,9 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_pair.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_tuple.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/row.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/table_field.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/table_reader.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/table_row.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/table_writer.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/transaction.hpp
 )
@@ -62,7 +64,9 @@ set(TAOPQ_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_field.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_reader.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_row.cpp
 )
 
 source_group("Header Files" FILES ${TAOPQ_INCLUDE_FILES})
