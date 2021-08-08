@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <string_view>
 #include <utility>
 
 #include <tao/pq/internal/pool.hpp>
@@ -37,15 +38,15 @@ namespace tao::pq
       class private_key
       {
          private_key() = default;
-         friend auto basic_connection_pool::create( const std::string& connection_info ) -> std::shared_ptr< basic_connection_pool >;
+         friend auto basic_connection_pool::create( const std::string_view connection_info ) -> std::shared_ptr< basic_connection_pool >;
       };
 
    public:
-      basic_connection_pool( const private_key& /*unused*/, const std::string& connection_info ) noexcept  // NOLINT(modernize-pass-by-value)
+      basic_connection_pool( const private_key& /*unused*/, const std::string_view connection_info )
          : m_connection_info( connection_info )
       {}
 
-      [[nodiscard]] static auto create( const std::string& connection_info ) -> std::shared_ptr< basic_connection_pool >
+      [[nodiscard]] static auto create( const std::string_view connection_info ) -> std::shared_ptr< basic_connection_pool >
       {
          return std::make_shared< basic_connection_pool >( private_key(), connection_info );
       }
