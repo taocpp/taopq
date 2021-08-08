@@ -60,11 +60,14 @@ void run()
 
          TEST_ASSERT( row.at( 0 ).as< int >() == 1 );
          TEST_ASSERT( !row[ 1 ].is_null() );
-         TEST_ASSERT( row[ 1 ].as< double >() == 3.141592 );
+         TEST_ASSERT( row[ 1 ].get() == "3.141592" );
+         TEST_ASSERT( row[ 1 ].optional< double >() == 3.141592 );
          TEST_THROWS( (void)row.at( 3 ) );
          TEST_THROWS( (void)row.slice( 0, 0 ) );
          TEST_THROWS( (void)row.slice( 1, 0 ) );
          TEST_THROWS( (void)row.slice( 0, 4 ) );
+         TEST_THROWS( (void)row.tuple< int, std::optional< double > >() );
+         TEST_THROWS( (void)row.tuple< int, std::optional< double >, std::optional< std::string_view >, std::optional< std::string_view > >() );
       }
       {
          TEST_ASSERT( tr.get_row() );
