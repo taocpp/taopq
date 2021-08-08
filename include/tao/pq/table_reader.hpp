@@ -69,7 +69,7 @@ namespace tao::pq
       }
 
       // note: these string views are guaranteed to be zero-terminated
-      [[nodiscard]] auto data() const noexcept -> const std::vector< std::string_view >&
+      [[nodiscard]] auto raw_data() const noexcept -> const std::vector< std::string_view >&
       {
          return m_data;
       }

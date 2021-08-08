@@ -32,7 +32,7 @@ namespace tao::pq
    auto table_row::get( const std::size_t column ) const -> std::string_view
    {
       ensure_column( column );
-      return m_reader.data()[ m_offset + column ];
+      return m_reader.raw_data()[ m_offset + column ];
    }
 
    auto table_row::at( const std::size_t column ) const -> table_field
