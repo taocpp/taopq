@@ -25,8 +25,8 @@ void run()  // NOLINT(readability-function-size)
    TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ].is_null() );
    TEST_ASSERT( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] == tao::pq::null );
    TEST_ASSERT( !( connection->execute( "SELECT NULL" )[ 0 ][ 0 ] != tao::pq::null ) );
-   TEST_THROWS( connection->execute( "SELECT NULL" )[ 0 ][ 1 ] );
-   TEST_THROWS( connection->execute( "SELECT NULL" )[ 1 ][ 1 ] );
+   TEST_THROWS( connection->execute( "SELECT NULL" )[ 0 ].at( 1 ) );
+   TEST_THROWS( connection->execute( "SELECT NULL" ).at( 1 )[ 1 ] );
 
    TEST_EXECUTE( connection->execute( "SELECT 42" ) );
    TEST_ASSERT( !connection->execute( "SELECT 42" ).is_null( 0, 0 ) );
@@ -40,8 +40,8 @@ void run()  // NOLINT(readability-function-size)
    TEST_ASSERT( !connection->execute( "SELECT 42" )[ 0 ][ 0 ].is_null() );
    TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ][ 0 ] != tao::pq::null );
    TEST_ASSERT( !( connection->execute( "SELECT 42" )[ 0 ][ 0 ] == tao::pq::null ) );
-   TEST_THROWS( connection->execute( "SELECT 42" )[ 0 ][ 1 ] );
-   TEST_THROWS( connection->execute( "SELECT 42" )[ 1 ][ 1 ] );
+   TEST_THROWS( connection->execute( "SELECT 42" )[ 0 ].at( 1 ) );
+   TEST_THROWS( connection->execute( "SELECT 42" ).at( 1 )[ 1 ] );
 
    TEST_ASSERT( connection->execute( "SELECT 42" ).as< int >() == 42 );
    TEST_ASSERT( connection->execute( "SELECT 1764" ).optional< int >() == 1764 );

@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <string>
+#include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <utility>
@@ -15,8 +16,6 @@
 
 namespace tao::pq
 {
-   class row;
-
    template< typename T, typename = void >
    struct result_traits
    {
@@ -36,6 +35,33 @@ namespace tao::pq
    template< typename T >
    inline constexpr bool result_traits_has_null< T, decltype( (void)result_traits< T >::null() ) > = true;
 
+   namespace internal
+   {
+      template< typename T >
+      auto result_traits_from( const char* value ) noexcept( noexcept( result_traits< T >::from( value ) ) )
+         -> decltype( result_traits< T >::from( value ) )
+      {
+         return result_traits< T >::from( value );
+      }
+
+      template< typename T >
+      auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value ) ) )
+         -> decltype( result_traits< T >::from( value ) )
+      {
+         return result_traits< T >::from( value );
+      }
+
+      // DANGER! This expects the string_view to be null-terminated!
+      // This is generally *not* the case, only in the context of table_row!
+      template< typename T >
+      auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value.data() ) ) )
+         -> decltype( result_traits< T >::from( value.data() ) )
+      {
+         return result_traits< T >::from( value.data() );
+      }
+
+   }  // namespace internal
+
    template<>
    struct result_traits< const char* >
    {
@@ -46,11 +72,20 @@ namespace tao::pq
    };
 
    template<>
-   struct result_traits< std::string >
+   struct result_traits< std::string_view >
    {
-      [[nodiscard]] static auto from( const char* value ) -> std::string
+      [[nodiscard]] static auto from( const std::string_view value ) -> std::string_view
       {
          return value;
+      }
+   };
+
+   template<>
+   struct result_traits< std::string >
+   {
+      [[nodiscard]] static auto from( const std::string_view value ) -> std::string
+      {
+         return std::string( value );
       }
    };
 

@@ -60,4 +60,10 @@ namespace tao::pq
       return m_result.get( m_row, m_offset + column );
    }
 
+   auto row::at( const std::size_t column ) const -> field
+   {
+      ensure_column( column );
+      return field( *this, m_offset + column );
+   }
+
 }  // namespace tao::pq

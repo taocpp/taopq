@@ -41,7 +41,7 @@ void run()
    TEST_ASSERT( row[ 1 ].name() == "b" );
    TEST_ASSERT( row[ 2 ].name() == "C" );
    TEST_ASSERT( row[ 3 ].name() == "A" );
-   TEST_THROWS( row[ 4 ] );
+   TEST_THROWS( row.at( 4 ) );
 
    TEST_ASSERT( row.index( "a" ) == 0 );
    TEST_ASSERT( row.index( "A" ) == 0 );

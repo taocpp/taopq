@@ -1,39 +1,38 @@
-// Copyright (c) 2016-2021 Daniel Frey and Dr. Colin Hirsch
+// Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#ifndef TAO_PQ_ROW_HPP
-#define TAO_PQ_ROW_HPP
+#ifndef TAO_PQ_TABLE_ROW_HPP
+#define TAO_PQ_TABLE_ROW_HPP
 
+#include <optional>
 #include <stdexcept>
-#include <string>
+#include <string_view>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-#include <tao/pq/field.hpp>
 #include <tao/pq/internal/demangle.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/result_traits.hpp>
+#include <tao/pq/table_field.hpp>
 
 namespace tao::pq
 {
-   class result;
+   class table_reader;
 
-   class row
+   class table_row
    {
    protected:
-      friend class result;
+      friend class table_reader;
 
-      const result& m_result;
-      std::size_t m_row;
-      const std::size_t m_offset;
-      const std::size_t m_columns;
+      table_reader& m_reader;
+      std::size_t m_offset;
+      std::size_t m_columns;
 
-      row( const result& in_result, const std::size_t in_row, const std::size_t in_offset, const std::size_t in_columns ) noexcept
-         : m_result( in_result ),
-           m_row( in_row ),
+      table_row( table_reader& in_reader, const std::size_t in_offset, const std::size_t in_columns ) noexcept
+         : m_reader( in_reader ),
            m_offset( in_offset ),
            m_columns( in_columns )
       {}
@@ -41,18 +40,15 @@ namespace tao::pq
       void ensure_column( const std::size_t column ) const;
 
    public:
-      [[nodiscard]] auto slice( const std::size_t offset, const std::size_t in_columns ) const -> row;
+      [[nodiscard]] auto slice( const std::size_t offset, const std::size_t in_columns ) const -> table_row;
 
       [[nodiscard]] auto columns() const noexcept -> std::size_t
       {
          return m_columns;
       }
 
-      [[nodiscard]] auto name( const std::size_t column ) const -> std::string;
-      [[nodiscard]] auto index( const std::string& in_name ) const -> std::size_t;
-
       [[nodiscard]] auto is_null( const std::size_t column ) const -> bool;
-      [[nodiscard]] auto get( const std::size_t column ) const -> const char*;
+      [[nodiscard]] auto get( const std::size_t column ) const -> std::string_view;
 
       template< typename T >
       [[nodiscard]] auto get( const std::size_t /*unused*/ ) const noexcept
@@ -97,7 +93,7 @@ namespace tao::pq
       [[nodiscard]] auto as() const -> T
       {
          if( result_traits_size< T > != m_columns ) {
-            throw std::runtime_error( internal::printf( "datatype (%s) requires %zu columns, but row/slice has %zu columns", internal::demangle< T >().c_str(), result_traits_size< T >, m_columns ) );
+            throw std::runtime_error( internal::printf( "datatype (%s) requires %zu columns, but table_row/slice has %zu columns", internal::demangle< T >().c_str(), result_traits_size< T >, m_columns ) );
          }
          return get< T >( 0 );
       }
@@ -120,25 +116,16 @@ namespace tao::pq
          return as< std::tuple< Ts... > >();
       }
 
-      [[nodiscard]] auto at( const std::size_t column ) const -> field;
-      [[nodiscard]] auto at( const std::string& in_name ) const -> field
-      {
-         return ( *this )[ index( in_name ) ];
-      }
+      [[nodiscard]] auto at( const std::size_t column ) const -> table_field;
 
-      [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> field
+      [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> table_field
       {
-         return field( *this, m_offset + column );
-      }
-
-      [[nodiscard]] auto operator[]( const std::string& in_name ) const -> field
-      {
-         return ( *this )[ index( in_name ) ];
+         return table_field( *this, m_offset + column );
       }
    };
 
    template< typename T >
-   auto field::as() const
+   auto table_field::as() const
       -> std::enable_if_t< result_traits_size< T > == 1, T >
    {
       return m_row.get< T >( m_column );

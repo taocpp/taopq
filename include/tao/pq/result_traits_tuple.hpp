@@ -10,7 +10,6 @@
 
 #include <tao/pq/internal/exclusive_scan.hpp>
 #include <tao/pq/result_traits.hpp>
-#include <tao/pq/row.hpp>
 
 namespace tao::pq
 {
@@ -39,13 +38,14 @@ namespace tao::pq
 
       static constexpr std::size_t size{ (0 + ... + result_traits_size< Ts >)};
 
-      template< std::size_t... Ns >
-      [[nodiscard]] static auto from( const row& row, std::index_sequence< Ns... > /*unused*/ )
+      template< typename Row, std::size_t... Ns >
+      [[nodiscard]] static auto from( const Row& row, std::index_sequence< Ns... > /*unused*/ )
       {
-         return std::tuple< Ts... >( row.get< Ts >( Ns )... );
+         return std::tuple< Ts... >( row.template get< Ts >( Ns )... );
       }
 
-      [[nodiscard]] static auto from( const row& row )
+      template< typename Row >
+      [[nodiscard]] static auto from( const Row& row )
       {
          return from( row, internal::exclusive_scan_t< std::index_sequence< result_traits_size< Ts >... > >() );
       }

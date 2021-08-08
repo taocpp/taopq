@@ -8,7 +8,6 @@
 #include <utility>
 
 #include <tao/pq/result_traits.hpp>
-#include <tao/pq/row.hpp>
 
 namespace tao::pq
 {
@@ -20,9 +19,10 @@ namespace tao::pq
 
       static constexpr std::size_t size = result_traits_size< DT > + result_traits_size< DU >;
 
-      [[nodiscard]] static auto from( const row& row )
+      template< typename Row >
+      [[nodiscard]] static auto from( const Row& row )
       {
-         return std::pair< T, U >( row.get< DT >( 0 ), row.get< DU >( result_traits_size< DT > ) );
+         return std::pair< T, U >( row.template get< DT >( 0 ), row.template get< DU >( result_traits_size< DT > ) );
       }
    };
 

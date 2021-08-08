@@ -11,7 +11,6 @@
 #include <tao/pq/connection.hpp>
 #include <tao/pq/internal/transaction.hpp>
 #include <tao/pq/internal/unreachable.hpp>
-#include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
 
 namespace tao::pq
@@ -19,10 +18,9 @@ namespace tao::pq
    table_reader::table_reader( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
       : m_previous( transaction ),
         m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) ),
+        m_result( PQexecParams( m_transaction->underlying_raw_ptr(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_out ),
         m_buffer( nullptr, &PQfreemem )
-   {
-      result( PQexecParams( m_transaction->underlying_raw_ptr(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_out );
-   }
+   {}
 
    auto table_reader::get_raw_data() -> std::string_view
    {
@@ -49,13 +47,13 @@ namespace tao::pq
 
    auto table_reader::parse_data() noexcept -> bool
    {
+      m_data.clear();
       char* read = m_buffer.get();
       if( read == nullptr ) {
          return false;
       }
       char* write = read;
       char* begin = write;
-      m_fields.clear();
       while( auto* pos = std::strpbrk( read, "\t\\\n" ) ) {
          if( const auto prefix_size = pos - read ) {
             std::memmove( write, read, prefix_size );
@@ -63,7 +61,7 @@ namespace tao::pq
          }
          switch( *pos ) {
             case '\t':
-               m_fields.emplace_back( begin, write - begin );
+               m_data.emplace_back( begin, write - begin );
                *write++ = '\0';
                begin = write = read = ++pos;
                break;
@@ -73,7 +71,7 @@ namespace tao::pq
                switch( *read++ ) {
                   case 'N':
                      assert( write == begin );
-                     m_fields.emplace_back();
+                     m_data.emplace_back();
                      switch( *read ) {
                         case '\t':
                            begin = write = ++read;
@@ -121,8 +119,9 @@ namespace tao::pq
                break;
 
             case '\n':
-               m_fields.emplace_back( begin, write - begin );
+               m_data.emplace_back( begin, write - begin );
                *write++ = '\0';
+               assert( m_data.size() == columns() );
                return true;
 
             default:                // LCOV_EXCL_LINE
@@ -132,10 +131,15 @@ namespace tao::pq
       TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
-   auto table_reader::get_row() -> bool
+   auto table_reader::begin() -> table_reader::const_iterator
    {
-      (void)get_raw_data();
-      return parse_data();
+      (void)get_row();
+      return table_row( *this, 0, columns() );
+   }
+
+   auto table_reader::end() noexcept -> table_reader::const_iterator
+   {
+      return table_row( *this, 0, 0 );
    }
 
 }  // namespace tao::pq
