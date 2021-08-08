@@ -80,6 +80,7 @@ namespace tao::pq
          return table_row( *this, 0, columns() );
       }
 
+   private:
       class const_iterator
          : private table_row
       {
@@ -110,6 +111,7 @@ namespace tao::pq
          }
       };
 
+   public:
       [[nodiscard]] auto begin() -> const_iterator;
       [[nodiscard]] auto end() noexcept -> const_iterator;
 

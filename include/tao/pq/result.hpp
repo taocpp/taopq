@@ -78,6 +78,7 @@ namespace tao::pq
       [[nodiscard]] auto empty() const -> bool;
       [[nodiscard]] auto size() const -> std::size_t;
 
+   private:
       class const_iterator
          : private row
       {
@@ -106,6 +107,7 @@ namespace tao::pq
          }
       };
 
+   public:
       [[nodiscard]] auto begin() const -> const_iterator;
       [[nodiscard]] auto end() const -> const_iterator;
 
