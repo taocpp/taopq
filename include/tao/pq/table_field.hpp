@@ -31,8 +31,6 @@ namespace tao::pq
       {}
 
    public:
-      [[nodiscard]] auto name() const -> std::string;
-
       [[nodiscard]] auto is_null() const -> bool;
       [[nodiscard]] auto get() const -> std::string_view;
 
