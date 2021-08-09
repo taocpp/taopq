@@ -22,18 +22,13 @@ namespace tao::pq
 
    }  // namespace
 
-   auto large_object::create( const std::shared_ptr< internal::transaction >& transaction ) -> oid
+   auto large_object::create( const std::shared_ptr< internal::transaction >& transaction, const oid desired_id ) -> oid
    {
-      const oid id = lo_creat( transaction->underlying_raw_ptr(), INV_READ | INV_WRITE );
+      const oid id = lo_create( transaction->underlying_raw_ptr(), desired_id );
       if( id == invalid_oid ) {
          throw std::runtime_error( "tao::pq::large_object::create() failed: " + transaction->m_connection->error_message() );
       }
       return id;
-   }
-
-   auto large_object::create( const std::shared_ptr< internal::transaction >& transaction, const oid desired_id ) noexcept -> oid
-   {
-      return lo_create( transaction->underlying_raw_ptr(), desired_id );
    }
 
    void large_object::remove( const std::shared_ptr< internal::transaction >& transaction, const oid id )
