@@ -73,9 +73,11 @@ namespace tao::pq
       try {
          close();
       }
+      // LCOV_EXCL_START
       catch( ... ) {
          // TODO: We just swallowed an exception...
       }
+      // LCOV_EXCL_STOP
    }
 
    auto large_object::operator=( large_object&& rhs ) -> large_object&  // NOLINT
