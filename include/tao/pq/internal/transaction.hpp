@@ -18,6 +18,7 @@
 
 namespace tao::pq
 {
+   class large_object;
    class table_reader;
 
    template< template< typename... > class DefaultTraits >
@@ -32,6 +33,7 @@ namespace tao::pq
          : public std::enable_shared_from_this< transaction >
       {
       public:
+         friend class pq::large_object;
          friend class pq::table_reader;
          friend class table_writer;
 

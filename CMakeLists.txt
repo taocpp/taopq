@@ -38,6 +38,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/transaction.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/large_object.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/null.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/parameter_traits.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result.hpp
@@ -61,6 +62,7 @@ set(TAOPQ_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/table_writer.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/transaction.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/large_object.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp

@@ -6,6 +6,7 @@
 
 #include <tao/pq/binary.hpp>
 #include <tao/pq/null.hpp>
+#include <tao/pq/oid.hpp>
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/transaction.hpp>
@@ -23,5 +24,7 @@
 
 #include <tao/pq/table_reader.hpp>
 #include <tao/pq/table_writer.hpp>
+
+#include <tao/pq/large_object.hpp>
 
 #endif
