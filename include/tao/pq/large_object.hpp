@@ -27,7 +27,7 @@ namespace tao::pq
       int m_fd;
 
    public:
-      [[nodiscard]] static auto create( const std::shared_ptr< internal::transaction >& transaction, const std::ios_base::openmode m = std::ios_base::in | std::ios_base::out ) -> oid;
+      [[nodiscard]] static auto create( const std::shared_ptr< internal::transaction >& transaction ) -> oid;
 
       // note: does not throw, may return invalid_oid
       [[nodiscard]] static auto create( const std::shared_ptr< internal::transaction >& transaction, const oid desired_id ) noexcept -> oid;
@@ -46,18 +46,18 @@ namespace tao::pq
 
       ~large_object();
 
-      large_object& operator=( const large_object& ) = delete;
-      large_object& operator=( large_object&& rhs );
+      auto operator=( const large_object& ) -> large_object& = delete;
+      auto operator=( large_object&& rhs ) -> large_object&;
 
       void close();
 
-      auto read( const std::size_t len ) -> binary;
+      [[nodiscard]] auto read( const std::size_t len ) -> binary;
       void write( const binary_view data );
 
       void resize( const std::int64_t size );
 
       void seek( const std::int64_t offset, const std::ios_base::seekdir whence );
-      auto tell() const -> std::int64_t;
+      [[nodiscard]] auto tell() const -> std::int64_t;
    };
 
 }  // namespace tao::pq
