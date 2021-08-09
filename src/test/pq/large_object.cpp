@@ -73,6 +73,10 @@ void run()
       TEST_ASSERT( oid != oid2 );
       TEST_THROWS( tao::pq::large_object::export_file( transaction, oid, "/" ) );
    }
+   {
+      const auto transaction = connection->transaction();
+      TEST_THROWS( tao::pq::large_object::import_file( transaction, "" ) );
+   }
 }
 
 auto main() -> int
