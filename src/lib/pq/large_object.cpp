@@ -17,7 +17,7 @@ namespace tao::pq
    {
       constexpr auto to_mode( const std::ios_base::openmode m ) noexcept -> int
       {
-         return ( ( m & std::ios_base::in ) ? INV_READ : 0 ) | ( ( m & std::ios_base::out ) ? INV_WRITE : 0 );
+         return ( ( ( m & std::ios_base::in ) != 0 ) ? INV_READ : 0 ) | ( ( ( m & std::ios_base::out ) != 0 ) ? INV_WRITE : 0 );
       }
 
    }  // namespace
@@ -83,7 +83,7 @@ namespace tao::pq
       }
    }
 
-   large_object& large_object::operator=( large_object&& rhs )
+   auto large_object::operator=( large_object&& rhs ) -> large_object&  // NOLINT
    {
       close();
       m_transaction = std::move( rhs.m_transaction );
