@@ -98,16 +98,20 @@ namespace tao::pq
       }
    }
 
-   auto large_object::read( const std::size_t len ) -> binary
+   auto large_object::read( std::byte* data, const std::size_t size ) -> std::size_t
    {
       assert( m_transaction );
-      binary nrv;
-      nrv.resize( len );
-      const auto result = lo_read( m_transaction->underlying_raw_ptr(), m_fd, reinterpret_cast< char* >( nrv.data() ), len );
+      const auto result = lo_read( m_transaction->underlying_raw_ptr(), m_fd, reinterpret_cast< char* >( data ), size );
       if( result == -1 ) {
          throw std::runtime_error( "tao::pq::large_object::read() failed: " + m_transaction->m_connection->error_message() );
       }
-      nrv.resize( result );
+      return result;
+   }
+
+   auto large_object::read( const std::size_t size ) -> large_object::buffer
+   {
+      buffer nrv( new std::byte[ size ] );
+      static_cast< binary_view& >( nrv ) = binary_view( nrv.get(), read( nrv.get(), size ) );
       return nrv;
    }
 

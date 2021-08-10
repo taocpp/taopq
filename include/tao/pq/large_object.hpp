@@ -46,7 +46,22 @@ namespace tao::pq
 
       void close();
 
-      [[nodiscard]] auto read( const std::size_t len ) -> binary;
+      [[nodiscard]] auto read( std::byte* buffer, const std::size_t size ) -> std::size_t;
+
+   private:
+      struct buffer
+         : private std::unique_ptr< std::byte[] >,
+           binary_view
+      {
+         friend class large_object;
+
+         explicit buffer( std::byte* ptr ) noexcept
+            : std::unique_ptr< std::byte[] >( ptr )
+         {}
+      };
+
+   public:
+      [[nodiscard]] auto read( const std::size_t size ) -> buffer;
 
       void write( const binary_view data );
 
