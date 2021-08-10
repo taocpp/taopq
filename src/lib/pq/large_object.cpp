@@ -98,9 +98,26 @@ namespace tao::pq
       }
    }
 
-   // auto large_object::read( const std::size_t len ) -> binary;
+   auto large_object::read( const std::size_t len ) -> binary
+   {
+      assert( m_transaction );
+      binary nrv;
+      nrv.resize( len );
+      const auto result = lo_read( m_transaction->underlying_raw_ptr(), m_fd, reinterpret_cast< char* >( nrv.data() ), len );
+      if( result == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::read() failed: " + m_transaction->m_connection->error_message() );
+      }
+      nrv.resize( result );
+      return nrv;
+   }
 
-   // void large_object::write( const binary_view data );
+   void large_object::write( const binary_view data )
+   {
+      assert( m_transaction );
+      if( lo_write( m_transaction->underlying_raw_ptr(), m_fd, reinterpret_cast< const char* >( data.data() ), data.size() ) == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::write() failed: " + m_transaction->m_connection->error_message() );
+      }
+   }
 
    void large_object::resize( const std::int64_t size )
    {

@@ -4,6 +4,8 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <limits>
+
 #include <tao/pq/connection.hpp>
 #include <tao/pq/large_object.hpp>
 
@@ -29,18 +31,43 @@ void run()
       TEST_ASSERT( lo.tell() == 20 );
       TEST_THROWS( lo.seek( -60, std::ios_base::end ) );
    }
+
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
+      const auto orig = tao::pq::to_binary_view( "abc\0def" );
+      TEST_ASSERT( orig.size() == 8 );
+      lo.write( orig );
+      lo.seek( 0, std::ios_base::beg );
+      const auto data = lo.read( 10 );
+      TEST_ASSERT( data.size() == 8 );
+      TEST_ASSERT( data == orig );
       TEST_THROWS( lo.resize( -5 ) );
    }
+
+   {
+      const auto transaction = connection->transaction();
+      const auto oid = tao::pq::large_object::create( transaction );
+      tao::pq::large_object lo( transaction, oid, std::ios_base::in );
+      const auto orig = tao::pq::to_binary_view( "abc" );
+      TEST_THROWS( lo.write( orig ) );
+   }
+
+   {
+      const auto transaction = connection->transaction();
+      const auto oid = tao::pq::large_object::create( transaction );
+      tao::pq::large_object lo( transaction, oid, std::ios_base::out );
+      TEST_THROWS( lo.read( std::numeric_limits< unsigned >::max() ) );
+   }
+
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
       lo.close();
    }
+
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
@@ -48,23 +75,27 @@ void run()
       tao::pq::large_object::remove( transaction, oid );
       TEST_THROWS( lo.tell() );
    }
+
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       TEST_THROWS( tao::pq::large_object::create( transaction, oid ) );
    }
+
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object::remove( transaction, oid );
       TEST_THROWS( tao::pq::large_object::remove( transaction, oid ) );
    }
+
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object::remove( transaction, oid );
       TEST_THROWS( tao::pq::large_object( transaction, oid, std::ios_base::in | std::ios_base::out ) );
    }
+
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
@@ -74,6 +105,7 @@ void run()
       TEST_ASSERT( oid != oid2 );
       TEST_THROWS( tao::pq::large_object::export_file( transaction, oid, "" ) );
    }
+
    {
       const auto transaction = connection->transaction();
       TEST_THROWS( tao::pq::large_object::import_file( transaction, "" ) );
