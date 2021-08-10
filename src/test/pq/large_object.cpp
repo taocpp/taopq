@@ -68,10 +68,11 @@ void run()
    {
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
-      tao::pq::large_object::export_file( transaction, oid, "/tmp/dummy.txt" );
-      const auto oid2 = tao::pq::large_object::import_file( transaction, "/tmp/dummy.txt" );
+      const char* filename = "dummy.txt";
+      tao::pq::large_object::export_file( transaction, oid, filename );
+      const auto oid2 = tao::pq::large_object::import_file( transaction, filename );
       TEST_ASSERT( oid != oid2 );
-      TEST_THROWS( tao::pq::large_object::export_file( transaction, oid, "/" ) );
+      TEST_THROWS( tao::pq::large_object::export_file( transaction, oid, "" ) );
    }
    {
       const auto transaction = connection->transaction();
