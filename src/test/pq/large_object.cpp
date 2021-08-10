@@ -36,13 +36,11 @@ void run()
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
-      const auto orig = tao::pq::to_binary_view( "abc\0def" );
-      TEST_ASSERT( orig.size() == 8 );
-      lo.write( orig );
+      lo.write( "abc\0def" );
       lo.seek( 0, std::ios_base::beg );
       const auto data = lo.read( 10 );
       TEST_ASSERT( data.size() == 8 );
-      TEST_ASSERT( data == orig );
+      TEST_ASSERT( data == tao::pq::to_binary_view( "abc\0def" ) );
       TEST_THROWS( lo.resize( -5 ) );
    }
 
@@ -50,8 +48,7 @@ void run()
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object lo( transaction, oid, std::ios_base::in );
-      const auto orig = tao::pq::to_binary_view( "abc" );
-      TEST_THROWS( lo.write( orig ) );
+      TEST_THROWS( lo.write( "abc" ) );
    }
 
    {

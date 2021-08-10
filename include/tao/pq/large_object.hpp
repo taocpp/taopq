@@ -47,7 +47,14 @@ namespace tao::pq
       void close();
 
       [[nodiscard]] auto read( const std::size_t len ) -> binary;
+
       void write( const binary_view data );
+
+      template< typename... Ts >
+      void write( Ts&&... ts )
+      {
+         write( pq::to_binary_view( std::forward< Ts >( ts )... ) );
+      }
 
       void resize( const std::int64_t size );
 
