@@ -50,7 +50,7 @@ namespace tao::pq::internal
       template class set_proxy< string_set_size, &std::string::__set_size >;
       template class set_proxy< binary_set_size, &std::basic_string< std::byte >::__set_size >;
 
-#elif defined( _GLIBCXX_STRING )
+#elif defined( _GLIBCXX_STRING ) && _GLIBCXX_USE_CXX11_ABI
 
       template class set_proxy< string_set_size, &std::string::_M_set_length >;
       template class set_proxy< binary_set_size, &std::basic_string< std::byte >::_M_set_length >;
