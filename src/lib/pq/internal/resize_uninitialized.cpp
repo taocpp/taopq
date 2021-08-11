@@ -26,21 +26,21 @@ namespace tao::pq::internal
                proxy< T >::value = P;
             }
          };
+
          static setter instance;
       };
 
       template< typename T, typename T::type P >
       typename set_proxy< T, P >::setter set_proxy< T, P >::instance;
 
-      struct string_set_size
+      template< typename F >
+      struct wrap
       {
-         using type = void ( std::string::* )( std::size_t );
+         using type = F;
       };
 
-      struct binary_set_size
-      {
-         using type = void ( std::basic_string< std::byte >::* )( std::size_t );
-      };
+      using string_set_size = wrap< void ( std::string::* )( std::size_t ) >;
+      using binary_set_size = wrap< void ( std::basic_string< std::byte >::* )( std::size_t ) >;
 
 #if defined( _LIBCPP_STRING )
 
