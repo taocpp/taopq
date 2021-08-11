@@ -46,8 +46,7 @@ namespace tao::pq
 
       void close();
 
-      [[nodiscard]] auto read( std::byte* buffer, const std::size_t size ) -> std::size_t;
-
+      [[nodiscard]] auto read( std::byte* data, const std::size_t size ) -> std::size_t;
       [[nodiscard]] auto read( const std::size_t size ) -> binary;
 
       void write( const binary_view data );
