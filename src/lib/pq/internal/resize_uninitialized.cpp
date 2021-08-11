@@ -16,9 +16,6 @@ namespace tao::pq::internal
       template< typename T >
       typename T::type proxy< T >::value;
 
-      template< typename T >
-      typename T::type proxy_v = proxy< T >::value;
-
       template< typename T, typename T::type P >
       struct set_proxy
       {
@@ -50,7 +47,7 @@ namespace tao::pq::internal
       template class set_proxy< string_set_size, &std::string::__set_size >;
       template class set_proxy< binary_set_size, &std::basic_string< std::byte >::__set_size >;
 
-#elif defined( _GLIBCXX_STRING ) && _GLIBCXX_USE_CXX11_ABI
+#elif defined( _GLIBCXX_STRING )
 
       template class set_proxy< string_set_size, &std::string::_M_set_length >;
       template class set_proxy< binary_set_size, &std::basic_string< std::byte >::_M_set_length >;
@@ -68,12 +65,12 @@ namespace tao::pq::internal
 
    void resize_uninitialized_impl( std::string& v, const std::size_t n )
    {
-      (v.*proxy_v< string_set_size >)( n );
+      ( v.*proxy< string_set_size >::value )( n );
    }
 
    void resize_uninitialized_impl( std::basic_string< std::byte >& v, const std::size_t n )
    {
-      (v.*proxy_v< binary_set_size >)( n );
+      ( v.*proxy< binary_set_size >::value )( n );
    }
 
 }  // namespace tao::pq::internal
