@@ -5,6 +5,7 @@
 #include <cstdarg>
 
 #include <tao/pq/internal/printf.hpp>
+#include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq::internal
@@ -27,9 +28,9 @@ namespace tao::pq::internal
          }
       };
 
-      [[nodiscard]] auto vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap ) -> int
+      [[nodiscard]] auto vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap ) -> std::size_t
       {
-         s.resize( size );
+         internal::resize_uninitialized( s, size );
          char* buffer = &s[ 0 ];
          const int result = ::vsnprintf( buffer, size, format, ap );
          if( result < 0 ) {
@@ -38,7 +39,7 @@ namespace tao::pq::internal
          if( static_cast< std::size_t >( result ) < size ) {
             s.resize( result );
          }
-         return result;
+         return static_cast< std::size_t >( result );
       }
 
    }  // namespace
@@ -54,11 +55,11 @@ namespace tao::pq::internal
    std::string vprintf( const char* format, va_list ap )  // NOLINT(modernize-use-trailing-return-type)
    {
       std::string s;
-      static constexpr int initial_size = 32;
+      const std::size_t initial_size = s.capacity();
       va_list ap2;
       va_copy( ap2, ap );
       va_deleter d( ap2 );
-      const int result = vnprintf( s, initial_size, format, ap2 );
+      const std::size_t result = vnprintf( s, initial_size, format, ap2 );
       if( result >= initial_size ) {
          if( vnprintf( s, result + 1, format, ap ) >= result + 1 ) {
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
