@@ -9,6 +9,7 @@
 #include <libpq/libpq-fs.h>
 
 #include <tao/pq/internal/connection.hpp>
+#include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/internal/transaction.hpp>
 
 namespace tao::pq
@@ -108,10 +109,11 @@ namespace tao::pq
       return result;
    }
 
-   auto large_object::read( const std::size_t size ) -> large_object::buffer
+   auto large_object::read( const std::size_t size ) -> binary
    {
-      buffer nrv( new std::byte[ size ] );
-      static_cast< binary_view& >( nrv ) = binary_view( nrv.get(), read( nrv.get(), size ) );
+      binary nrv;
+      internal::resize_uninitialized( nrv, size );
+      nrv.resize( read( nrv.data(), size ) );
       return nrv;
    }
 

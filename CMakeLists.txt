@@ -33,6 +33,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_traits_helper.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/pool.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/printf.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/resize_uninitialized.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/table_writer.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/transaction.hpp
@@ -60,6 +61,7 @@ set(TAOPQ_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/connection.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/resize_uninitialized.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/table_writer.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/transaction.cpp
