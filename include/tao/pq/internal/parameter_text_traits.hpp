@@ -41,7 +41,7 @@ namespace tao::pq::internal
          }
          else {
 #if defined( _MSC_VER )
-            [[maybe_unused]] const auto result = strncpy( buffer, N, ( v < 0 ) ? "-INF" : "INF", N );
+            [[maybe_unused]] const auto result = strncpy_s( buffer, N, ( v < 0 ) ? "-INF" : "INF", N );
             assert( result == 0 );
 #else
             std::strncpy( buffer, ( v < 0 ) ? "-INF" : "INF", N );
