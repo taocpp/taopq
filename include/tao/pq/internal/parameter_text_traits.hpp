@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdio>
+#include <cstring>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -26,19 +27,27 @@ namespace tao::pq::internal
       static_assert( N >= 32 );
       if constexpr( std::is_floating_point_v< T > ) {
          if( std::isfinite( v ) ) {
-            const auto result = std::snprintf( buffer, N, format, v );
+            [[maybe_unused]] const auto result = std::snprintf( buffer, N, format, v );
             assert( result > 0 );
             assert( static_cast< std::size_t >( result ) < N );
          }
          else if( std::isnan( v ) ) {
-            strcpy( buffer, "NAN" );
+#if defined( _MSC_VER )
+            std::strncpy( buffer, "NAN", sizeof( buffer ) );
+#else
+            std::strcpy( buffer, "NAN" );
+#endif
          }
          else {
-            strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );
+#if defined( _MSC_VER )
+            std::strncpy( buffer, ( v < 0 ) ? "-INF" : "INF", sizeof( buffer ) );
+#else
+            std::strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );
+#endif
          }
       }
       else {
-         const auto result = std::snprintf( buffer, N, format, v );
+         [[maybe_unused]] const auto result = std::snprintf( buffer, N, format, v );
          assert( result > 0 );
          assert( static_cast< std::size_t >( result ) < N );
       }
