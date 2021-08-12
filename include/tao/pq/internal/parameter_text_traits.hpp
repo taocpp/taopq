@@ -4,8 +4,10 @@
 #ifndef TAO_PQ_INTERNAL_PARAMETER_TEXT_TRAITS_HPP
 #define TAO_PQ_INTERNAL_PARAMETER_TEXT_TRAITS_HPP
 
+#include <cassert>
 #include <cmath>
 #include <cstddef>
+#include <cstdio>
 #include <stdexcept>
 #include <string>
 #include <type_traits>
@@ -13,22 +15,33 @@
 #include <tao/pq/binary.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
-#include <tao/pq/internal/printf.hpp>
 
 #include <libpq-fe.h>
 
 namespace tao::pq::internal
 {
-   template< typename T >
-   [[nodiscard]] auto printf_helper( const char* format, const T v ) -> std::string
+   template< std::size_t N, typename T >
+   void snprintf( char ( &buffer )[ N ], const char* format, const T v )
    {
-      if( std::isfinite( v ) ) {
-         return printf( format, v );
+      static_assert( N >= 32 );
+      if constexpr( std::is_floating_point_v< T > ) {
+         if( std::isfinite( v ) ) {
+            const auto result = std::snprintf( buffer, N, format, v );
+            assert( result > 0 );
+            assert( static_cast< std::size_t >( result ) < N );
+         }
+         else if( std::isnan( v ) ) {
+            strcpy( buffer, "NAN" );
+         }
+         else {
+            strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );
+         }
       }
-      if( std::isnan( v ) ) {
-         return "NAN";
+      else {
+         const auto result = std::snprintf( buffer, N, format, v );
+         assert( result > 0 );
+         assert( static_cast< std::size_t >( result ) < N );
       }
-      return ( v < 0 ) ? "-INF" : "INF";
    }
 
    template< typename T, typename = void >
@@ -99,10 +112,41 @@ namespace tao::pq::internal
       {}
    };
 
-   struct safe_string_helper
-      : string_helper
+   struct buffer_helper
    {
-      using string_helper::string_helper;
+      char m_buffer[ 32 ];
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto value() const noexcept -> const char*
+      {
+         return m_buffer;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto length() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto format() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto string_view() const noexcept -> std::string_view
+      {
+         return m_buffer;
+      }
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto escape() noexcept -> bool
@@ -113,119 +157,132 @@ namespace tao::pq::internal
 
    template<>
    struct parameter_text_traits< signed char >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const signed char v )
-         : safe_string_helper( printf( "%hhd", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%hhd", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< unsigned char >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const unsigned char v )
-         : safe_string_helper( printf( "%hhu", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%hhu", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< short >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const short v )
-         : safe_string_helper( printf( "%hd", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%hd", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< unsigned short >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const unsigned short v )
-         : safe_string_helper( printf( "%hu", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%hu", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< int >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const int v )
-         : safe_string_helper( printf( "%d", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%d", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< unsigned >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const unsigned v )
-         : safe_string_helper( printf( "%u", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%u", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< long >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const long v )
-         : safe_string_helper( printf( "%ld", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%ld", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< unsigned long >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const unsigned long v )
-         : safe_string_helper( printf( "%lu", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%lu", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< long long >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const long long v )
-         : safe_string_helper( printf( "%lld", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%lld", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< unsigned long long >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const unsigned long long v )
-         : safe_string_helper( printf( "%llu", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%llu", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< float >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const float v )
-         : safe_string_helper( printf_helper( "%.9g", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%.9g", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< double >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const double v )
-         : safe_string_helper( printf_helper( "%.17g", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%.17g", v );
+      }
    };
 
    template<>
    struct parameter_text_traits< long double >
-      : safe_string_helper
+      : buffer_helper
    {
       parameter_text_traits( const long double v )
-         : safe_string_helper( printf_helper( "%.21Lg", v ) )
-      {}
+      {
+         snprintf( m_buffer, "%.21Lg", v );
+      }
    };
 
    template<>

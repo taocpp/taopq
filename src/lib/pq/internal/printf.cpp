@@ -28,18 +28,23 @@ namespace tao::pq::internal
          }
       };
 
-      [[nodiscard]] auto vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap ) -> std::size_t
+      [[nodiscard]] auto vnprintf( char* buffer, const std::size_t size, const char* format, va_list ap ) -> std::size_t
       {
-         internal::resize_uninitialized( s, size );
-         char* buffer = &s[ 0 ];
          const int result = ::vsnprintf( buffer, size, format, ap );
          if( result < 0 ) {
             assert( !"unexpected result from ::vsnprintf()" );  // LCOV_EXCL_LINE
          }
-         if( static_cast< std::size_t >( result ) < size ) {
+         return static_cast< std::size_t >( result );
+      }
+
+      [[nodiscard]] auto vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap ) -> std::size_t
+      {
+         internal::resize_uninitialized( s, size );
+         const auto result = vnprintf( &s[ 0 ], size, format, ap );
+         if( result < size ) {
             s.resize( result );
          }
-         return static_cast< std::size_t >( result );
+         return result;
       }
 
    }  // namespace

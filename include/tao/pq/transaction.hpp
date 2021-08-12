@@ -4,13 +4,13 @@
 #ifndef TAO_PQ_TRANSACTION_HPP
 #define TAO_PQ_TRANSACTION_HPP
 
+#include <cstdio>
 #include <memory>
 #include <string>
 #include <tuple>
 #include <type_traits>
 #include <utility>
 
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/transaction.hpp>
 
 namespace tao::pq
@@ -153,7 +153,9 @@ namespace tao::pq
          explicit nested_subtransaction( const std::shared_ptr< connection >& connection )
             : subtransaction_base< Traits >( connection )
          {
-            this->execute( printf( "SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) ) );
+            char buffer[ 64 ];
+            std::snprintf( buffer, 64, "SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) );
+            this->execute( buffer );
          }
 
          ~nested_subtransaction() override
@@ -182,12 +184,16 @@ namespace tao::pq
       private:
          void v_commit() override
          {
-            this->execute( printf( "RELEASE SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) ) );
+            char buffer[ 64 ];
+            std::snprintf( buffer, 64, "RELEASE SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) );
+            this->execute( buffer );
          }
 
          void v_rollback() override
          {
-            this->execute( printf( "ROLLBACK TO \"TAOPQ_%p\"", static_cast< void* >( this ) ) );
+            char buffer[ 64 ];
+            std::snprintf( buffer, 64, "ROLLBACK TO \"TAOPQ_%p\"", static_cast< void* >( this ) );
+            this->execute( buffer );
          }
       };
 
