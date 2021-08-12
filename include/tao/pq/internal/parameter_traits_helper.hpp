@@ -102,6 +102,49 @@ namespace tao::pq::internal
       }
    };
 
+   struct buffer_helper
+   {
+      char m_buffer[ 32 ];
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto value() const noexcept -> const char*
+      {
+         return m_buffer;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto length() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto format() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto string_view() const noexcept -> std::string_view
+      {
+         return m_buffer;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return false;
+      }
+   };
+
 }  // namespace tao::pq::internal
 
 #endif

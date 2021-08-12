@@ -33,18 +33,18 @@ namespace tao::pq::internal
          }
          else if( std::isnan( v ) ) {
 #if defined( _MSC_VER )
-            [[maybe_unused]] const auto result = strncpy_s( buffer, N, "NAN", N );
+            [[maybe_unused]] const auto result = strncpy_s( buffer, "NAN", N );
             assert( result == 0 );
 #else
-            std::strncpy( buffer, "NAN", N );
+            std::strcpy( buffer, "NAN" );                       // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
 #endif
          }
          else {
 #if defined( _MSC_VER )
-            [[maybe_unused]] const auto result = strncpy_s( buffer, N, ( v < 0 ) ? "-INF" : "INF", N );
+            [[maybe_unused]] const auto result = strncpy_s( buffer, ( v < 0 ) ? "-INF" : "INF", N );
             assert( result == 0 );
 #else
-            std::strncpy( buffer, ( v < 0 ) ? "-INF" : "INF", N );
+            std::strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );  // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
 #endif
          }
       }
@@ -121,49 +121,6 @@ namespace tao::pq::internal
       parameter_text_traits( const char v )
          : string_helper( 1, v )
       {}
-   };
-
-   struct buffer_helper
-   {
-      char m_buffer[ 32 ];
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return m_buffer;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto string_view() const noexcept -> std::string_view
-      {
-         return m_buffer;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto escape() noexcept -> bool
-      {
-         return false;
-      }
    };
 
    template<>
