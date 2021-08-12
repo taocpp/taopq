@@ -109,11 +109,21 @@ namespace tao::pq
       return result;
    }
 
-   auto large_object::read( const std::size_t size ) -> binary
+   template<>
+   auto large_object::read< binary >( const std::size_t size ) -> binary
    {
       binary nrv;
       internal::resize_uninitialized( nrv, size );
       nrv.resize( read( nrv.data(), size ) );
+      return nrv;
+   }
+
+   template<>
+   auto large_object::read< std::string >( const std::size_t size ) -> std::string
+   {
+      std::string nrv;
+      internal::resize_uninitialized( nrv, size );
+      nrv.resize( read( reinterpret_cast< std::byte* >( nrv.data() ), size ) );
       return nrv;
    }
 

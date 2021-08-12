@@ -47,7 +47,9 @@ namespace tao::pq
       void close();
 
       [[nodiscard]] auto read( std::byte* data, const std::size_t size ) -> std::size_t;
-      [[nodiscard]] auto read( const std::size_t size ) -> binary;
+
+      template< typename T = binary >
+      [[nodiscard]] auto read( const std::size_t size ) -> T = delete;
 
       void write( const binary_view data );
 
@@ -62,6 +64,12 @@ namespace tao::pq
       void seek( const std::int64_t offset, const std::ios_base::seekdir whence );
       [[nodiscard]] auto tell() const -> std::int64_t;
    };
+
+   template<>
+   [[nodiscard]] auto large_object::read< binary >( const std::size_t size ) -> binary;
+
+   template<>
+   [[nodiscard]] auto large_object::read< std::string >( const std::size_t size ) -> std::string;
 
 }  // namespace tao::pq
 

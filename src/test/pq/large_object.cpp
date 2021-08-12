@@ -36,12 +36,23 @@ void run()
       const auto transaction = connection->transaction();
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
-      lo.write( "abc\0def" );
+      lo.write( "abc\0def" );  // careful: this string literal is 8 characters long!
       lo.seek( 0, std::ios_base::beg );
-      const auto data = lo.read( 10 );
+      const auto data = lo.read( 10 );  // by default returns 'binary'
       TEST_ASSERT( data.size() == 8 );
       TEST_ASSERT( data == tao::pq::to_binary_view( "abc\0def" ) );
       TEST_THROWS( lo.resize( -5 ) );
+   }
+
+   {
+      const auto transaction = connection->transaction();
+      const auto oid = tao::pq::large_object::create( transaction );
+      tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
+      lo.write( std::string( "hello" ) );  // writing a string yields the "correct" length
+      lo.seek( 0, std::ios_base::beg );
+      const auto data = lo.read< std::string >( 10 );  // read into a std::string
+      TEST_ASSERT( data.size() == 5 );
+      TEST_ASSERT( data == "hello" );
    }
 
    {
