@@ -9,7 +9,7 @@ void test( std::string& s, const std::size_t size )
 {
    tao::pq::internal::resize_uninitialized( s, size );
    TEST_ASSERT( s.size() == size );
-   TEST_ASSERT( s.data()[ size ] == '\0' );
+   TEST_ASSERT( s[ size ] == '\0' );
 }
 
 void run()
