@@ -33,16 +33,18 @@ namespace tao::pq::internal
          }
          else if( std::isnan( v ) ) {
 #if defined( _MSC_VER )
-            std::strncpy( buffer, "NAN", sizeof( buffer ) );
+            [[maybe_unused]] const auto result = strncpy_s( buffer, N, "NAN", N );
+            assert( result == 0 );
 #else
-            std::strcpy( buffer, "NAN" );
+            std::strncpy( buffer, "NAN", N );
 #endif
          }
          else {
 #if defined( _MSC_VER )
-            std::strncpy( buffer, ( v < 0 ) ? "-INF" : "INF", sizeof( buffer ) );
+            [[maybe_unused]] const auto result = strncpy( buffer, N, ( v < 0 ) ? "-INF" : "INF", N );
+            assert( result == 0 );
 #else
-            std::strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );
+            std::strncpy( buffer, ( v < 0 ) ? "-INF" : "INF", N );
 #endif
          }
       }
