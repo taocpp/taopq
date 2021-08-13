@@ -74,7 +74,7 @@ namespace tao::pq
                return T( std::forward< A >( a ) );
             }
             else {
-               static_assert( internal::dependent_false< T >, "no valid conversion from A to Traits" );
+               static_assert( internal::dependent_false< A >, "no valid conversion from A via Traits" );
             }
          }
 
