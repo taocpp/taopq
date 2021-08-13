@@ -9,6 +9,20 @@
 #include <tao/pq/connection.hpp>
 #include <tao/pq/large_object.hpp>
 
+template< typename T >
+void test( const std::shared_ptr< tao::pq::connection >& connection, const std::basic_string< T >& data )
+{
+   const auto transaction = connection->transaction();
+   const auto oid = tao::pq::large_object::create( transaction );
+   tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
+   lo.write( data );
+   lo.seek( 0, std::ios_base::beg );
+   const auto result = lo.read< std::basic_string< T > >( 10 );  // by default returns 'binary'
+   TEST_ASSERT( result.size() == 5 );
+   TEST_ASSERT( result == data );
+   TEST_THROWS( lo.resize( -5 ) );
+}
+
 void run()
 {
    const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
@@ -32,28 +46,9 @@ void run()
       TEST_THROWS( lo.seek( -60, std::ios_base::end ) );
    }
 
-   {
-      const auto transaction = connection->transaction();
-      const auto oid = tao::pq::large_object::create( transaction );
-      tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
-      lo.write( "hello" );
-      lo.seek( 0, std::ios_base::beg );
-      const auto data = lo.read( 10 );  // by default returns 'binary'
-      TEST_ASSERT( data.size() == 5 );
-      TEST_ASSERT( data == tao::pq::to_binary_view( "hello", 5 ) );
-      TEST_THROWS( lo.resize( -5 ) );
-   }
-
-   {
-      const auto transaction = connection->transaction();
-      const auto oid = tao::pq::large_object::create( transaction );
-      tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
-      lo.write( std::string( "hello" ) );  // writing a string yields the "correct" length
-      lo.seek( 0, std::ios_base::beg );
-      const auto data = lo.read< std::string >( 10 );  // read into a std::string
-      TEST_ASSERT( data.size() == 5 );
-      TEST_ASSERT( data == "hello" );
-   }
+   test< char >( connection, "hello" );
+   test< unsigned char >( connection, reinterpret_cast< const unsigned char* >( "world" ) );
+   test< std::byte >( connection, reinterpret_cast< const std::byte* >( "nice!" ) );
 
    {
       const auto transaction = connection->transaction();
