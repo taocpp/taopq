@@ -40,21 +40,25 @@ namespace tao::pq::internal
       };
 
       using string_set_size = wrap< void ( std::string::* )( std::size_t ) >;
+      using unsigned_set_size = wrap< void ( std::basic_string< unsigned char >::* )( std::size_t ) >;
       using binary_set_size = wrap< void ( std::basic_string< std::byte >::* )( std::size_t ) >;
 
 #if defined( _LIBCPP_STRING )
 
       template class set_proxy< string_set_size, &std::string::__set_size >;
+      template class set_proxy< unsigned_set_size, &std::basic_string< unsigned char >::__set_size >;
       template class set_proxy< binary_set_size, &std::basic_string< std::byte >::__set_size >;
 
 #elif defined( _GLIBCXX_STRING )
 
       template class set_proxy< string_set_size, &std::string::_M_set_length >;
+      template class set_proxy< unsigned_set_size, &std::basic_string< unsigned char >::_M_set_length >;
       template class set_proxy< binary_set_size, &std::basic_string< std::byte >::_M_set_length >;
 
 #elif defined( _MSC_VER )
 
       template class set_proxy< string_set_size, &std::string::_Eos >;
+      template class set_proxy< unsigned_set_size, &std::basic_string< unsigned char >::_Eos >;
       template class set_proxy< binary_set_size, &std::basic_string< std::byte >::_Eos >;
 
 #else
@@ -66,6 +70,11 @@ namespace tao::pq::internal
    void resize_uninitialized_impl( std::string& v, const std::size_t n )
    {
       ( v.*proxy< string_set_size >::value )( n );
+   }
+
+   void resize_uninitialized_impl( std::basic_string< unsigned char >& v, const std::size_t n )
+   {
+      ( v.*proxy< unsigned_set_size >::value )( n );
    }
 
    void resize_uninitialized_impl( std::basic_string< std::byte >& v, const std::size_t n )

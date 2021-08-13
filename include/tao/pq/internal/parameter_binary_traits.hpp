@@ -352,13 +352,13 @@ namespace tao::pq::internal
    };
 
    template<>
-   struct parameter_binary_traits< binary_view >
+   struct parameter_binary_traits< std::basic_string_view< unsigned char > >
    {
    private:
-      const binary_view m_v;
+      const std::basic_string_view< unsigned char > m_v;
 
    public:
-      explicit parameter_binary_traits( const binary_view v ) noexcept
+      explicit parameter_binary_traits( const std::basic_string_view< unsigned char > v ) noexcept
          : m_v( v )
       {}
 
@@ -387,6 +387,15 @@ namespace tao::pq::internal
       {
          return 1;
       }
+   };
+
+   template<>
+   struct parameter_binary_traits< binary_view >
+      : parameter_binary_traits< std::basic_string_view< unsigned char > >
+   {
+      parameter_binary_traits( const binary_view v )
+         : parameter_binary_traits< std::basic_string_view< unsigned char > >( std::basic_string_view< unsigned char >( reinterpret_cast< const unsigned char* >( v.data() ), v.size() ) )
+      {}
    };
 
 }  // namespace tao::pq::internal

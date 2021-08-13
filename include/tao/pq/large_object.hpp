@@ -5,6 +5,7 @@
 #define TAO_PQ_LARGE_OBJECT_HPP
 
 #include <cstdint>
+#include <cstring>
 #include <ios>
 #include <memory>
 
@@ -46,17 +47,42 @@ namespace tao::pq
 
       void close();
 
-      [[nodiscard]] auto read( std::byte* data, const std::size_t size ) -> std::size_t;
+      [[nodiscard]] auto read( char* data, const std::size_t size ) -> std::size_t;
+      void write( const char* data, const std::size_t size );
+
+      [[nodiscard]] auto read( unsigned char* data, const std::size_t size ) -> std::size_t
+      {
+         return read( reinterpret_cast< char* >( data ), size );
+      }
+
+      [[nodiscard]] auto read( std::byte* data, const std::size_t size ) -> std::size_t
+      {
+         return read( reinterpret_cast< char* >( data ), size );
+      }
+
+      void write( const unsigned char* data, const std::size_t size )
+      {
+         write( reinterpret_cast< const char* >( data ), size );
+      }
+
+      void write( const std::byte* data, const std::size_t size )
+      {
+         write( reinterpret_cast< const char* >( data ), size );
+      }
 
       template< typename T = binary >
       [[nodiscard]] auto read( const std::size_t size ) -> T = delete;
 
-      void write( const binary_view data );
+      void write( const char* data )
+      {
+         write( data, std::strlen( data ) );
+      }
 
       template< typename... Ts >
       void write( Ts&&... ts )
       {
-         write( pq::to_binary_view( std::forward< Ts >( ts )... ) );
+         const auto bv = pq::to_binary_view( std::forward< Ts >( ts )... );
+         write( bv.data(), bv.size() );
       }
 
       void resize( const std::int64_t size );
@@ -66,10 +92,13 @@ namespace tao::pq
    };
 
    template<>
-   [[nodiscard]] auto large_object::read< binary >( const std::size_t size ) -> binary;
+   [[nodiscard]] auto large_object::read< std::string >( const std::size_t size ) -> std::string;
 
    template<>
-   [[nodiscard]] auto large_object::read< std::string >( const std::size_t size ) -> std::string;
+   [[nodiscard]] auto large_object::read< std::basic_string< unsigned char > >( const std::size_t size ) -> std::basic_string< unsigned char >;
+
+   template<>
+   [[nodiscard]] auto large_object::read< binary >( const std::size_t size ) -> binary;
 
 }  // namespace tao::pq
 

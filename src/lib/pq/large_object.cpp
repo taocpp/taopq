@@ -99,38 +99,20 @@ namespace tao::pq
       }
    }
 
-   auto large_object::read( std::byte* data, const std::size_t size ) -> std::size_t
+   auto large_object::read( char* data, const std::size_t size ) -> std::size_t
    {
       assert( m_transaction );
-      const auto result = lo_read( m_transaction->underlying_raw_ptr(), m_fd, reinterpret_cast< char* >( data ), size );
+      const auto result = lo_read( m_transaction->underlying_raw_ptr(), m_fd, data, size );
       if( result == -1 ) {
          throw std::runtime_error( "tao::pq::large_object::read() failed: " + m_transaction->m_connection->error_message() );
       }
       return result;
    }
 
-   template<>
-   auto large_object::read< binary >( const std::size_t size ) -> binary
-   {
-      binary nrv;
-      internal::resize_uninitialized( nrv, size );
-      nrv.resize( read( nrv.data(), size ) );
-      return nrv;
-   }
-
-   template<>
-   auto large_object::read< std::string >( const std::size_t size ) -> std::string
-   {
-      std::string nrv;
-      internal::resize_uninitialized( nrv, size );
-      nrv.resize( read( reinterpret_cast< std::byte* >( nrv.data() ), size ) );
-      return nrv;
-   }
-
-   void large_object::write( const binary_view data )
+   void large_object::write( const char* data, const std::size_t size )
    {
       assert( m_transaction );
-      if( lo_write( m_transaction->underlying_raw_ptr(), m_fd, reinterpret_cast< const char* >( data.data() ), data.size() ) == -1 ) {
+      if( lo_write( m_transaction->underlying_raw_ptr(), m_fd, data, size ) == -1 ) {
          throw std::runtime_error( "tao::pq::large_object::write() failed: " + m_transaction->m_connection->error_message() );
       }
    }
@@ -163,6 +145,33 @@ namespace tao::pq
          throw std::runtime_error( "tao::pq::large_object::tell() failed: " + m_transaction->m_connection->error_message() );
       }
       return pos;
+   }
+
+   template<>
+   auto large_object::read< std::string >( const std::size_t size ) -> std::string
+   {
+      std::string nrv;
+      internal::resize_uninitialized( nrv, size );
+      nrv.resize( read( nrv.data(), size ) );
+      return nrv;
+   }
+
+   template<>
+   auto large_object::read< std::basic_string< unsigned char > >( const std::size_t size ) -> std::basic_string< unsigned char >
+   {
+      std::basic_string< unsigned char > nrv;
+      internal::resize_uninitialized( nrv, size );
+      nrv.resize( read( nrv.data(), size ) );
+      return nrv;
+   }
+
+   template<>
+   auto large_object::read< binary >( const std::size_t size ) -> binary
+   {
+      binary nrv;
+      internal::resize_uninitialized( nrv, size );
+      nrv.resize( read( nrv.data(), size ) );
+      return nrv;
    }
 
 }  // namespace tao::pq

@@ -254,14 +254,14 @@ namespace tao::pq::internal
    };
 
    template<>
-   struct parameter_text_traits< binary_view >
+   struct parameter_text_traits< std::basic_string_view< unsigned char > >
    {
    private:
       unsigned char* m_data;
 
    public:
-      parameter_text_traits( PGconn* c, const binary_view v, std::size_t dummy = 0 )
-         : m_data( PQescapeByteaConn( c, (unsigned char*)v.data(), v.size(), &dummy ) )  // NOLINT
+      parameter_text_traits( PGconn* c, const std::basic_string_view< unsigned char > v, std::size_t dummy = 0 )
+         : m_data( PQescapeByteaConn( c, v.data(), v.size(), &dummy ) )  // NOLINT
       {
          if( m_data == nullptr ) {
             throw std::bad_alloc();  // LCOV_EXCL_LINE
@@ -316,6 +316,15 @@ namespace tao::pq::internal
       {
          return false;
       }
+   };
+
+   template<>
+   struct parameter_text_traits< binary_view >
+      : parameter_text_traits< std::basic_string_view< unsigned char > >
+   {
+      parameter_text_traits( PGconn* c, const binary_view v )
+         : parameter_text_traits< std::basic_string_view< unsigned char > >( c, std::basic_string_view< unsigned char >( reinterpret_cast< const unsigned char* >( v.data() ), v.size() ) )
+      {}
    };
 
 }  // namespace tao::pq::internal

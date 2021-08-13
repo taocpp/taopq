@@ -146,6 +146,13 @@ namespace tao::pq::internal
    };
 
    template< template< typename... > class Traits >
+   struct parameter_traits< Traits, std::basic_string< unsigned char > >
+      : parameter_traits< Traits, std::basic_string_view< unsigned char > >
+   {
+      using parameter_traits< Traits, std::basic_string_view< unsigned char > >::parameter_traits;
+   };
+
+   template< template< typename... > class Traits >
    struct parameter_traits< Traits, binary >
       : parameter_traits< Traits, binary_view >
    {

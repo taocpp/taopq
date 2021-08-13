@@ -10,6 +10,7 @@
 namespace tao::pq::internal
 {
    void resize_uninitialized_impl( std::string& v, const std::size_t n );
+   void resize_uninitialized_impl( std::basic_string< unsigned char >& v, const std::size_t n );
    void resize_uninitialized_impl( std::basic_string< std::byte >& v, const std::size_t n );
 
    template< typename T >
