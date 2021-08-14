@@ -138,6 +138,8 @@ void run()
    check< char >( "\"char\"", '$' );
    check< char >( "\"char\"", '%' );
    check< char >( "\"char\"", ' ' );
+   check< char >( "\"char\"", '"' );
+   check< char >( "\"char\"", '\'' );
    check< char >( "\"char\"", '\\' );
    check< char >( "\"char\"", '\n' );
    check< char >( "\"char\"", '\t' );

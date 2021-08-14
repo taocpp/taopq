@@ -25,33 +25,26 @@ namespace tao::pq::internal
    void snprintf( char ( &buffer )[ N ], const char* format, const T v )
    {
       static_assert( N >= 32 );
-      if constexpr( std::is_floating_point_v< T > ) {
-         if( std::isfinite( v ) ) {
-            [[maybe_unused]] const auto result = std::snprintf( buffer, N, format, v );
-            assert( result > 0 );
-            assert( static_cast< std::size_t >( result ) < N );
-         }
-         else if( std::isnan( v ) ) {
-#if defined( _MSC_VER )
-            [[maybe_unused]] const auto result = strncpy_s( buffer, "NAN", N );
-            assert( result == 0 );
-#else
-            std::strcpy( buffer, "NAN" );                       // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
-#endif
-         }
-         else {
-#if defined( _MSC_VER )
-            [[maybe_unused]] const auto result = strncpy_s( buffer, ( v < 0 ) ? "-INF" : "INF", N );
-            assert( result == 0 );
-#else
-            std::strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );  // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
-#endif
-         }
-      }
-      else {
+      if( std::isfinite( v ) ) {
          [[maybe_unused]] const auto result = std::snprintf( buffer, N, format, v );
          assert( result > 0 );
          assert( static_cast< std::size_t >( result ) < N );
+      }
+      else if( std::isnan( v ) ) {
+#if defined( _MSC_VER )
+         [[maybe_unused]] const auto result = strncpy_s( buffer, "NAN", N );
+         assert( result == 0 );
+#else
+         std::strcpy( buffer, "NAN" );                       // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
+#endif
+      }
+      else {
+#if defined( _MSC_VER )
+         [[maybe_unused]] const auto result = strncpy_s( buffer, ( v < 0 ) ? "-INF" : "INF", N );
+         assert( result == 0 );
+#else
+         std::strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );  // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
+#endif
       }
    }
 
@@ -116,111 +109,134 @@ namespace tao::pq::internal
 
    template<>
    struct parameter_text_traits< char >
-      : string_helper
    {
+      const char m_value[ 2 ];
+
       parameter_text_traits( const char v )
-         : string_helper( 1, v )
+         : m_value{ v, '\0' }
       {}
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto value() const noexcept -> const char*
+      {
+         return m_value;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto length() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto format() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto string_view() const noexcept -> std::string_view
+      {
+         return std::string_view( m_value, 1 );
+      }
    };
 
    template<>
    struct parameter_text_traits< signed char >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const signed char v )
-      {
-         snprintf( m_buffer, "%hhd", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< unsigned char >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const unsigned char v )
-      {
-         snprintf( m_buffer, "%hhu", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< short >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const short v )
-      {
-         snprintf( m_buffer, "%hd", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< unsigned short >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const unsigned short v )
-      {
-         snprintf( m_buffer, "%hu", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< int >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const int v )
-      {
-         snprintf( m_buffer, "%d", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< unsigned >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const unsigned v )
-      {
-         snprintf( m_buffer, "%u", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< long >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const long v )
-      {
-         snprintf( m_buffer, "%ld", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< unsigned long >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const unsigned long v )
-      {
-         snprintf( m_buffer, "%lu", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< long long >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const long long v )
-      {
-         snprintf( m_buffer, "%lld", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_text_traits< unsigned long long >
-      : buffer_helper
+      : to_chars_helper
    {
       parameter_text_traits( const unsigned long long v )
-      {
-         snprintf( m_buffer, "%llu", v );
-      }
+         : to_chars_helper( v )
+      {}
    };
 
    template<>

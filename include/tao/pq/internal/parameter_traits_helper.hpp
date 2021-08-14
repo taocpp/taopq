@@ -4,6 +4,8 @@
 #ifndef TAO_PQ_INTERNAL_PARAMETER_TRAITS_HELPER_HPP
 #define TAO_PQ_INTERNAL_PARAMETER_TRAITS_HELPER_HPP
 
+#include <cassert>
+#include <charconv>
 #include <cstddef>
 #include <string>
 #include <string_view>
@@ -57,51 +59,6 @@ namespace tao::pq::internal
       }
    };
 
-   class string_helper
-   {
-   private:
-      const std::string m_s;
-
-   protected:
-      template< typename... Ts >
-      explicit string_helper( Ts&&... ts ) noexcept( noexcept( std::string( std::forward< Ts >( ts )... ) ) )
-         : m_s( std::forward< Ts >( ts )... )
-      {}
-
-   public:
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return m_s.c_str();
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto string_view() const noexcept -> std::string_view
-      {
-         return m_s;
-      }
-   };
-
    struct buffer_helper
    {
       char m_buffer[ 32 ];
@@ -142,6 +99,18 @@ namespace tao::pq::internal
       [[nodiscard]] static constexpr auto escape() noexcept -> bool
       {
          return false;
+      }
+   };
+
+   struct to_chars_helper
+      : buffer_helper
+   {
+      template< typename T >
+      explicit to_chars_helper( const T v ) noexcept
+      {
+         const auto [ ptr, ec ] = std::to_chars( std::begin( m_buffer ), std::end( m_buffer ), v );
+         assert( ec == std::errc() );
+         *ptr = '\0';
       }
    };
 
