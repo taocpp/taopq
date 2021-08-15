@@ -7,6 +7,7 @@
 #include <utility>
 
 #include <tao/pq/internal/table_writer.hpp>
+#include <tao/pq/internal/to_traits.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/transaction.hpp>
 
@@ -22,7 +23,7 @@ namespace tao::pq
       template< template< typename... > class Traits = DefaultTraits, typename... As >
       void insert( As&&... as )
       {
-         return insert_traits( m_transaction->to_traits< Traits >( std::forward< As >( as ) )... );
+         return insert_traits( internal::to_traits< Traits >( m_transaction->underlying_raw_ptr(), std::forward< As >( as ) )... );
       }
    };
 

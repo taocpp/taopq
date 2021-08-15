@@ -63,21 +63,6 @@ namespace tao::pq
          [[nodiscard]] auto current_transaction() const noexcept -> transaction*&;
          void check_current_transaction() const;
 
-         template< template< typename... > class Traits, typename A >
-         [[nodiscard]] auto to_traits( A&& a ) const
-         {
-            using T = Traits< std::decay_t< A > >;
-            if constexpr( std::is_constructible_v< T, PGconn*, decltype( std::forward< A >( a ) ) > ) {
-               return T( underlying_raw_ptr(), std::forward< A >( a ) );
-            }
-            else if constexpr( std::is_constructible_v< T, decltype( std::forward< A >( a ) ) > ) {
-               return T( std::forward< A >( a ) );
-            }
-            else {
-               static_assert( internal::dependent_false< A >, "no valid conversion from A via Traits" );
-            }
-         }
-
          [[nodiscard]] auto execute_params( const char* statement,
                                             const int n_params,
                                             const Oid types[],

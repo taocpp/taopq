@@ -13,9 +13,16 @@
 #include <string>
 #include <type_traits>
 
+#include <array>
+#include <list>
+#include <set>
+#include <unordered_set>
+#include <vector>
+
 #include <tao/pq/binary.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
+#include <tao/pq/internal/to_traits.hpp>
 
 #include <libpq-fe.h>
 
@@ -341,6 +348,136 @@ namespace tao::pq::internal
       parameter_text_traits( PGconn* c, const binary_view v )
          : parameter_text_traits< std::basic_string_view< unsigned char > >( c, std::basic_string_view< unsigned char >( reinterpret_cast< const unsigned char* >( v.data() ), v.size() ) )
       {}
+   };
+
+   template< typename >
+   inline constexpr const bool is_array_type = false;
+
+   template< typename T, std::size_t N >
+   inline constexpr const bool is_array_type< std::array< T, N > > = true;
+
+   template< typename... Ts >
+   inline constexpr const bool is_array_type< std::list< Ts... > > = true;
+
+   template< typename... Ts >
+   inline constexpr const bool is_array_type< std::set< Ts... > > = true;
+
+   template< typename... Ts >
+   inline constexpr const bool is_array_type< std::unordered_set< Ts... > > = true;
+
+   template< typename... Ts >
+   inline constexpr const bool is_array_type< std::vector< Ts... > > = true;
+
+   inline std::string array_escape( std::string_view data )
+   {
+      std::string nrv;
+      nrv += '"';
+      while( true ) {
+         const auto n = data.find_first_of( "\\\"" );
+         if( n == std::string_view::npos ) {
+            nrv += data;
+            nrv += '"';
+            return nrv;
+         }
+         nrv.append( data.data(), n );
+         nrv += '\\';
+         nrv += data[ n ];
+         data.remove_prefix( n + 1 );
+      }
+   }
+
+   template< template< typename... > class Traits, typename T >
+   auto to_array( PGconn* c, const T& v )
+      -> std::enable_if_t< !is_array_type< T >, std::string >
+   {
+      const auto t = internal::to_traits< Traits >( c, v );
+      static_assert( t.columns == 1 );
+      const char* s = t.template value< 0 >();
+      if( s == nullptr ) {
+         return "NULL";
+      }
+      if( s[ 0 ] == '\0' ) {
+         return "\"\"";
+      }
+      if( s == std::string_view( "NULL" ) ) {
+         return "\"NULL\"";
+      }
+      if( const auto* pos = std::strpbrk( s, "\\\"" ) ) {
+         return array_escape( s );
+      }
+      if( const auto* pos = std::strpbrk( s, "{},; \t" ) ) {
+         return '"' + std::string( s ) + '"';
+      }
+      return s;
+   }
+
+   template< template< typename... > class Traits, typename T >
+   auto to_array( PGconn* c, const T& v )
+      -> std::enable_if_t< is_array_type< T >, std::string >
+   {
+      std::string nrv;
+      nrv += '{';
+      if( v.empty() ) {
+         nrv += '}';
+         return nrv;
+      }
+      for( const auto& e : v ) {
+         nrv += internal::to_array< Traits >( c, e );
+         nrv += ',';
+      }
+      nrv[ nrv.size() - 1 ] = '}';
+      return nrv;
+   }
+
+   template< typename T >
+   struct parameter_text_traits< T, std::enable_if_t< is_array_type< T > > >
+   {
+   private:
+      const std::string m_data;
+
+   public:
+      template< template< typename... > class Traits >
+      parameter_text_traits( PGconn* c, const T& v, wrap_traits< Traits > /*unused*/ )
+         : m_data( internal::to_array< Traits >( c, v ) )
+      {}
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto value() const noexcept -> const char*
+      {
+         return m_data.c_str();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto length() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto format() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] auto string_view() const noexcept -> std::string_view
+      {
+         return m_data;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      {
+         return false;
+      }
    };
 
 }  // namespace tao::pq::internal

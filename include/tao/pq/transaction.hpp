@@ -11,6 +11,7 @@
 #include <type_traits>
 #include <utility>
 
+#include <tao/pq/internal/to_traits.hpp>
 #include <tao/pq/internal/transaction.hpp>
 
 namespace tao::pq
@@ -47,7 +48,7 @@ namespace tao::pq
             return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
          }
          else {
-            return execute_traits( statement, to_traits< Traits >( std::forward< As >( as ) )... );
+            return execute_traits( statement, internal::to_traits< Traits >( underlying_raw_ptr(), std::forward< As >( as ) )... );
          }
       }
 
