@@ -36,6 +36,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/resize_uninitialized.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/table_writer.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/to_traits.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/transaction.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
