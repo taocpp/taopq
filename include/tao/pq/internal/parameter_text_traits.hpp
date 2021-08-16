@@ -351,22 +351,22 @@ namespace tao::pq::internal
    };
 
    template< typename >
-   inline constexpr const bool is_array_type = false;
+   inline constexpr const bool is_array_parameter = false;
 
    template< typename T, std::size_t N >
-   inline constexpr const bool is_array_type< std::array< T, N > > = true;
+   inline constexpr const bool is_array_parameter< std::array< T, N > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_type< std::list< Ts... > > = true;
+   inline constexpr const bool is_array_parameter< std::list< Ts... > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_type< std::set< Ts... > > = true;
+   inline constexpr const bool is_array_parameter< std::set< Ts... > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_type< std::unordered_set< Ts... > > = true;
+   inline constexpr const bool is_array_parameter< std::unordered_set< Ts... > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_type< std::vector< Ts... > > = true;
+   inline constexpr const bool is_array_parameter< std::vector< Ts... > > = true;
 
    inline std::string array_escape( std::string_view data )
    {
@@ -388,7 +388,7 @@ namespace tao::pq::internal
 
    template< template< typename... > class Traits, typename T >
    auto to_array( PGconn* c, const T& v )
-      -> std::enable_if_t< !is_array_type< T >, std::string >
+      -> std::enable_if_t< !is_array_parameter< T >, std::string >
    {
       const auto t = internal::to_traits< Traits >( c, v );
       static_assert( t.columns == 1 );
@@ -413,7 +413,7 @@ namespace tao::pq::internal
 
    template< template< typename... > class Traits, typename T >
    auto to_array( PGconn* c, const T& v )
-      -> std::enable_if_t< is_array_type< T >, std::string >
+      -> std::enable_if_t< is_array_parameter< T >, std::string >
    {
       std::string nrv;
       nrv += '{';
@@ -430,7 +430,7 @@ namespace tao::pq::internal
    }
 
    template< typename T >
-   struct parameter_text_traits< T, std::enable_if_t< is_array_type< T > > >
+   struct parameter_text_traits< T, std::enable_if_t< is_array_parameter< T > > >
    {
    private:
       const std::string m_data;

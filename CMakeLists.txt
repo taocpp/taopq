@@ -46,6 +46,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/parameter_traits.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_array.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_optional.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_pair.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/result_traits_tuple.hpp
