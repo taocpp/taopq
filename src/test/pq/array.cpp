@@ -33,7 +33,7 @@ void run()
    connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
    connection->execute( "CREATE TABLE tao_array_test ( a TEXT[] )" );
 
-   std::vector< std::optional< std::string > > v3 = { "FOO", "", "BAR\\BAZ\"BLA", "NULL", std::nullopt };
+   std::vector< std::optional< std::string > > v3 = { "FOO", "", "{BAR\\BAZ\"B,L;A}", "NULL", std::nullopt };
    connection->execute( "INSERT INTO tao_array_test VALUES ( $1 ) ", v3 );
 
    for( const auto& s : connection->execute( "SELECT * FROM tao_array_test" ).vector< std::optional< std::string > >() ) {
@@ -43,7 +43,7 @@ void run()
    connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
    connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
 
-   std::vector< std::vector< std::string > > v4 = { { "1", "2", "3" }, { "4", "5", "6" } };
+   std::vector< std::vector< std::string > > v4 = { { "1", "2", "3" }, { "4", " XYZ ", "6" } };
    connection->execute( "INSERT INTO tao_array_test VALUES ( $1 ) ", v4 );
 
    for( const auto& s : connection->execute( "SELECT * FROM tao_array_test" ).vector< std::string >() ) {
