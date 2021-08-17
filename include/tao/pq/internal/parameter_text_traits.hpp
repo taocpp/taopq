@@ -368,7 +368,7 @@ namespace tao::pq::internal
    template< typename... Ts >
    inline constexpr const bool is_array_parameter< std::vector< Ts... > > = true;
 
-   inline std::string array_escape( std::string_view data )
+   inline auto array_escape( std::string_view data ) -> std::string
    {
       std::string nrv;
       nrv += '"';
