@@ -64,6 +64,13 @@ void run()
       const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< std::vector< std::vector< std::string > > >();
       TEST_ASSERT( r == v );
    }
+
+   TEST_THROWS( connection->execute( "SELECT $1", "" ).as< std::vector< std::string > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "{" ).as< std::vector< std::string > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "{FOO" ).as< std::vector< std::string > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "{NULL}" ).as< std::vector< std::string > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "{\"FOO}" ).as< std::vector< std::string > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "{FOO}BAR" ).as< std::vector< std::string > >() );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)

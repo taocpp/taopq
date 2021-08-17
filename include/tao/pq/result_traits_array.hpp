@@ -5,7 +5,6 @@
 #define TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 
 #include <array>
-#include <cassert>
 #include <cstring>
 #include <list>
 #include <set>
@@ -70,7 +69,6 @@ namespace tao::pq
                      value = pos;
                   }
                   else {
-                     assert( *pos == '"' );
                      input.append( value, pos++ );
                      value = pos;
                      break;
@@ -131,7 +129,7 @@ namespace tao::pq
          T nrv;
          internal::parse_elements( nrv, value );
          if( *value != '\0' ) {
-            throw std::runtime_error( "invalid array input, expected '\0'" );
+            throw std::runtime_error( "invalid array input, unexpected additional data" );
          }
          return nrv;
       }
