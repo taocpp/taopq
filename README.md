@@ -25,9 +25,8 @@ For questions and suggestions regarding taoPQ, success or failure stories, and a
 
 ## Introduction
 
-This library provides classes for database connections and transactions, as well as connection pools and table writers.
-It also supports for prepared statements and nested transaction.
-An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types.
+The library provides support for database connections, connection pools, transactions, nested transactions, prepared statements, and `COPY TO`/`COPY FROM` streams.
+An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types, including support for SQL's `ARRAY`.
 The following example shows the basic look and feel of the library.
 
 ```c++
