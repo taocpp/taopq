@@ -48,7 +48,7 @@ void run()
       const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< std::vector< std::optional< std::string > > >();
       TEST_ASSERT( r.size() == 5 );
       TEST_ASSERT( *r[ 0 ] == "FOO" );
-      TEST_ASSERT( *r[ 1 ] == "" );
+      TEST_ASSERT( r[ 1 ]->empty() );
       TEST_ASSERT( *r[ 2 ] == "{BAR\\BAZ\"B,L;A}" );
       TEST_ASSERT( *r[ 3 ] == "NULL" );
       TEST_ASSERT( !r[ 4 ] );
