@@ -85,9 +85,8 @@ void run()
       connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", 7 );
       connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", 8 );
 
-      const std::vector< int > v = { 2, 3, 5, 6, 9 };
-      const auto r = connection->execute( "SELECT * FROM tao_array_test WHERE a = ANY( $1 )", v ).vector< int >();
-      TEST_ASSERT( r == std::vector< int >{ 2, 3, 5, 6 } );
+      const auto result = connection->execute( "SELECT * FROM tao_array_test WHERE a = ANY( $1 )", std::array{ 2, 3, 5, 6, 9 } );
+      TEST_ASSERT( result.vector< int >() == std::vector< int >{ 2, 3, 5, 6 } );
    }
 }
 
