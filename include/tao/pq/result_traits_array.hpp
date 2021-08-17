@@ -5,6 +5,7 @@
 #define TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 
 #include <array>
+#include <cassert>
 #include <cstring>
 #include <list>
 #include <set>
