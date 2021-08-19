@@ -44,7 +44,10 @@ namespace tao::pq::internal
 
 #elif defined( _GLIBCXX_STRING )
 
-      template< typename T, typename R, R* ( T::*G )() const, void ( R::*F )( std::size_t ) >
+      template< typename T,
+                typename R,
+                R* ( T::*G )() const,
+                void ( R::*F )( std::size_t ) >
       struct proxy
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n )
