@@ -19,7 +19,7 @@ namespace tao::pq::internal
          friend void resize_uninitialized_proxy( T& v, const std::size_t n )
          {
             ( v.*F )( n );
-            v[ v.size() ] = '\0';
+            v[ v.size() ] = typename T::value_type( 0 );
          }
       };
 
