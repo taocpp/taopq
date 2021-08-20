@@ -73,10 +73,6 @@ namespace tao::pq::internal
       if( !is_open() ) {
          throw std::runtime_error( "connection failed: " + error_message() );
       }
-      const auto protocol_version = PQprotocolVersion( m_pgconn.get() );
-      if( protocol_version < 3 ) {
-         throw std::runtime_error( "protocol version 3 required" );  // LCOV_EXCL_LINE
-      }
    }
 
    auto connection::is_open() const noexcept -> bool
