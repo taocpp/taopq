@@ -134,7 +134,7 @@ namespace tao::pq
       [[nodiscard]] auto optional() const -> std::optional< T >
       {
          if( empty() ) {
-            return {};
+            return std::nullopt;
          }
          return as< T >();
       }
