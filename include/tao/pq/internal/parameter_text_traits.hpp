@@ -351,22 +351,22 @@ namespace tao::pq::internal
    };
 
    template< typename >
-   inline constexpr const bool is_array_parameter = false;
+   inline constexpr bool is_array_parameter = false;
 
    template< typename T, std::size_t N >
-   inline constexpr const bool is_array_parameter< std::array< T, N > > = true;
+   inline constexpr bool is_array_parameter< std::array< T, N > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_parameter< std::list< Ts... > > = true;
+   inline constexpr bool is_array_parameter< std::list< Ts... > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_parameter< std::set< Ts... > > = true;
+   inline constexpr bool is_array_parameter< std::set< Ts... > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_parameter< std::unordered_set< Ts... > > = true;
+   inline constexpr bool is_array_parameter< std::unordered_set< Ts... > > = true;
 
    template< typename... Ts >
-   inline constexpr const bool is_array_parameter< std::vector< Ts... > > = true;
+   inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
 
    inline auto array_escape( std::string_view data ) -> std::string
    {

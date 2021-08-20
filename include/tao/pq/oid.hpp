@@ -9,7 +9,7 @@
 namespace tao::pq
 {
    using oid = Oid;
-   constexpr const oid invalid_oid = InvalidOid;
+   constexpr oid invalid_oid = InvalidOid;
 
 }  // namespace tao::pq
 

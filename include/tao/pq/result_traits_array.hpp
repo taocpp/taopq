@@ -22,29 +22,29 @@ namespace tao::pq
    namespace internal
    {
       template< typename... >
-      inline constexpr const bool has_null = false;
+      inline constexpr bool has_null = false;
 
       template< typename T >
-      inline constexpr const bool has_null< T, decltype( T::null() ) > = true;
+      inline constexpr bool has_null< T, decltype( T::null() ) > = true;
 
       template< typename >
-      inline constexpr const bool is_array_result = false;
+      inline constexpr bool is_array_result = false;
 
       // TODO:
       // template< typename T, std::size_t N >
-      // inline constexpr const bool is_array_result< std::array< T, N > > = true;
+      // inline constexpr bool is_array_result< std::array< T, N > > = true;
 
       template< typename... Ts >
-      inline constexpr const bool is_array_result< std::list< Ts... > > = true;
+      inline constexpr bool is_array_result< std::list< Ts... > > = true;
 
       template< typename... Ts >
-      inline constexpr const bool is_array_result< std::set< Ts... > > = true;
+      inline constexpr bool is_array_result< std::set< Ts... > > = true;
 
       template< typename... Ts >
-      inline constexpr const bool is_array_result< std::unordered_set< Ts... > > = true;
+      inline constexpr bool is_array_result< std::unordered_set< Ts... > > = true;
 
       template< typename... Ts >
-      inline constexpr const bool is_array_result< std::vector< Ts... > > = true;
+      inline constexpr bool is_array_result< std::vector< Ts... > > = true;
 
       template< typename T >
       void parse_elements( T& container, const char*& value );
