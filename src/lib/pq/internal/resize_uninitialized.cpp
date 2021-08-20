@@ -68,7 +68,7 @@ namespace tao::pq::internal
 
       template class proxy< std::string,
                             std::string::_Rep,
-                            &std::string::_M_rep,
+                            &std::string::_M_re,
                             &std::string::_Rep::_M_set_length_and_sharable >;
 
       template class proxy< std::basic_string< unsigned char >,
