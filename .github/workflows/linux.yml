@@ -156,7 +156,7 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -D_GLIBCXX_USE_CXX11_ABI=0
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
 
     - working-directory: build/
       run: cmake --build .
