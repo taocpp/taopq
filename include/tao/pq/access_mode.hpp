@@ -8,6 +8,7 @@ namespace tao::pq
 {
    enum class access_mode
    {
+      default_access_mode,
       read_write,
       read_only
    };

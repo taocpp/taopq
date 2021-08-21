@@ -100,8 +100,10 @@ namespace tao::pq
          [[nodiscard]] static auto access_mode_extension( const access_mode am ) -> const char*
          {
             switch( am ) {
-               case access_mode::read_write:
+               case access_mode::default_access_mode:
                   return "";
+               case access_mode::read_write:
+                  return " READ WRITE";
                case access_mode::read_only:
                   return " READ ONLY";
             }
@@ -186,17 +188,17 @@ namespace tao::pq
       template< template< typename... > class Traits = DefaultTraits >
       [[nodiscard]] auto transaction() -> std::shared_ptr< pq::transaction< Traits > >
       {
-         return std::make_shared< internal::top_level_transaction< Traits > >( shared_from_this(), isolation_level::default_isolation_level, access_mode::read_write );
+         return std::make_shared< internal::top_level_transaction< Traits > >( shared_from_this(), isolation_level::default_isolation_level, access_mode::default_access_mode );
       }
 
       template< template< typename... > class Traits = DefaultTraits >
-      [[nodiscard]] auto transaction( const access_mode am ) -> std::shared_ptr< pq::transaction< Traits > >
+      [[nodiscard]] auto transaction( const access_mode am, const isolation_level il = isolation_level::default_isolation_level ) -> std::shared_ptr< pq::transaction< Traits > >
       {
-         return std::make_shared< internal::top_level_transaction< Traits > >( shared_from_this(), isolation_level::default_isolation_level, am );
+         return std::make_shared< internal::top_level_transaction< Traits > >( shared_from_this(), il, am );
       }
 
       template< template< typename... > class Traits = DefaultTraits >
-      [[nodiscard]] auto transaction( const isolation_level il, const access_mode am = access_mode::read_write ) -> std::shared_ptr< pq::transaction< Traits > >
+      [[nodiscard]] auto transaction( const isolation_level il, const access_mode am = access_mode::default_access_mode ) -> std::shared_ptr< pq::transaction< Traits > >
       {
          return std::make_shared< internal::top_level_transaction< Traits > >( shared_from_this(), il, am );
       }
