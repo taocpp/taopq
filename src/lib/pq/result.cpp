@@ -2,6 +2,7 @@
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
 #include <cassert>
+#include <charconv>
 #include <cstring>
 #include <stdexcept>
 
@@ -9,8 +10,8 @@
 
 #include <tao/pq/result.hpp>
 
+#include <tao/pq/internal/from_chars.hpp>
 #include <tao/pq/internal/printf.hpp>
-#include <tao/pq/internal/strtox.hpp>
 
 namespace tao::pq
 {
@@ -84,7 +85,7 @@ namespace tao::pq
       if( str[ 0 ] == '\0' ) {
          throw std::logic_error( "statement does not return affected rows" );
       }
-      return internal::strtoul( str, 10 );
+      return internal::from_chars< std::size_t >( str );
    }
 
    auto result::name( const std::size_t column ) const -> std::string

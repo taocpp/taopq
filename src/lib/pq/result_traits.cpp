@@ -3,12 +3,13 @@
 
 #include <tao/pq/result_traits.hpp>
 
-#include <limits>
 #include <memory>
 #include <stdexcept>
+#include <string>
 
 #include <libpq-fe.h>
 
+#include <tao/pq/internal/from_chars.hpp>
 #include <tao/pq/internal/strtox.hpp>
 
 namespace tao::pq
@@ -56,85 +57,52 @@ namespace tao::pq
 
    auto result_traits< signed char >::from( const char* value ) -> signed char
    {
-      const long v = internal::strtol( value, 10 );
-      if( v < std::numeric_limits< signed char >::min() ) {
-         throw std::underflow_error( "underflow error in tao::pq::result_traits<signed char> for input: " + std::string( value ) );
-      }
-      if( v > std::numeric_limits< signed char >::max() ) {
-         throw std::overflow_error( "overflow error in tao::pq::result_traits<signed char> for input: " + std::string( value ) );
-      }
-      return static_cast< signed char >( v );
+      return internal::from_chars< signed char >( value );
    }
 
    auto result_traits< unsigned char >::from( const char* value ) -> unsigned char
    {
-      const unsigned long v = internal::strtoul( value, 10 );
-      if( v > std::numeric_limits< unsigned char >::max() ) {
-         throw std::overflow_error( "overflow error in tao::pq::result_traits<unsigned char> for input: " + std::string( value ) );
-      }
-      return static_cast< unsigned char >( v );
+      return internal::from_chars< unsigned char >( value );
    }
 
    auto result_traits< short >::from( const char* value ) -> short
    {
-      const long v = internal::strtol( value, 10 );
-      if( v < std::numeric_limits< short >::min() ) {
-         throw std::underflow_error( "underflow error in tao::pq::result_traits<short> for input: " + std::string( value ) );
-      }
-      if( v > std::numeric_limits< short >::max() ) {
-         throw std::overflow_error( "overflow error in tao::pq::result_traits<short> for input: " + std::string( value ) );
-      }
-      return static_cast< short >( v );
+      return internal::from_chars< short >( value );
    }
 
    auto result_traits< unsigned short >::from( const char* value ) -> unsigned short
    {
-      const unsigned long v = internal::strtoul( value, 10 );
-      if( v > std::numeric_limits< unsigned short >::max() ) {
-         throw std::overflow_error( "overflow error in tao::pq::result_traits<unsigned short> for input: " + std::string( value ) );
-      }
-      return static_cast< unsigned short >( v );
+      return internal::from_chars< unsigned short >( value );
    }
 
    auto result_traits< int >::from( const char* value ) -> int
    {
-      const long v = internal::strtol( value, 10 );
-      if( v < std::numeric_limits< int >::min() ) {
-         throw std::underflow_error( "underflow error in tao::pq::result_traits<int> for input: " + std::string( value ) );
-      }
-      if( v > std::numeric_limits< int >::max() ) {
-         throw std::overflow_error( "overflow error in tao::pq::result_traits<int> for input: " + std::string( value ) );
-      }
-      return static_cast< int >( v );
+      return internal::from_chars< int >( value );
    }
 
    auto result_traits< unsigned >::from( const char* value ) -> unsigned
    {
-      const unsigned long v = internal::strtoul( value, 10 );
-      if( v > std::numeric_limits< unsigned >::max() ) {
-         throw std::overflow_error( "overflow error in tao::pq::result_traits<unsigned> for input: " + std::string( value ) );
-      }
-      return static_cast< unsigned >( v );
+      return internal::from_chars< unsigned >( value );
    }
 
    auto result_traits< long >::from( const char* value ) -> long
    {
-      return internal::strtol( value, 10 );
+      return internal::from_chars< long >( value );
    }
 
    auto result_traits< unsigned long >::from( const char* value ) -> unsigned long
    {
-      return internal::strtoul( value, 10 );
+      return internal::from_chars< unsigned long >( value );
    }
 
    auto result_traits< long long >::from( const char* value ) -> long long
    {
-      return internal::strtoll( value, 10 );
+      return internal::from_chars< long long >( value );
    }
 
    auto result_traits< unsigned long long >::from( const char* value ) -> unsigned long long
    {
-      return internal::strtoull( value, 10 );
+      return internal::from_chars< unsigned long long >( value );
    }
 
    auto result_traits< float >::from( const char* value ) -> float

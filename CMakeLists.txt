@@ -26,6 +26,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian_gcc.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian_win.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/exclusive_scan.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/from_chars.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/gen.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_binary_traits.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/parameter_text_traits.hpp
