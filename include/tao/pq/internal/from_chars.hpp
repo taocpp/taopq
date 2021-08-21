@@ -9,6 +9,12 @@
 #include <string>
 #include <string_view>
 
+#if defined( _MSC_VER )
+#define TAO_PQ_PRETTY_FUNCTION __FUNCSIG__
+#else
+#define TAO_PQ_PRETTY_FUNCTION __PRETTY_FUNCTION__
+#endif
+
 namespace tao::pq::internal
 {
    template< typename T >
@@ -20,15 +26,15 @@ namespace tao::pq::internal
          if( ptr == value.data() + value.size() ) {
             return result;
          }
-         throw std::runtime_error( std::string( __PRETTY_FUNCTION__ ) + ": invalid argument: " + std::string( value ) );
+         throw std::runtime_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": invalid argument: " + std::string( value ) );
       }
       switch( ec ) {
          case std::errc::invalid_argument:
-            throw std::runtime_error( std::string( __PRETTY_FUNCTION__ ) + ": invalid argument: " + std::string( value ) );
+            throw std::runtime_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": invalid argument: " + std::string( value ) );
          case std::errc::result_out_of_range:
-            throw std::overflow_error( std::string( __PRETTY_FUNCTION__ ) + ": overflow error: " + std::string( value ) );
+            throw std::overflow_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": overflow error: " + std::string( value ) );
          default:
-            throw std::runtime_error( std::string( __PRETTY_FUNCTION__ ) + ": unknown error: " + std::string( value ) );
+            throw std::runtime_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": unknown error: " + std::string( value ) );
       }
    }
 
