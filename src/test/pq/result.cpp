@@ -110,29 +110,44 @@ void run()  // NOLINT(readability-function-size)
    TEST_THROWS( connection->execute( "SELECT ''" ).as< char >() );
    TEST_THROWS( connection->execute( "SELECT 'Hallo'" ).as< char >() );
 
+   TEST_THROWS( connection->execute( "SELECT ''" ).as< signed char >() );
+   TEST_THROWS( connection->execute( "SELECT 'Hallo'" ).as< signed char >() );
    TEST_THROWS( connection->execute( "SELECT -129" ).as< signed char >() );
    TEST_ASSERT( connection->execute( "SELECT -128" ).as< signed char >() == -128 );
    TEST_ASSERT( connection->execute( "SELECT 127" ).as< signed char >() == 127 );
    TEST_THROWS( connection->execute( "SELECT 128" ).as< signed char >() );
 
+   TEST_THROWS( connection->execute( "SELECT ''" ).as< unsigned char >() );
+   TEST_THROWS( connection->execute( "SELECT 'Hallo'" ).as< unsigned char >() );
    TEST_ASSERT( connection->execute( "SELECT 255" ).as< unsigned char >() == 255 );
    TEST_THROWS( connection->execute( "SELECT 256" ).as< unsigned char >() );
 
+   TEST_THROWS( connection->execute( "SELECT ''" ).as< short >() );
+   TEST_THROWS( connection->execute( "SELECT 'Hallo'" ).as< short >() );
    TEST_THROWS( connection->execute( "SELECT -32769" ).as< short >() );
    TEST_ASSERT( connection->execute( "SELECT -32768" ).as< short >() == -32768 );
    TEST_ASSERT( connection->execute( "SELECT 32767" ).as< short >() == 32767 );
    TEST_THROWS( connection->execute( "SELECT 32768" ).as< short >() );
 
+   TEST_THROWS( connection->execute( "SELECT ''" ).as< unsigned short >() );
+   TEST_THROWS( connection->execute( "SELECT 'Hallo'" ).as< unsigned short >() );
    TEST_ASSERT( connection->execute( "SELECT 65535" ).as< unsigned short >() == 65535 );
    TEST_THROWS( connection->execute( "SELECT 65536" ).as< unsigned short >() );
 
+   TEST_THROWS( connection->execute( "SELECT ''" ).as< int >() );
+   TEST_THROWS( connection->execute( "SELECT 'Hallo'" ).as< int >() );
    TEST_THROWS( connection->execute( "SELECT -2147483649" ).as< int >() );
    TEST_ASSERT( connection->execute( "SELECT -2147483648" ).as< int >() == -2147483648LL );
    TEST_ASSERT( connection->execute( "SELECT 2147483647" ).as< int >() == 2147483647 );
    TEST_THROWS( connection->execute( "SELECT 2147483648" ).as< int >() );
 
+   TEST_THROWS( connection->execute( "SELECT ''" ).as< unsigned >() );
+   TEST_THROWS( connection->execute( "SELECT 'Hallo'" ).as< unsigned >() );
    TEST_ASSERT( connection->execute( "SELECT 4294967295" ).as< unsigned >() == 4294967295 );
    TEST_THROWS( connection->execute( "SELECT 4294967296" ).as< unsigned >() );
+
+   TEST_THROWS( connection->execute( "SELECT '42 FOO'" ).as< unsigned >() );
+   TEST_THROWS( connection->execute( "SELECT '42BAR'" ).as< unsigned >() );
 
    int count = 0;
    for( const auto& row : connection->execute( "SELECT 1 UNION ALL SELECT 2" ) ) {

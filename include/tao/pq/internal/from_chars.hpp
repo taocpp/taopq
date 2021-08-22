@@ -9,11 +9,8 @@
 #include <string>
 #include <string_view>
 
-#if defined( _MSC_VER )
-#define TAO_PQ_PRETTY_FUNCTION __FUNCSIG__
-#else
-#define TAO_PQ_PRETTY_FUNCTION __PRETTY_FUNCTION__
-#endif
+#include <tao/pq/internal/demangle.hpp>
+#include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq::internal
 {
@@ -26,15 +23,15 @@ namespace tao::pq::internal
          if( ptr == value.data() + value.size() ) {
             return result;
          }
-         throw std::runtime_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": invalid argument: " + std::string( value ) );
+         throw std::runtime_error( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): invalid argument: " + std::string( value ) );
       }
       switch( ec ) {
          case std::errc::invalid_argument:
-            throw std::runtime_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": invalid argument: " + std::string( value ) );
+            throw std::runtime_error( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): invalid argument: " + std::string( value ) );
          case std::errc::result_out_of_range:
-            throw std::overflow_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": overflow error: " + std::string( value ) );
-         default:
-            throw std::runtime_error( std::string( TAO_PQ_PRETTY_FUNCTION ) + ": unknown error: " + std::string( value ) );
+            throw std::runtime_error( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): result out of range: " + std::string( value ) );
+         default:                // LCOV_EXCL_LINE
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
       }
    }
 

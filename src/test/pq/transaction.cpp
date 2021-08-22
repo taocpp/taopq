@@ -109,6 +109,9 @@ void run()
    TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::read_committed ) );
    TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::read_uncommitted ) );
 
+   TEST_EXECUTE( (void)connection->transaction( tao::pq::access_mode::read_write ) );
+   TEST_EXECUTE( (void)connection->transaction( tao::pq::access_mode::read_only ) );
+
    TEST_EXECUTE( check_nested( connection, connection->direct() ) );
    TEST_EXECUTE( check_nested( connection, connection->transaction() ) );
 }
