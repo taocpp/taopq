@@ -50,9 +50,9 @@ void run()
 
    TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( 1, 2, 3, 4 )" ) );
    TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", 2, 3, 4, 5 ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", 3, std::make_tuple( 4, 5 ), 6 ) );
+   TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", 3, std::make_pair( 4, 5 ), 6 ) );
    TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", std::make_tuple( 4, 5 ), std::make_tuple( 6, 7 ) ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", std::make_tuple( 5, std::make_tuple( 6, 7 ), 8 ) ) );
+   TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", std::make_tuple( 5, std::make_pair( 6, 7 ), 8 ) ) );
    TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", example::user( 6 ) ) );
    TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", example::user2( 7 ) ) );
 

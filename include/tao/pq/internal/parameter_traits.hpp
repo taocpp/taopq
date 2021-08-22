@@ -220,6 +220,66 @@ namespace tao::pq::internal
       }
    };
 
+   template< template< typename... > class Traits, typename T, typename U >
+   struct parameter_traits< Traits, std::pair< T, U > >
+   {
+   private:
+      using first_t = parameter_traits< Traits, std::decay_t< T > >;
+      using second_t = parameter_traits< Traits, std::decay_t< U > >;
+
+      using pair_t = std::pair< first_t, second_t >;
+      pair_t m_pair;
+
+      using gen = internal::gen< first_t::columns, second_t::columns >;
+
+   public:
+      explicit parameter_traits( const std::pair< T, U >& pair ) noexcept( noexcept( pair_t( pair ) ) )
+         : m_pair( pair )
+      {}
+
+      explicit parameter_traits( std::pair< T, U >&& pair ) noexcept( noexcept( pair_t( std::move( pair ) ) ) )
+         : m_pair( std::move( pair ) )
+      {}
+
+      static constexpr std::size_t columns = first_t::columns + second_t::columns;
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_pair ).template type< gen::template inner< I > >() ) ) -> Oid
+      {
+         return std::get< gen::template outer< I > >( m_pair ).template type< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto value() const noexcept( noexcept( std::get< gen::template outer< I > >( m_pair ).template value< gen::template inner< I > >() ) ) -> const char*
+      {
+         return std::get< gen::template outer< I > >( m_pair ).template value< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto length() const noexcept( noexcept( std::get< gen::template outer< I > >( m_pair ).template length< gen::template inner< I > >() ) ) -> int
+      {
+         return std::get< gen::template outer< I > >( m_pair ).template length< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_pair ).template format< gen::template inner< I > >() ) ) -> int
+      {
+         return std::get< gen::template outer< I > >( m_pair ).template format< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto string_view() const noexcept -> std::string_view
+      {
+         return std::get< gen::template outer< I > >( m_pair ).template string_view< gen::template inner< I > >();
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto escape() const noexcept -> bool
+      {
+         return std::get< gen::template outer< I > >( m_pair ).template escape< gen::template inner< I > >();
+      }
+   };
+
    template< template< typename... > class Traits, typename... Ts >
    struct parameter_traits< Traits, std::tuple< Ts... > >
    {
