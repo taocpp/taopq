@@ -7,74 +7,77 @@
 [![clang-analyze](https://github.com/taocpp/taopq/workflows/clang-analyze/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3Aclang-analyze)
 [![clang-tidy](https://github.com/taocpp/taopq/workflows/clang-tidy/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3Aclang-tidy)
 [![Sanitizer](https://github.com/taocpp/taopq/workflows/Sanitizer/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3ASanitizer)
-[![CodeQL](https://github.com/taocpp/taopq/workflows/CodeQL/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3ACodeQL)
 [![Code Coverage](https://codecov.io/gh/taocpp/taopq/branch/main/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/taopq)
 
 taoPQ is a light-weight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
 It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `libpq` client library.
 
+## Introduction
+
+The library provides support for database connections, transactions, nested transactions, prepared statements, large objects, connection pools, bulk data transfer, and more.
+An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types, including support for SQL `ARRAY`s.
+The following example shows the basic look and feel of the library.
+
+```c++
+#include <iostream>
+#include <tao/pq.hpp>
+
+int main()
+{
+   // open a connection to the database
+   const auto conn = tao::pq::connection::create( "dbname=template1" );
+
+   // execute statements
+   conn->execute( "DROP TABLE IF EXISTS users" );
+   conn->execute( "CREATE TABLE users ( name TEXT PRIMARY KEY, age INTEGER NOT NULL )" );
+
+   // prepare statements
+   conn->prepare( "insert_user", "INSERT INTO users ( name, age ) VALUES ( $1, $2 )" );
+
+   {
+      // begin transaction
+      const auto tr = conn->transaction();
+
+      // execute previously prepared statements
+      tr->execute( "insert_user", "Daniel", 42 );
+      tr->execute( "insert_user", "Tom", 41 );
+      tr->execute( "insert_user", "Jerry", 29 );
+
+      // commit transaction
+      tr->commit();
+   }
+
+   // query data
+   const auto users =
+      conn->execute( "SELECT name, age FROM users WHERE age >= $1", 40 );
+
+   // iterate and convert results from queries
+   for( const auto& row : users ) {
+      std::cout << row[ "name" ].as< std::string >() << " is "
+                << row[ "age" ].as< unsigned >() << " years old.\n";
+   }
+}
+```
+
 ## Documentation
 
- * [Version 1.x](doc/README.md)
+* [Table of Content](doc/TOC.md)
+
+* [Requirements](doc/Requirements.md)
+* [Installation](doc/Installation.md)
+
+* [Getting Started](doc/Getting-Started.md)
+
+* [Connection](doc/Connection.md)
+* [Transaction](doc/Transaction.md)
+* [Statement](doc/Statement.md)
+* [Result](doc/Result.md)
 
 ## Contact
 
 <a href="https://discord.gg/VQYkppcgqN"><img align="right" src="https://discordapp.com/api/guilds/790164930083028993/embed.png?style=banner2" alt="Join us on Discord"></a>
 
 For questions and suggestions regarding taoPQ, success or failure stories, and any other kind of feedback, please feel free to join our [Discord](https://discord.gg/VQYkppcgqN) server, open a [discussion](https://github.com/taocpp/taopq/discussions), an [issue](https://github.com/taocpp/taopq/issues) or a [pull request](https://github.com/taocpp/taopq/pulls) on GitHub or contact the authors at `taocpp(at)icemx.net`.
-
-## Introduction
-
-The library provides support for database connections, connection pools, transactions, nested transactions, prepared statements, and `COPY TO`/`COPY FROM` streams.
-An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types, including support for SQL's `ARRAY`.
-The following example shows the basic look and feel of the library.
-
-```c++
-#include <cassert>
-#include <iostream>
-
-#include <tao/pq.hpp>
-
-int main()
-{
-  // Open connection
-  const auto conn = tao::pq::connection::create( "dbname=template1" );
-
-  // Execute SQL statement
-  conn->execute( "DROP TABLE IF EXISTS taopq_example" );
-  conn->execute( "CREATE TABLE taopq_example ( a INTEGER PRIMARY KEY, b INTEGER, c TEXT NOT NULL )" );
-
-  // Prepare statement
-  conn->prepare( "my_stmt", "INSERT INTO taopq_example VALUES ( $1, $2, $3 )" );
-
-  {
-    // Begin transaction
-    const auto tr = conn->transaction();
-
-    // Execute statement with parameters
-    tr->execute( "INSERT INTO taopq_example VALUES ( $1, $2, $3 )", 1, 42, "foo" );
-
-    // Execute previously prepared statement with parameters (recommended)
-    tr->execute( "my_stmt", 2, tao::pq::null, "Hello, world!" );
-
-    // Commit transaction
-    tr->commit();
-  }
-
-  // insert/update/delete statements return an object that contains the number of rows affected
-  {
-    const auto res = conn->execute( "my_stmt", 3, 3, "drei" );
-    assert( res.rows_affected() == 1 );
-  }
-
-  // Queries return object with result set
-  const auto res = conn->execute( "SELECT * FROM taopq_example" );
-  assert( res.size() == 3 );
-
-  // Conveniently convert result into C++ container
-  const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
-}
-```
 
 ## The Art of C++
 

@@ -1,12 +1,13 @@
-# Installing
+# Installation
 
-The Taopq project is a library, different from other Taocpp projects, this one needs to be built and requires PostgreSQL library installed. On this section we will visit some ways how to install Taopq properly. We will use CMake for building.
+**TODO**
+
+### From old documentation
 
 ## Using Conan package manager
 
 [Conan](https://conan.io) is a dedicated C/C++ package manager which supports many popular projects, including Taocpp.
-To install install Taopq using Conan, first we need to create a file named ``conanfile.txt`` which points Taopq as our dependency:
-
+To install install taoPQ using Conan, first we need to create a file named ``conanfile.txt`` which points taoPQ as our dependency:
 
 ```ini
 [requires]
@@ -16,12 +17,12 @@ taocpp-taopq/20210727
 cmake_find_package
 ```
 
-To check which the latest Taopq packaged version available for download, visit: https://conan.io/center/taocpp-taopq.
+To check which the latest taoPQ packaged version available for download, visit: https://conan.io/center/taocpp-taopq.
 Or, you can simply search by using the Conan client command:
 
     conan search -r conancenter taocpp-taopq
 
-Now, to install Taopq and its dependencies, run:
+Now, to install taoPQ and its dependencies, run:
 
     conan install .
 
@@ -52,7 +53,7 @@ Now, we just need to configure and build our project:
     cmake .
     cmake --build .
 
-Once done, your project should be built correctly and linked to Taopq, libpq and libz.
+Once done, your project should be built correctly and linked to taoPQ, libpq and libz.
 
 
 ## Using CMake
@@ -82,22 +83,26 @@ set_property(TARGET example PROPERTY CXX_STANDARD 17)
 
 Now, we just need to execute CMake as usual:
 
-    cmake .
-    cmake --build .
+```sh
+cmake .
+cmake --build .
+```
 
-The CMake client will download Taopq source files based on the `main` branch, but is highly recommended using a commit to keep the reproducibility.
+The CMake client will download taoPQ source files based on the `main` branch, but is highly recommended using a commit to keep the reproducibility.
 Besides that, PostgreSQL (libpq) is a pre-requirement. You can extend the `CMakeLists.txt` to download and build libpq too, or just consume from your system.
-When executing the build step, Taopq will be built first, as its target is required by our application, after that, the example application will be built and linked to both libpq and Taopq.
+When executing the build step, taoPQ will be built first, as its target is required by our application, after that, the example application will be built and linked to both libpq and taoPQ.
 
 If you want to use `libpq` from your system, there are few ways to install it:
 
-* Linux
-    * Ubuntu: `$ sudo apt-get install libpq-dev postgresql-server-dev-all`
-    * Arch: `$ sudo pacman -S postgresql-libs`
-    * Fedora: `$ sudo dnf install libpq-devel`
-
-* Mac
-   * OSX: `$ brew install libpq`
-
 * Windows
-   * Windows 10: See PostgreSQL installation [page](https://www.postgresql.org/docs/7.2/install-win32.html)
+   * See PostgreSQL installation [page](https://www.postgresql.org/docs/current/install-win32.html)
+
+* macOS
+   * `$ brew install libpq`
+
+* Linux
+    * Debian/Ubuntu: `$ sudo apt-get install libpq-dev postgresql-server-dev-all`
+    * Fedora: `$ sudo dnf install libpq-devel`
+    * Arch: `$ sudo pacman -S postgresql-libs`
+
+Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
