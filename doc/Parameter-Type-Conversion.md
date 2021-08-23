@@ -79,4 +79,6 @@ More information on how taoPQ handles arrays can be found in the [Arrays](Arrays
 
 ## Custom Data Types
 
-The [Parameter Type Conversion](Parameter-Type-Conversion.md) chapter explains how you can register your own custom data types.
+TODO
+
+Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch

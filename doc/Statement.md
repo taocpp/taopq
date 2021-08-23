@@ -2,7 +2,7 @@
 
 Before showing you how to execute statements with taoPQ, we'd like to take a moment to talk about [SQL injection](https://en.wikipedia.org/wiki/SQL_injection).
 SQL injection is a large family of security issues that has plagued the internet for decades.
-We designed taoPQ to allow you to +safely* and *conveniently* write safe code that does not allow SQL injection.
+We designed taoPQ to allow you to *safely* and *conveniently* write code that does not allow SQL injection.
 With that said, let's start executing statements with taoPQ.
 
 ## `execute()`
@@ -22,9 +22,10 @@ tr->execute( "INSERT INTO user ( name, age, is_developer ) VALUES ( $1, $2, $3 )
 ```
 
 The actual data is separated from the statement itself.
-This protects you from SQL injections and it is also more convenient.
-As the data is transferred in a structure way between the client and the server, it is also more efficient.
 The use of positional parameters makes passing strings and other types safe, as there is no need for manually escaping the data.
+Our library now knows what is the actual SQL statement you want to send and what is the data you want to send.
+This protects you from SQL injections and it is also quiet convenient.
+The way the data is now transferred between the client and the server is also more efficient.
 
 The only thing you have to remember is to **never** concatenate strings together to create the SQL statement including the data manually.
 As this is such an important point, we will illustrate how it should **not** be done:
@@ -55,9 +56,10 @@ auto find_user( const std::string& name )
 ```
 
 This is cumbersome and error-prone.
-It is easy to forget calling the escape method and for non-strings, as well as turning longer statements into a mess of code.
+It is easy to forget calling the escape method and for non-strings, the code needs to call explicit conversion methods to string.
+This turns longer SQL statements into a long, ugly mess.
 
-Positional parameters solve all of those problems and therefore, taoPQ does not even offer any escaping methods.
+Positional parameters solve all of those problems and therefore taoPQ does not even offer any escaping methods.
 To be safe and to make your life easier, with taoPQ always use positional parameters:
 
 ```c++
@@ -74,14 +76,14 @@ In order to execute prepared statements, you simply pass the name of the prepare
 This might look like this:
 
 ```c++
-connection->prepare( "insert_user", "INSERT INTO user ( name, age, is_developer ) VALUES ( $1, $2, $3 )" );
+connection->prepare( "insert_user", "INSERT INTO user ( name, age ) VALUES ( $1, $2 )" );
 
-connection->execute( "insert_user", "Daniel", 42, true );
-connection->execute( "insert_user", "Tom", 41, true );
-connection->execute( "insert_user", "Jerry", 29, true );
+connection->execute( "insert_user", "Daniel", 42 );
+connection->execute( "insert_user", "Tom", 41 );
+connection->execute( "insert_user", "Jerry", 29 );
 ```
 
-This is both more efficient and also allows you to change the statement in a central place if need be, without touching any of the places where it is actually used.
+This is both more efficient and also allows you to change the statements in a central place if need be, without touching any of the places where it is actually used.
 
 You might want to wrap calls to a (prepared) statement into an application-specific wrapper, that way you add C++'s type safety for the rest of the application calling that method (and also receiving the result).
 

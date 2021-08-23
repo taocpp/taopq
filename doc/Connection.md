@@ -12,16 +12,16 @@ The connection string contains parameters and options, such as the server addres
 Connection parameters that are not specified in the connection string might also be set via [environment variables](https://www.postgresql.org/docs/current/libpq-envars.html).
 
 The method returns a `std::shared_ptr< tao::pq::connection >` or, in case of an error, throws an exception.
-When the last reference to a connection is deleted, i.e. the last `std::shared_ptr` pointing to it is deleted or reset, the connection is closed via its destructor which takes care of freeing underlying resources.
+When the last reference to a connection is deleted, i.e. the last shared pointer referencing it is deleted or reset, the connection is closed via its destructor which takes care of freeing underlying resources.
 The shared pointer might also be stored internally in other objects of taoPQ, i.e. a transaction.
-This ensures, that the connection is kept alive as long as there are dependent objects like an active connection, see below.
+This ensures, that the connection is kept alive as long as there are dependent objects like an active transaction, see below.
 
 ## Creating Transactions
 
 You can create [transactions](Transaction.md) by calling either the `direct()`-method or the `transaction()`-method.
 Both methods register the newly created transaction as the active transaction of a connection.
 A connection can only have one active transaction at any given time.
-Further details on how to use transactions is discussed in the [Transaction](Transaction.md) chapter.
+Further details on how to use transactions are discussed in the [Transaction](Transaction.md) chapter.
 
 ### Creating a "Direct" Transaction
 
@@ -31,7 +31,7 @@ However, calling either `commit()` or `rollback()` will end the transaction's lo
 
 ### Creating a Database Transaction
 
-The `transaction()`-method creates a real [database transaction](https://www.postgresql.org/docs/current/tutorial-transactions.html).
+The `transaction()`-method begins a real [database transaction](https://www.postgresql.org/docs/current/tutorial-transactions.html).
 You may specify two optional parameters, the [isolation level](https://www.postgresql.org/docs/current/transaction-iso.html) and the [access mode](https://www.postgresql.org/docs/current/sql-set-transaction.html).
 taoPQ defines these as enumeration types as follows:
 
@@ -60,7 +60,7 @@ When `tao::pq::isolation_level::default_isolation_level` or `tao::pq::access_mod
 
 ## Executing Statements
 
-You can execute statements on a connection object directly, which is equivalent to creating a temporary direct transaction (as if calling the `direct()`-method) and [executing the statement](Statement.md) on that [transaction](Transaction.md).
+You can [execute statements](Statement.md) on a connection object directly, which is equivalent to creating a temporary direct transaction (as if calling the `direct()`-method) and executing the statement on that [transaction](Transaction.md).
 
 ## Prepared Statements
 
@@ -91,7 +91,7 @@ We advise to use the methods offered by taoPQ's connection type.
 
 You can check a connection's status by calling the `is_open()` method.
 It return `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
-For further details, check the documentation for the underlying [`PQstatus`](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
+For further details, check the documentation for the underlying [`PQstatus()`](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
 
 ## Parameter Traits
 
@@ -100,7 +100,7 @@ For now, you can ignore the meaning of the traits class template, as it will be 
 However, it means that `tao::pq::connection` is actually a type alias for `tao::pq::basic_connection< tao::pq::parameter_text_traits >`.
 The traits class for the parameters is used when executing statements with parameters and it is passed on to the transactions created from a connection object.
 More precisely, the connection's traits class template is used as a default when no traits class template is explicitly specified for a call to the `direct()`-, `transaction()`-, or `execute()`-method.
-The specify a different traits class template, simply provide it as a template parameter to the method, e.g. `direct< my_traits >()`.
+To specify a different traits class template, simply provide it as a template parameter to the method, e.g. `direct< my_traits >()`.
 
 TODO: Do we really want to keep binary and text format traits? It complicates the library as well as the documentation significantly and shifts a lot of code into headers.
 
