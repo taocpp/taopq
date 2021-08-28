@@ -4,6 +4,7 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <iostream>
 #include <tao/pq.hpp>
 
 void run()
@@ -11,47 +12,37 @@ void run()
    // overwrite the default with an environment variable if needed
    const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );
 
-   // open a connection
+   // open a connection to the database
    const auto conn = tao::pq::connection::create( connection_string );
 
-   // execute statements directly
+   // execute statements
    conn->execute( "DROP TABLE IF EXISTS tao_example" );
-   conn->execute( "CREATE TABLE tao_example ( a INTEGER PRIMARY KEY, b INTEGER, c TEXT NOT NULL )" );
+   conn->execute( "CREATE TABLE tao_example ( name TEXT PRIMARY KEY, age INTEGER NOT NULL )" );
 
-   // preparing a statement is optional, but often recommended
-   conn->prepare( "my_stmt", "INSERT INTO tao_example VALUES ( $1, $2, $3 )" );
+   // prepare statements
+   conn->prepare( "insert_user", "INSERT INTO tao_example ( name, age ) VALUES ( $1, $2 )" );
 
-   // use a transaction if needed
    {
+      // begin transaction
       const auto tr = conn->transaction();
 
-      // execute statement with parameters directly
-      tr->execute( "INSERT INTO tao_example VALUES ( $1, $2, $3 )", 1, 42, "foo" );
+      // execute previously prepared statements
+      tr->execute( "insert_user", "Daniel", 42 );
+      tr->execute( "insert_user", "Tom", 41 );
+      tr->execute( "insert_user", "Jerry", 29 );
 
-      // execute prepared statement with parameters
-      tr->execute( "my_stmt", 2, tao::pq::null, "Hello, world!" );
-
+      // commit transaction
       tr->commit();
    }
 
-   // insert/update/delete statements return a result which can be queried for the rows affected
-   {
-      const auto res = conn->execute( "my_stmt", 3, 3, "drei" );
-      TEST_ASSERT( res.rows_affected() == 1 );
+   // query data
+   const auto users = conn->execute( "SELECT name, age FROM tao_example WHERE age >= $1", 40 );
+
+   // iterate and convert results from queries
+   for( const auto& row : users ) {
+      std::cout << row[ "name" ].as< std::string >() << " is "
+                << row[ "age" ].as< unsigned >() << " years old.\n";
    }
-
-   // queries have a result as well, it contains the returned data
-   const auto res = conn->execute( "SELECT * FROM tao_example" );
-   TEST_ASSERT( res.size() == 3 );
-
-   // iterate over a result
-   for( const auto& row : res ) {
-      // access fields by index or (less efficiently) by name
-      std::cout << row[ 0 ].as< int >() << ": " << row[ "c" ].as< std::string >() << std::endl;
-   }
-
-   // or convert a result into a container
-   const auto v = res.vector< std::tuple< int, std::optional< int >, std::string > >();
 }
 
 auto main() -> int
