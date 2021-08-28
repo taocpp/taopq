@@ -10,7 +10,7 @@
 
 ## Language Requirements
 
-* We require C++17 or newer.
+* We require [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) or newer.
 * We require exception support. The `-fno-exceptions` option is not supported.
 * We require RTTI support. The `-fno-rtti` option is not supported.
 
@@ -23,11 +23,14 @@
   * [Clang](https://clang.llvm.org/) version 8 or newer.
 * Other compilers might work.
 
-## Compiler Options Support
+## Compiler Warnings
 
-* We support the `/W4` option on Visual Studio.
-* We support the `-Wpedantic`, `-Wall`, `-Wextra`, and `-Werror` options on [GCC](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html) and [Clang](https://clang.llvm.org/docs/DiagnosticsReference.html).
+* We support the `/W4` option on [Visual Studio](https://docs.microsoft.com/en-us/cpp/build/reference/compiler-option-warning-level).
+* We support the `-Wpedantic`, `-Wall`, and `-Wextra` options on [GCC](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html) and [Clang](https://clang.llvm.org/docs/DiagnosticsReference.html).
 * We support Clang's [`-fms-extensions`](https://clang.llvm.org/docs/MSVCCompatibility.html) option.
+
+Note that we *support* these options, we don't *require* them to be used.
+You can decide which options you want to use in your project, we just try to not get in the way by making sure that our code doesn't generate any of those warnings.
 
 ## Database Requirements
 
