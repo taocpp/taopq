@@ -9,7 +9,6 @@
 void run()
 {
    // overwrite the default with an environment variable if needed
-
    const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );
 
 #ifdef __clang_analyzer__

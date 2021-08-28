@@ -3,8 +3,8 @@
 
 #include <tao/pq/result.hpp>
 
+static_assert( !tao::pq::internal::has_reserve< std::list< int > > );
 static_assert( tao::pq::internal::has_reserve< std::vector< int > > );
 
 auto main() -> int
-{
-}
+{}
