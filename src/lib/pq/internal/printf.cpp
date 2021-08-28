@@ -5,7 +5,6 @@
 #include <cstdarg>
 
 #include <tao/pq/internal/printf.hpp>
-#include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq::internal
@@ -39,7 +38,7 @@ namespace tao::pq::internal
 
       [[nodiscard]] auto vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap ) -> std::size_t
       {
-         internal::resize_uninitialized( s, size );
+         s.resize( size );
          const auto result = vnprintf( &s[ 0 ], size, format, ap );
          if( result < size ) {
             s.resize( result );
