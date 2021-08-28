@@ -48,8 +48,7 @@ int main()
    }
 
    // query data
-   const auto users =
-      conn->execute( "SELECT name, age FROM users WHERE age >= $1", 40 );
+   const auto users = conn->execute( "SELECT name, age FROM users WHERE age >= $1", 40 );
 
    // iterate and convert results from queries
    for( const auto& row : users ) {
@@ -62,12 +61,9 @@ int main()
 ## Documentation
 
 * [Table of Content](doc/TOC.md)
-
 * [Requirements](doc/Requirements.md)
 * [Installation](doc/Installation.md)
-
 * [Getting Started](doc/Getting-Started.md)
-
 * [Connection](doc/Connection.md)
 * [Transaction](doc/Transaction.md)
 * [Statement](doc/Statement.md)
