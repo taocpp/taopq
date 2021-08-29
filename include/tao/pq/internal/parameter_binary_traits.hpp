@@ -11,11 +11,10 @@
 #include <type_traits>
 #include <utility>
 
-#include <libpq-fe.h>
-
 #include <tao/pq/binary.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/endian.hpp>
+#include <tao/pq/oid.hpp>
 
 namespace tao::pq::internal
 {
@@ -27,7 +26,7 @@ namespace tao::pq::internal
       static_assert( dependent_false< T >, "data type T not registered as taopq parameter" );
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }
@@ -63,7 +62,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 16;
       }
@@ -99,7 +98,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 18;
       }
@@ -137,7 +136,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 21;
       }
@@ -175,7 +174,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 23;
       }
@@ -213,7 +212,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return ( sizeof( long ) == 4 ) ? 23 : 20;
       }
@@ -251,7 +250,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 20;
       }
@@ -289,7 +288,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 700;
       }
@@ -327,7 +326,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 701;
       }
@@ -365,7 +364,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 17;
       }

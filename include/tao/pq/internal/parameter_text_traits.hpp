@@ -23,6 +23,7 @@
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/to_traits.hpp>
+#include <tao/pq/oid.hpp>
 
 #include <libpq-fe.h>
 
@@ -63,7 +64,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }
@@ -126,7 +127,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }
@@ -305,7 +306,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }
@@ -386,11 +387,11 @@ namespace tao::pq::internal
       }
    }
 
-   template< template< typename... > class Traits, typename T >
+   template< typename T >
    auto to_array( PGconn* c, const T& v )
       -> std::enable_if_t< !is_array_parameter< T >, std::string >
    {
-      const auto t = internal::to_traits< Traits >( c, v );
+      const auto t = to_traits( c, v );
       static_assert( t.columns == 1 );
       const char* s = t.template value< 0 >();
       if( s == nullptr ) {
@@ -411,7 +412,7 @@ namespace tao::pq::internal
       return s;
    }
 
-   template< template< typename... > class Traits, typename T >
+   template< typename T >
    auto to_array( PGconn* c, const T& v )
       -> std::enable_if_t< is_array_parameter< T >, std::string >
    {
@@ -422,7 +423,7 @@ namespace tao::pq::internal
          return nrv;
       }
       for( const auto& e : v ) {
-         nrv += internal::to_array< Traits >( c, e );
+         nrv += internal::to_array( c, e );
          nrv += ',';
       }
       nrv[ nrv.size() - 1 ] = '}';
@@ -436,15 +437,14 @@ namespace tao::pq::internal
       const std::string m_data;
 
    public:
-      template< template< typename... > class Traits >
-      parameter_text_traits( PGconn* c, const T& v, wrap_traits< Traits > /*unused*/ )
-         : m_data( internal::to_array< Traits >( c, v ) )
+      parameter_text_traits( PGconn* c, const T& v )
+         : m_data( internal::to_array( c, v ) )
       {}
 
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }

@@ -11,7 +11,7 @@
 #include <string_view>
 #include <utility>
 
-#include <libpq-fe.h>
+#include <tao/pq/oid.hpp>
 
 namespace tao::pq::internal
 {
@@ -29,7 +29,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }
@@ -66,7 +66,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }

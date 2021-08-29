@@ -4,6 +4,7 @@
 #ifndef TAO_PQ_TRANSACTION_HPP
 #define TAO_PQ_TRANSACTION_HPP
 
+#include <cstddef>
 #include <cstdio>
 #include <memory>
 #include <string>
@@ -11,66 +12,115 @@
 #include <type_traits>
 #include <utility>
 
+#include <libpq-fe.h>
+
+#include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/to_traits.hpp>
-#include <tao/pq/internal/transaction.hpp>
+#include <tao/pq/oid.hpp>
+#include <tao/pq/parameter_traits.hpp>
+#include <tao/pq/result.hpp>
 
 namespace tao::pq
 {
-   namespace internal
-   {
-      class connection;
+   class connection;
+   class large_object;
+   class table_reader;
+   class table_writer;
 
-   }  // namespace internal
-
-   template< template< typename... > class DefaultTraits >
    class transaction
-      : public internal::transaction
+      : public std::enable_shared_from_this< transaction >
    {
-   public:
-      explicit transaction( const std::shared_ptr< internal::connection >& connection )
-         : internal::transaction( connection )
-      {}
+   protected:
+      std::shared_ptr< connection > m_connection;
 
-      ~transaction() override = default;
+      friend class large_object;
+      friend class table_reader;
+      friend class table_writer;
+
+   public:
+      explicit transaction( const std::shared_ptr< connection >& connection );
+      virtual ~transaction() = default;
 
       transaction( const transaction& ) = delete;
       transaction( transaction&& ) = delete;
       void operator=( const transaction& ) = delete;
       void operator=( transaction&& ) = delete;
 
-      template< template< typename... > class Traits = DefaultTraits >
-      [[nodiscard]] auto subtransaction() -> std::shared_ptr< pq::transaction< Traits > >;
+   protected:
+      [[nodiscard]] virtual auto v_is_direct() const noexcept -> bool = 0;
 
-      template< template< typename... > class Traits = DefaultTraits, typename... As >
+      virtual void v_commit() = 0;
+      virtual void v_rollback() = 0;
+
+      virtual void v_reset() noexcept = 0;
+
+      [[nodiscard]] auto current_transaction() const noexcept -> transaction*&;
+      void check_current_transaction() const;
+
+      [[nodiscard]] auto execute_params( const char* statement,
+                                         const int n_params,
+                                         const oid types[],
+                                         const char* const values[],
+                                         const int lengths[],
+                                         const int formats[] ) -> result;
+
+      template< std::size_t... Os, std::size_t... Is, typename... Ts >
+      [[nodiscard]] auto execute_indexed( const char* statement,
+                                          std::index_sequence< Os... > /*unused*/,
+                                          std::index_sequence< Is... > /*unused*/,
+                                          const std::tuple< Ts... >& tuple )
+      {
+         const oid types[] = { std::get< Os >( tuple ).template type< Is >()... };
+         const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
+         const int lengths[] = { std::get< Os >( tuple ).template length< Is >()... };
+         const int formats[] = { std::get< Os >( tuple ).template format< Is >()... };
+         return execute_params( statement, sizeof...( Os ), types, values, lengths, formats );
+      }
+
+      template< typename... Ts >
+      [[nodiscard]] auto execute_traits( const char* statement, const Ts&... ts )
+      {
+         using gen = internal::gen< Ts::columns... >;
+         return execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
+      }
+
+      [[nodiscard]] auto underlying_raw_ptr() const noexcept -> PGconn*;
+
+   public:
+      [[nodiscard]] auto subtransaction() -> std::shared_ptr< pq::transaction >;
+
+      template< typename... As >
       auto execute( const char* statement, As&&... as )
       {
          if constexpr( sizeof...( As ) == 0 ) {
             return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
          }
          else {
-            return execute_traits( statement, internal::to_traits< Traits >( underlying_raw_ptr(), std::forward< As >( as ) )... );
+            return execute_traits( statement, internal::to_traits( underlying_raw_ptr(), std::forward< As >( as ) )... );
          }
       }
 
-      template< template< typename... > class Traits = DefaultTraits, typename... As >
+      template< typename... As >
       auto execute( const std::string& statement, As&&... as )
       {
-         return execute< Traits >( statement.c_str(), std::forward< As >( as )... );
+         return execute( statement.c_str(), std::forward< As >( as )... );
       }
+
+      void commit();
+      void rollback();
    };
 
    namespace internal
    {
-      template< template< typename... > class Traits >
       class subtransaction_base
-         : public pq::transaction< Traits >
+         : public transaction
       {
       private:
-         const std::shared_ptr< internal::transaction > m_previous;
+         const std::shared_ptr< transaction > m_previous;
 
       protected:
          explicit subtransaction_base( const std::shared_ptr< connection >& connection )
-            : pq::transaction< Traits >( connection ),
+            : transaction( connection ),
               m_previous( this->current_transaction()->shared_from_this() )
          {
             this->current_transaction() = this;
@@ -101,112 +151,12 @@ namespace tao::pq
          void operator=( subtransaction_base&& ) = delete;
       };
 
-      template< template< typename... > class Traits >
-      class top_level_subtransaction final
-         : public subtransaction_base< Traits >
-      {
-      public:
-         explicit top_level_subtransaction( const std::shared_ptr< connection >& connection )
-            : subtransaction_base< Traits >( connection )
-         {
-            this->execute( "START TRANSACTION" );
-         }
-
-         ~top_level_subtransaction() override
-         {
-            if( this->m_connection && this->m_connection->is_open() ) {
-               try {
-                  this->rollback();
-               }
-               // LCOV_EXCL_START
-               catch( const std::exception& ) {
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
-               }
-               catch( ... ) {
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
-               }
-               // LCOV_EXCL_STOP
-            }
-         }
-
-         top_level_subtransaction( const top_level_subtransaction& ) = delete;
-         top_level_subtransaction( top_level_subtransaction&& ) = delete;
-         void operator=( const top_level_subtransaction& ) = delete;
-         void operator=( top_level_subtransaction&& ) = delete;
-
-      private:
-         void v_commit() override
-         {
-            this->execute( "COMMIT TRANSACTION" );
-         }
-
-         void v_rollback() override
-         {
-            this->execute( "ROLLBACK TRANSACTION" );
-         }
-      };
-
-      template< template< typename... > class Traits >
-      class nested_subtransaction final
-         : public subtransaction_base< Traits >
-      {
-      public:
-         explicit nested_subtransaction( const std::shared_ptr< connection >& connection )
-            : subtransaction_base< Traits >( connection )
-         {
-            char buffer[ 64 ];
-            std::snprintf( buffer, 64, "SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) );
-            this->execute( buffer );
-         }
-
-         ~nested_subtransaction() override
-         {
-            if( this->m_connection && this->m_connection->is_open() ) {
-               try {
-                  this->rollback();
-               }
-               // LCOV_EXCL_START
-               catch( const std::exception& ) {
-                  // TODO: Add more information about exception when available
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
-               }
-               catch( ... ) {
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
-               }
-               // LCOV_EXCL_STOP
-            }
-         }
-
-         nested_subtransaction( const nested_subtransaction& ) = delete;
-         nested_subtransaction( nested_subtransaction&& ) = delete;
-         void operator=( const nested_subtransaction& ) = delete;
-         void operator=( nested_subtransaction&& ) = delete;
-
-      private:
-         void v_commit() override
-         {
-            char buffer[ 64 ];
-            std::snprintf( buffer, 64, "RELEASE SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) );
-            this->execute( buffer );
-         }
-
-         void v_rollback() override
-         {
-            char buffer[ 64 ];
-            std::snprintf( buffer, 64, "ROLLBACK TO \"TAOPQ_%p\"", static_cast< void* >( this ) );
-            this->execute( buffer );
-         }
-      };
-
-      template< typename >
-      class unused_traits;
-
       class transaction_guard final
-         : public subtransaction_base< unused_traits >
+         : public subtransaction_base
       {
       public:
          explicit transaction_guard( const std::shared_ptr< connection >& connection )
-            : subtransaction_base< unused_traits >( connection )
+            : subtransaction_base( connection )
          {}
 
       private:
@@ -217,17 +167,6 @@ namespace tao::pq
       };
 
    }  // namespace internal
-
-   template< template< typename... > class DefaultTraits >
-   template< template< typename... > class Traits >
-   auto transaction< DefaultTraits >::subtransaction() -> std::shared_ptr< pq::transaction< Traits > >
-   {
-      check_current_transaction();
-      if( v_is_direct() ) {
-         return std::make_shared< internal::top_level_subtransaction< Traits > >( m_connection );
-      }
-      return std::make_shared< internal::nested_subtransaction< Traits > >( m_connection );
-   }
 
 }  // namespace tao::pq
 

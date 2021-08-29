@@ -4,13 +4,14 @@
 #ifndef TAO_PQ_PARAMETER_TRAITS_HPP
 #define TAO_PQ_PARAMETER_TRAITS_HPP
 
+#include <tao/pq/fwd.hpp>
 #include <tao/pq/internal/parameter_binary_traits.hpp>
 #include <tao/pq/internal/parameter_text_traits.hpp>
 #include <tao/pq/internal/parameter_traits.hpp>
 
 namespace tao::pq
 {
-   template< typename T, typename = void >
+   template< typename T, typename >
    struct parameter_text_traits
       : internal::parameter_traits< internal::parameter_text_traits, T >
    {

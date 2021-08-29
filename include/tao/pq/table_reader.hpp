@@ -22,23 +22,19 @@
 
 namespace tao::pq
 {
-   namespace internal
-   {
-      class transaction;
-
-   }  // namespace internal
+   class transaction;
 
    class table_reader
    {
    protected:
-      std::shared_ptr< internal::transaction > m_previous;
-      std::shared_ptr< internal::transaction > m_transaction;
+      std::shared_ptr< transaction > m_previous;
+      std::shared_ptr< transaction > m_transaction;
       const result m_result;
       std::unique_ptr< char, decltype( &PQfreemem ) > m_buffer;
       std::vector< std::string_view > m_data;
 
    public:
-      table_reader( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement );
+      table_reader( const std::shared_ptr< transaction >& transaction, const std::string& statement );
       ~table_reader() = default;
 
       table_reader( const table_reader& ) = delete;

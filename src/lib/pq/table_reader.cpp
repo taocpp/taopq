@@ -9,13 +9,12 @@
 #include <cstring>
 
 #include <tao/pq/connection.hpp>
-#include <tao/pq/internal/transaction.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {
-   table_reader::table_reader( const std::shared_ptr< internal::transaction >& transaction, const std::string& statement )
+   table_reader::table_reader( const std::shared_ptr< transaction >& transaction, const std::string& statement )
       : m_previous( transaction ),
         m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) ),
         m_result( PQexecParams( m_transaction->underlying_raw_ptr(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_out ),

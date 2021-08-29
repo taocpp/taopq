@@ -12,12 +12,11 @@
 #include <type_traits>
 #include <utility>
 
-#include <libpq-fe.h>
-
 #include <tao/pq/binary.hpp>
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/null.hpp>
+#include <tao/pq/oid.hpp>
 
 namespace tao::pq::internal
 {
@@ -37,7 +36,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 0;
       }
@@ -102,7 +101,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return 25;
       }
@@ -184,7 +183,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = U::columns;
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> Oid
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
          return U::template type< I >();
       }
@@ -244,7 +243,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns = first_t::columns + second_t::columns;
 
       template< std::size_t I >
-      [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_pair ).template type< gen::template inner< I > >() ) ) -> Oid
+      [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_pair ).template type< gen::template inner< I > >() ) ) -> oid
       {
          return std::get< gen::template outer< I > >( m_pair ).template type< gen::template inner< I > >();
       }
@@ -301,7 +300,7 @@ namespace tao::pq::internal
       static constexpr std::size_t columns{ ( 0 + ... + parameter_traits< Traits, std::decay_t< Ts > >::columns ) };
 
       template< std::size_t I >
-      [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) ) -> Oid
+      [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) ) -> oid
       {
          return std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >();
       }
