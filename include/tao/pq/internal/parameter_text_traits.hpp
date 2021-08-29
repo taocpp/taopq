@@ -369,77 +369,74 @@ namespace tao::pq::internal
    template< typename... Ts >
    inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
 
-   inline auto array_escape( std::string_view data ) -> std::string
+   inline void array_escape( std::string& data, std::string_view v )
    {
-      std::string nrv;
-      nrv += '"';
+      data += '"';
       while( true ) {
-         const auto n = data.find_first_of( "\\\"" );
+         const auto n = v.find_first_of( "\\\"" );
          if( n == std::string_view::npos ) {
-            nrv += data;
-            nrv += '"';
-            return nrv;
+            data += v;
+            data += '"';
+            break;
          }
-         nrv.append( data.data(), n );
-         nrv += '\\';
-         nrv += data[ n ];
-         data.remove_prefix( n + 1 );
+         data.append( v.data(), n );
+         data += '\\';
+         data += v[ n ];
+         v.remove_prefix( n + 1 );
       }
    }
 
    template< typename T >
-   auto to_array( PGconn* c, const T& v )
-      -> std::enable_if_t< !is_array_parameter< T >, std::string >
+   auto to_array( std::string& data, PGconn* c, const T& v )
+      -> std::enable_if_t< !is_array_parameter< T > >
    {
-      const auto t = to_traits( c, v );
+      const auto t = internal::to_traits( c, v );
       static_assert( t.columns == 1 );
       const char* s = t.template value< 0 >();
       if( s == nullptr ) {
-         return "NULL";
+         data += "NULL";
       }
-      if( s[ 0 ] == '\0' ) {
-         return "\"\"";
+      else if( s[ 0 ] == '\0' ) {
+         data += "\"\"";
       }
-      if( s == std::string_view( "NULL" ) ) {
-         return "\"NULL\"";
+      else if( s == std::string_view( "NULL" ) ) {
+         data += "\"NULL\"";
       }
-      if( const auto* pos = std::strpbrk( s, "\\\"" ) ) {
-         return array_escape( s );
+      else if( const auto* pos = std::strpbrk( s, "\\\"{},; \t" ) ) {
+         array_escape( data, s );
       }
-      if( const auto* pos = std::strpbrk( s, "{},; \t" ) ) {
-         return '"' + std::string( s ) + '"';
+      else {
+         data += s;
       }
-      return s;
    }
 
    template< typename T >
-   auto to_array( PGconn* c, const T& v )
-      -> std::enable_if_t< is_array_parameter< T >, std::string >
+   auto to_array( std::string& data, PGconn* c, const T& v )
+      -> std::enable_if_t< is_array_parameter< T > >
    {
-      std::string nrv;
-      nrv += '{';
+      data += '{';
       if( v.empty() ) {
-         nrv += '}';
-         return nrv;
+         data += '}';
+         return;
       }
       for( const auto& e : v ) {
-         nrv += internal::to_array( c, e );
-         nrv += ',';
+         internal::to_array( data, c, e );
+         data += ',';
       }
-      nrv[ nrv.size() - 1 ] = '}';
-      return nrv;
+      data[ data.size() - 1 ] = '}';
    }
 
    template< typename T >
    struct parameter_text_traits< T, std::enable_if_t< is_array_parameter< T > > >
    {
    private:
-      const std::string m_data;
+      std::string m_data;
 
    public:
       parameter_text_traits( PGconn* c, const T& v )
-         : m_data( internal::to_array( c, v ) )
-      {}
+      {
+         internal::to_array( m_data, c, v );
+      }
 
       static constexpr std::size_t columns = 1;
 
