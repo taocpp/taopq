@@ -84,7 +84,7 @@ namespace tao::pq
                         container.push_back( result_traits< value_type >::null() );
                      }
                      else {
-                        throw std::runtime_error( "invalid array input, unexpected NULL value" );
+                        throw std::invalid_argument( "unexpected NULL value" );
                      }
                   }
                   else {
@@ -93,7 +93,7 @@ namespace tao::pq
                   value = end;
                }
                else {
-                  throw std::runtime_error( "invalid array input, unterminated unquoted string" );
+                  throw std::invalid_argument( "unterminated unquoted string" );
                }
             }
          }
@@ -103,7 +103,7 @@ namespace tao::pq
       void parse_elements( T& container, const char*& value )
       {
          if( *value++ != '{' ) {
-            throw std::runtime_error( "invalid array input, expected '{'" );
+            throw std::invalid_argument( "expected '{'" );
          }
          while( true ) {
             parse_element( container, value );
@@ -114,7 +114,7 @@ namespace tao::pq
                case '}':
                   return;
                default:
-                  throw std::runtime_error( "invalid array input, expected ',', ';', or '}'" );
+                  throw std::invalid_argument( "expected ',', ';', or '}'" );
             }
          }
       }
@@ -129,7 +129,7 @@ namespace tao::pq
          T nrv;
          internal::parse_elements( nrv, value );
          if( *value != '\0' ) {
-            throw std::runtime_error( "invalid array input, unexpected additional data" );
+            throw std::invalid_argument( "unexpected additional data" );
          }
          return nrv;
       }
