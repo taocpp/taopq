@@ -12,7 +12,7 @@
 namespace tao::pq::internal
 {
    template< typename A >
-   [[nodiscard]] auto to_traits( A&& a )
+   [[nodiscard]] auto to_traits( A&& a ) noexcept( noexcept( parameter_traits< std::decay_t< A > >( std::forward< A >( a ) ) ) )
    {
       return parameter_traits< std::decay_t< A > >( std::forward< A >( a ) );
    }
