@@ -3,35 +3,62 @@
 
 #include <tao/pq/result_traits.hpp>
 
-#include <memory>
+#include <cstring>
 #include <stdexcept>
 #include <string>
 
-#include <libpq-fe.h>
-
 #include <tao/pq/internal/from_chars.hpp>
+#include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/internal/strtox.hpp>
 
 namespace tao::pq
 {
+   namespace
+   {
+      int unhex( const char c )
+      {
+         if( ( c >= '0' ) && ( c <= '9' ) ) {
+            return c - '0';
+         }
+         if( ( c >= 'a' ) && ( c <= 'f' ) ) {
+            return c - 'a' + 10;
+         }
+         throw std::invalid_argument( "unhex failed" );
+      }
+   }  // namespace
+
    auto result_traits< std::basic_string< unsigned char > >::from( const char* value ) -> std::basic_string< unsigned char >
    {
-      std::size_t size;
-      const std::unique_ptr< unsigned char, decltype( &PQfreemem ) > buffer( PQunescapeBytea( reinterpret_cast< const unsigned char* >( value ), &size ), &PQfreemem );
-      if( !buffer ) {
-         throw std::bad_alloc();  // LCOV_EXCL_LINE
+      if( ( value[ 0 ] != '\\' ) || ( value[ 1 ] != 'x' ) ) {
+         throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
       }
-      return std::basic_string< unsigned char >( buffer.get(), size );
+
+      std::basic_string< unsigned char > nrv;
+      const auto size = std::strlen( value ) / 2 - 1;
+      internal::resize_uninitialized( nrv, size );
+      for( std::size_t pos = 0; pos < size; ++pos ) {
+         const auto high = unhex( value[ 2 + 2 * pos ] );
+         const auto low = unhex( value[ 2 + 2 * pos + 1 ] );
+         nrv[ pos ] = static_cast< unsigned char >( ( high << 4 ) | low );
+      }
+      return nrv;
    }
 
    auto result_traits< binary >::from( const char* value ) -> binary
    {
-      std::size_t size;
-      const std::unique_ptr< unsigned char, decltype( &PQfreemem ) > buffer( PQunescapeBytea( reinterpret_cast< const unsigned char* >( value ), &size ), &PQfreemem );
-      if( !buffer ) {
-         throw std::bad_alloc();  // LCOV_EXCL_LINE
+      if( ( value[ 0 ] != '\\' ) || ( value[ 1 ] != 'x' ) ) {
+         throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
       }
-      return binary( reinterpret_cast< std::byte* >( buffer.get() ), size );
+
+      binary nrv;
+      const auto size = std::strlen( value ) / 2 - 1;
+      internal::resize_uninitialized( nrv, size );
+      for( std::size_t pos = 0; pos < size; ++pos ) {
+         const auto high = unhex( value[ 2 + 2 * pos ] );
+         const auto low = unhex( value[ 2 + 2 * pos + 1 ] );
+         nrv[ pos ] = static_cast< std::byte >( ( high << 4 ) | low );
+      }
+      return nrv;
    }
 
    auto result_traits< bool >::from( const char* value ) -> bool
