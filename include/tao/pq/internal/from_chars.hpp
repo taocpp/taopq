@@ -23,13 +23,13 @@ namespace tao::pq::internal
          if( ptr == value.data() + value.size() ) {
             return result;
          }
-         throw std::runtime_error( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): invalid argument: " + std::string( value ) );
+         throw std::invalid_argument( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): " + std::string( value ) );
       }
       switch( ec ) {
          case std::errc::invalid_argument:
-            throw std::runtime_error( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): invalid argument: " + std::string( value ) );
+            throw std::invalid_argument( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): " + std::string( value ) );
          case std::errc::result_out_of_range:
-            throw std::runtime_error( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): result out of range: " + std::string( value ) );
+            throw std::out_of_range( "tao::pq::internal::from_chars<" + demangle< T >() + ">(): " + std::string( value ) );
          default:                // LCOV_EXCL_LINE
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
       }
