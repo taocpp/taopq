@@ -8,8 +8,6 @@
 #include <charconv>
 #include <cstddef>
 #include <string>
-#include <string_view>
-#include <utility>
 
 #include <tao/pq/oid.hpp>
 
