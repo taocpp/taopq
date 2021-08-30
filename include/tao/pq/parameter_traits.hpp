@@ -773,7 +773,7 @@ namespace tao::pq
       template< std::size_t I >
       void element( std::string& data ) const
       {
-         static char hex[] = "0123456789ABCDEF";
+         static char hex[] = "0123456789abcdef";
          auto pos = data.size();
          internal::resize_uninitialized( data, pos + 2 + m_v.size() * 2 );
          data[ pos++ ] = '\\';
