@@ -15,50 +15,6 @@
 
 namespace tao::pq::internal
 {
-   class char_pointer_helper
-   {
-   protected:
-      const char* const m_p;
-
-   protected:
-      explicit constexpr char_pointer_helper( const char* p ) noexcept
-         : m_p( p )
-      {}
-
-   public:
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] constexpr auto value() const noexcept -> const char*
-      {
-         return m_p;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] constexpr auto string_view() const noexcept -> std::string_view
-      {
-         return m_p;
-      }
-   };
-
    struct buffer_helper
    {
       char m_buffer[ 32 ];
@@ -90,15 +46,15 @@ namespace tao::pq::internal
       }
 
       template< std::size_t I >
-      [[nodiscard]] auto string_view() const noexcept -> std::string_view
+      void element( std::string& data ) const
       {
-         return m_buffer;
+         data += m_buffer;
       }
 
       template< std::size_t I >
-      [[nodiscard]] static constexpr auto escape() noexcept -> bool
+      void copy_to( std::string& data ) const
       {
-         return false;
+         data += m_buffer;
       }
    };
 

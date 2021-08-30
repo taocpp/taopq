@@ -628,11 +628,40 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< const char* >
-      : internal::char_pointer_helper
    {
+   private:
+      const char* const m_p;
+
+   public:
       explicit parameter_traits( const char* p ) noexcept
-         : internal::char_pointer_helper( p )
+         : m_p( p )
       {}
+
+      static constexpr std::size_t columns = 1;
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto type() noexcept -> oid
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] constexpr auto value() const noexcept -> const char*
+      {
+         return m_p;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto length() noexcept -> int
+      {
+         return 0;
+      }
+
+      template< std::size_t I >
+      [[nodiscard]] static constexpr auto format() noexcept -> int
+      {
+         return 0;
+      }
 
       template< std::size_t I >
       void element( std::string& data ) const
