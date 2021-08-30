@@ -7,7 +7,7 @@
 namespace tao::pq
 {
    template< typename T, typename = void >
-   struct parameter_text_traits;
+   struct parameter_traits;
 }
 
 #endif

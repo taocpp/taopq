@@ -5,33 +5,12 @@
 
 #include <libpq-fe.h>
 
-#include <cstring>
-
 #include <tao/pq/connection.hpp>
 #include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {
-   namespace
-   {
-      void append_escape( std::string& buffer, std::string_view data )
-      {
-         while( true ) {
-            const auto n = data.find_first_of( "\b\f\n\r\t\v\\" );
-            if( n == std::string_view::npos ) {
-               buffer += data;
-               return;
-            }
-            buffer.append( data.data(), n );
-            buffer += '\\';
-            buffer += data[ n ];
-            data.remove_prefix( n + 1 );
-         }
-      }
-
-   }  // namespace
-
    table_writer::table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement )
       : m_previous( transaction ),
         m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) )
@@ -52,22 +31,6 @@ namespace tao::pq
       if( r != 1 ) {
          throw std::runtime_error( "PQputCopyData() failed: " + m_transaction->m_connection->error_message() );
       }
-   }
-
-   void table_writer::insert_values( const std::string_view values[], const bool escape[], const std::size_t n_values )
-   {
-      std::string buffer;
-      for( std::size_t n = 0; n < n_values; ++n ) {
-         if( escape[ n ] ) {
-            append_escape( buffer, values[ n ] );
-         }
-         else {
-            buffer += values[ n ];
-         }
-         buffer += '\t';
-      }
-      *buffer.rbegin() = '\n';
-      insert_raw( buffer );
    }
 
    auto table_writer::commit() -> std::size_t

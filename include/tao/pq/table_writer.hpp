@@ -23,16 +23,15 @@ namespace tao::pq
       std::shared_ptr< transaction > m_previous;
       std::shared_ptr< transaction > m_transaction;
 
-      void insert_values( const std::string_view values[], const bool escape[], const std::size_t n_values );
-
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
       void insert_indexed( std::index_sequence< Os... > /*unused*/,
                            std::index_sequence< Is... > /*unused*/,
                            const std::tuple< Ts... >& tuple )
       {
-         const std::string_view values[] = { std::get< Os >( tuple ).template string_view< Is >()... };
-         const bool escape[] = { std::get< Os >( tuple ).template escape< Is >()... };
-         insert_values( values, escape, sizeof...( Os ) );
+         std::string buffer;
+         ( ( std::get< Os >( tuple ).template copy_to< Is >( buffer ), buffer += '\t' ), ... );
+         *buffer.rbegin() = '\n';
+         insert_raw( buffer );
       }
 
       template< typename... Ts >
@@ -56,7 +55,7 @@ namespace tao::pq
       template< typename... As >
       void insert( As&&... as )
       {
-         return insert_traits( internal::to_traits( m_transaction->underlying_raw_ptr(), std::forward< As >( as ) )... );
+         return insert_traits( internal::to_traits( std::forward< As >( as ) )... );
       }
 
       auto commit() -> std::size_t;

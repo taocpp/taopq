@@ -4,7 +4,9 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <tao/pq.hpp>
 #include <tao/pq/connection.hpp>
+#include <tao/pq/result_traits_pair.hpp>
 #include <tao/pq/result_traits_tuple.hpp>
 
 namespace example

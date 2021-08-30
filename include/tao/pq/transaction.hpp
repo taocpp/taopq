@@ -96,7 +96,7 @@ namespace tao::pq
             return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
          }
          else {
-            return execute_traits( statement, internal::to_traits( underlying_raw_ptr(), std::forward< As >( as ) )... );
+            return execute_traits( statement, internal::to_traits( std::forward< As >( as ) )... );
          }
       }
 

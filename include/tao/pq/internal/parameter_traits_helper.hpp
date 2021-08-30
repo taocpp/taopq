@@ -17,7 +17,7 @@ namespace tao::pq::internal
 {
    class char_pointer_helper
    {
-   private:
+   protected:
       const char* const m_p;
 
    protected:
