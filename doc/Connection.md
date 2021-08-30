@@ -93,15 +93,4 @@ You can check a connection's status by calling the `is_open()` method.
 It return `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
 For further details, check the documentation for the underlying [`PQstatus()`](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
 
-## Parameter Traits
-
-The above is slightly inaccurate, as the connection class of taoPQ is actually a class template, that takes a parameter traits class template as its parameter.
-For now, you can ignore the meaning of the traits class template, as it will be explained later in its own chapter.
-However, it means that `tao::pq::connection` is actually a type alias for `tao::pq::basic_connection< tao::pq::parameter_text_traits >`.
-The traits class for the parameters is used when executing statements with parameters and it is passed on to the transactions created from a connection object.
-More precisely, the connection's traits class template is used as a default when no traits class template is explicitly specified for a call to the `direct()`-, `transaction()`-, or `execute()`-method.
-To specify a different traits class template, simply provide it as a template parameter to the method, e.g. `direct< my_traits >()`.
-
-TODO: Do we really want to keep binary and text format traits? It complicates the library as well as the documentation significantly and shifts a lot of code into headers.
-
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch

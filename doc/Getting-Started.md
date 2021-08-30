@@ -42,7 +42,7 @@ The following chapters are good next steps to get to know taoPQ:
 
 * The [Connection](Connection.md) chapter goes into more details on the methods offered by `tao::pq::connection`, introduces transactions, and explains why some objects in taoPQ are handled via smart pointers.
 * The [Transaction](Transaction.md) chapter explains in more detail how taoPQ handles transactions, makes sure that you don't mess up the transaction ordering and nesting, and which transaction types are supported.
-* The [Statement](Statement.md) chapter gives more information on how to send statements and parameters, introducing the concept of type traits.
+* The [Statement](Statement.md) chapter gives more information on how to send statements and parameters.
 * The [Result](Result.md) chapter explains what types of results exist, how you can access the data they contain, and how to convert results into C++ types, including containers.
 
 * The [Installation](Installation.md) chapter explains how to install taoPQ.
