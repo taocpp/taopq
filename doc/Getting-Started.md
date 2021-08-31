@@ -60,8 +60,6 @@ The following chapters are good next steps to get to know taoPQ:
 * The [Connection Pool](Connection-Pool.md) chapter explains how a connection pool might help your application, especially when you use multi-threading. Our connection pool offers some novel features that ease the handling of borrowed connections significantly.
 * The [Bulk Transfer](Bulk-Transfer.md) chapter explains how we support high-speed [bulk data transfer](https://www.postgresql.org/docs/current/sql-copy.html) to or from the server.
 * The [Large Object](Large-Object.md) chapter provides access to PostgreSQL's [large object](https://www.postgresql.org/docs/current/largeobjects.html) facility.
-
-* The [Parameter Binary Format](Parameter-Binary-Format.md) chapter shows an alternative to the parameter text format that is usually used when `libpq` communicates with a server, how to use the parameter binary format with taoPQ, and lists pros and cons.
 * The [Performance](Performance.md) chapter gives hints on how to improve your application's performance, as well as explaining some gotchas you might encounter when using taoPQ.
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
