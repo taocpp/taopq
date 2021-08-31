@@ -15,7 +15,7 @@ namespace tao::pq
 {
    namespace
    {
-      int unhex( const char c )
+      auto unhex( const char c ) -> int
       {
          if( ( c >= '0' ) && ( c <= '9' ) ) {
             return c - '0';
@@ -25,6 +25,7 @@ namespace tao::pq
          }
          throw std::invalid_argument( "unhex failed" );
       }
+
    }  // namespace
 
    auto result_traits< std::basic_string< unsigned char > >::from( const char* value ) -> std::basic_string< unsigned char >
