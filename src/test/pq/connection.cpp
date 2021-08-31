@@ -107,6 +107,16 @@ void run()
 
    // read data
    TEST_ASSERT( connection->execute( "SELECT b FROM tao_connection_test WHERE a = 1" )[ 0 ][ 0 ].get() == std::string( "42" ) );
+
+   TEST_THROWS( connection->execute( "SELECT $1", "" ).as< std::basic_string< unsigned char > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "\\" ).as< std::basic_string< unsigned char > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "\\xa" ).as< std::basic_string< unsigned char > >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "\\xa." ).as< std::basic_string< unsigned char > >() );
+
+   TEST_THROWS( connection->execute( "SELECT $1", "" ).as< tao::pq::binary >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "\\" ).as< tao::pq::binary >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "\\xa" ).as< tao::pq::binary >() );
+   TEST_THROWS( connection->execute( "SELECT $1", "\\xa." ).as< tao::pq::binary >() );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
