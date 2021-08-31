@@ -8,6 +8,7 @@ namespace tao::pq
 {
    template< typename T, typename = void >
    struct parameter_traits;
-}
+
+}  // namespace tao::pq
 
 #endif
