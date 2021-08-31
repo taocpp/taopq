@@ -58,7 +58,7 @@ namespace tao::pq
 
       [[nodiscard]] auto execute_params( const char* statement,
                                          const int n_params,
-                                         const oid types[],
+                                         const Oid types[],
                                          const char* const values[],
                                          const int lengths[],
                                          const int formats[] ) -> result;

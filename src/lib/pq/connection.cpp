@@ -190,7 +190,7 @@ namespace tao::pq
 
    auto connection::execute_params( const char* statement,
                                     const int n_params,
-                                    const oid types[],
+                                    const Oid types[],
                                     const char* const values[],
                                     const int lengths[],
                                     const int formats[] ) -> result
@@ -198,7 +198,7 @@ namespace tao::pq
       if( is_prepared( statement ) ) {
          return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) );
       }
-      return result( PQexecParams( m_pgconn.get(), statement, n_params, (const Oid*)types, values, lengths, formats, 0 ) );
+      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) );
    }
 
    connection::connection( const std::string& connection_info )

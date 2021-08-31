@@ -59,7 +59,7 @@ namespace tao::pq
 
       [[nodiscard]] auto execute_params( const char* statement,
                                          const int n_params,
-                                         const oid types[],
+                                         const Oid types[],
                                          const char* const values[],
                                          const int lengths[],
                                          const int formats[] ) -> result;
@@ -70,7 +70,7 @@ namespace tao::pq
                                           std::index_sequence< Is... > /*unused*/,
                                           const std::tuple< Ts... >& tuple )
       {
-         const oid types[] = { std::get< Os >( tuple ).template type< Is >()... };
+         const Oid types[] = { static_cast< Oid >( std::get< Os >( tuple ).template type< Is >() )... };
          const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
          const int lengths[] = { std::get< Os >( tuple ).template length< Is >()... };
          const int formats[] = { std::get< Os >( tuple ).template format< Is >()... };
