@@ -209,90 +209,70 @@ namespace tao::pq
    struct parameter_traits< signed char >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const signed char v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< unsigned char >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const unsigned char v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< short >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const short v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< unsigned short >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const unsigned short v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< int >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const int v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< unsigned int >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const unsigned int v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< long >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const long v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< unsigned long >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const unsigned long v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< long long >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const long long v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
    struct parameter_traits< unsigned long long >
       : internal::to_chars_helper
    {
-      explicit parameter_traits( const unsigned long long v ) noexcept
-         : internal::to_chars_helper( v )
-      {}
+      using internal::to_chars_helper::to_chars_helper;
    };
 
    template<>
