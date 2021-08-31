@@ -10,10 +10,14 @@
 namespace tao::pq::internal
 {
    [[nodiscard]] auto demangle( const char* const symbol ) -> std::string;
-   [[nodiscard]] auto demangle( const std::type_info& type_info ) -> std::string;
+
+   [[nodiscard]] inline auto demangle( const std::type_info& type_info )
+   {
+      return demangle( type_info.name() );
+   }
 
    template< typename T >
-   [[nodiscard]] auto demangle() -> std::string
+   [[nodiscard]] auto demangle()
    {
       return demangle( typeid( T ) );
    }

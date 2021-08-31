@@ -21,9 +21,6 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/field.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/dependent_false.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian_gcc.hpp
-  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/endian_win.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/exclusive_scan.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/from_chars.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/gen.hpp
@@ -62,7 +59,6 @@ set(TAOPQ_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/field.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/resize_uninitialized.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/large_object.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/parameter_traits.cpp

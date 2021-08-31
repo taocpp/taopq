@@ -17,7 +17,6 @@
 #include <tao/pq/binary.hpp>
 #include <tao/pq/fwd.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
-#include <tao/pq/internal/endian.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/null.hpp>

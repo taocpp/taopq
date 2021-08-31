@@ -52,8 +52,10 @@ namespace tao::pq::internal
 
    struct buffer_helper
    {
+   protected:
       char m_buffer[ 32 ];
 
+   public:
       static constexpr std::size_t columns = 1;
 
       template< std::size_t I >

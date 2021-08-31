@@ -15,7 +15,7 @@
 namespace tao::pq::internal
 {
    template< typename T >
-   auto from_chars( const std::string_view value ) -> T
+   [[nodiscard]] auto from_chars( const std::string_view value ) -> T
    {
       T result;
       const auto [ ptr, ec ] = std::from_chars( value.data(), value.data() + value.size(), result );
