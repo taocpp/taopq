@@ -34,7 +34,7 @@ namespace tao::pq
       void table_writer_append( std::string& buffer, std::string_view data );
 
       template< std::size_t N, typename T >
-      void snprintf( char ( &buffer )[ N ], const char* format, const T v )
+      void snprintf( char ( &buffer )[ N ], const char* format, const T v ) noexcept
       {
          static_assert( N >= 32 );
          if( std::isfinite( v ) ) {
@@ -103,7 +103,7 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
-         return 0;
+         return oid::invalid;
       }
 
       template< std::size_t I >
@@ -139,59 +139,32 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< bool >
+      : internal::char_pointer_helper
    {
-      const bool m_v;
-
       explicit parameter_traits( const bool v ) noexcept
-         : m_v( v )
+         : internal::char_pointer_helper( v ? "TRUE" : "FALSE" )
       {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
-      {
-         return 16;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return 1;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
 
       template< std::size_t I >
       void element( std::string& data ) const
       {
-         data += ( m_v ? "TRUE" : "FALSE" );
+         data += m_p;
       }
 
       template< std::size_t I >
       void copy_to( std::string& data ) const
       {
-         data += ( m_v ? "TRUE" : "FALSE" );
+         data += m_p;
       }
    };
 
    template<>
    struct parameter_traits< char >
    {
-      const char m_v;
+      const char m_value[ 2 ];
 
       explicit parameter_traits( const char v ) noexcept
-         : m_v( v )
+         : m_value{ v, '\0' }
       {}
 
       static constexpr std::size_t columns = 1;
@@ -199,420 +172,147 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
-         return 18;
+         return oid::invalid;
       }
 
       template< std::size_t I >
       [[nodiscard]] auto value() const noexcept -> const char*
       {
-         return reinterpret_cast< const char* >( &m_v );
+         return m_value;
       }
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto length() noexcept -> int
       {
-         return 1;
+         return 0;
       }
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto format() noexcept -> int
       {
-         return 1;
+         return 0;
       }
+
+      template< std::size_t I >
+      void element( std::string& data ) const
+      {
+         internal::array_append( data, std::string_view( m_value, 1 ) );
+      }
+
+      template< std::size_t I >
+      void copy_to( std::string& data ) const
+      {
+         internal::table_writer_append( data, std::string_view( m_value, 1 ) );
+      }
+   };
+
+   template<>
+   struct parameter_traits< signed char >
+      : internal::to_chars_helper
+   {
+      explicit parameter_traits( const signed char v ) noexcept
+         : internal::to_chars_helper( v )
+      {}
+   };
+
+   template<>
+   struct parameter_traits< unsigned char >
+      : internal::to_chars_helper
+   {
+      explicit parameter_traits( const unsigned char v ) noexcept
+         : internal::to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_traits< short >
+      : internal::to_chars_helper
    {
-      const short m_v;
-
-      static_assert( sizeof( short ) == 2 );
-
       explicit parameter_traits( const short v ) noexcept
-         : m_v( internal::hton( v ) )
+         : internal::to_chars_helper( v )
       {}
+   };
 
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
-      {
-         return 21;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return sizeof( short );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
-
-      template< std::size_t I >
-      void element( std::string& data ) const
-      {
-         char buffer[ 32 ];
-         const auto [ ptr, ec ] = std::to_chars( std::begin( buffer ), std::end( buffer ), internal::hton( m_v ) );
-         assert( ec == std::errc() );
-         data.append( buffer, ptr );
-      }
-
-      template< std::size_t I >
-      void copy_to( std::string& data ) const
-      {
-         element< I >( data );
-      }
+   template<>
+   struct parameter_traits< unsigned short >
+      : internal::to_chars_helper
+   {
+      explicit parameter_traits( const unsigned short v ) noexcept
+         : internal::to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_traits< int >
+      : internal::to_chars_helper
    {
-      const int m_v;
-
-      static_assert( sizeof( int ) == 4 );
-
       explicit parameter_traits( const int v ) noexcept
-         : m_v( internal::hton( v ) )
+         : internal::to_chars_helper( v )
       {}
+   };
 
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
-      {
-         return 23;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return sizeof( int );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
-
-      template< std::size_t I >
-      void element( std::string& data ) const
-      {
-         char buffer[ 32 ];
-         const auto [ ptr, ec ] = std::to_chars( std::begin( buffer ), std::end( buffer ), internal::hton( m_v ) );
-         assert( ec == std::errc() );
-         data.append( buffer, ptr );
-      }
-
-      template< std::size_t I >
-      void copy_to( std::string& data ) const
-      {
-         element< I >( data );
-      }
+   template<>
+   struct parameter_traits< unsigned int >
+      : internal::to_chars_helper
+   {
+      explicit parameter_traits( const unsigned int v ) noexcept
+         : internal::to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_traits< long >
+      : internal::to_chars_helper
    {
-      const long m_v;
-
-      static_assert( ( sizeof( long ) == 4 ) || ( sizeof( long ) == 8 ) );
-
       explicit parameter_traits( const long v ) noexcept
-         : m_v( internal::hton( v ) )
+         : internal::to_chars_helper( v )
       {}
+   };
 
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
-      {
-         return ( sizeof( long ) == 4 ) ? 23 : 20;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return sizeof( long );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
-
-      template< std::size_t I >
-      void element( std::string& data ) const
-      {
-         char buffer[ 32 ];
-         const auto [ ptr, ec ] = std::to_chars( std::begin( buffer ), std::end( buffer ), internal::hton( m_v ) );
-         assert( ec == std::errc() );
-         data.append( buffer, ptr );
-      }
-
-      template< std::size_t I >
-      void copy_to( std::string& data ) const
-      {
-         element< I >( data );
-      }
+   template<>
+   struct parameter_traits< unsigned long >
+      : internal::to_chars_helper
+   {
+      explicit parameter_traits( const unsigned long v ) noexcept
+         : internal::to_chars_helper( v )
+      {}
    };
 
    template<>
    struct parameter_traits< long long >
+      : internal::to_chars_helper
    {
-      const long long m_v;
-
-      static_assert( sizeof( long long ) == 8 );
-
       explicit parameter_traits( const long long v ) noexcept
-         : m_v( internal::hton( v ) )
+         : internal::to_chars_helper( v )
       {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
-      {
-         return 20;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return sizeof( long long );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
-
-      template< std::size_t I >
-      void element( std::string& data ) const
-      {
-         char buffer[ 32 ];
-         const auto [ ptr, ec ] = std::to_chars( std::begin( buffer ), std::end( buffer ), internal::hton( m_v ) );
-         assert( ec == std::errc() );
-         data.append( buffer, ptr );
-      }
-
-      template< std::size_t I >
-      void copy_to( std::string& data ) const
-      {
-         element< I >( data );
-      }
    };
 
    template<>
    struct parameter_traits< unsigned long long >
       : internal::to_chars_helper
    {
-      parameter_traits( const unsigned long long v )
+      explicit parameter_traits( const unsigned long long v ) noexcept
          : internal::to_chars_helper( v )
       {}
    };
 
    template<>
-   struct parameter_traits< signed char >
-      : parameter_traits< short >
-   {
-      using parameter_traits< short >::parameter_traits;
-   };
-
-   template<>
-   struct parameter_traits< unsigned char >
-      : parameter_traits< short >
-   {
-      explicit parameter_traits( const unsigned char v )
-         : parameter_traits< short >( static_cast< short >( v ) )
-      {}
-   };
-
-   template< typename T >
-   struct parameter_traits< T, std::enable_if_t< std::is_same_v< T, unsigned short > && ( sizeof( unsigned short ) < sizeof( long long ) ) > >
-      : parameter_traits< long long >
-   {
-      explicit parameter_traits( const unsigned short v )
-         : parameter_traits< long long >( static_cast< long long >( v ) )
-      {}
-   };
-
-   template< typename T >
-   struct parameter_traits< T, std::enable_if_t< std::is_same_v< T, unsigned short > && !( sizeof( unsigned short ) < sizeof( long long ) ) > >
-      : parameter_traits< unsigned long long >
-   {
-      explicit parameter_traits( const unsigned short v )
-         : parameter_traits< unsigned long long >( static_cast< unsigned long long >( v ) )
-      {}
-   };
-
-   template< typename T >
-   struct parameter_traits< T, std::enable_if_t< std::is_same_v< T, unsigned > && ( sizeof( unsigned ) < sizeof( long long ) ) > >
-      : parameter_traits< long long >
-   {
-      explicit parameter_traits( const unsigned v )
-         : parameter_traits< long long >( static_cast< long long >( v ) )
-      {}
-   };
-
-   template< typename T >
-   struct parameter_traits< T, std::enable_if_t< std::is_same_v< T, unsigned > && !( sizeof( unsigned ) < sizeof( long long ) ) > >
-      : parameter_traits< unsigned long long >
-   {
-      explicit parameter_traits( const unsigned v )
-         : parameter_traits< unsigned long long >( static_cast< unsigned long long >( v ) )
-      {}
-   };
-
-   template< typename T >
-   struct parameter_traits< T, std::enable_if_t< std::is_same_v< T, unsigned long > && ( sizeof( unsigned long ) < sizeof( long long ) ) > >
-      : parameter_traits< long long >
-   {
-      explicit parameter_traits( const unsigned long v )
-         : parameter_traits< long long >( static_cast< long long >( v ) )
-      {}
-   };
-
-   template< typename T >
-   struct parameter_traits< T, std::enable_if_t< std::is_same_v< T, unsigned long > && !( sizeof( unsigned long ) < sizeof( long long ) ) > >
-      : parameter_traits< unsigned long long >
-   {
-      explicit parameter_traits( const unsigned long v )
-         : parameter_traits< unsigned long long >( static_cast< unsigned long long >( v ) )
-      {}
-   };
-
-   template<>
    struct parameter_traits< float >
+      : internal::buffer_helper
    {
-      const float m_v;
-
-      static_assert( sizeof( float ) == 4 );
-
       explicit parameter_traits( const float v ) noexcept
-         : m_v( internal::hton( v ) )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
-         return 700;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return sizeof( float );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
-
-      template< std::size_t I >
-      void element( std::string& data ) const
-      {
-         char buffer[ 32 ];
-         internal::snprintf( buffer, "%.9g", internal::hton( m_v ) );
-         data += buffer;
-      }
-
-      template< std::size_t I >
-      void copy_to( std::string& data ) const
-      {
-         element< I >( data );
+         internal::snprintf( m_buffer, "%.9g", v );
       }
    };
 
    template<>
    struct parameter_traits< double >
+      : internal::buffer_helper
    {
-      const double m_v;
-
-      static_assert( sizeof( double ) == 8 );
-
       explicit parameter_traits( const double v ) noexcept
-         : m_v( internal::hton( v ) )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
-         return 701;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] auto value() const noexcept -> const char*
-      {
-         return reinterpret_cast< const char* >( &m_v );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return sizeof( double );
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 1;
-      }
-
-      template< std::size_t I >
-      void element( std::string& data ) const
-      {
-         char buffer[ 32 ];
-         internal::snprintf( buffer, "%.17g", internal::hton( m_v ) );
-         data += buffer;
-      }
-
-      template< std::size_t I >
-      void copy_to( std::string& data ) const
-      {
-         element< I >( data );
+         internal::snprintf( m_buffer, "%.17g", v );
       }
    };
 
@@ -620,7 +320,7 @@ namespace tao::pq
    struct parameter_traits< long double >
       : internal::buffer_helper
    {
-      parameter_traits( const long double v )
+      explicit parameter_traits( const long double v ) noexcept
       {
          internal::snprintf( m_buffer, "%.21Lg", v );
       }
@@ -628,40 +328,9 @@ namespace tao::pq
 
    template<>
    struct parameter_traits< const char* >
+      : internal::char_pointer_helper
    {
-   private:
-      const char* const m_p;
-
-   public:
-      explicit parameter_traits( const char* p ) noexcept
-         : m_p( p )
-      {}
-
-      static constexpr std::size_t columns = 1;
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto type() noexcept -> oid
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] constexpr auto value() const noexcept -> const char*
-      {
-         return m_p;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto length() noexcept -> int
-      {
-         return 0;
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] static constexpr auto format() noexcept -> int
-      {
-         return 0;
-      }
+      using internal::char_pointer_helper::char_pointer_helper;
 
       template< std::size_t I >
       void element( std::string& data ) const
@@ -675,6 +344,9 @@ namespace tao::pq
          internal::table_writer_append( data, m_p );
       }
    };
+
+   // for string_views we can use binary format and,
+   // surprisingly, it does not seem to cause any issues
 
    template<>
    struct parameter_traits< std::string_view >
@@ -692,7 +364,7 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
-         return 25;
+         return oid::text;
       }
 
       template< std::size_t I >
@@ -749,7 +421,7 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
-         return 17;
+         return oid::bytea;
       }
 
       template< std::size_t I >
@@ -802,7 +474,7 @@ namespace tao::pq
    struct parameter_traits< binary_view >
       : parameter_traits< std::basic_string_view< unsigned char > >
    {
-      parameter_traits( const binary_view v )
+      explicit parameter_traits( const binary_view v ) noexcept
          : parameter_traits< std::basic_string_view< unsigned char > >( std::basic_string_view< unsigned char >( reinterpret_cast< const unsigned char* >( v.data() ), v.size() ) )
       {}
    };

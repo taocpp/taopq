@@ -198,7 +198,7 @@ namespace tao::pq
       if( is_prepared( statement ) ) {
          return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) );
       }
-      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) );
+      return result( PQexecParams( m_pgconn.get(), statement, n_params, (const Oid*)types, values, lengths, formats, 0 ) );
    }
 
    connection::connection( const std::string& connection_info )

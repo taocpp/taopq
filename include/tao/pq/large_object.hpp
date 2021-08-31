@@ -24,11 +24,11 @@ namespace tao::pq
       int m_fd;
 
    public:
-      [[nodiscard]] static auto create( const std::shared_ptr< transaction >& transaction, const oid desired_id = 0 ) -> oid;
+      [[nodiscard]] static auto create( const std::shared_ptr< transaction >& transaction, const oid desired_id = oid::invalid ) -> oid;
 
       static void remove( const std::shared_ptr< transaction >& transaction, const oid id );
 
-      [[nodiscard]] static auto import_file( const std::shared_ptr< transaction >& transaction, const char* filename, const oid desired_id = 0 ) -> oid;
+      [[nodiscard]] static auto import_file( const std::shared_ptr< transaction >& transaction, const char* filename, const oid desired_id = oid::invalid ) -> oid;
       static void export_file( const std::shared_ptr< transaction >& transaction, const oid id, const char* filename );
 
       large_object( const std::shared_ptr< transaction >& transaction, const oid id, const std::ios_base::openmode m );

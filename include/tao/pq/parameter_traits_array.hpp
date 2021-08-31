@@ -72,7 +72,7 @@ namespace tao::pq
       std::string m_data;
 
    public:
-      parameter_traits( const T& v )
+      explicit parameter_traits( const T& v )
       {
          internal::to_array( m_data, v );
       }
@@ -82,7 +82,7 @@ namespace tao::pq
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
       {
-         return 0;
+         return oid::invalid;
       }
 
       template< std::size_t I >

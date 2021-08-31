@@ -20,14 +20,14 @@ namespace tao::pq
       std::optional< U > m_forwarder;
 
    public:
-      explicit parameter_traits( const std::optional< T >& v )
+      explicit parameter_traits( const std::optional< T >& v ) noexcept( noexcept( m_forwarder.emplace( *v ) ) )
       {
          if( v ) {
             m_forwarder.emplace( *v );
          }
       }
 
-      explicit parameter_traits( std::optional< T >&& v )
+      explicit parameter_traits( std::optional< T >&& v ) noexcept( noexcept( m_forwarder.emplace( std::move( *v ) ) ) )
       {
          if( v ) {
             m_forwarder.emplace( std::move( *v ) );

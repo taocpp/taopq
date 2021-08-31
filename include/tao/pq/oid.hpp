@@ -8,8 +8,14 @@
 
 namespace tao::pq
 {
-   using oid = Oid;
-   constexpr oid invalid_oid = InvalidOid;
+   static_assert( InvalidOid == 0 );
+
+   enum class oid : Oid
+   {
+      invalid = 0,
+      bytea = 17,
+      text = 25
+   };
 
 }  // namespace tao::pq
 

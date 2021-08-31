@@ -25,8 +25,8 @@ namespace tao::pq
 
    auto large_object::create( const std::shared_ptr< transaction >& transaction, const oid desired_id ) -> oid
    {
-      const oid id = lo_create( transaction->underlying_raw_ptr(), desired_id );
-      if( id == invalid_oid ) {
+      const oid id = static_cast< oid >( lo_create( transaction->underlying_raw_ptr(), static_cast< Oid >( desired_id ) ) );
+      if( id == oid::invalid ) {
          throw std::runtime_error( "tao::pq::large_object::create() failed: " + transaction->m_connection->error_message() );
       }
       return id;
@@ -34,15 +34,15 @@ namespace tao::pq
 
    void large_object::remove( const std::shared_ptr< transaction >& transaction, const oid id )
    {
-      if( lo_unlink( transaction->underlying_raw_ptr(), id ) == -1 ) {
+      if( lo_unlink( transaction->underlying_raw_ptr(), static_cast< Oid >( id ) ) == -1 ) {
          throw std::runtime_error( "tao::pq::large_object::remove() failed: " + transaction->m_connection->error_message() );
       }
    }
 
    auto large_object::import_file( const std::shared_ptr< transaction >& transaction, const char* filename, const oid desired_id ) -> oid
    {
-      const oid id = lo_import_with_oid( transaction->underlying_raw_ptr(), filename, desired_id );
-      if( id == invalid_oid ) {
+      const oid id = static_cast< oid >( lo_import_with_oid( transaction->underlying_raw_ptr(), filename, static_cast< Oid >( desired_id ) ) );
+      if( id == oid::invalid ) {
          throw std::runtime_error( "tao::pq::large_object::import_file() failed: " + transaction->m_connection->error_message() );
       }
       return id;
@@ -50,14 +50,14 @@ namespace tao::pq
 
    void large_object::export_file( const std::shared_ptr< transaction >& transaction, const oid id, const char* filename )
    {
-      if( lo_export( transaction->underlying_raw_ptr(), id, filename ) == -1 ) {
+      if( lo_export( transaction->underlying_raw_ptr(), static_cast< Oid >( id ), filename ) == -1 ) {
          throw std::runtime_error( "tao::pq::large_object::export_file() failed: " + transaction->m_connection->error_message() );
       }
    }
 
    large_object::large_object( const std::shared_ptr< transaction >& transaction, const oid id, const std::ios_base::openmode m )
       : m_transaction( transaction ),
-        m_fd( lo_open( transaction->underlying_raw_ptr(), id, to_mode( m ) ) )
+        m_fd( lo_open( transaction->underlying_raw_ptr(), static_cast< Oid >( id ), to_mode( m ) ) )
    {
       if( m_fd == -1 ) {
          throw std::runtime_error( "tao::pq::large_object::open() failed: " + transaction->m_connection->error_message() );
