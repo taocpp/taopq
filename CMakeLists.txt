@@ -73,6 +73,7 @@ set(TAOPQ_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_reader.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_row.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_writer.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction.cpp
 )
 
 source_group("Header Files" FILES ${TAOPQ_INCLUDE_FILES})
