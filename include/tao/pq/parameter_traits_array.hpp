@@ -39,28 +39,25 @@ namespace tao::pq
    namespace internal
    {
       template< typename T >
-      auto to_array( std::string& data, const T& v )
-         -> std::enable_if_t< !is_array_parameter< T > >
+      void to_array( std::string& data, const T& v )
       {
-         const auto t = internal::to_traits( v );
-         static_assert( t.columns == 1 );
-         t.template element< 0 >( data );
-      }
-
-      template< typename T >
-      auto to_array( std::string& data, const T& v )
-         -> std::enable_if_t< is_array_parameter< T > >
-      {
-         data += '{';
-         if( v.empty() ) {
-            data += '}';
+         if constexpr( is_array_parameter< T > ) {
+            data += '{';
+            if( v.empty() ) {
+               data += '}';
+            }
+            else {
+               for( const auto& e : v ) {
+                  internal::to_array( data, e );
+                  data += ',';
+               }
+               *data.rbegin() = '}';
+            }
          }
          else {
-            for( const auto& e : v ) {
-               internal::to_array( data, e );
-               data += ',';
-            }
-            *data.rbegin() = '}';
+            const auto t = internal::to_traits( v );
+            static_assert( t.columns == 1 );
+            t.template element< 0 >( data );
          }
       }
 
