@@ -12,7 +12,7 @@ namespace tao::pq::internal
    // the below uses a hack to call private member functions of a class, described here:
    // https://github.com/facebook/folly/blob/master/folly/memory/UninitializedMemoryHacks.h
 
-   namespace
+   namespace  // NOLINT(google-build-namespaces)
    {
       // declare some functions...
       void resize_uninitialized_proxy( std::string& v, const std::size_t n );
