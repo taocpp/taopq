@@ -124,6 +124,12 @@ namespace tao::pq
       }
    }
 
+   auto transaction::error_message() const -> std::string
+   {
+      check_current_transaction();
+      return m_connection->error_message();
+   }
+
    auto transaction::execute_params( const char* statement,
                                      const int n_params,
                                      const Oid types[],

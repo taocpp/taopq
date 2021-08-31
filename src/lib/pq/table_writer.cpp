@@ -29,7 +29,7 @@ namespace tao::pq
    {
       const int r = PQputCopyData( m_transaction->underlying_raw_ptr(), data.data(), static_cast< int >( data.size() ) );
       if( r != 1 ) {
-         throw std::runtime_error( "PQputCopyData() failed: " + m_transaction->m_connection->error_message() );
+         throw std::runtime_error( "PQputCopyData() failed: " + m_transaction->error_message() );
       }
    }
 
@@ -37,7 +37,7 @@ namespace tao::pq
    {
       const int r = PQputCopyEnd( m_transaction->underlying_raw_ptr(), nullptr );
       if( r != 1 ) {
-         throw std::runtime_error( "PQputCopyEnd() failed: " + m_transaction->m_connection->error_message() );
+         throw std::runtime_error( "PQputCopyEnd() failed: " + m_transaction->error_message() );
       }
       const auto rows_affected = result( PQgetResult( m_transaction->underlying_raw_ptr() ) ).rows_affected();
       m_transaction.reset();

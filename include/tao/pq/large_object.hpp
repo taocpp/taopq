@@ -19,7 +19,7 @@ namespace tao::pq
    class large_object
    {
    private:
-      // TODO: Should we block this transaction (see table_reader)
+      // TODO: Should we block this transaction? (see table_reader)
       std::shared_ptr< transaction > m_transaction;
       int m_fd;
 

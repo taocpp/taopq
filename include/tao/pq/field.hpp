@@ -4,7 +4,9 @@
 #ifndef TAO_PQ_FIELD_HPP
 #define TAO_PQ_FIELD_HPP
 
+#include <cstddef>
 #include <optional>
+#include <string>
 #include <type_traits>
 
 #include <tao/pq/internal/dependent_false.hpp>

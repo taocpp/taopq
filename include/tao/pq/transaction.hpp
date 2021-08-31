@@ -57,6 +57,8 @@ namespace tao::pq
       [[nodiscard]] auto current_transaction() const noexcept -> transaction*&;
       void check_current_transaction() const;
 
+      [[nodiscard]] auto error_message() const -> std::string;
+
       [[nodiscard]] auto execute_params( const char* statement,
                                          const int n_params,
                                          const Oid types[],

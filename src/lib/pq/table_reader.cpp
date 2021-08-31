@@ -39,7 +39,7 @@ namespace tao::pq
             return {};
          }
          case -2:
-            throw std::runtime_error( "PQgetCopyData() failed: " + m_transaction->m_connection->error_message() );
+            throw std::runtime_error( "PQgetCopyData() failed: " + m_transaction->error_message() );
       }
       TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }

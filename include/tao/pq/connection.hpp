@@ -21,10 +21,6 @@
 
 namespace tao::pq
 {
-   class large_object;
-   class table_reader;
-   class table_writer;
-
    namespace internal
    {
       struct deleter final
@@ -41,9 +37,6 @@ namespace tao::pq
       : public std::enable_shared_from_this< connection >
    {
    private:
-      friend class large_object;
-      friend class table_reader;
-      friend class table_writer;
       friend class transaction;
 
       const std::unique_ptr< PGconn, internal::deleter > m_pgconn;
