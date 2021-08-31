@@ -14,27 +14,27 @@ namespace tao::pq
    using binary_view = std::basic_string_view< std::byte >;
 
    template< typename T >
-   auto to_binary_view( const T* data, const std::size_t size ) -> binary_view
+   [[nodiscard]] auto to_binary_view( const T* data, const std::size_t size ) noexcept -> binary_view
    {
       static_assert( sizeof( T ) == 1 );
       return { reinterpret_cast< const std::byte* >( data ), size };
    }
 
    template< typename T >
-   auto to_binary_view( const T& data ) -> binary_view
+   [[nodiscard]] auto to_binary_view( const T& data ) noexcept -> binary_view
    {
       return to_binary_view( std::data( data ), std::size( data ) );
    }
 
    template< typename T >
-   auto to_binary( const T* data, const std::size_t size ) -> binary
+   [[nodiscard]] auto to_binary( const T* data, const std::size_t size ) -> binary
    {
       static_assert( sizeof( T ) == 1 );
       return { reinterpret_cast< const std::byte* >( data ), size };
    }
 
    template< typename T >
-   auto to_binary( const T& data ) -> binary
+   [[nodiscard]] auto to_binary( const T& data ) -> binary
    {
       return to_binary( std::data( data ), std::size( data ) );
    }
