@@ -4,6 +4,7 @@
 #include <tao/pq/connection.hpp>
 
 #include <cassert>
+#include <cctype>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
