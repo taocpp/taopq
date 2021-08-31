@@ -31,9 +31,9 @@ namespace tao::pq::internal
 
       // ...and here's the actual "trick": an explicit template instantiation skips the access checks,
       // so you can reference private members and forward them to the above proxy!
-      template class proxy< std::string, &std::string::__set_size >;
-      template class proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::__set_size >;
-      template class proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::__set_size >;
+      template struct proxy< std::string, &std::string::__set_size >;
+      template struct proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::__set_size >;
+      template struct proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::__set_size >;
 
 #elif defined( _GLIBCXX_STRING ) && _GLIBCXX_USE_CXX11_ABI
 
@@ -46,9 +46,9 @@ namespace tao::pq::internal
          }
       };
 
-      template class proxy< std::string, &std::string::_M_set_length >;
-      template class proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::_M_set_length >;
-      template class proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::_M_set_length >;
+      template struct proxy< std::string, &std::string::_M_set_length >;
+      template struct proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::_M_set_length >;
+      template struct proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::_M_set_length >;
 
 #elif defined( _GLIBCXX_STRING )
 
@@ -66,20 +66,20 @@ namespace tao::pq::internal
          }
       };
 
-      template class proxy< std::string,
-                            std::string::_Rep,
-                            &std::string::_M_rep,
-                            &std::string::_Rep::_M_set_length_and_sharable >;
+      template struct proxy< std::string,
+                             std::string::_Rep,
+                             &std::string::_M_rep,
+                             &std::string::_Rep::_M_set_length_and_sharable >;
 
-      template class proxy< std::basic_string< unsigned char >,
-                            std::basic_string< unsigned char >::_Rep,
-                            &std::basic_string< unsigned char >::_M_rep,
-                            &std::basic_string< unsigned char >::_Rep::_M_set_length_and_sharable >;
+      template struct proxy< std::basic_string< unsigned char >,
+                             std::basic_string< unsigned char >::_Rep,
+                             &std::basic_string< unsigned char >::_M_rep,
+                             &std::basic_string< unsigned char >::_Rep::_M_set_length_and_sharable >;
 
-      template class proxy< std::basic_string< std::byte >,
-                            std::basic_string< std::byte >::_Rep,
-                            &std::basic_string< std::byte >::_M_rep,
-                            &std::basic_string< std::byte >::_Rep::_M_set_length_and_sharable >;
+      template struct proxy< std::basic_string< std::byte >,
+                             std::basic_string< std::byte >::_Rep,
+                             &std::basic_string< std::byte >::_M_rep,
+                             &std::basic_string< std::byte >::_Rep::_M_set_length_and_sharable >;
 
 #elif defined( _MSC_VER )
 
@@ -92,9 +92,9 @@ namespace tao::pq::internal
          }
       };
 
-      template class proxy< std::string, &std::string::_Eos >;
-      template class proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::_Eos >;
-      template class proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::_Eos >;
+      template struct proxy< std::string, &std::string::_Eos >;
+      template struct proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::_Eos >;
+      template struct proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::_Eos >;
 
 #else
 #warning "No implementation for resize_uninitialized available."
