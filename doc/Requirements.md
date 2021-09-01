@@ -35,6 +35,7 @@ You can decide which options you want to use in your project, we just try to not
 ## Database Requirements
 
 * We expect the database to use UTF-8 encoding.
+* We expect the database to send `BYTEA` data in [`bytea` hex format](https://www.postgresql.org/docs/current/datatype-binary.html).
 * We expect the database connection to use [protocol version 3](https://www.postgresql.org/docs/current/protocol.html).
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
