@@ -15,10 +15,10 @@ The method takes the statement itself as its first parameter and you can add add
 
 To reference the parameters you supplied in the statement, you use [positional parameters](https://www.postgresql.org/docs/current/sql-expressions.html).
 Positional parameters are of the form `$n` where `n` is a number starting at 1.
-Here's an example of how you can insert a row with three columns into the database:
+Here's an example of how you can insert a row with two columns into the database:
 
 ```c++
-tr->execute( "INSERT INTO user ( name, age, is_developer ) VALUES ( $1, $2, $3 )", "Daniel", 42, true );
+tr->execute( "INSERT INTO user ( name, age ) VALUES ( $1, $2 )", "Daniel", 42 );
 ```
 
 The actual data is separated from the statement itself.
@@ -56,7 +56,7 @@ auto find_user( const std::string& name )
 ```
 
 This is cumbersome and error-prone.
-It is easy to forget calling the escape method and for non-strings, the code needs to call explicit conversion methods to string.
+It is easy to forget calling the escape method, which the compiler will *not* catch for you, and for non-strings, the code needs to call explicit conversion methods to string.
 This turns longer SQL statements into a long, ugly mess.
 
 Positional parameters solve all of those problems and therefore taoPQ does not even offer any escaping methods.

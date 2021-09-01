@@ -7,12 +7,12 @@ We will assume that you are familiar with how transactions work on PostgreSQL an
 
 In taoPQ, you create a top-level transaction from a connection, the methods available to do so are described in the [Connection](Connection.md) chapter.
 In short, you create a normal transaction with the connection's `transaction()`-method or a "direct transaction" with the connection's `direct()`-method.
-Both return a shared pointer to a transaction object.
+Both return a shared pointer to a `tao::pq::transaction`-derived object.
 
 From any transaction, you can create a subtransaction by calling the `subtransaction()`-method.
-It returns just another transaction object from which you may create further, nested subtransactions if needed.
+It returns just another `tao::pq::transaction`-derived object from which you may create further, nested subtransactions if needed.
 
-All transaction then offer a unified interface.
+All transactions then offer a unified interface.
 
 ## Statement Execution
 
