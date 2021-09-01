@@ -50,7 +50,7 @@ int main()
    // query data
    const auto users = conn->execute( "SELECT name, age FROM users WHERE age >= $1", 40 );
 
-   // iterate and convert results from queries
+   // iterate and convert results
    for( const auto& row : users ) {
       std::cout << row[ "name" ].as< std::string >() << " is "
                 << row[ "age" ].as< unsigned >() << " years old.\n";
