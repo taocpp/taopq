@@ -135,12 +135,12 @@ namespace tao::pq
             }
          }
 
-         [[nodiscard]] auto v_is_direct() const noexcept -> bool override final
+         [[nodiscard]] auto v_is_direct() const noexcept -> bool final
          {
             return false;
          }
 
-         void v_reset() noexcept override final
+         void v_reset() noexcept final
          {
             this->current_transaction() = m_previous.get();
             this->m_connection.reset();
