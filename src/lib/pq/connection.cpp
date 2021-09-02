@@ -37,7 +37,7 @@ namespace tao::pq
             }
          }
 
-         void v_reset() noexcept override final
+         void v_reset() noexcept final
          {
             this->current_transaction() = nullptr;
             this->m_connection.reset();
