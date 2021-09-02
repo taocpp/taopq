@@ -27,13 +27,13 @@ namespace tao::pq
       }
 
       template< typename T >
-      [[nodiscard]] auto unescape_bytea( const std::string_view value ) -> T
+      [[nodiscard]] auto unescape_bytea( const char* value ) -> T
       {
          if( ( value[ 0 ] != '\\' ) || ( value[ 1 ] != 'x' ) ) {
             throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
          }
 
-         const auto input = value.size();
+         const auto input = std::strlen( value );
          if( input % 2 == 1 ) {
             throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
          }
@@ -51,12 +51,12 @@ namespace tao::pq
 
    }  // namespace
 
-   auto result_traits< std::basic_string< unsigned char > >::from( const std::string_view value ) -> std::basic_string< unsigned char >
+   auto result_traits< std::basic_string< unsigned char > >::from( const char* value ) -> std::basic_string< unsigned char >
    {
       return unescape_bytea< std::basic_string< unsigned char > >( value );
    }
 
-   auto result_traits< binary >::from( const std::string_view value ) -> binary
+   auto result_traits< binary >::from( const char* value ) -> binary
    {
       return unescape_bytea< binary >( value );
    }
@@ -82,52 +82,52 @@ namespace tao::pq
       return value[ 0 ];
    }
 
-   auto result_traits< signed char >::from( const std::string_view value ) -> signed char
+   auto result_traits< signed char >::from( const char* value ) -> signed char
    {
       return internal::from_chars< signed char >( value );
    }
 
-   auto result_traits< unsigned char >::from( const std::string_view value ) -> unsigned char
+   auto result_traits< unsigned char >::from( const char* value ) -> unsigned char
    {
       return internal::from_chars< unsigned char >( value );
    }
 
-   auto result_traits< short >::from( const std::string_view value ) -> short
+   auto result_traits< short >::from( const char* value ) -> short
    {
       return internal::from_chars< short >( value );
    }
 
-   auto result_traits< unsigned short >::from( const std::string_view value ) -> unsigned short
+   auto result_traits< unsigned short >::from( const char* value ) -> unsigned short
    {
       return internal::from_chars< unsigned short >( value );
    }
 
-   auto result_traits< int >::from( const std::string_view value ) -> int
+   auto result_traits< int >::from( const char* value ) -> int
    {
       return internal::from_chars< int >( value );
    }
 
-   auto result_traits< unsigned >::from( const std::string_view value ) -> unsigned
+   auto result_traits< unsigned >::from( const char* value ) -> unsigned
    {
       return internal::from_chars< unsigned >( value );
    }
 
-   auto result_traits< long >::from( const std::string_view value ) -> long
+   auto result_traits< long >::from( const char* value ) -> long
    {
       return internal::from_chars< long >( value );
    }
 
-   auto result_traits< unsigned long >::from( const std::string_view value ) -> unsigned long
+   auto result_traits< unsigned long >::from( const char* value ) -> unsigned long
    {
       return internal::from_chars< unsigned long >( value );
    }
 
-   auto result_traits< long long >::from( const std::string_view value ) -> long long
+   auto result_traits< long long >::from( const char* value ) -> long long
    {
       return internal::from_chars< long long >( value );
    }
 
-   auto result_traits< unsigned long long >::from( const std::string_view value ) -> unsigned long long
+   auto result_traits< unsigned long long >::from( const char* value ) -> unsigned long long
    {
       return internal::from_chars< unsigned long long >( value );
    }

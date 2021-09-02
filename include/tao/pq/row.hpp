@@ -55,36 +55,26 @@ namespace tao::pq
       [[nodiscard]] auto get( const std::size_t column ) const -> const char*;
 
       template< typename T >
-      [[nodiscard]] auto get( const std::size_t /*unused*/ ) const noexcept
-         -> std::enable_if_t< result_traits_size< T > == 0, T >
+      [[nodiscard]] auto get( const std::size_t column ) const -> T
       {
-         static_assert( internal::dependent_false< T >, "tao::pq::result_traits<T>::size yields zero" );
-         TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
-      }
-
-      template< typename T >
-      [[nodiscard]] auto get( const std::size_t column ) const
-         -> std::enable_if_t< result_traits_size< T > == 1 && result_traits_has_null< T >, T >
-      {
-         if( is_null( column ) ) {
-            return result_traits< T >::null();
+         if constexpr( result_traits_size< T > == 0 ) {
+            static_assert( internal::dependent_false< T >, "tao::pq::result_traits<T>::size yields zero" );
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
-         return internal::result_traits_from< T >( get( column ) );
-      }
-
-      template< typename T >
-      [[nodiscard]] auto get( const std::size_t column ) const
-         -> std::enable_if_t< result_traits_size< T > == 1 && !result_traits_has_null< T >, T >
-      {
-         ensure_column( column );
-         return internal::result_traits_from< T >( get( column ) );
-      }
-
-      template< typename T >
-      [[nodiscard]] auto get( const std::size_t column ) const
-         -> std::enable_if_t< ( ( result_traits_size< T > ) > 1 ), T >
-      {
-         return result_traits< T >::from( slice( column, result_traits_size< T > ) );
+         else if constexpr( result_traits_size< T > == 1 ) {
+            if constexpr( result_traits_has_null< T > ) {
+               if( is_null( column ) ) {
+                  return result_traits< T >::null();
+               }
+            }
+            else {
+               ensure_column( column );
+            }
+            return result_traits< T >::from( get( column ) );
+         }
+         else {
+            return result_traits< T >::from( slice( column, result_traits_size< T > ) );
+         }
       }
 
       template< typename T >

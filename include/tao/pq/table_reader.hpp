@@ -31,7 +31,7 @@ namespace tao::pq
       std::shared_ptr< transaction > m_transaction;
       const result m_result;
       std::unique_ptr< char, decltype( &PQfreemem ) > m_buffer;
-      std::vector< std::string_view > m_data;
+      std::vector< const char* > m_data;
 
    public:
       table_reader( const std::shared_ptr< transaction >& transaction, const std::string& statement );
@@ -64,8 +64,7 @@ namespace tao::pq
          return !m_data.empty();
       }
 
-      // note: these string views are guaranteed to be zero-terminated
-      [[nodiscard]] auto raw_data() const noexcept -> const std::vector< std::string_view >&
+      [[nodiscard]] auto raw_data() const noexcept -> const std::vector< const char* >&
       {
          return m_data;
       }

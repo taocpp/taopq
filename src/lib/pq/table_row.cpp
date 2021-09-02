@@ -26,10 +26,10 @@ namespace tao::pq
 
    auto table_row::is_null( const std::size_t column ) const -> bool
    {
-      return get( column ).data() == nullptr;
+      return get( column ) == nullptr;
    }
 
-   auto table_row::get( const std::size_t column ) const -> std::string_view
+   auto table_row::get( const std::size_t column ) const -> const char*
    {
       ensure_column( column );
       return m_reader.raw_data()[ m_offset + column ];

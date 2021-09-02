@@ -35,38 +35,6 @@ namespace tao::pq
    template< typename T >
    inline constexpr bool result_traits_has_null< T, decltype( (void)result_traits< T >::null() ) > = true;
 
-   namespace internal
-   {
-      template< typename T >
-      auto result_traits_from( const char* value ) noexcept( noexcept( result_traits< T >::from( value ) ) )
-      {
-         return result_traits< T >::from( value );
-      }
-
-      template< typename T, typename = void >
-      inline constexpr bool result_traits_from_string_view = false;
-
-      template< typename T >
-      inline constexpr bool result_traits_from_string_view< T, decltype( (void)result_traits< T >::from( std::declval< std::string_view >() ) ) > = true;
-
-      template< typename T >
-      auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value ) ) )
-         -> std::enable_if_t< result_traits_from_string_view< T >, decltype( result_traits< T >::from( value ) ) >
-      {
-         return result_traits< T >::from( value );
-      }
-
-      // DANGER! This expects the string_view to be null-terminated!
-      // This is generally *not* the case, only in the context of table_row!
-      template< typename T >
-      auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value.data() ) ) )
-         -> std::enable_if_t< !result_traits_from_string_view< T >, decltype( result_traits< T >::from( value.data() ) ) >
-      {
-         return result_traits< T >::from( value.data() );
-      }
-
-   }  // namespace internal
-
    template<>
    struct result_traits< const char* >
    {
@@ -79,7 +47,7 @@ namespace tao::pq
    template<>
    struct result_traits< std::string_view >
    {
-      [[nodiscard]] static auto from( const std::string_view value )
+      [[nodiscard]] static auto from( const char* value )
       {
          return value;
       }
@@ -88,22 +56,22 @@ namespace tao::pq
    template<>
    struct result_traits< std::string >
    {
-      [[nodiscard]] static auto from( const std::string_view value )
+      [[nodiscard]] static auto from( const char* value )
       {
-         return std::string( value );
+         return value;
       }
    };
 
    template<>
    struct result_traits< std::basic_string< unsigned char > >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> std::basic_string< unsigned char >;
+      [[nodiscard]] static auto from( const char* value ) -> std::basic_string< unsigned char >;
    };
 
    template<>
    struct result_traits< binary >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> binary;
+      [[nodiscard]] static auto from( const char* value ) -> binary;
    };
 
    template<>
@@ -121,61 +89,61 @@ namespace tao::pq
    template<>
    struct result_traits< signed char >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> signed char;
+      [[nodiscard]] static auto from( const char* value ) -> signed char;
    };
 
    template<>
    struct result_traits< unsigned char >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned char;
+      [[nodiscard]] static auto from( const char* value ) -> unsigned char;
    };
 
    template<>
    struct result_traits< short >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> short;
+      [[nodiscard]] static auto from( const char* value ) -> short;
    };
 
    template<>
    struct result_traits< unsigned short >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned short;
+      [[nodiscard]] static auto from( const char* value ) -> unsigned short;
    };
 
    template<>
    struct result_traits< int >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> int;
+      [[nodiscard]] static auto from( const char* value ) -> int;
    };
 
    template<>
    struct result_traits< unsigned >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned;
+      [[nodiscard]] static auto from( const char* value ) -> unsigned;
    };
 
    template<>
    struct result_traits< long >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> long;
+      [[nodiscard]] static auto from( const char* value ) -> long;
    };
 
    template<>
    struct result_traits< unsigned long >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned long;
+      [[nodiscard]] static auto from( const char* value ) -> unsigned long;
    };
 
    template<>
    struct result_traits< long long >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> long long;
+      [[nodiscard]] static auto from( const char* value ) -> long long;
    };
 
    template<>
    struct result_traits< unsigned long long >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned long long;
+      [[nodiscard]] static auto from( const char* value ) -> unsigned long long;
    };
 
    template<>

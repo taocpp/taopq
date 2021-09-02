@@ -60,7 +60,7 @@ namespace tao::pq
          }
          switch( *pos ) {
             case '\t':
-               m_data.emplace_back( begin, write - begin );
+               m_data.emplace_back( begin );
                *write++ = '\0';
                begin = write = read = ++pos;
                break;
@@ -70,7 +70,7 @@ namespace tao::pq
                switch( *read++ ) {
                   case 'N':
                      assert( write == begin );
-                     m_data.emplace_back();
+                     m_data.emplace_back( nullptr );
                      switch( *read ) {
                         case '\t':
                            begin = write = ++read;
@@ -118,7 +118,7 @@ namespace tao::pq
                break;
 
             case '\n':
-               m_data.emplace_back( begin, write - begin );
+               m_data.emplace_back( begin );
                *write++ = '\0';
                assert( m_data.size() == columns() );
                return true;
