@@ -39,7 +39,6 @@ namespace tao::pq
    {
       template< typename T >
       auto result_traits_from( const char* value ) noexcept( noexcept( result_traits< T >::from( value ) ) )
-         -> decltype( result_traits< T >::from( value ) )
       {
          return result_traits< T >::from( value );
       }
@@ -50,18 +49,18 @@ namespace tao::pq
       template< typename T >
       inline constexpr bool result_traits_from_string_view< T, decltype( (void)result_traits< T >::from( std::declval< std::string_view >() ) ) > = true;
 
-      template< typename T, typename = std::enable_if_t< result_traits_from_string_view< T > > >
+      template< typename T >
       auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value ) ) )
-         -> decltype( result_traits< T >::from( value ) )
+         -> std::enable_if_t< result_traits_from_string_view< T >, decltype( result_traits< T >::from( value ) ) >
       {
          return result_traits< T >::from( value );
       }
 
       // DANGER! This expects the string_view to be null-terminated!
       // This is generally *not* the case, only in the context of table_row!
-      template< typename T, typename = std::enable_if_t< !result_traits_from_string_view< T > > >
+      template< typename T >
       auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value.data() ) ) )
-         -> decltype( result_traits< T >::from( value.data() ) )
+         -> std::enable_if_t< !result_traits_from_string_view< T >, decltype( result_traits< T >::from( value.data() ) ) >
       {
          return result_traits< T >::from( value.data() );
       }
@@ -71,7 +70,7 @@ namespace tao::pq
    template<>
    struct result_traits< const char* >
    {
-      [[nodiscard]] static auto from( const char* value ) -> const char*
+      [[nodiscard]] static auto from( const char* value )
       {
          return value;
       }
@@ -80,7 +79,7 @@ namespace tao::pq
    template<>
    struct result_traits< std::string_view >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> std::string_view
+      [[nodiscard]] static auto from( const std::string_view value )
       {
          return value;
       }
@@ -89,7 +88,7 @@ namespace tao::pq
    template<>
    struct result_traits< std::string >
    {
-      [[nodiscard]] static auto from( const std::string_view value ) -> std::string
+      [[nodiscard]] static auto from( const std::string_view value )
       {
          return std::string( value );
       }
