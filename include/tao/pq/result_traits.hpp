@@ -44,7 +44,13 @@ namespace tao::pq
          return result_traits< T >::from( value );
       }
 
+      template< typename T, typename = void >
+      inline constexpr bool result_traits_from_string_view = false;
+
       template< typename T >
+      inline constexpr bool result_traits_from_string_view< T, decltype( (void)result_traits< T >::from( std::declval< std::string_view >() ) ) > = true;
+
+      template< typename T, typename = std::enable_if_t< result_traits_from_string_view< T > > >
       auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value ) ) )
          -> decltype( result_traits< T >::from( value ) )
       {
@@ -53,7 +59,7 @@ namespace tao::pq
 
       // DANGER! This expects the string_view to be null-terminated!
       // This is generally *not* the case, only in the context of table_row!
-      template< typename T >
+      template< typename T, typename = std::enable_if_t< !result_traits_from_string_view< T > > >
       auto result_traits_from( const std::string_view value ) noexcept( noexcept( result_traits< T >::from( value.data() ) ) )
          -> decltype( result_traits< T >::from( value.data() ) )
       {
@@ -92,13 +98,13 @@ namespace tao::pq
    template<>
    struct result_traits< std::basic_string< unsigned char > >
    {
-      [[nodiscard]] static auto from( const char* value ) -> std::basic_string< unsigned char >;
+      [[nodiscard]] static auto from( const std::string_view value ) -> std::basic_string< unsigned char >;
    };
 
    template<>
    struct result_traits< binary >
    {
-      [[nodiscard]] static auto from( const char* value ) -> binary;
+      [[nodiscard]] static auto from( const std::string_view value ) -> binary;
    };
 
    template<>
@@ -116,61 +122,61 @@ namespace tao::pq
    template<>
    struct result_traits< signed char >
    {
-      [[nodiscard]] static auto from( const char* value ) -> signed char;
+      [[nodiscard]] static auto from( const std::string_view value ) -> signed char;
    };
 
    template<>
    struct result_traits< unsigned char >
    {
-      [[nodiscard]] static auto from( const char* value ) -> unsigned char;
+      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned char;
    };
 
    template<>
    struct result_traits< short >
    {
-      [[nodiscard]] static auto from( const char* value ) -> short;
+      [[nodiscard]] static auto from( const std::string_view value ) -> short;
    };
 
    template<>
    struct result_traits< unsigned short >
    {
-      [[nodiscard]] static auto from( const char* value ) -> unsigned short;
+      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned short;
    };
 
    template<>
    struct result_traits< int >
    {
-      [[nodiscard]] static auto from( const char* value ) -> int;
+      [[nodiscard]] static auto from( const std::string_view value ) -> int;
    };
 
    template<>
    struct result_traits< unsigned >
    {
-      [[nodiscard]] static auto from( const char* value ) -> unsigned;
+      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned;
    };
 
    template<>
    struct result_traits< long >
    {
-      [[nodiscard]] static auto from( const char* value ) -> long;
+      [[nodiscard]] static auto from( const std::string_view value ) -> long;
    };
 
    template<>
    struct result_traits< unsigned long >
    {
-      [[nodiscard]] static auto from( const char* value ) -> unsigned long;
+      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned long;
    };
 
    template<>
    struct result_traits< long long >
    {
-      [[nodiscard]] static auto from( const char* value ) -> long long;
+      [[nodiscard]] static auto from( const std::string_view value ) -> long long;
    };
 
    template<>
    struct result_traits< unsigned long long >
    {
-      [[nodiscard]] static auto from( const char* value ) -> unsigned long long;
+      [[nodiscard]] static auto from( const std::string_view value ) -> unsigned long long;
    };
 
    template<>
