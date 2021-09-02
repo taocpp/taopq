@@ -17,7 +17,7 @@ namespace tao::pq
 {
    class table_row;
 
-   class table_field
+   class table_field final
    {
    private:
       friend class table_row;

@@ -15,7 +15,7 @@
 
 namespace tao::pq
 {
-   class connection_pool
+   class connection_pool final
       : public internal::pool< connection >
    {
    private:
@@ -32,7 +32,7 @@ namespace tao::pq
       }
 
       // pass-key idiom
-      class private_key
+      class private_key final
       {
          private_key() = default;
          friend class connection_pool;

@@ -14,13 +14,13 @@ namespace tao::pq::internal
 {
    template< typename T >
    class pool
-      : public std::enable_shared_from_this< pool< T > >
+      : std::enable_shared_from_this< pool< T > >
    {
    private:
       std::list< std::shared_ptr< T > > m_items;
       std::mutex m_mutex;
 
-      struct deleter
+      struct deleter final
       {
          std::weak_ptr< pool > m_pool;
 

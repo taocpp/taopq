@@ -24,7 +24,7 @@ namespace tao::pq
 {
    class transaction;
 
-   class table_reader
+   class table_reader final
    {
    protected:
       std::shared_ptr< transaction > m_previous;

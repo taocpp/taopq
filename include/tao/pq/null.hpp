@@ -6,7 +6,7 @@
 
 namespace tao::pq
 {
-   struct null_t
+   struct null_t final
    {
       explicit constexpr null_t( int /*unused*/ ) {}
    };

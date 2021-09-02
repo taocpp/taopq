@@ -37,7 +37,7 @@ namespace tao::pq
             }
          }
 
-         void v_reset() noexcept override
+         void v_reset() noexcept override final
          {
             this->current_transaction() = nullptr;
             this->m_connection.reset();
@@ -203,7 +203,7 @@ namespace tao::pq
    }
 
    connection::connection( const std::string& connection_info )
-      : m_pgconn( PQconnectdb( connection_info.c_str() ), internal::deleter() ),
+      : m_pgconn( PQconnectdb( connection_info.c_str() ), deleter() ),
         m_current_transaction( nullptr )
    {
       if( !is_open() ) {

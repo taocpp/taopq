@@ -17,7 +17,7 @@
 
 namespace tao::pq
 {
-   class table_writer
+   class table_writer final
    {
    protected:
       std::shared_ptr< transaction > m_previous;

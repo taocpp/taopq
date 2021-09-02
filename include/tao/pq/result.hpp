@@ -38,7 +38,7 @@ namespace tao::pq
 
    }  // namespace internal
 
-   class result
+   class result final
    {
    private:
       friend class connection;

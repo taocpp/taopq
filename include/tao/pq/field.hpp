@@ -18,7 +18,7 @@ namespace tao::pq
 {
    class row;
 
-   class field
+   class field final
    {
    private:
       friend class row;

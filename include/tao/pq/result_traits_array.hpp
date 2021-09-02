@@ -21,12 +21,6 @@ namespace tao::pq
 {
    namespace internal
    {
-      template< typename... >
-      inline constexpr bool has_null = false;
-
-      template< typename T >
-      inline constexpr bool has_null< T, decltype( T::null() ) > = true;
-
       template< typename >
       inline constexpr bool is_array_result = false;
 
@@ -80,7 +74,7 @@ namespace tao::pq
                if( const auto* end = std::strpbrk( value, ",;}" ) ) {
                   std::string input( value, end );
                   if( input == "NULL" ) {
-                     if constexpr( has_null< result_traits< value_type >, value_type > ) {
+                     if constexpr( result_traits_has_null< value_type > ) {
                         container.push_back( result_traits< value_type >::null() );
                      }
                      else {

@@ -16,7 +16,7 @@ namespace tao::pq
 {
    class transaction;
 
-   class large_object
+   class large_object final
    {
    private:
       // TODO: Should we block this transaction? (see table_reader)
