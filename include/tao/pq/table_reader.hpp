@@ -39,9 +39,8 @@ namespace tao::pq
 
       table_reader( const table_reader& ) = delete;
       table_reader( table_reader&& ) = delete;
-
-      auto operator=( const table_reader& ) -> table_reader& = delete;
-      auto operator=( table_reader&& ) -> table_reader& = delete;
+      void operator=( const table_reader& ) = delete;
+      void operator=( table_reader&& ) = delete;
 
       [[nodiscard]] auto columns() const noexcept -> std::size_t
       {

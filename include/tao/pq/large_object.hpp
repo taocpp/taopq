@@ -38,7 +38,7 @@ namespace tao::pq
 
       ~large_object();
 
-      auto operator=( const large_object& ) -> large_object& = delete;
+      void operator=( const large_object& ) = delete;
       auto operator=( large_object&& rhs ) -> large_object&;  // NOLINT(performance-noexcept-move-constructor)
 
       void close();
