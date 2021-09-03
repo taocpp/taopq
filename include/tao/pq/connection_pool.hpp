@@ -23,7 +23,7 @@ namespace tao::pq
 
       [[nodiscard]] auto v_create() const -> std::unique_ptr< connection > override
       {
-         return std::make_unique< pq::connection >( m_connection_info );
+         return std::make_unique< pq::connection >( pq::connection::private_key(), m_connection_info );
       }
 
       [[nodiscard]] auto v_is_valid( connection& c ) const noexcept -> bool override

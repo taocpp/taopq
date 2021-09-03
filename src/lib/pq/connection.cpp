@@ -202,7 +202,7 @@ namespace tao::pq
       return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) );
    }
 
-   connection::connection( const std::string& connection_info )
+   connection::connection( const private_key /*unused*/, const std::string& connection_info )
       : m_pgconn( PQconnectdb( connection_info.c_str() ), deleter() ),
         m_current_transaction( nullptr )
    {
@@ -211,31 +211,14 @@ namespace tao::pq
       }
    }
 
+   auto connection::create( const std::string& connection_info ) -> std::shared_ptr< connection >
+   {
+      return std::make_shared< connection >( private_key(), connection_info );
+   }
+
    auto connection::is_open() const noexcept -> bool
    {
       return PQstatus( m_pgconn.get() ) == CONNECTION_OK;
-   }
-
-   void connection::prepare( const std::string& name, const std::string& statement )
-   {
-      connection::check_prepared_name( name );
-      result( PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );  // NOLINT(bugprone-unused-raii)
-      m_prepared_statements.insert( name );
-   }
-
-   void connection::deallocate( const std::string& name )
-   {
-      connection::check_prepared_name( name );
-      if( !connection::is_prepared( name ) ) {
-         throw std::runtime_error( "prepared statement name not found: " + name );
-      }
-      (void)execute_params( ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
-      m_prepared_statements.erase( name );
-   }
-
-   auto connection::create( const std::string& connection_info ) -> std::shared_ptr< connection >
-   {
-      return std::make_shared< connection >( connection_info );
    }
 
    auto connection::direct() -> std::shared_ptr< pq::transaction >
@@ -256,6 +239,23 @@ namespace tao::pq
    auto connection::transaction( const isolation_level il, const access_mode am ) -> std::shared_ptr< pq::transaction >
    {
       return std::make_shared< top_level_transaction >( shared_from_this(), il, am );
+   }
+
+   void connection::prepare( const std::string& name, const std::string& statement )
+   {
+      connection::check_prepared_name( name );
+      result( PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );  // NOLINT(bugprone-unused-raii)
+      m_prepared_statements.insert( name );
+   }
+
+   void connection::deallocate( const std::string& name )
+   {
+      connection::check_prepared_name( name );
+      if( !connection::is_prepared( name ) ) {
+         throw std::runtime_error( "prepared statement name not found: " + name );
+      }
+      (void)execute_params( ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
+      m_prepared_statements.erase( name );
    }
 
 }  // namespace tao::pq

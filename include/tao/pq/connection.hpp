@@ -21,10 +21,13 @@
 
 namespace tao::pq
 {
+   class connection_pool;
+
    class connection final
       : public std::enable_shared_from_this< connection >
    {
    private:
+      friend class connection_pool;
       friend class transaction;
 
       struct deleter final
@@ -52,8 +55,16 @@ namespace tao::pq
                                          const int lengths[],
                                          const int formats[] ) -> result;
 
+      // pass-key idiom
+      class private_key final
+      {
+         private_key() = default;
+         friend class connection;
+         friend class connection_pool;
+      };
+
    public:
-      explicit connection( const std::string& connection_info );
+      explicit connection( const private_key /*unused*/, const std::string& connection_info );
 
       connection( const connection& ) = delete;
       connection( connection&& ) = delete;
