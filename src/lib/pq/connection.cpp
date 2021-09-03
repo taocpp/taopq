@@ -24,23 +24,23 @@ namespace tao::pq
          explicit transaction_base( const std::shared_ptr< connection >& connection )
             : transaction( connection )
          {
-            if( this->current_transaction() != nullptr ) {
+            if( current_transaction() != nullptr ) {
                throw std::logic_error( "transaction order error" );
             }
-            this->current_transaction() = this;
+            current_transaction() = this;
          }
 
          ~transaction_base() override
          {
-            if( this->m_connection ) {
-               this->current_transaction() = nullptr;
+            if( m_connection ) {
+               current_transaction() = nullptr;
             }
          }
 
          void v_reset() noexcept final
          {
-            this->current_transaction() = nullptr;
-            this->m_connection.reset();
+            current_transaction() = nullptr;
+            m_connection.reset();
          }
 
       public:
@@ -114,9 +114,9 @@ namespace tao::pq
 
          ~top_level_transaction() override
          {
-            if( this->m_connection && this->m_connection->is_open() ) {
+            if( m_connection && m_connection->is_open() ) {
                try {
-                  this->rollback();
+                  rollback();
                }
                // LCOV_EXCL_START
                catch( const std::exception& ) {
@@ -142,12 +142,12 @@ namespace tao::pq
 
          void v_commit() override
          {
-            this->execute( "COMMIT TRANSACTION" );
+            execute( "COMMIT TRANSACTION" );
          }
 
          void v_rollback() override
          {
-            this->execute( "ROLLBACK TRANSACTION" );
+            execute( "ROLLBACK TRANSACTION" );
          }
       };
 
@@ -179,7 +179,7 @@ namespace tao::pq
 
    void connection::check_prepared_name( const std::string_view name )
    {
-      if( !is_identifier( name ) ) {
+      if( !pq::is_identifier( name ) ) {
          throw std::invalid_argument( "invalid prepared statement name" );
       }
    }
@@ -218,15 +218,15 @@ namespace tao::pq
 
    void connection::prepare( const std::string& name, const std::string& statement )
    {
-      check_prepared_name( name );
+      connection::check_prepared_name( name );
       result( PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );  // NOLINT(bugprone-unused-raii)
       m_prepared_statements.insert( name );
    }
 
    void connection::deallocate( const std::string& name )
    {
-      check_prepared_name( name );
-      if( !is_prepared( name ) ) {
+      connection::check_prepared_name( name );
+      if( !connection::is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement name not found: " + name );
       }
       (void)execute_params( ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );

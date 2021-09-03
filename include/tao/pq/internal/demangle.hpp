@@ -19,7 +19,7 @@ namespace tao::pq::internal
    template< typename T >
    [[nodiscard]] auto demangle()
    {
-      return demangle( typeid( T ) );
+      return internal::demangle( typeid( T ) );
    }
 
 }  // namespace tao::pq::internal

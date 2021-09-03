@@ -64,7 +64,7 @@ namespace tao::pq
    template< typename T, typename >
    struct parameter_traits
    {
-      static_assert( internal::dependent_false< T >, "data type T not registered as taopq parameter" );
+      static_assert( internal::dependent_false< T >, "data type T not registered as taopq parameter type" );
 
       explicit parameter_traits( const T& /*unused*/ ) noexcept;
 

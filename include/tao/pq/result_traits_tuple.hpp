@@ -47,7 +47,7 @@ namespace tao::pq
       template< typename Row >
       [[nodiscard]] static auto from( const Row& row )
       {
-         return from( row, internal::exclusive_scan_t< std::index_sequence< result_traits_size< Ts >... > >() );
+         return result_traits< std::tuple< Ts... > >::from( row, internal::exclusive_scan_t< std::index_sequence< result_traits_size< Ts >... > >() );
       }
    };
 

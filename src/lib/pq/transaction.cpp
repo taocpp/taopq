@@ -18,14 +18,14 @@ namespace tao::pq
          explicit top_level_subtransaction( const std::shared_ptr< connection >& connection )
             : subtransaction_base( connection )
          {
-            this->execute( "START TRANSACTION" );
+            execute( "START TRANSACTION" );
          }
 
          ~top_level_subtransaction() override
          {
-            if( this->m_connection && this->m_connection->is_open() ) {
+            if( m_connection && m_connection->is_open() ) {
                try {
-                  this->rollback();
+                  rollback();
                }
                // LCOV_EXCL_START
                catch( const std::exception& ) {
@@ -46,12 +46,12 @@ namespace tao::pq
       private:
          void v_commit() override
          {
-            this->execute( "COMMIT TRANSACTION" );
+            execute( "COMMIT TRANSACTION" );
          }
 
          void v_rollback() override
          {
-            this->execute( "ROLLBACK TRANSACTION" );
+            execute( "ROLLBACK TRANSACTION" );
          }
       };
 
@@ -64,14 +64,14 @@ namespace tao::pq
          {
             char buffer[ 64 ];
             std::snprintf( buffer, 64, "SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) );
-            this->execute( buffer );
+            execute( buffer );
          }
 
          ~nested_subtransaction() override
          {
-            if( this->m_connection && this->m_connection->is_open() ) {
+            if( m_connection && m_connection->is_open() ) {
                try {
-                  this->rollback();
+                  rollback();
                }
                // LCOV_EXCL_START
                catch( const std::exception& ) {
@@ -95,14 +95,14 @@ namespace tao::pq
          {
             char buffer[ 64 ];
             std::snprintf( buffer, 64, "RELEASE SAVEPOINT \"TAOPQ_%p\"", static_cast< void* >( this ) );
-            this->execute( buffer );
+            execute( buffer );
          }
 
          void v_rollback() override
          {
             char buffer[ 64 ];
             std::snprintf( buffer, 64, "ROLLBACK TO \"TAOPQ_%p\"", static_cast< void* >( this ) );
-            this->execute( buffer );
+            execute( buffer );
          }
       };
 

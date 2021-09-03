@@ -19,27 +19,27 @@
 
 namespace tao::pq
 {
+   template< typename >
+   inline constexpr bool is_array_result = false;
+
+   // TODO:
+   // template< typename T, std::size_t N >
+   // inline constexpr bool is_array_result< std::array< T, N > > = true;
+
+   template< typename... Ts >
+   inline constexpr bool is_array_result< std::list< Ts... > > = true;
+
+   template< typename... Ts >
+   inline constexpr bool is_array_result< std::set< Ts... > > = true;
+
+   template< typename... Ts >
+   inline constexpr bool is_array_result< std::unordered_set< Ts... > > = true;
+
+   template< typename... Ts >
+   inline constexpr bool is_array_result< std::vector< Ts... > > = true;
+
    namespace internal
    {
-      template< typename >
-      inline constexpr bool is_array_result = false;
-
-      // TODO:
-      // template< typename T, std::size_t N >
-      // inline constexpr bool is_array_result< std::array< T, N > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::list< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::unordered_set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::vector< Ts... > > = true;
-
       template< typename T >
       void parse_elements( T& container, const char*& value );
 
@@ -49,7 +49,7 @@ namespace tao::pq
          using value_type = typename T::value_type;
          if constexpr( is_array_result< value_type > ) {
             value_type element;
-            parse_elements( element, value );
+            internal::parse_elements( element, value );
             container.push_back( std::move( element ) );
          }
          else {
@@ -100,7 +100,7 @@ namespace tao::pq
             throw std::invalid_argument( "expected '{'" );
          }
          while( true ) {
-            parse_element( container, value );
+            internal::parse_element( container, value );
             switch( *value++ ) {
                case ',':
                case ';':
@@ -116,7 +116,7 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct result_traits< T, std::enable_if_t< internal::is_array_result< T > > >
+   struct result_traits< T, std::enable_if_t< is_array_result< T > > >
    {
       static auto from( const char* value ) -> T
       {

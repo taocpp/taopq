@@ -49,7 +49,7 @@ namespace tao::pq::internal
 
       void push( std::unique_ptr< T >& up ) noexcept
       {
-         if( v_is_valid( *up ) ) {
+         if( this->v_is_valid( *up ) ) {
             std::shared_ptr< T > sp( up.release(), deleter() );
             const std::lock_guard lock( m_mutex );
             // potentially throws -> calls abort() due to noexcept!
@@ -91,15 +91,15 @@ namespace tao::pq::internal
       // create a new T which is put into the pool when no longer used
       [[nodiscard]] auto create() -> std::shared_ptr< T >
       {
-         return { v_create().release(), deleter( this->weak_from_this() ) };
+         return { v_create().release(), pool::deleter( this->weak_from_this() ) };
       }
 
       // get an instance from the pool or create a new one if necessary
       [[nodiscard]] auto get() -> std::shared_ptr< T >
       {
          while( const auto sp = pull() ) {
-            if( v_is_valid( *sp ) ) {
-               attach( sp, this->weak_from_this() );
+            if( this->v_is_valid( *sp ) ) {
+               pool::attach( sp, this->weak_from_this() );
                return sp;
             }
          }
@@ -112,7 +112,7 @@ namespace tao::pq::internal
          const std::lock_guard lock( m_mutex );
          auto it = m_items.begin();
          while( it != m_items.end() ) {
-            if( !v_is_valid( **it ) ) {
+            if( !this->v_is_valid( **it ) ) {
                deferred_delete.splice( deferred_delete.end(), m_items, it++ );
             }
             else {

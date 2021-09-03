@@ -113,7 +113,7 @@ namespace tao::pq
       [[nodiscard]] auto at( const std::size_t column ) const -> field;
       [[nodiscard]] auto at( const std::string& in_name ) const -> field
       {
-         return ( *this )[ index( in_name ) ];
+         return ( *this )[ row::index( in_name ) ];
       }
 
       [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> field
@@ -123,7 +123,7 @@ namespace tao::pq
 
       [[nodiscard]] auto operator[]( const std::string& in_name ) const -> field
       {
-         return ( *this )[ index( in_name ) ];
+         return ( *this )[ row::index( in_name ) ];
       }
    };
 

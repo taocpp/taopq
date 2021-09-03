@@ -83,7 +83,7 @@ namespace tao::pq
       [[nodiscard]] auto execute_traits( const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         return execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
+         return transaction::execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
       [[nodiscard]] auto underlying_raw_ptr() const noexcept -> PGconn*;
@@ -105,7 +105,7 @@ namespace tao::pq
       template< typename... As >
       auto execute( const std::string& statement, As&&... as )
       {
-         return execute( statement.c_str(), std::forward< As >( as )... );
+         return transaction::execute( statement.c_str(), std::forward< As >( as )... );
       }
 
       void commit();
@@ -123,15 +123,15 @@ namespace tao::pq
       protected:
          explicit subtransaction_base( const std::shared_ptr< connection >& connection )
             : transaction( connection ),
-              m_previous( this->current_transaction()->shared_from_this() )
+              m_previous( current_transaction()->shared_from_this() )
          {
-            this->current_transaction() = this;
+            current_transaction() = this;
          }
 
          ~subtransaction_base() override
          {
-            if( this->m_connection ) {
-               this->current_transaction() = m_previous.get();  // LCOV_EXCL_LINE
+            if( m_connection ) {
+               current_transaction() = m_previous.get();  // LCOV_EXCL_LINE
             }
          }
 
@@ -142,8 +142,8 @@ namespace tao::pq
 
          void v_reset() noexcept final
          {
-            this->current_transaction() = m_previous.get();
-            this->m_connection.reset();
+            current_transaction() = m_previous.get();
+            m_connection.reset();
          }
 
       public:

@@ -31,14 +31,14 @@ namespace tao::pq
          std::string buffer;
          ( ( std::get< Os >( tuple ).template copy_to< Is >( buffer ), buffer += '\t' ), ... );
          *buffer.rbegin() = '\n';
-         insert_raw( buffer );
+         table_writer::insert_raw( buffer );
       }
 
       template< typename... Ts >
       void insert_traits( const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         insert_indexed( typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
+         table_writer::insert_indexed( typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
    public:

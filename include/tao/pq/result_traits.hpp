@@ -19,7 +19,8 @@ namespace tao::pq
    template< typename T, typename = void >
    struct result_traits
    {
-      static_assert( internal::dependent_false< T >, "tao::pq::result_traits<T> not specialized for T" );
+      static_assert( internal::dependent_false< T >, "data type T not registered as taopq result type" );
+
       static auto from( const char* value ) noexcept -> T;
    };
 

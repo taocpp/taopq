@@ -117,7 +117,7 @@ namespace tao::pq::internal
          if( n > v.capacity() ) {
             v.reserve( n );
          }
-         resize_uninitialized_proxy( v, n );
+         internal::resize_uninitialized_proxy( v, n );
       }
    }
 
