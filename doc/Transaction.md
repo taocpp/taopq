@@ -3,6 +3,43 @@
 Before we continue with our own documentation, we'd like to once again point you to the excellent [PostgreSQL documentation](https://www.postgresql.org/docs/current/tutorial-transactions.html) on transactions.
 We will assume that you are familiar with how transactions work on PostgreSQL and in general, so we will *not* repeat this here.
 
+## Synopsis
+
+```c++
+namespace tao::pq
+{
+   class transaction
+      : public std::enable_shared_from_this< transaction >
+   {
+   public:
+      virtual ~transaction() = default;
+
+      // non-copyable, non-movable
+      transaction( const transaction& ) = delete;
+      transaction( transaction&& ) = delete;
+      void operator=( const transaction& ) = delete;
+      void operator=( transaction&& ) = delete;
+
+      // transactions
+      auto subtransaction()
+         -> std::shared_ptr< pq::transaction >;
+
+      // statement execution
+      template< typename... As >
+      auto execute( const char* statement, As&&... as )
+         -> result;
+
+      template< typename... As >
+      auto execute( const std::string& statement, As&&... as )
+         -> result;
+
+      // finalize
+      void commit();
+      void rollback();
+   };
+}
+```
+
 ## Creating Transactions
 
 In taoPQ, you create a top-level transaction from a connection, the methods available to do so are described in the [Connection](Connection.md) chapter.
