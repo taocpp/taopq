@@ -86,10 +86,16 @@ namespace tao::pq
       void prepare( const std::string& name, const std::string& statement );
       void deallocate( const std::string& name );
 
-      template< typename... Ts >
-      auto execute( Ts&&... ts )
+      template< typename... As >
+      auto execute( const char* statement, As&&... as )
       {
-         return direct()->execute( std::forward< Ts >( ts )... );
+         return direct()->execute( statement, std::forward< As >( as )... );
+      }
+
+      template< typename... As >
+      auto execute( const std::string& statement, As&&... as )
+      {
+         return direct()->execute( statement.c_str(), std::forward< As >( as )... );
       }
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
