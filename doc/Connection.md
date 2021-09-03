@@ -67,8 +67,12 @@ namespace tao::pq
       void deallocate( const std::string& name );
 
       // direct statement execution
-      template< typename... Ts >
-      auto execute( Ts&&... ts )
+      template< typename... As >
+      auto execute( const char* statement, As&&... as )
+         -> result;
+
+      template< typename... As >
+      auto execute( const std::string& statement, As&&... as )
          -> result;
    };
 }
