@@ -324,7 +324,7 @@ namespace tao::pq
       }
    };
 
-   // for string_views we can use binary format and,
+   // for string_views (which are not zero-terminated) we can use binary format and,
    // surprisingly, it does not seem to cause any issues
 
    template<>
@@ -424,6 +424,7 @@ namespace tao::pq
       template< std::size_t I >
       void element( std::string& data ) const
       {
+         // generate bytea hex format
          static char hex[] = "0123456789abcdef";
          auto pos = data.size();
          internal::resize_uninitialized( data, pos + 2 + m_v.size() * 2 );

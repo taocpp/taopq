@@ -153,6 +153,7 @@ namespace tao::pq
          void operator=( subtransaction_base&& ) = delete;
       };
 
+      // blocker for table_reader and table_writer
       class transaction_guard final
          : public subtransaction_base
       {

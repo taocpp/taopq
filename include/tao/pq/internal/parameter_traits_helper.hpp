@@ -50,6 +50,7 @@ namespace tao::pq::internal
       }
    };
 
+   // note the size of the buffer is hardcoded
    struct buffer_helper
    {
    protected:
@@ -95,6 +96,7 @@ namespace tao::pq::internal
       }
    };
 
+   // all uses of this helper need to fit into the buffer, see above
    struct to_chars_helper
       : buffer_helper
    {

@@ -101,7 +101,7 @@ namespace tao::pq::internal
       template struct proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::_Eos >;
 
 #else
-#warning "No implementation for resize_uninitialized available."
+#error "No implementation for resize_uninitialized available."
 #endif
 
    }  // namespace
