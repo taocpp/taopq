@@ -12,17 +12,17 @@ namespace tao::pq
       : public std::enable_shared_from_this< transaction >
    {
    public:
-      virtual ~transaction() = default;
-
       // non-copyable, non-movable
       transaction( const transaction& ) = delete;
       transaction( transaction&& ) = delete;
       void operator=( const transaction& ) = delete;
       void operator=( transaction&& ) = delete;
 
+      virtual ~transaction() = default;
+
       // transactions
       auto subtransaction()
-         -> std::shared_ptr< pq::transaction >;
+         -> std::shared_ptr< transaction >;
 
       // statement execution
       template< typename... As >

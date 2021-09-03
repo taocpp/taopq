@@ -90,7 +90,7 @@ namespace tao::pq
       [[nodiscard]] auto underlying_raw_ptr() const noexcept -> PGconn*;
 
    public:
-      [[nodiscard]] auto subtransaction() -> std::shared_ptr< pq::transaction >;
+      [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
       template< typename... As >
       auto execute( const char* statement, As&&... as )
