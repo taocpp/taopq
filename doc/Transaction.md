@@ -8,6 +8,8 @@ We will assume that you are familiar with how transactions work on PostgreSQL an
 ```c++
 namespace tao::pq
 {
+   class result;
+
    class transaction
       : public std::enable_shared_from_this< transaction >
    {
@@ -49,7 +51,7 @@ Both return a shared pointer to a `tao::pq::transaction`-derived object.
 From any transaction, you can create a subtransaction by calling the `subtransaction()`-method.
 It returns just another `tao::pq::transaction`-derived object from which you may create further, nested subtransactions if needed.
 
-All transactions then offer a unified interface.
+All transactions then offer the above, unified interface.
 
 ## Statement Execution
 
@@ -89,7 +91,7 @@ Note that opening a subtransaction from a direct connection is possible and simp
 You can manually begin, commit, or rollback transactions by executing [`BEGIN`](https://www.postgresql.org/docs/current/sql-begin.html), [`COMMIT`](https://www.postgresql.org/docs/current/sql-commit.html), or [`ROLLBACK`](https://www.postgresql.org/docs/current/sql-rollback.html) statements directly via `execute()`.
 Likewise, you can manually create, commit, or rollback subtransactions by executing [`SAVEPOINT`](https://www.postgresql.org/docs/current/sql-savepoint.html), [`RELEASE SAVEPOINT`](https://www.postgresql.org/docs/current/sql-release-savepoint.html), or [`ROLLBACK TO SAVEPOINT`](https://www.postgresql.org/docs/current/sql-rollback-to.html) statements directly via `execute()`.
 
-We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our libraries transaction ordering framework.
+We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our library's transaction ordering framework.
 We advise to use the methods offered by taoPQ instead of manually handling transactions.
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
