@@ -37,8 +37,9 @@ namespace tao::pq
       friend class table_reader;
       friend class table_writer;
 
-   public:
       explicit transaction( const std::shared_ptr< connection >& connection );
+
+   public:
       virtual ~transaction() = default;
 
       transaction( const transaction& ) = delete;
