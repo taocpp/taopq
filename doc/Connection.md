@@ -3,6 +3,77 @@
 All communication with a database server is handled through a connection, represented by the `tao::pq::connection` type in taoPQ.
 A connection object takes care of [error handling](Error-Handling.md), tracking [transactions](Transaction.md), and it has its own set of [prepared statements](Prepared-Statements.md).
 
+## Synopsis
+
+```c++
+namespace tao::pq
+{
+   enum class isolation_level
+   {
+      default_isolation_level,
+      serializable,
+      repeatable_read,
+      read_committed,
+      read_uncommitted
+   };
+
+   enum class access_mode
+   {
+      default_access_mode,
+      read_write,
+      read_only
+   };
+
+   class transaction;
+   class result;
+
+   class connection final
+      : public std::enable_shared_from_this< connection >
+   {
+   public:
+      // create a new connection
+      static auto create( const std::string& connection_info )
+         -> std::shared_ptr< connection >;
+
+      // non-copyable, non-movable
+      connection( const connection& ) = delete;
+      connection( connection&& ) = delete;
+      void operator=( const connection& ) = delete;
+      void operator=( connection&& ) = delete;
+
+      ~connection() = default;
+
+      // query status
+      auto is_open() const noexcept
+         -> bool;
+
+      // transactions
+      auto direct()
+         -> std::shared_ptr< pq::transaction >;
+
+      auto transaction()
+         -> std::shared_ptr< pq::transaction >;
+
+      auto transaction( const access_mode am,
+                        const isolation_level il = isolation_level::default_isolation_level )
+         -> std::shared_ptr< pq::transaction >;
+
+      auto transaction( const isolation_level il,
+                        const access_mode am = access_mode::default_access_mode )
+         -> std::shared_ptr< pq::transaction >;
+
+      // prepared statements
+      void prepare( const std::string& name, const std::string& statement );
+      void deallocate( const std::string& name );
+
+      // direct statement execution
+      template< typename... Ts >
+      auto execute( Ts&&... ts )
+         -> result;
+   };
+}
+```
+
 ## Creating a Connection
 
 A connection is created by calling `tao::pq::connection`'s static `create()`-method.
@@ -33,28 +104,6 @@ However, calling either `commit()` or `rollback()` will end the transaction's lo
 
 The `transaction()`-method begins a real [database transaction](https://www.postgresql.org/docs/current/tutorial-transactions.html).
 You may specify two optional parameters, the [isolation level](https://www.postgresql.org/docs/current/transaction-iso.html) and the [access mode](https://www.postgresql.org/docs/current/sql-set-transaction.html).
-taoPQ defines these as enumeration types as follows:
-
-```c++
-namespace tao::pq
-{
-   enum class isolation_level
-   {
-      default_isolation_level,
-      serializable,
-      repeatable_read,
-      read_committed,
-      read_uncommitted
-   };
-
-   enum class access_mode
-   {
-      default_access_mode,
-      read_write,
-      read_only
-   };
-}
-```
 
 When `tao::pq::isolation_level::default_isolation_level` or `tao::pq::access_mode::default_access_mode` are used the transaction inherits its isolation level or access mode from the session, as described in the [PostgreSQL documentation](https://www.postgresql.org/docs/current/sql-set-transaction.html).
 
