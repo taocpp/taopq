@@ -14,7 +14,7 @@ namespace tao::pq::internal
 {
    template< typename T >
    class pool
-      : std::enable_shared_from_this< pool< T > >
+      : public std::enable_shared_from_this< pool< T > >
    {
    private:
       std::list< std::shared_ptr< T > > m_items;
