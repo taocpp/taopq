@@ -9,8 +9,8 @@
 [![Sanitizer](https://github.com/taocpp/taopq/workflows/Sanitizer/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3ASanitizer)
 [![Code Coverage](https://codecov.io/gh/taocpp/taopq/branch/main/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/taopq)
 
-taoPQ is a light-weight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
-It has no dependencies beyond a C++17 compatible compiler and the PostgreSQL `libpq` client library.
+taoPQ is a lightweight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
+It has no dependencies beyond C++17 and the PostgreSQL `libpq` client library.
 
 ## Introduction
 
