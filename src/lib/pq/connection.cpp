@@ -160,12 +160,7 @@ namespace tao::pq
 
    auto connection::error_message() const -> std::string
    {
-      const char* message = PQerrorMessage( m_pgconn.get() );
-      assert( message );
-      const std::size_t size = std::strlen( message );
-      assert( size > 0 );
-      assert( message[ size - 1 ] == '\n' );
-      return std::string( message, size - 1 );
+      return PQerrorMessage( m_pgconn.get() );
    }
 
    auto connection::escape_identifier( const std::string_view identifier ) const -> std::string
