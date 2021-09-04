@@ -130,7 +130,8 @@ namespace tao::pq
       return m_connection->error_message();
    }
 
-   auto transaction::execute_params( const char* statement,
+   auto transaction::execute_params( const result::mode_t mode,
+                                     const char* statement,
                                      const int n_params,
                                      const Oid types[],
                                      const char* const values[],
@@ -138,7 +139,7 @@ namespace tao::pq
                                      const int formats[] ) -> result
    {
       check_current_transaction();
-      return m_connection->execute_params( statement, n_params, types, values, lengths, formats );
+      return m_connection->execute_params( mode, statement, n_params, types, values, lengths, formats );
    }
 
    auto transaction::underlying_raw_ptr() const noexcept -> PGconn*

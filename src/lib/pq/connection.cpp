@@ -184,7 +184,8 @@ namespace tao::pq
       return m_prepared_statements.find( name ) != m_prepared_statements.end();
    }
 
-   auto connection::execute_params( const char* statement,
+   auto connection::execute_params( const result::mode_t mode,
+                                    const char* statement,
                                     const int n_params,
                                     const Oid types[],
                                     const char* const values[],
@@ -192,9 +193,9 @@ namespace tao::pq
                                     const int formats[] ) -> result
    {
       if( is_prepared( statement ) ) {
-         return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) );
+         return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ), mode );
       }
-      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) );
+      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ), mode );
    }
 
    connection::connection( const private_key /*unused*/, const std::string& connection_info )
@@ -249,7 +250,7 @@ namespace tao::pq
       if( !connection::is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement name not found: " + name );
       }
-      (void)execute_params( ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
+      (void)execute_params( result::mode_t::expect_ok, ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
       m_prepared_statements.erase( name );
    }
 

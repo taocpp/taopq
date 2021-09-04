@@ -42,7 +42,14 @@ namespace tao::pq
       }
 
    public:
-      table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement );
+      template< typename... As >
+      table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement, As&&... as )
+         : m_previous( transaction ),
+           m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) )
+      {
+         m_transaction->execute_mode( result::mode_t::expect_copy_in, statement.c_str(), std::forward< As >( as )... );
+      }
+
       ~table_writer();
 
       table_writer( const table_writer& ) = delete;

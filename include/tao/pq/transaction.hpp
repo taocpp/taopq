@@ -60,7 +60,8 @@ namespace tao::pq
 
       [[nodiscard]] auto error_message() const -> std::string;
 
-      [[nodiscard]] auto execute_params( const char* statement,
+      [[nodiscard]] auto execute_params( const result::mode_t mode,
+                                         const char* statement,
                                          const int n_params,
                                          const Oid types[],
                                          const char* const values[],
@@ -68,7 +69,8 @@ namespace tao::pq
                                          const int formats[] ) -> result;
 
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
-      [[nodiscard]] auto execute_indexed( const char* statement,
+      [[nodiscard]] auto execute_indexed( const result::mode_t mode,
+                                          const char* statement,
                                           std::index_sequence< Os... > /*unused*/,
                                           std::index_sequence< Is... > /*unused*/,
                                           const std::tuple< Ts... >& tuple )
@@ -77,14 +79,25 @@ namespace tao::pq
          const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
          const int lengths[] = { std::get< Os >( tuple ).template length< Is >()... };
          const int formats[] = { std::get< Os >( tuple ).template format< Is >()... };
-         return execute_params( statement, sizeof...( Os ), types, values, lengths, formats );
+         return execute_params( mode, statement, sizeof...( Os ), types, values, lengths, formats );
       }
 
       template< typename... Ts >
-      [[nodiscard]] auto execute_traits( const char* statement, const Ts&... ts )
+      [[nodiscard]] auto execute_traits( const result::mode_t mode, const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         return transaction::execute_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
+         return transaction::execute_indexed( mode, statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
+      }
+
+      template< typename... As >
+      auto execute_mode( const result::mode_t mode, const char* statement, As&&... as )
+      {
+         if constexpr( sizeof...( As ) == 0 ) {
+            return execute_params( mode, statement, 0, nullptr, nullptr, nullptr, nullptr );
+         }
+         else {
+            return execute_traits( mode, statement, internal::to_traits( std::forward< As >( as ) )... );
+         }
       }
 
       [[nodiscard]] auto underlying_raw_ptr() const noexcept -> PGconn*;
@@ -95,12 +108,7 @@ namespace tao::pq
       template< typename... As >
       auto execute( const char* statement, As&&... as )
       {
-         if constexpr( sizeof...( As ) == 0 ) {
-            return execute_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
-         }
-         else {
-            return execute_traits( statement, internal::to_traits( std::forward< As >( as ) )... );
-         }
+         return transaction::execute_mode( result::mode_t::expect_ok, statement, std::forward< As >( as )... );
       }
 
       template< typename... As >

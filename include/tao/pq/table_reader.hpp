@@ -19,11 +19,10 @@
 
 #include <tao/pq/result.hpp>
 #include <tao/pq/table_row.hpp>
+#include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {
-   class transaction;
-
    class table_reader final
    {
    protected:
@@ -34,7 +33,14 @@ namespace tao::pq
       std::vector< const char* > m_data;
 
    public:
-      table_reader( const std::shared_ptr< transaction >& transaction, const std::string& statement );
+      template< typename... As >
+      table_reader( const std::shared_ptr< transaction >& transaction, const std::string& statement, As&&... as )
+         : m_previous( transaction ),
+           m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) ),
+           m_result( m_transaction->execute_mode( result::mode_t::expect_copy_out, statement.c_str(), std::forward< As >( as )... ) ),
+           m_buffer( nullptr, &PQfreemem )
+      {}
+
       ~table_reader() = default;
 
       table_reader( const table_reader& ) = delete;

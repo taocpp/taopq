@@ -11,13 +11,6 @@
 
 namespace tao::pq
 {
-   table_writer::table_writer( const std::shared_ptr< transaction >& transaction, const std::string& statement )
-      : m_previous( transaction ),
-        m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) )
-   {
-      result( PQexecParams( m_transaction->underlying_raw_ptr(), statement.c_str(), 0, nullptr, nullptr, nullptr, nullptr, 0 ), result::mode_t::expect_copy_in );
-   }
-
    table_writer::~table_writer()
    {
       if( m_transaction ) {
