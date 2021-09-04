@@ -10,12 +10,12 @@
 [![Code Coverage](https://codecov.io/gh/taocpp/taopq/branch/main/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/taopq)
 
 taoPQ is a lightweight C++ client library for accessing a PostgreSQL database, providing a modern wrapper for `libpq`.
-It has no dependencies beyond C++17 and the PostgreSQL `libpq` client library.
+It has no dependencies beyond C++17 and `libpq`, which is the official C application programmer's interface to PostgreSQL.
 
 ## Introduction
 
 The library provides support for database connections, transactions, nested transactions, prepared statements, large objects, connection pools, high-speed bulk data transfer, and more.
-An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types, including support for SQL `ARRAY`s.
+An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types.
 The following example shows the basic look and feel of the library.
 
 ```c++
