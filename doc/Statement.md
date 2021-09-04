@@ -7,9 +7,22 @@ With that said, let's start executing statements with taoPQ.
 
 ## `execute()`
 
-All statements are executed by calling an `execute()`-method, either on a transaction, or on a connection directly.
-For the purpose of this chapter, it makes no difference.
+All statements are executed by calling an `execute()`-method, either on a transaction, connection, or connection pool directly.
+The synopsis of the execute methods of those types (`Type` being `tao::pq::transaction`, `tao::pq::connection`, or `tao::pq::connection_pool`) is:
+
+```c++
+template< typename... As >
+auto Type::execute( const char* statement, As&&... as )
+   -> tao::pq::result;
+
+template< typename... As >
+auto Type::execute( const std::string& statement, As&&... as )
+   -> tao::pq::result;
+```
+
+For the purpose of this chapter, it makes no difference which type is used.
 The method takes the statement itself as its first parameter and you can add additional parameters with your values that will be used in the statement.
+Note that we do not accept `std::string_view` for the statement, as `libpq` requires a zero-terminated string.
 
 ## Positional Parameters
 
