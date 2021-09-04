@@ -53,10 +53,16 @@ namespace tao::pq
          return get();
       }
 
-      template< typename... Ts >
-      auto execute( Ts&&... ts )
+      template< typename... As >
+      auto execute( const char* statement, As&&... as )
       {
-         return connection()->direct()->execute( std::forward< Ts >( ts )... );
+         return connection()->direct()->execute( statement, std::forward< As >( as )... );
+      }
+
+      template< typename... As >
+      auto execute( const std::string& statement, As&&... as )
+      {
+         return connection()->direct()->execute( statement.c_str(), std::forward< As >( as )... );
       }
    };
 
