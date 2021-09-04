@@ -425,7 +425,7 @@ namespace tao::pq
       void element( std::string& data ) const
       {
          // generate bytea hex format
-         static char hex[] = "0123456789abcdef";
+         constexpr char hex[] = "0123456789abcdef";
          auto pos = data.size();
          internal::resize_uninitialized( data, pos + 2 + m_v.size() * 2 );
          data[ pos++ ] = '\\';

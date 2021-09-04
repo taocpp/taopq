@@ -71,40 +71,39 @@ namespace tao::pq
          {}
       };
 
+      [[nodiscard]] inline auto isolation_level_extension( const isolation_level il ) -> const char*
+      {
+         switch( il ) {
+            case isolation_level::default_isolation_level:
+               return "";
+            case isolation_level::serializable:
+               return " ISOLATION LEVEL SERIALIZABLE";
+            case isolation_level::repeatable_read:
+               return " ISOLATION LEVEL REPEATABLE READ";
+            case isolation_level::read_committed:
+               return " ISOLATION LEVEL READ COMMITTED";
+            case isolation_level::read_uncommitted:
+               return " ISOLATION LEVEL READ UNCOMMITTED";
+         }
+         TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+      }
+
+      [[nodiscard]] inline auto access_mode_extension( const access_mode am ) -> const char*
+      {
+         switch( am ) {
+            case access_mode::default_access_mode:
+               return "";
+            case access_mode::read_write:
+               return " READ WRITE";
+            case access_mode::read_only:
+               return " READ ONLY";
+         }
+         TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+      }
+
       class top_level_transaction final
          : public transaction_base
       {
-      private:
-         [[nodiscard]] static auto isolation_level_extension( const isolation_level il ) -> const char*
-         {
-            switch( il ) {
-               case isolation_level::default_isolation_level:
-                  return "";
-               case isolation_level::serializable:
-                  return " ISOLATION LEVEL SERIALIZABLE";
-               case isolation_level::repeatable_read:
-                  return " ISOLATION LEVEL REPEATABLE READ";
-               case isolation_level::read_committed:
-                  return " ISOLATION LEVEL READ COMMITTED";
-               case isolation_level::read_uncommitted:
-                  return " ISOLATION LEVEL READ UNCOMMITTED";
-            }
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
-         }
-
-         [[nodiscard]] static auto access_mode_extension( const access_mode am ) -> const char*
-         {
-            switch( am ) {
-               case access_mode::default_access_mode:
-                  return "";
-               case access_mode::read_write:
-                  return " READ WRITE";
-               case access_mode::read_only:
-                  return " READ ONLY";
-            }
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
-         }
-
       public:
          explicit top_level_transaction( const std::shared_ptr< connection >& connection, const isolation_level il, const access_mode am )
             : transaction_base( connection )
