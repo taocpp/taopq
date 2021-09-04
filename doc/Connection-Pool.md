@@ -9,7 +9,7 @@ To minimize the cost of opening connections, taoPQ provides connection pools.
 
 Connection pools reduces the number of times that new connections must be opened.
 They manage connections by keeping alive a set of active connections and borrowing them to the application on demand.
-The connection pool maintains ownership of the actual connection when they are not used by the application.
+The connection pool maintains ownership of the connections when they are not used by the application.
 
 ## Synopsis
 
