@@ -11,7 +11,7 @@ namespace tao::pq
       explicit constexpr null_t( int /*unused*/ ) {}
    };
 
-   constexpr null_t null{ 0 };
+   inline constexpr null_t null{ 0 };
 
 }  // namespace tao::pq
 
