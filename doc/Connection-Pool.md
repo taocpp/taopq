@@ -79,4 +79,12 @@ The connection pool will implicitly discard connections that are in a failed sta
 In some environments you might need to periodically clean up the connection pool to get rid of connections that are no longer valid.
 In order to do so, just call the `erase_invalid()`-method, which will check the status of each pooled connection and discard the invalid ones.
 
+## Thread Safety
+
+The connection pool's borrowing mechanism is thread-safe, i.e. multiple threads can make calls to the `connection()`-method or return connections simultaneously.
+You can also call the `erase_invalid()`-method at any time.
+
+Internally, the connection pool uses a mutex to serialize the above operations.
+We minimized the work in the critical sections as far as possible.
+
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
