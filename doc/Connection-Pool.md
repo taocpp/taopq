@@ -54,6 +54,29 @@ namespace tao::pq
 }
 ```
 
-**TODO**
+## Creating Connection Pools
+
+A connection pool is created by calling `tao::pq::connection_pool`'s static `create()`-method.
+
+It takes a single parameter, the [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is used when new connections are opened by the pool.
+
+## Borrowing Connections
+
+When you need a connection, you simply call the `connection()`-method.
+This will either open a new connection when the pool is empty, or it will give you a reused connection from the pool.
+As long as you retain ownership of the returned shared pointer, it is yours to work with.
+When the last remaining shared pointer is destroyed or assigned another value, the connection is returned to the pool.
+
+## Executing Statements
+
+You can [execute statements](Statement.md) on a connection pool directly, which is equivalent to borrowing a temporary connection (as if calling the `connection()`-method) and executing the statement on that [connection](Connection.md).
+After the statement was executed, the temporary connection is returned to the pool.
+
+## Cleanup
+
+The connection pool will implicitly discard connections that are in a failed state when they are returned to the pool or when they are retrieved from the pool.
+
+In some environments you might need to periodically clean up the connection pool to get rid of connections that are no longer valid.
+In order to do so, just call the `erase_invalid()`-method, which will check the status of each pooled connection and discard the invalid ones.
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
