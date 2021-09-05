@@ -62,7 +62,7 @@ namespace tao::pq
       template< typename... As >
       void insert( As&&... as )
       {
-         static_assert( sizeof...( As ) >= 1, "tao::pq::table_writer::insert() needs at least one argument" );
+         static_assert( sizeof...( As ) >= 1, "calling tao::pq::table_writer::insert() requires at least one argument" );
          return insert_traits( internal::to_traits( std::forward< As >( as ) )... );
       }
 

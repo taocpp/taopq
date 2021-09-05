@@ -474,9 +474,10 @@ namespace tao::pq
       return t.to_taopq_param();
    }
 
+   // note: calls to to_taopq_param are unqualified to enable ADL
+
    namespace internal
    {
-      // note: calls to to_taopq_param are unqualified to enable ADL
       template< typename T >
       struct parameter_holder
       {
@@ -485,6 +486,10 @@ namespace tao::pq
 
          explicit parameter_holder( const T& t ) noexcept( noexcept( result_t( to_taopq_param( t ) ) ) )
             : result( to_taopq_param( t ) )
+         {}
+
+         explicit parameter_holder( T&& t ) noexcept( noexcept( result_t( to_taopq_param( std::move( t ) ) ) ) )
+            : result( to_taopq_param( std::move( t ) ) )
          {}
       };
 
