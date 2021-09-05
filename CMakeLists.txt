@@ -56,6 +56,7 @@ set(TAOPQ_INCLUDE_FILES
 
 set(TAOPQ_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection_pool.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/field.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp

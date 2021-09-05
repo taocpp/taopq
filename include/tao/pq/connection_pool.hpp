@@ -21,10 +21,7 @@ namespace tao::pq
    private:
       const std::string m_connection_info;
 
-      [[nodiscard]] auto v_create() const -> std::unique_ptr< connection > override
-      {
-         return std::make_unique< pq::connection >( pq::connection::private_key(), m_connection_info );
-      }
+      [[nodiscard]] auto v_create() const -> std::unique_ptr< pq::connection > override;
 
       [[nodiscard]] auto v_is_valid( connection& c ) const noexcept -> bool override
       {
@@ -39,19 +36,11 @@ namespace tao::pq
       };
 
    public:
-      connection_pool( const private_key /*unused*/, const std::string_view connection_info )
-         : m_connection_info( connection_info )
-      {}
+      connection_pool( const private_key /*unused*/, const std::string_view connection_info );
 
-      [[nodiscard]] static auto create( const std::string_view connection_info )
-      {
-         return std::make_shared< connection_pool >( private_key(), connection_info );
-      }
+      [[nodiscard]] static auto create( const std::string_view connection_info ) -> std::shared_ptr< connection_pool >;
 
-      [[nodiscard]] auto connection()
-      {
-         return get();
-      }
+      [[nodiscard]] auto connection() -> std::shared_ptr< connection >;
 
       template< typename... As >
       auto execute( const char* statement, As&&... as )
