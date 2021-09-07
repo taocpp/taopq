@@ -57,7 +57,7 @@ The number of NULL values generated depends on the number of parameters that `T`
 
 Generates all parameters from `T`, then all parameters from `U`, in that order.
 Note that this generates at least two parameters, possibly more.
-Pairs can be nested, e.g. `std::pair< std::pair< int, int >, int >` would generate three parameters.
+Pairs can be nested, e.g. `std::pair<std::pair<int,int>,int>` would generate three parameters.
 
 ## `std::tuple< Ts... >`
 

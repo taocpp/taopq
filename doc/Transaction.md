@@ -68,7 +68,7 @@ If you attempt to use a transaction object in the wrong order, taoPQ will notice
 Note that the correct order depends on the *logical* lifetime of transactions.
 The logical lifetime of a transactions ends when you explicitly call either the `commit()`- or the `rollback()`-method.
 
-If the actual object's lifetime ends, the destructor will automatically perform a call to `rollback()` if the lifetime was not ended explicitly.
+If the actual object's lifetime ends, the destructor will automatically perform a call to the `rollback()`-method if the lifetime was not ended explicitly.
 This comes in handy when exceptions are thrown and the destructor call happens due to the associated stack unwinding.
 
 ## Direct Transactions
@@ -79,8 +79,8 @@ A "direct transaction" represents this concept in taoPQ.
 
 A direct transaction is special, as the `commit()`- and `rollback()`-methods are available, but normally not needed.
 Specifically, you don't need to call the `commit()`-method in order to make the changes you made permanent.
-However, calling `commit()` ends the logical lifetime of the transaction and the transaction deregisters itself from the connection.
-In generic code you might receive a transaction from somewhere else and you might call `commit()` regardless of whether the underlying transaction is a direct transaction or a normal transaction.
+However, calling the `commit()`-method ends the logical lifetime of the transaction and the transaction deregisters itself from the connection.
+In generic code you might receive a transaction from somewhere else and you might call the `commit()`-method regardless of whether the underlying transaction is a direct transaction or a normal transaction.
 
 In case you need to know whether a given transaction object is a direct transaction or not, you can call the `is_direct()`-method.
 
@@ -88,8 +88,8 @@ Note that opening a subtransaction from a direct connection is possible and simp
 
 ## Manual Transaction Handling
 
-You can manually begin, commit, or rollback transactions by executing [`BEGIN`](https://www.postgresql.org/docs/current/sql-begin.html), [`COMMIT`](https://www.postgresql.org/docs/current/sql-commit.html), or [`ROLLBACK`](https://www.postgresql.org/docs/current/sql-rollback.html) statements directly via `execute()`.
-Likewise, you can manually create, commit, or rollback subtransactions by executing [`SAVEPOINT`](https://www.postgresql.org/docs/current/sql-savepoint.html), [`RELEASE SAVEPOINT`](https://www.postgresql.org/docs/current/sql-release-savepoint.html), or [`ROLLBACK TO SAVEPOINT`](https://www.postgresql.org/docs/current/sql-rollback-to.html) statements directly via `execute()`.
+You can manually begin, commit, or rollback transactions by executing [`BEGIN`](https://www.postgresql.org/docs/current/sql-begin.html), [`COMMIT`](https://www.postgresql.org/docs/current/sql-commit.html), or [`ROLLBACK`](https://www.postgresql.org/docs/current/sql-rollback.html) statements directly via the `execute()`-method.
+Likewise, you can manually create, commit, or rollback subtransactions by executing [`SAVEPOINT`](https://www.postgresql.org/docs/current/sql-savepoint.html), [`RELEASE SAVEPOINT`](https://www.postgresql.org/docs/current/sql-release-savepoint.html), or [`ROLLBACK TO SAVEPOINT`](https://www.postgresql.org/docs/current/sql-rollback-to.html) statements directly via the `execute()`-method.
 
 We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our library's transaction ordering framework.
 We advise to use the methods offered by taoPQ instead of manually handling transactions.

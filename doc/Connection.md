@@ -86,7 +86,7 @@ It takes a single parameter, the [connection string](https://www.postgresql.org/
 The connection string contains parameters and options, such as the server address or the database name.
 Connection parameters that are not specified in the connection string might also be set via [environment variables](https://www.postgresql.org/docs/current/libpq-envars.html).
 
-The method returns a `std::shared_ptr< tao::pq::connection >` or, in case of an error, throws an exception.
+The method returns a `std::shared_ptr<tao::pq::connection>` or, in case of an error, throws an exception.
 When the last reference to a connection is deleted, i.e. the last shared pointer referencing it is deleted or reset, the connection is closed via its destructor which takes care of freeing underlying resources.
 The shared pointer might also be stored internally in other objects of taoPQ, i.e. a transaction.
 This ensures, that the connection is kept alive as long as there are dependent objects like an active transaction, see below.
@@ -101,8 +101,8 @@ Further details on how to use transactions are discussed in the [Transaction](Tr
 ### Creating a "Direct" Transaction
 
 The `direct()`-method creates an auto-commit transaction proxy, i.e. all statements executed on this transaction are immediately committed to the database.
-This is not a real transaction from the database's point of view, therefore calling `commit()` or `rollback()` on the transaction has no immediate effect on the database.
-However, calling either `commit()` or `rollback()` will end the transaction's logical lifetime and it will unregister itself from the connection.
+This is not a real transaction from the database's point of view, therefore calling the `commit()`- or `rollback()`-method on the transaction has no immediate effect on the database.
+However, calling either the `commit()`- or `rollback()`-method will end the transaction's logical lifetime and it will unregister itself from the connection.
 
 ### Creating a Database Transaction
 
@@ -130,19 +130,19 @@ To deallocate a prepared statement, call the `deallocate()`-method.
 It takes the name of the prepared statement as its only parameter.
 
 Using the `prepare()`- and `deallocate()`-methods makes taoPQ's connection object aware of the names of the prepared statements.
-This allows the [execution](Statement.md) of those prepared statements transparently via `execute()`.
+This allows the [execution](Statement.md) of those prepared statements transparently via an `execute()`-method.
 
 ### Manually Prepared Statements
 
-You can manually prepare statements by executing [`PREPARE`](https://www.postgresql.org/docs/current/sql-prepare.html) statements directly via `execute()`.
+You can manually prepare statements by executing [`PREPARE`](https://www.postgresql.org/docs/current/sql-prepare.html) statements directly via an `execute()`-method.
 While those prepared statements live on the same connection, there are some important differences.
-You can only execute those prepared statements by executing [`EXECUTE`](https://www.postgresql.org/docs/current/sql-execute.html) statements directly via `execute()`, and you can only deallocate them by executing [`DEALLOCATE`](https://www.postgresql.org/docs/current/sql-deallocate.html) statements directly via `execute()`.
+You can only execute those prepared statements by executing [`EXECUTE`](https://www.postgresql.org/docs/current/sql-execute.html) statements directly via an `execute()`-method, and you can only deallocate them by executing [`DEALLOCATE`](https://www.postgresql.org/docs/current/sql-deallocate.html) statements directly via an `execute()`-method.
 
 We advise to use the methods offered by taoPQ's connection type.
 
 ## Checking Status
 
-You can check a connection's status by calling the `is_open()` method.
+You can check a connection's status by calling the `is_open()`-method.
 It return `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
 For further details, check the documentation for the underlying [`PQstatus()`](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
 
