@@ -13,7 +13,6 @@
 #include <unordered_set>
 #include <vector>
 
-#include <tao/pq/internal/to_traits.hpp>
 #include <tao/pq/parameter_traits.hpp>
 
 namespace tao::pq
@@ -55,7 +54,7 @@ namespace tao::pq
             }
          }
          else {
-            const auto t = internal::to_traits( v );
+            const auto t = parameter_traits< T >( v );
             static_assert( t.columns == 1 );
             t.template element< 0 >( data );
          }

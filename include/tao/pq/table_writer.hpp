@@ -8,10 +8,10 @@
 #include <string>
 #include <string_view>
 #include <tuple>
+#include <type_traits>
 #include <utility>
 
 #include <tao/pq/internal/gen.hpp>
-#include <tao/pq/internal/to_traits.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/transaction.hpp>
 
@@ -63,7 +63,7 @@ namespace tao::pq
       void insert( As&&... as )
       {
          static_assert( sizeof...( As ) >= 1, "calling tao::pq::table_writer::insert() requires at least one argument" );
-         return insert_traits( internal::to_traits( std::forward< As >( as ) )... );
+         return insert_traits( parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
       }
 
       auto commit() -> std::size_t;

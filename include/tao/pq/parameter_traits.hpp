@@ -15,7 +15,6 @@
 #include <utility>
 
 #include <tao/pq/binary.hpp>
-#include <tao/pq/fwd.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/resize_uninitialized.hpp>
@@ -61,7 +60,7 @@ namespace tao::pq
 
    }  // namespace internal
 
-   template< typename T, typename >
+   template< typename T, typename = void >
    struct parameter_traits
    {
       static_assert( internal::dependent_false< T >, "data type T not registered as taopq parameter type" );

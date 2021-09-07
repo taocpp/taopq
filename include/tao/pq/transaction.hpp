@@ -15,7 +15,6 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/internal/gen.hpp>
-#include <tao/pq/internal/to_traits.hpp>
 #include <tao/pq/oid.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/result.hpp>
@@ -96,7 +95,7 @@ namespace tao::pq
             return execute_params( mode, statement, 0, nullptr, nullptr, nullptr, nullptr );
          }
          else {
-            return execute_traits( mode, statement, internal::to_traits( std::forward< As >( as ) )... );
+            return execute_traits( mode, statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
          }
       }
 
