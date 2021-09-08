@@ -4,6 +4,8 @@
 #ifndef TAO_PQ_ROW_HPP
 #define TAO_PQ_ROW_HPP
 
+#include <cstddef>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <tuple>

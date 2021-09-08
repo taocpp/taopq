@@ -4,6 +4,7 @@
 #ifndef TAO_PQ_TABLE_FIELD_HPP
 #define TAO_PQ_TABLE_FIELD_HPP
 
+#include <cstddef>
 #include <optional>
 #include <type_traits>
 
