@@ -11,7 +11,7 @@ namespace tao::pq
       return m_row.is_null( m_column );
    }
 
-   auto table_field::get() const -> std::string_view
+   auto table_field::get() const -> const char*
    {
       return m_row.get( m_column );
    }

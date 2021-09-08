@@ -5,7 +5,6 @@
 #define TAO_PQ_TABLE_FIELD_HPP
 
 #include <optional>
-#include <string_view>
 #include <type_traits>
 
 #include <tao/pq/internal/dependent_false.hpp>
@@ -32,7 +31,7 @@ namespace tao::pq
 
    public:
       [[nodiscard]] auto is_null() const -> bool;
-      [[nodiscard]] auto get() const -> std::string_view;
+      [[nodiscard]] auto get() const -> const char*;
 
       template< typename T >
       [[nodiscard]] auto as() const noexcept
