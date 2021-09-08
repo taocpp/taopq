@@ -96,7 +96,7 @@ namespace tao::pq
       return PQfname( m_pgresult.get(), static_cast< int >( column ) );
    }
 
-   auto result::index( const char* in_name ) const -> std::size_t
+   auto result::index( const internal::zsv in_name ) const -> std::size_t
    {
       const int column = PQfnumber( m_pgresult.get(), in_name );
       if( column < 0 ) {

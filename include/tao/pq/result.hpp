@@ -20,6 +20,7 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/internal/printf.hpp>
+#include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/row.hpp>
 
 namespace tao::pq
@@ -73,12 +74,7 @@ namespace tao::pq
       }
 
       [[nodiscard]] auto name( const std::size_t column ) const -> std::string;
-      [[nodiscard]] auto index( const char* in_name ) const -> std::size_t;
-
-      [[nodiscard]] auto index( const std::string& in_name ) const -> std::size_t
-      {
-         return index( in_name.c_str() );
-      }
+      [[nodiscard]] auto index( const internal::zsv in_name ) const -> std::size_t;
 
       [[nodiscard]] auto empty() const -> bool;
       [[nodiscard]] auto size() const -> std::size_t;

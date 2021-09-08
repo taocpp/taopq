@@ -29,7 +29,7 @@ namespace tao::pq
       return m_result.name( m_offset + column );
    }
 
-   auto row::index( const char* in_name ) const -> std::size_t
+   auto row::index( const internal::zsv in_name ) const -> std::size_t
    {
       const std::size_t n = m_result.index( in_name );
       if( n >= m_offset ) {

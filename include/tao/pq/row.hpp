@@ -17,6 +17,7 @@
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
@@ -51,12 +52,7 @@ namespace tao::pq
       }
 
       [[nodiscard]] auto name( const std::size_t column ) const -> std::string;
-      [[nodiscard]] auto index( const char* in_name ) const -> std::size_t;
-
-      [[nodiscard]] auto index( const std::string& in_name ) const -> std::size_t
-      {
-         return index( in_name.c_str() );
-      }
+      [[nodiscard]] auto index( const internal::zsv in_name ) const -> std::size_t;
 
       [[nodiscard]] auto is_null( const std::size_t column ) const -> bool;
       [[nodiscard]] auto get( const std::size_t column ) const -> const char*;
@@ -119,39 +115,22 @@ namespace tao::pq
 
       [[nodiscard]] auto at( const std::size_t column ) const -> field;
 
-      template< typename T >
-      [[nodiscard]] auto at( const T* in_name ) const -> field = delete;
-
-      [[nodiscard]] auto at( const std::string& in_name ) const -> field
-      {
-         return ( *this )[ row::index( in_name.c_str() ) ];
-      }
-
       [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> field
       {
          return field( *this, m_offset + column );
       }
 
-      template< typename T >
-      [[nodiscard]] auto operator[]( const T* in_name ) const -> field = delete;
-
-      [[nodiscard]] auto operator[]( const std::string& in_name ) const -> field
+      [[nodiscard]] auto at( const internal::zsv in_name ) const -> field
       {
-         return ( *this )[ row::index( in_name.c_str() ) ];
+         // row::index does the necessary checks, so we forward to operator[]
+         return ( *this )[ row::index( in_name ) ];
+      }
+
+      [[nodiscard]] auto operator[]( const internal::zsv in_name ) const -> field
+      {
+         return ( *this )[ row::index( in_name ) ];
       }
    };
-
-   template<>
-   [[nodiscard]] inline auto row::at< char >( const char* in_name ) const -> field
-   {
-      return ( *this )[ row::index( in_name ) ];
-   }
-
-   template<>
-   [[nodiscard]] inline auto row::operator[]< char >( const char* in_name ) const -> field
-   {
-      return ( *this )[ row::index( in_name ) ];
-   }
 
    template< typename T >
    auto field::as() const

@@ -30,6 +30,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/resize_uninitialized.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/zsv.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/large_object.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/null.hpp

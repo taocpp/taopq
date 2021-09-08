@@ -15,6 +15,7 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/internal/gen.hpp>
+#include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/oid.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/result.hpp>
@@ -105,15 +106,9 @@ namespace tao::pq
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
       template< typename... As >
-      auto execute( const char* statement, As&&... as )
+      auto execute( const internal::zsv statement, As&&... as )
       {
          return transaction::execute_mode( result::mode_t::expect_ok, statement, std::forward< As >( as )... );
-      }
-
-      template< typename... As >
-      auto execute( const std::string& statement, As&&... as )
-      {
-         return transaction::execute( statement.c_str(), std::forward< As >( as )... );
       }
 
       void commit();

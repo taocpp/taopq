@@ -11,6 +11,7 @@
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/internal/pool.hpp>
+#include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/result.hpp>
 
 namespace tao::pq
@@ -43,15 +44,9 @@ namespace tao::pq
       [[nodiscard]] auto connection() -> std::shared_ptr< connection >;
 
       template< typename... As >
-      auto execute( const char* statement, As&&... as )
+      auto execute( const internal::zsv statement, As&&... as )
       {
          return connection()->direct()->execute( statement, std::forward< As >( as )... );
-      }
-
-      template< typename... As >
-      auto execute( const std::string& statement, As&&... as )
-      {
-         return connection()->direct()->execute( statement.c_str(), std::forward< As >( as )... );
       }
    };
 

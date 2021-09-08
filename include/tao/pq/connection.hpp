@@ -14,6 +14,7 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/access_mode.hpp>
+#include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/oid.hpp>
 #include <tao/pq/result.hpp>
@@ -88,15 +89,9 @@ namespace tao::pq
       void deallocate( const std::string& name );
 
       template< typename... As >
-      auto execute( const char* statement, As&&... as )
+      auto execute( const internal::zsv statement, As&&... as )
       {
          return direct()->execute( statement, std::forward< As >( as )... );
-      }
-
-      template< typename... As >
-      auto execute( const std::string& statement, As&&... as )
-      {
-         return direct()->execute( statement.c_str(), std::forward< As >( as )... );
       }
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
