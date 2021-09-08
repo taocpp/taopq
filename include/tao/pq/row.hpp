@@ -118,9 +118,13 @@ namespace tao::pq
       }
 
       [[nodiscard]] auto at( const std::size_t column ) const -> field;
+
+      template< typename T >
+      [[nodiscard]] auto at( const T* in_name ) const -> field = delete;
+
       [[nodiscard]] auto at( const std::string& in_name ) const -> field
       {
-         return ( *this )[ row::index( in_name ) ];
+         return ( *this )[ row::index( in_name.c_str() ) ];
       }
 
       [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> field
@@ -128,11 +132,26 @@ namespace tao::pq
          return field( *this, m_offset + column );
       }
 
+      template< typename T >
+      [[nodiscard]] auto operator[]( const T* in_name ) const -> field = delete;
+
       [[nodiscard]] auto operator[]( const std::string& in_name ) const -> field
       {
-         return ( *this )[ row::index( in_name ) ];
+         return ( *this )[ row::index( in_name.c_str() ) ];
       }
    };
+
+   template<>
+   [[nodiscard]] inline auto row::at< char >( const char* in_name ) const -> field
+   {
+      return ( *this )[ row::index( in_name ) ];
+   }
+
+   template<>
+   [[nodiscard]] inline auto row::operator[]< char >( const char* in_name ) const -> field
+   {
+      return ( *this )[ row::index( in_name ) ];
+   }
 
    template< typename T >
    auto field::as() const
