@@ -29,7 +29,7 @@ namespace tao::pq
       return m_result.name( m_offset + column );
    }
 
-   auto row::index( const std::string& in_name ) const -> std::size_t
+   auto row::index( const char* in_name ) const -> std::size_t
    {
       const std::size_t n = m_result.index( in_name );
       if( n >= m_offset ) {
@@ -45,7 +45,7 @@ namespace tao::pq
             }
          }
       }
-      throw std::out_of_range( "column not found: " + in_name );
+      throw std::out_of_range( "column not found: " + std::string( in_name ) );
    }
 
    auto row::is_null( const std::size_t column ) const -> bool

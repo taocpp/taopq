@@ -73,7 +73,12 @@ namespace tao::pq
       }
 
       [[nodiscard]] auto name( const std::size_t column ) const -> std::string;
-      [[nodiscard]] auto index( const std::string& in_name ) const -> std::size_t;
+      [[nodiscard]] auto index( const char* in_name ) const -> std::size_t;
+
+      [[nodiscard]] auto index( const std::string& in_name ) const -> std::size_t
+      {
+         return index( in_name.c_str() );
+      }
 
       [[nodiscard]] auto empty() const -> bool;
       [[nodiscard]] auto size() const -> std::size_t;

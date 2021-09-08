@@ -96,13 +96,13 @@ namespace tao::pq
       return PQfname( m_pgresult.get(), static_cast< int >( column ) );
    }
 
-   auto result::index( const std::string& in_name ) const -> std::size_t
+   auto result::index( const char* in_name ) const -> std::size_t
    {
-      const int column = PQfnumber( m_pgresult.get(), in_name.c_str() );
+      const int column = PQfnumber( m_pgresult.get(), in_name );
       if( column < 0 ) {
          assert( column == -1 );
          check_has_result_set();
-         throw std::out_of_range( "column not found: " + in_name );
+         throw std::out_of_range( "column not found: " + std::string( in_name ) );
       }
       return column;
    }
