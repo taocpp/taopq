@@ -16,6 +16,11 @@ The connection pool maintains ownership of the connections when they are not use
 ```c++
 namespace tao::pq
 {
+   namespace internal
+   {
+      class zsv;  // zero-terminated string view
+   }
+
    class connection;
    class result;
 
@@ -41,11 +46,7 @@ namespace tao::pq
 
       // direct statement execution
       template< typename... As >
-      auto execute( const char* statement, As&&... as )
-         -> result;
-
-      template< typename... As >
-      auto execute( const std::string& statement, As&&... as )
+      auto execute( const internal::zsv statement, As&&... as )
          -> result;
 
       // cleanup
@@ -53,6 +54,8 @@ namespace tao::pq
    };
 }
 ```
+
+Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
 
 ## Creating Connection Pools
 

@@ -8,6 +8,11 @@ A connection object takes care of [error handling](Error-Handling.md), tracking 
 ```c++
 namespace tao::pq
 {
+   namespace internal
+   {
+      class zsv;  // zero-terminated string view
+   }
+
    enum class isolation_level
    {
       default_isolation_level,
@@ -68,15 +73,13 @@ namespace tao::pq
 
       // direct statement execution
       template< typename... As >
-      auto execute( const char* statement, As&&... as )
-         -> result;
-
-      template< typename... As >
-      auto execute( const std::string& statement, As&&... as )
+      auto execute( const internal::zsv statement, As&&... as )
          -> result;
    };
 }
 ```
+
+Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
 
 ## Creating a Connection
 

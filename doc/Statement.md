@@ -12,17 +12,19 @@ The synopsis of the execute methods of those types (`Type` being `tao::pq::trans
 
 ```c++
 template< typename... As >
-auto Type::execute( const char* statement, As&&... as )
-   -> tao::pq::result;
-
-template< typename... As >
-auto Type::execute( const std::string& statement, As&&... as )
+auto Type::execute( const tao::pq::internal::zsv statement, As&&... as )
    -> tao::pq::result;
 ```
 
 For the purpose of this chapter, it makes no difference which type is used.
 The method takes the statement itself as its first parameter and you can add additional parameters with your values that will be used in the statement.
-Note that we do not accept `std::string_view` for the statement, as `libpq` requires a zero-terminated string.
+
+### `tao::pq::internal::zsv`
+
+The `tao::pq::internal::zsv` type (zero-terminated string view) that is used for the `statement` parameter ensures that you pass a zero-terminated string.
+It is a non-owning type which has non-explicit constructor overloads for `const char*` and `const std::string&`.
+For safety reasons, there is another overload for `std::nullptr_t` that is deleted.
+Note that we do not accept `std::string_view`, as the underlying C-API of `libpq` requires a zero-terminated string.
 
 ## Positional Parameters
 

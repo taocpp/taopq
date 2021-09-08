@@ -8,6 +8,11 @@ We will assume that you are familiar with how transactions work on PostgreSQL an
 ```c++
 namespace tao::pq
 {
+   namespace internal
+   {
+      class zsv;  // zero-terminated string view
+   }
+
    class result;
 
    class transaction
@@ -28,11 +33,7 @@ namespace tao::pq
 
       // statement execution
       template< typename... As >
-      auto execute( const char* statement, As&&... as )
-         -> result;
-
-      template< typename... As >
-      auto execute( const std::string& statement, As&&... as )
+      auto execute( const internal::zsv statement, As&&... as )
          -> result;
 
       // finalize
@@ -41,6 +42,8 @@ namespace tao::pq
    };
 }
 ```
+
+Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
 
 ## Creating Transactions
 
