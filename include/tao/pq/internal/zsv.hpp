@@ -4,7 +4,6 @@
 #ifndef TAO_PQ_INTERNAL_ZSV_HPP
 #define TAO_PQ_INTERNAL_ZSV_HPP
 
-#include <cassert>
 #include <cstddef>
 #include <string>
 
@@ -17,17 +16,15 @@ namespace tao::pq::internal
 
       zsv( std::nullptr_t ) = delete;
 
-      zsv( const char* v ) noexcept
+      constexpr zsv( const char* v ) noexcept
          : value( v )
-      {
-         assert( v != nullptr );
-      }
+      {}
 
       zsv( const std::string& v ) noexcept
          : value( v.c_str() )
       {}
 
-      operator const char*() const noexcept
+      constexpr operator const char*() const noexcept
       {
          return value;
       }
