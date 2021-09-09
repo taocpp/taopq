@@ -63,7 +63,7 @@ namespace tao::pq
 
    auto result_traits< bool >::from( const char* value ) -> bool
    {
-      if( value[ 0 ] != '\0' && value[ 1 ] == '\0' ) {
+      if( ( value[ 0 ] != '\0' ) && ( value[ 1 ] == '\0' ) ) {
          if( value[ 0 ] == 't' ) {
             return true;
          }
@@ -76,7 +76,7 @@ namespace tao::pq
 
    auto result_traits< char >::from( const char* value ) -> char
    {
-      if( value[ 0 ] == '\0' || value[ 1 ] != '\0' ) {
+      if( ( value[ 0 ] == '\0' ) || ( value[ 1 ] != '\0' ) ) {
          throw std::runtime_error( "invalid value in tao::pq::result_traits<char> for input: " + std::string( value ) );
       }
       return value[ 0 ];
