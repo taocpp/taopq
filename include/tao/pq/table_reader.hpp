@@ -9,6 +9,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 #include <unordered_map>
@@ -40,7 +41,11 @@ namespace tao::pq
            m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) ),
            m_result( m_transaction->execute_mode( result::mode_t::expect_copy_out, statement, std::forward< As >( as )... ) ),
            m_buffer( nullptr, &PQfreemem )
-      {}
+      {
+         if( PQbinaryTuples( m_result.underlying_raw_ptr() ) != 0 ) {
+            throw std::runtime_error( "binary copy format not supported" );
+         }
+      }
 
       ~table_reader() = default;
 
