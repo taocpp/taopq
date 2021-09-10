@@ -16,8 +16,9 @@ auto Type::execute( const tao::pq::internal::zsv statement, As&&... as )
    -> tao::pq::result;
 ```
 
-For the purpose of this chapter, it makes no difference which type is used.
-The method takes the statement itself as its first parameter and you can add additional parameters with your values that will be used in the statement.
+For the purpose of this chapter, it makes no difference which `Type` is used.
+The method takes the statement itself as its first parameter plus additional parameters that will be passed to the statement.
+It returns a `tao::pq::result` that is documented in the [Result](Result.md) chapter.
 
 ### `tao::pq::internal::zsv`
 
