@@ -1,8 +1,8 @@
 # Parameter Type Conversion
 
-When executing statements, you can pass any number of parameters after the statement itself to the `execute()`-method.
+When [executing statements](Statement.md), you can pass any number of parameters after the statement itself to the `execute()`-method.
 Each parameter then gets converted through the parameter traits class template into one or more positional parameters for the SQL statement.
-By default, the following C++ types are available for use as statement parameters.
+By default, the following C++ types are available for use as parameters.
 
 ## NULL
 
@@ -47,9 +47,9 @@ If you want to pass NULL to the database, you pass `tao::pq::null`.
 
 ## `std::optional< T >`
 
-Represents a NULLable type.
+Represents a [nullable](https://en.wikipedia.org/wiki/Nullable_type) type.
 
-If the optional is not empty, then the parameters for `T` are generated.
+If the optional is not empty, then the parameters from `T` are generated.
 If the optional is empty, it is equivalent to one or more `tao::pq::null` parameter(s).
 The number of NULL values generated depends on the number of parameters that `T` would generate.
 
