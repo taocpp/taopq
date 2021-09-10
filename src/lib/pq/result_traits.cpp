@@ -51,16 +51,6 @@ namespace tao::pq
 
    }  // namespace
 
-   auto result_traits< std::basic_string< unsigned char > >::from( const char* value ) -> std::basic_string< unsigned char >
-   {
-      return unescape_bytea< std::basic_string< unsigned char > >( value );
-   }
-
-   auto result_traits< binary >::from( const char* value ) -> binary
-   {
-      return unescape_bytea< binary >( value );
-   }
-
    auto result_traits< bool >::from( const char* value ) -> bool
    {
       if( ( value[ 0 ] != '\0' ) && ( value[ 1 ] == '\0' ) ) {
@@ -145,6 +135,16 @@ namespace tao::pq
    auto result_traits< long double >::from( const char* value ) -> long double
    {
       return internal::strtold( value );
+   }
+
+   auto result_traits< std::basic_string< unsigned char > >::from( const char* value ) -> std::basic_string< unsigned char >
+   {
+      return unescape_bytea< std::basic_string< unsigned char > >( value );
+   }
+
+   auto result_traits< binary >::from( const char* value ) -> binary
+   {
+      return unescape_bytea< binary >( value );
    }
 
 }  // namespace tao::pq

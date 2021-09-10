@@ -48,31 +48,10 @@ namespace tao::pq
    template<>
    struct result_traits< std::string_view >
    {
-      [[nodiscard]] static auto from( const char* value )
+      [[nodiscard]] static auto from( const char* value ) -> std::string_view
       {
          return value;
       }
-   };
-
-   template<>
-   struct result_traits< std::string >
-   {
-      [[nodiscard]] static auto from( const char* value )
-      {
-         return value;
-      }
-   };
-
-   template<>
-   struct result_traits< std::basic_string< unsigned char > >
-   {
-      [[nodiscard]] static auto from( const char* value ) -> std::basic_string< unsigned char >;
-   };
-
-   template<>
-   struct result_traits< binary >
-   {
-      [[nodiscard]] static auto from( const char* value ) -> binary;
    };
 
    template<>
@@ -163,6 +142,27 @@ namespace tao::pq
    struct result_traits< long double >
    {
       [[nodiscard]] static auto from( const char* value ) -> long double;
+   };
+
+   template<>
+   struct result_traits< std::string >
+   {
+      [[nodiscard]] static auto from( const char* value ) -> std::string
+      {
+         return value;
+      }
+   };
+
+   template<>
+   struct result_traits< std::basic_string< unsigned char > >
+   {
+      [[nodiscard]] static auto from( const char* value ) -> std::basic_string< unsigned char >;
+   };
+
+   template<>
+   struct result_traits< binary >
+   {
+      [[nodiscard]] static auto from( const char* value ) -> binary;
    };
 
 }  // namespace tao::pq
