@@ -10,17 +10,29 @@
 #include <tao/pq/large_object.hpp>
 
 template< typename T >
-void test( const std::shared_ptr< tao::pq::connection >& connection, const std::basic_string< T >& data )
+auto basic_test( const std::shared_ptr< tao::pq::connection >& connection, const T& data )
 {
    const auto transaction = connection->transaction();
    const auto oid = tao::pq::large_object::create( transaction );
    tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
    lo.write( data );
    lo.seek( 0, std::ios_base::beg );
-   const auto result = lo.read< std::basic_string< T > >( 10 );  // by default returns 'binary'
-   TEST_ASSERT( result.size() == 5 );
-   TEST_ASSERT( result == data );
-   TEST_THROWS( lo.resize( -5 ) );
+   return lo.read< std::basic_string< typename T::value_type > >( 10 );  // by default returns 'binary'
+}
+
+template< typename T >
+void test( const std::shared_ptr< tao::pq::connection >& connection, const std::basic_string< T >& data )
+{
+   {
+      const auto result = basic_test( connection, data );
+      TEST_ASSERT( result.size() == 5 );
+      TEST_ASSERT( result == data );
+   }
+   {
+      const auto result = basic_test( connection, static_cast< const std::basic_string_view< T > >( data ) );
+      TEST_ASSERT( result.size() == 5 );
+      TEST_ASSERT( result == data );
+   }
 }
 
 void run()
@@ -69,6 +81,13 @@ void run()
       const auto oid = tao::pq::large_object::create( transaction );
       tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
       lo.close();
+   }
+
+   {
+      const auto transaction = connection->transaction();
+      const auto oid = tao::pq::large_object::create( transaction );
+      tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
+      TEST_THROWS( lo.resize( -5 ) );
    }
 
    {
