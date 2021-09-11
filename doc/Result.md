@@ -33,8 +33,7 @@ namespace tao::pq
       };
 
    public:
-      auto has_rows_affected() const noexcept
-         -> bool;
+      bool has_rows_affected() const noexcept;
 
       auto rows_affected() const
          -> std::size_t;
@@ -48,8 +47,7 @@ namespace tao::pq
       auto index( const internal::zsv in_name ) const
          -> std::size_t;
 
-      auto empty() const
-         -> bool;
+      bool empty() const;
 
       auto size() const
          -> std::size_t;
@@ -60,18 +58,18 @@ namespace tao::pq
       auto end() const
          -> const_iterator;
 
-      auto is_null( const std::size_t row, const std::size_t column ) const
-         -> bool;
+      bool is_null( const std::size_t row, const std::size_t column ) const;
 
       auto get( const std::size_t row, const std::size_t column ) const
          -> const char*;
 
       auto operator[]( const std::size_t row ) const noexcept
-         -> row;
+         -> pq::row;
 
       auto at( const std::size_t row ) const
          -> pq::row;
 
+      // expects size()==1, converts the only row to T
       template< typename T >
       auto as() const
          -> T;
@@ -80,57 +78,90 @@ namespace tao::pq
       auto optional() const
          -> std::optional< T >;
 
+      // convenience conversions to pair/tuple
       template< typename T, typename U >
       auto pair() const
-         -> std::pair< T, U >;
+      {
+         return as< std::pair< T, U > >();
+      }
 
       template< typename... Ts >
       auto tuple() const
-         -> std::tuple< Ts... >;
+      {
+         return as< std::tuple< Ts... > >();
+      }
 
+      // convert each row into T::value_type and add to a container of type T
       template< typename T >
       auto as_container() const
          -> T;
 
+      // convenience conversions to standard containers
       template< typename... Ts >
       auto vector() const
-         -> std::vector< Ts... >;
+      {
+         return as_container< std::vector< Ts... > >();
+      }
 
       template< typename... Ts >
       auto list() const
-         -> std::list< Ts... >;
+      {
+         return as_container< std::list< Ts... > >();
+      }
 
       template< typename... Ts >
       auto set() const
-         -> std::set< Ts... >);
+      {
+         return as_container< std::set< Ts... > >();
 
       template< typename... Ts >
       auto multiset() const
-         -> std::multiset< Ts... >;
+      {
+         return as_container< std::multiset< Ts... > >();
+      }
 
       template< typename... Ts >
       auto unordered_set() const
-         -> std::unordered_set< Ts... >;
+      {
+         return as_container< std::unordered_set< Ts... > >();
+      }
 
       template< typename... Ts >
       auto unordered_multiset() const
-         -> std::unordered_multiset< Ts... >;
+      {
+         return as_container< std::unordered_multiset< Ts... > >();
+      }
 
       template< typename... Ts >
       auto map() const
-         -> std::map< Ts... >;
+      {
+         return as_container< std::map< Ts... > >();
+      }
 
       template< typename... Ts >
       auto multimap() const
-         -> std::multimap< Ts... >;
+      {
+         return as_container< std::multimap< Ts... > >();
+      }
 
       template< typename... Ts >
       auto unordered_map() const
-         -> std::unordered_map< Ts... >;
+      {
+         return as_container< std::unordered_map< Ts... > >();
+      }
 
       template< typename... Ts >
       auto unordered_multimap() const
-         -> std::unordered_multimap< Ts... >;
+      {
+         return as_container< std::unordered_multimap< Ts... > >();
+      }
+
+      // access underlying result pointer from libpq
+      auto underlying_raw_ptr() noexcept
+         -> PGresult*;
+
+      auto underlying_raw_ptr() const noexcept
+         -> const PGresult*;
    };
 }
 ```

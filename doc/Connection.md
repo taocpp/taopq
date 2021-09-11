@@ -30,7 +30,6 @@ namespace tao::pq
    };
 
    class transaction;
-   class result;
 
    class connection final
       : public std::enable_shared_from_this< connection >
@@ -49,8 +48,7 @@ namespace tao::pq
       ~connection() = default;
 
       // query status
-      auto is_open() const noexcept
-         -> bool;
+      bool is_open() const noexcept;
 
       // create transactions
       auto direct()
@@ -74,7 +72,9 @@ namespace tao::pq
       // direct statement execution
       template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )
-         -> result;
+      {
+         return direct()->execute( statement, std::forward< As >( as )... );
+      }
 
       // access underlying connection pointer from libpq
       auto underlying_raw_ptr() noexcept

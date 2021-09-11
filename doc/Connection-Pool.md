@@ -22,7 +22,6 @@ namespace tao::pq
    }
 
    class connection;
-   class result;
 
    class connection_pool final
       : public std::enable_shared_from_this< connection_pool >
@@ -47,7 +46,9 @@ namespace tao::pq
       // direct statement execution
       template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )
-         -> result;
+      {
+         return connection()->execute( statement, std::forward< As >( as )... );
+      }
 
       // cleanup
       void erase_invalid();
