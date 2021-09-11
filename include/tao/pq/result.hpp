@@ -96,7 +96,9 @@ namespace tao::pq
          using value_type = const row;
          using pointer = const row*;
          using reference = const row&;
-         using iterator_category = std::input_iterator_tag;
+         using iterator_category = std::random_access_iterator_tag;
+
+         const_iterator() = default;
 
          auto operator++() noexcept -> const_iterator&
          {
@@ -109,6 +111,29 @@ namespace tao::pq
             return ++const_iterator( *this );
          }
 
+         auto operator+=( const difference_type n ) noexcept -> const_iterator&
+         {
+            m_row += n;
+            return *this;
+         }
+
+         auto operator--() noexcept -> const_iterator&
+         {
+            --m_row;
+            return *this;
+         }
+
+         auto operator--( int ) noexcept -> const_iterator
+         {
+            return --const_iterator( *this );
+         }
+
+         auto operator-=( const difference_type n ) noexcept -> const_iterator&
+         {
+            m_row -= n;
+            return *this;
+         }
+
          [[nodiscard]] auto operator*() const noexcept -> const row&
          {
             return *this;
@@ -119,6 +144,31 @@ namespace tao::pq
             return this;
          }
 
+         [[nodiscard]] auto operator[]( const difference_type n ) const noexcept -> row
+         {
+            return *( const_iterator( *this ) += n );
+         }
+
+         [[nodiscard]] friend auto operator+( const const_iterator& lhs, const difference_type rhs ) noexcept
+         {
+            return const_iterator( lhs ) += rhs;
+         }
+
+         [[nodiscard]] friend auto operator+( const difference_type lhs, const const_iterator& rhs ) noexcept
+         {
+            return const_iterator( rhs ) += lhs;
+         }
+
+         [[nodiscard]] friend auto operator-( const const_iterator& lhs, const difference_type rhs ) noexcept
+         {
+            return const_iterator( lhs ) -= rhs;
+         }
+
+         [[nodiscard]] friend auto operator-( const const_iterator& lhs, const const_iterator& rhs ) noexcept -> difference_type
+         {
+            return static_cast< difference_type >( lhs.m_row ) - static_cast< difference_type >( rhs.m_row );
+         }
+
          [[nodiscard]] friend auto operator==( const const_iterator& lhs, const const_iterator& rhs ) noexcept
          {
             return lhs.m_row == rhs.m_row;
@@ -127,6 +177,26 @@ namespace tao::pq
          [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
          {
             return lhs.m_row != rhs.m_row;
+         }
+
+         [[nodiscard]] friend auto operator<( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_row < rhs.m_row;
+         }
+
+         [[nodiscard]] friend auto operator>( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_row > rhs.m_row;
+         }
+
+         [[nodiscard]] friend auto operator<=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_row <= rhs.m_row;
+         }
+
+         [[nodiscard]] friend auto operator>=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_row >= rhs.m_row;
          }
       };
 

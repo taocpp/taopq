@@ -29,13 +29,20 @@ namespace tao::pq
    protected:
       friend class result;
 
-      const result& m_result;
+      const result* m_result;
       std::size_t m_row;
-      const std::size_t m_offset;
-      const std::size_t m_columns;
+      std::size_t m_offset;
+      std::size_t m_columns;
+
+      row() noexcept
+         : m_result( nullptr ),
+           m_row( 0 ),
+           m_offset( 0 ),
+           m_columns( 0 )
+      {}
 
       row( const result& in_result, const std::size_t in_row, const std::size_t in_offset, const std::size_t in_columns ) noexcept
-         : m_result( in_result ),
+         : m_result( &in_result ),
            m_row( in_row ),
            m_offset( in_offset ),
            m_columns( in_columns )

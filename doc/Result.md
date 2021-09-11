@@ -21,8 +21,8 @@ namespace tao::pq
    class result final
    {
    private:
-      // satisfies LegacyInputIterator, see
-      // https://en.cppreference.com/w/cpp/named_req/InputIterator
+      // satisfies LegacyRandomAccessIterator, see
+      // https://en.cppreference.com/w/cpp/named_req/RandomAccessIterator
       class const_iterator;
 
    public:
