@@ -1,10 +1,12 @@
 # Result
 
 Result sets can be iterated or conveniently converted into a C++ data structure.
-Predefined types include most STL containers, `std::pair`/`std::tuple`, and `std::optional` for NULL-able values.
+Predefined types include most STL containers, `std::pair`/`std::tuple`, and `std::optional` for [nullable](https://en.wikipedia.org/wiki/Nullable_type) values.
 Again custom types can be added with custom conversion functions.
 
 ## Synopsis
+
+Don't be intimidated by the size of the API, as you can see in the latter parts several methods are just single-line convenience forwarders.
 
 ```c++
 namespace tao::pq
@@ -19,18 +21,9 @@ namespace tao::pq
    class result final
    {
    private:
-      class const_iterator
-      {
-      public:
-         auto operator++() noexcept
-            -> const_iterator&;
-
-         auto operator*() const noexcept
-            -> const row&;
-
-         friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-            -> bool;
-      };
+      // satisfies LegacyInputIterator, see
+      // https://en.cppreference.com/w/cpp/named_req/InputIterator
+      class const_iterator;
 
    public:
       bool has_rows_affected() const noexcept;

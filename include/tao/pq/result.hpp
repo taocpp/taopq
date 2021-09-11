@@ -4,6 +4,7 @@
 #ifndef TAO_PQ_RESULT_HPP
 #define TAO_PQ_RESULT_HPP
 
+#include <iterator>
 #include <list>
 #include <map>
 #include <memory>
@@ -86,15 +87,16 @@ namespace tao::pq
       private:
          friend class result;
 
-         const_iterator( const row& r ) noexcept
+         explicit const_iterator( const row& r ) noexcept
             : row( r )
          {}
 
       public:
-         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.m_row != rhs.m_row;
-         }
+         using difference_type = std::int32_t;
+         using value_type = const row;
+         using pointer = const row*;
+         using reference = const row&;
+         using iterator_category = std::input_iterator_tag;
 
          auto operator++() noexcept -> const_iterator&
          {
@@ -102,9 +104,29 @@ namespace tao::pq
             return *this;
          }
 
+         auto operator++( int ) noexcept -> const_iterator
+         {
+            return ++const_iterator( *this );
+         }
+
          [[nodiscard]] auto operator*() const noexcept -> const row&
          {
             return *this;
+         }
+
+         [[nodiscard]] auto operator->() const noexcept -> const row*
+         {
+            return this;
+         }
+
+         [[nodiscard]] friend auto operator==( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_row == rhs.m_row;
+         }
+
+         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_row != rhs.m_row;
          }
       };
 
