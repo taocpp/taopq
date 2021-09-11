@@ -64,7 +64,9 @@ namespace tao::pq
                if constexpr( result_traits_has_null< T > ) {
                   return result_traits< T >::null();
                }
-               throw std::invalid_argument( "unexpected NULL value" );
+               else {
+                  throw std::invalid_argument( "unexpected NULL value" );
+               }
             }
             return result_traits< T >::from( value );
          }
