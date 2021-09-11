@@ -132,6 +132,14 @@ namespace tao::pq
       {
          return ( *this )[ row::index( in_name ) ];
       }
+
+      friend void swap( row& lhs, row& rhs ) noexcept
+      {
+         std::swap( lhs.m_result, rhs.m_result );
+         std::swap( lhs.m_row, rhs.m_row );
+         std::swap( lhs.m_offset, rhs.m_offset );
+         std::swap( lhs.m_columns, rhs.m_columns );
+      }
    };
 
    template< typename T >

@@ -101,7 +101,7 @@ namespace tao::pq
 
          auto operator++() noexcept -> const_iterator&
          {
-            if( !m_reader.get_row() ) {
+            if( !m_reader->get_row() ) {
                m_columns = 0;
             }
             return *this;
@@ -120,6 +120,11 @@ namespace tao::pq
          [[nodiscard]] auto operator->() const noexcept -> const table_row*
          {
             return this;
+         }
+
+         friend void swap( const_iterator& lhs, const_iterator& rhs ) noexcept
+         {
+            return swap( static_cast< table_row& >( lhs ), static_cast< table_row& >( rhs ) );
          }
 
          [[nodiscard]] friend auto operator==( const const_iterator& lhs, const const_iterator& rhs ) noexcept

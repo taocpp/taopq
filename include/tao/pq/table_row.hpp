@@ -4,6 +4,7 @@
 #ifndef TAO_PQ_TABLE_ROW_HPP
 #define TAO_PQ_TABLE_ROW_HPP
 
+#include <cassert>
 #include <cstddef>
 #include <optional>
 #include <stdexcept>
@@ -27,12 +28,12 @@ namespace tao::pq
    protected:
       friend class table_reader;
 
-      table_reader& m_reader;
+      table_reader* m_reader;
       std::size_t m_offset;
       std::size_t m_columns;
 
       table_row( table_reader& in_reader, const std::size_t in_offset, const std::size_t in_columns ) noexcept
-         : m_reader( in_reader ),
+         : m_reader( &in_reader ),
            m_offset( in_offset ),
            m_columns( in_columns )
       {}
@@ -58,15 +59,14 @@ namespace tao::pq
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
          else if constexpr( result_traits_size< T > == 1 ) {
-            if constexpr( result_traits_has_null< T > ) {
-               if( is_null( column ) ) {
+            const char* const value = get( column );
+            if( value == nullptr ) {
+               if constexpr( result_traits_has_null< T > ) {
                   return result_traits< T >::null();
                }
+               throw std::invalid_argument( "unexpected NULL value" );
             }
-            else {
-               ensure_column( column );
-            }
-            return result_traits< T >::from( get( column ) );
+            return result_traits< T >::from( value );
          }
          else {
             return result_traits< T >::from( slice( column, result_traits_size< T > ) );
@@ -111,6 +111,13 @@ namespace tao::pq
       [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> table_field
       {
          return table_field( *this, m_offset + column );
+      }
+
+      friend void swap( table_row& lhs, table_row& rhs ) noexcept
+      {
+         std::swap( lhs.m_reader, rhs.m_reader );
+         std::swap( lhs.m_offset, rhs.m_offset );
+         std::swap( lhs.m_columns, rhs.m_columns );
       }
    };
 

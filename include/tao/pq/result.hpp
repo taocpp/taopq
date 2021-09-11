@@ -149,6 +149,11 @@ namespace tao::pq
             return *( const_iterator( *this ) += n );
          }
 
+         friend void swap( const_iterator& lhs, const_iterator& rhs ) noexcept
+         {
+            return swap( static_cast< row& >( lhs ), static_cast< row& >( rhs ) );
+         }
+
          [[nodiscard]] friend auto operator+( const const_iterator& lhs, const difference_type rhs ) noexcept
          {
             return const_iterator( lhs ) += rhs;
