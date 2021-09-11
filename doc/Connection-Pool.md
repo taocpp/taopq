@@ -88,7 +88,7 @@ In order to do so, just call the `erase_invalid()`-method, which will check the 
 The connection pool's borrowing mechanism is thread-safe, i.e. multiple threads can make calls to the `connection()`-method or return connections simultaneously.
 You can also call the `erase_invalid()`-method at any time.
 
-Internally, the connection pool uses a mutex to serialize the above operations.
-We minimized the work in the critical sections as far as possible.
+Internally, the connection pool uses a [mutex](https://en.cppreference.com/w/cpp/thread/mutex) to serialize the above operations.
+We minimized the work in the [critical sections](https://en.wikipedia.org/wiki/Critical_section) as far as possible.
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
