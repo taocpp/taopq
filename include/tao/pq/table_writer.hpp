@@ -46,7 +46,7 @@ namespace tao::pq
       template< typename... As >
       table_writer( const std::shared_ptr< transaction >& transaction, const internal::zsv statement, As&&... as )
          : m_previous( transaction ),
-           m_transaction( std::make_shared< internal::transaction_guard >( transaction->m_connection ) )
+           m_transaction( std::make_shared< internal::transaction_guard >( transaction->connection() ) )
       {
          m_transaction->execute_mode( result::mode_t::expect_copy_in, statement, std::forward< As >( as )... );
       }

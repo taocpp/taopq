@@ -25,42 +25,42 @@ namespace tao::pq
 
    auto large_object::create( const std::shared_ptr< transaction >& transaction, const oid desired_id ) -> oid
    {
-      const oid id = static_cast< oid >( lo_create( transaction->underlying_raw_ptr(), static_cast< Oid >( desired_id ) ) );
+      const oid id = static_cast< oid >( lo_create( transaction->connection()->underlying_raw_ptr(), static_cast< Oid >( desired_id ) ) );
       if( id == oid::invalid ) {
-         throw std::runtime_error( "tao::pq::large_object::create() failed: " + transaction->error_message() );
+         throw std::runtime_error( "tao::pq::large_object::create() failed: " + transaction->connection()->error_message() );
       }
       return id;
    }
 
    void large_object::remove( const std::shared_ptr< transaction >& transaction, const oid id )
    {
-      if( lo_unlink( transaction->underlying_raw_ptr(), static_cast< Oid >( id ) ) == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::remove() failed: " + transaction->error_message() );
+      if( lo_unlink( transaction->connection()->underlying_raw_ptr(), static_cast< Oid >( id ) ) == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::remove() failed: " + transaction->connection()->error_message() );
       }
    }
 
    auto large_object::import_file( const std::shared_ptr< transaction >& transaction, const char* filename, const oid desired_id ) -> oid
    {
-      const oid id = static_cast< oid >( lo_import_with_oid( transaction->underlying_raw_ptr(), filename, static_cast< Oid >( desired_id ) ) );
+      const oid id = static_cast< oid >( lo_import_with_oid( transaction->connection()->underlying_raw_ptr(), filename, static_cast< Oid >( desired_id ) ) );
       if( id == oid::invalid ) {
-         throw std::runtime_error( "tao::pq::large_object::import_file() failed: " + transaction->error_message() );
+         throw std::runtime_error( "tao::pq::large_object::import_file() failed: " + transaction->connection()->error_message() );
       }
       return id;
    }
 
    void large_object::export_file( const std::shared_ptr< transaction >& transaction, const oid id, const char* filename )
    {
-      if( lo_export( transaction->underlying_raw_ptr(), static_cast< Oid >( id ), filename ) == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::export_file() failed: " + transaction->error_message() );
+      if( lo_export( transaction->connection()->underlying_raw_ptr(), static_cast< Oid >( id ), filename ) == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::export_file() failed: " + transaction->connection()->error_message() );
       }
    }
 
    large_object::large_object( const std::shared_ptr< transaction >& transaction, const oid id, const std::ios_base::openmode m )
       : m_transaction( transaction ),
-        m_fd( lo_open( transaction->underlying_raw_ptr(), static_cast< Oid >( id ), to_mode( m ) ) )
+        m_fd( lo_open( transaction->connection()->underlying_raw_ptr(), static_cast< Oid >( id ), to_mode( m ) ) )
    {
       if( m_fd == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::open() failed: " + transaction->error_message() );
+         throw std::runtime_error( "tao::pq::large_object::open() failed: " + transaction->connection()->error_message() );
       }
    }
 
@@ -92,8 +92,8 @@ namespace tao::pq
    void large_object::close()
    {
       if( m_transaction ) {
-         if( lo_close( m_transaction->underlying_raw_ptr(), m_fd ) == -1 ) {
-            throw std::runtime_error( "tao::pq::large_object::close() failed: " + m_transaction->error_message() );
+         if( lo_close( m_transaction->connection()->underlying_raw_ptr(), m_fd ) == -1 ) {
+            throw std::runtime_error( "tao::pq::large_object::close() failed: " + m_transaction->connection()->error_message() );
          }
          m_transaction.reset();
       }
@@ -102,9 +102,9 @@ namespace tao::pq
    auto large_object::read( char* data, const std::size_t size ) -> std::size_t
    {
       assert( m_transaction );
-      const auto result = lo_read( m_transaction->underlying_raw_ptr(), m_fd, data, size );
+      const auto result = lo_read( m_transaction->connection()->underlying_raw_ptr(), m_fd, data, size );
       if( result == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::read() failed: " + m_transaction->error_message() );
+         throw std::runtime_error( "tao::pq::large_object::read() failed: " + m_transaction->connection()->error_message() );
       }
       return result;
    }
@@ -112,16 +112,16 @@ namespace tao::pq
    void large_object::write( const char* data, const std::size_t size )
    {
       assert( m_transaction );
-      if( lo_write( m_transaction->underlying_raw_ptr(), m_fd, data, size ) == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::write() failed: " + m_transaction->error_message() );
+      if( lo_write( m_transaction->connection()->underlying_raw_ptr(), m_fd, data, size ) == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::write() failed: " + m_transaction->connection()->error_message() );
       }
    }
 
    void large_object::resize( const std::int64_t size )
    {
       assert( m_transaction );
-      if( lo_truncate64( m_transaction->underlying_raw_ptr(), m_fd, size ) == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::resize() failed: " + m_transaction->error_message() );
+      if( lo_truncate64( m_transaction->connection()->underlying_raw_ptr(), m_fd, size ) == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::resize() failed: " + m_transaction->connection()->error_message() );
       }
    }
 
@@ -132,17 +132,17 @@ namespace tao::pq
       static_assert( std::ios_base::end == SEEK_END );
 
       assert( m_transaction );
-      if( lo_lseek64( m_transaction->underlying_raw_ptr(), m_fd, offset, whence ) == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::resize() failed: " + m_transaction->error_message() );
+      if( lo_lseek64( m_transaction->connection()->underlying_raw_ptr(), m_fd, offset, whence ) == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::resize() failed: " + m_transaction->connection()->error_message() );
       }
    }
 
    auto large_object::tell() const -> std::int64_t
    {
       assert( m_transaction );
-      const auto pos = lo_tell64( m_transaction->underlying_raw_ptr(), m_fd );
+      const auto pos = lo_tell64( m_transaction->connection()->underlying_raw_ptr(), m_fd );
       if( pos == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::tell() failed: " + m_transaction->error_message() );
+         throw std::runtime_error( "tao::pq::large_object::tell() failed: " + m_transaction->connection()->error_message() );
       }
       return pos;
    }

@@ -17,7 +17,7 @@ namespace tao::pq
    auto table_reader::get_raw_data() -> std::string_view
    {
       char* buffer = nullptr;
-      const auto result = PQgetCopyData( m_transaction->underlying_raw_ptr(), &buffer, 0 );
+      const auto result = PQgetCopyData( m_transaction->connection()->underlying_raw_ptr(), &buffer, 0 );
       m_buffer.reset( buffer );
       if( result > 0 ) {
          return { static_cast< const char* >( buffer ), static_cast< std::size_t >( result ) };
@@ -26,13 +26,13 @@ namespace tao::pq
          case 0:                 // LCOV_EXCL_LINE
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          case -1: {
-            (void)pq::result( PQgetResult( m_transaction->underlying_raw_ptr() ) );
+            (void)pq::result( PQgetResult( m_transaction->connection()->underlying_raw_ptr() ) );
             m_transaction.reset();
             m_previous.reset();
             return {};
          }
          case -2:
-            throw std::runtime_error( "PQgetCopyData() failed: " + m_transaction->error_message() );
+            throw std::runtime_error( "PQgetCopyData() failed: " + m_transaction->connection()->error_message() );
       }
       TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }

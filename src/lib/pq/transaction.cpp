@@ -15,7 +15,7 @@ namespace tao::pq
          : public subtransaction_base
       {
       public:
-         explicit top_level_subtransaction( const std::shared_ptr< connection >& connection )
+         explicit top_level_subtransaction( const std::shared_ptr< pq::connection >& connection )
             : subtransaction_base( connection )
          {
             execute( "START TRANSACTION" );
@@ -59,7 +59,7 @@ namespace tao::pq
          : public subtransaction_base
       {
       public:
-         explicit nested_subtransaction( const std::shared_ptr< connection >& connection )
+         explicit nested_subtransaction( const std::shared_ptr< pq::connection >& connection )
             : subtransaction_base( connection )
          {
             char buffer[ 64 ];
@@ -108,7 +108,7 @@ namespace tao::pq
 
    }  // namespace internal
 
-   transaction::transaction( const std::shared_ptr< connection >& connection )  // NOLINT(modernize-pass-by-value)
+   transaction::transaction( const std::shared_ptr< pq::connection >& connection )  // NOLINT(modernize-pass-by-value)
       : m_connection( connection )
    {}
 
@@ -124,12 +124,6 @@ namespace tao::pq
       }
    }
 
-   auto transaction::error_message() const -> std::string
-   {
-      check_current_transaction();
-      return m_connection->error_message();
-   }
-
    auto transaction::execute_params( const result::mode_t mode,
                                      const char* statement,
                                      const int n_params,
@@ -140,11 +134,6 @@ namespace tao::pq
    {
       check_current_transaction();
       return m_connection->execute_params( mode, statement, n_params, types, values, lengths, formats );
-   }
-
-   auto transaction::underlying_raw_ptr() const noexcept -> PGconn*
-   {
-      return m_connection->underlying_raw_ptr();
    }
 
    auto transaction::subtransaction() -> std::shared_ptr< transaction >

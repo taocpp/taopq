@@ -52,7 +52,7 @@ namespace tao::pq
       auto is_open() const noexcept
          -> bool;
 
-      // transactions
+      // create transactions
       auto direct()
          -> std::shared_ptr< pq::transaction >;
 
@@ -75,6 +75,17 @@ namespace tao::pq
       template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )
          -> result;
+
+      // access underlying connection pointer from libpq
+      auto underlying_raw_ptr() noexcept
+         -> PGconn*;
+
+      auto underlying_raw_ptr() const noexcept
+         -> const PGconn*;
+
+      // error message
+      auto error_message() const
+         -> std::string;
    };
 }
 ```
@@ -148,5 +159,14 @@ We advise to use the methods offered by taoPQ's connection type.
 You can check a connection's status by calling the `is_open()`-method.
 It return `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
 For further details, check the documentation for the underlying [`PQstatus()`](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
+
+## Underlying Connection Pointer
+
+If you need to access the underlying raw connection pointer from `libpq`, you can call the `underlying_raw_ptr()`-method.
+
+## Error Messages
+
+You can retrieve the last error message (if applicable) by calling the `error_message()`-method.
+When taoPQ throws an exception this is usually done internally and the message is part of the exception's `what()` message.
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch

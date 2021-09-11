@@ -23,7 +23,6 @@
 namespace tao::pq
 {
    class connection;
-   class large_object;
    class table_reader;
    class table_writer;
 
@@ -31,13 +30,12 @@ namespace tao::pq
       : public std::enable_shared_from_this< transaction >
    {
    protected:
-      std::shared_ptr< connection > m_connection;
+      std::shared_ptr< pq::connection > m_connection;
 
-      friend class large_object;
       friend class table_reader;
       friend class table_writer;
 
-      explicit transaction( const std::shared_ptr< connection >& connection );
+      explicit transaction( const std::shared_ptr< pq::connection >& connection );
 
    public:
       virtual ~transaction() = default;
@@ -57,8 +55,6 @@ namespace tao::pq
 
       [[nodiscard]] auto current_transaction() const noexcept -> transaction*&;
       void check_current_transaction() const;
-
-      [[nodiscard]] auto error_message() const -> std::string;
 
       [[nodiscard]] auto execute_params( const result::mode_t mode,
                                          const char* statement,
@@ -100,9 +96,12 @@ namespace tao::pq
          }
       }
 
-      [[nodiscard]] auto underlying_raw_ptr() const noexcept -> PGconn*;
-
    public:
+      [[nodiscard]] auto connection() const noexcept -> const std::shared_ptr< pq::connection >&
+      {
+         return m_connection;
+      }
+
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
       template< typename... As >
@@ -124,7 +123,7 @@ namespace tao::pq
          const std::shared_ptr< transaction > m_previous;
 
       protected:
-         explicit subtransaction_base( const std::shared_ptr< connection >& connection )
+         explicit subtransaction_base( const std::shared_ptr< pq::connection >& connection )
             : transaction( connection ),
               m_previous( current_transaction()->shared_from_this() )
          {
@@ -161,7 +160,7 @@ namespace tao::pq
          : public subtransaction_base
       {
       public:
-         explicit transaction_guard( const std::shared_ptr< connection >& connection )
+         explicit transaction_guard( const std::shared_ptr< pq::connection >& connection )
             : subtransaction_base( connection )
          {}
 

@@ -13,6 +13,7 @@ namespace tao::pq
       class zsv;  // zero-terminated string view
    }
 
+   class connection;
    class result;
 
    class transaction
@@ -27,7 +28,11 @@ namespace tao::pq
 
       virtual ~transaction() = default;
 
-      // transactions
+      // access connection
+      auto connection() const noexcept
+         -> const std::shared_ptr< pq::connection >&;
+
+      // create transactions
       auto subtransaction()
          -> std::shared_ptr< transaction >;
 
@@ -96,5 +101,9 @@ Likewise, you can manually create, commit, or rollback subtransactions by execut
 
 We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our library's transaction ordering framework.
 We advise to use the methods offered by taoPQ instead of manually handling transactions.
+
+## Accessing the Connection
+
+If you need to access the connection that a transaction is bound to, you can call the `connection()`-method.
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch

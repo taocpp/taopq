@@ -21,7 +21,7 @@ namespace tao::pq
          : public transaction
       {
       protected:
-         explicit transaction_base( const std::shared_ptr< connection >& connection )
+         explicit transaction_base( const std::shared_ptr< pq::connection >& connection )
             : transaction( connection )
          {
             if( current_transaction() != nullptr ) {
@@ -54,7 +54,7 @@ namespace tao::pq
          : public transaction_base
       {
       public:
-         explicit autocommit_transaction( const std::shared_ptr< connection >& connection )
+         explicit autocommit_transaction( const std::shared_ptr< pq::connection >& connection )
             : transaction_base( connection )
          {}
 
@@ -105,7 +105,7 @@ namespace tao::pq
          : public transaction_base
       {
       public:
-         explicit top_level_transaction( const std::shared_ptr< connection >& connection, const isolation_level il, const access_mode am )
+         explicit top_level_transaction( const std::shared_ptr< pq::connection >& connection, const isolation_level il, const access_mode am )
             : transaction_base( connection )
          {
             this->execute( std::string( "START TRANSACTION" ) + isolation_level_extension( il ) + access_mode_extension( am ) );
@@ -157,11 +157,6 @@ namespace tao::pq
 
    }  // namespace
 
-   auto connection::error_message() const -> std::string
-   {
-      return PQerrorMessage( m_pgconn.get() );
-   }
-
    auto connection::escape_identifier( const std::string_view identifier ) const -> std::string
    {
       const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
@@ -209,6 +204,11 @@ namespace tao::pq
    auto connection::create( const std::string& connection_info ) -> std::shared_ptr< connection >
    {
       return std::make_shared< connection >( private_key(), connection_info );
+   }
+
+   auto connection::error_message() const -> std::string
+   {
+      return PQerrorMessage( m_pgconn.get() );
    }
 
    auto connection::is_open() const noexcept -> bool

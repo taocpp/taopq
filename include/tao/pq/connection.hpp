@@ -43,7 +43,6 @@ namespace tao::pq
       pq::transaction* m_current_transaction;
       std::set< std::string, std::less<> > m_prepared_statements;
 
-      [[nodiscard]] auto error_message() const -> std::string;
       [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::string;
 
       static void check_prepared_name( const std::string_view name );
@@ -76,6 +75,8 @@ namespace tao::pq
       ~connection() = default;
 
       [[nodiscard]] static auto create( const std::string& connection_info ) -> std::shared_ptr< connection >;
+
+      [[nodiscard]] auto error_message() const -> std::string;
 
       [[nodiscard]] auto is_open() const noexcept -> bool;
 
