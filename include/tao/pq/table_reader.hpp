@@ -93,10 +93,11 @@ namespace tao::pq
          {}
 
       public:
-         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.m_columns != rhs.m_columns;
-         }
+         using difference_type = std::int32_t;
+         using value_type = const table_row;
+         using pointer = const table_row*;
+         using reference = const table_row&;
+         using iterator_category = std::input_iterator_tag;
 
          auto operator++() noexcept -> const_iterator&
          {
@@ -106,9 +107,29 @@ namespace tao::pq
             return *this;
          }
 
+         auto operator++( int ) noexcept -> const_iterator
+         {
+            return ++const_iterator( *this );
+         }
+
          [[nodiscard]] auto operator*() const noexcept -> const table_row&
          {
             return *this;
+         }
+
+         [[nodiscard]] auto operator->() const noexcept -> const table_row*
+         {
+            return this;
+         }
+
+         [[nodiscard]] friend auto operator==( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_columns == rhs.m_columns;
+         }
+
+         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.m_columns != rhs.m_columns;
          }
       };
 
