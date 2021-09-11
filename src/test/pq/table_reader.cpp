@@ -75,6 +75,7 @@ void run()
          TEST_ASSERT( a == 2 );
          TEST_ASSERT( !b );
          TEST_ASSERT( !c );
+         TEST_THROWS( tr.row().tuple< int, double, std::string_view >() );
       }
       PQclear( PQexec( connection->underlying_raw_ptr(), "SELECT 42" ) );
       TEST_THROWS( tr.get_row() );
