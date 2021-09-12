@@ -88,7 +88,7 @@ auto find_user( const std::string& name )
 ## Multi-Query Commands
 
 Some SQL client libraries allow multi-query commands, i.e. the command string can include multiple SQL statements.
-In `libpq`, this is supported by the [`PQexec`](https://www.postgresql.org/docs/current/libpq-exec.html)-function.
+In `libpq`, this is supported by the [`PQexec()`](https://www.postgresql.org/docs/current/libpq-exec.html)-function.
 As an extra defense against SQL injection, taoPQ *never* calls the `PQexec()`-function.
 We allow at most one SQL command in the given statement passed to an `execute()`-method.
 
