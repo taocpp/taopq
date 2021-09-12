@@ -209,6 +209,16 @@ namespace tao::pq
       [[nodiscard]] auto begin() const -> const_iterator;
       [[nodiscard]] auto end() const -> const_iterator;
 
+      [[nodiscard]] auto cbegin() const
+      {
+         return begin();
+      }
+
+      [[nodiscard]] auto cend() const
+      {
+         return end();
+      }
+
       [[nodiscard]] auto is_null( const std::size_t row, const std::size_t column ) const -> bool;
       [[nodiscard]] auto get( const std::size_t row, const std::size_t column ) const -> const char*;
 
