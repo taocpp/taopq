@@ -7,6 +7,21 @@
 #include <string>
 #include <typeinfo>
 
+// https://gist.github.com/brimston3/2be168bb423c83b0f469c0be56e66d31
+#if defined(__clang__)
+  #if __has_feature(cxx_rtti)
+    #define TAO_PQ_HAS_RTTI
+  #endif
+#elif defined(__GNUG__)
+  #if defined(__GXX_RTTI)
+    #define TAO_PQ_HAS_RTTI
+  #endif
+#elif defined(_MSC_VER)
+  #if defined(_CPPRTTI)
+    #define TAO_PQ_HAS_RTTI
+  #endif
+#endif
+
 namespace tao::pq::internal
 {
    [[nodiscard]] auto demangle( const char* const symbol ) -> std::string;
@@ -19,7 +34,11 @@ namespace tao::pq::internal
    template< typename T >
    [[nodiscard]] auto demangle()
    {
+#if defined(TAO_PQ_HAS_RTTI)
       return internal::demangle( typeid( T ) );
+#else
+      return std::string{ "(no rtti)" };
+#endif
    }
 
 }  // namespace tao::pq::internal
