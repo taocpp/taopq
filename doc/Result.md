@@ -1,14 +1,20 @@
 # Result
 
-Result sets can be iterated or conveniently converted into a C++ data structure.
-Predefined types include most STL containers, `std::pair`/`std::tuple`, and `std::optional` for [nullable](https://en.wikipedia.org/wiki/Nullable_type) values.
+When [executing statements](Statement.md) you receive a result object.
+A result comes in two flavours, depending on what statement was executed.
+
+When executing a [query statement](https://www.postgresql.org/docs/current/queries-overview.html), the database returns a result set, i.e. any number of rows containing one or more fields of data.
+
+When executing non-query statements, you can usually only extract the number of affected rows.
+
+Query results can be iterated or conveniently converted into a C++ data structure.
+Predefined types include most arithmetic C++ data types, STL containers, `std::pair`/`std::tuple`, and `std::optional` for [nullable](https://en.wikipedia.org/wiki/Nullable_type) values.
 Again custom types can be added with custom conversion functions.
 
 ## Synopsis
 
 Don't be intimidated by the size of the API, as you can see several methods are just single-line convenience forwarders.
 
-Conceptually, a result is a collection of rows, and a row is a collection of fields.
 We will first give the synopsis of everything, afterwards we will break down the API into small logical portions.
 
 ```c++
@@ -32,11 +38,12 @@ namespace tao::pq
       class const_iterator;
 
    public:
+      // non-query result access
       bool has_rows_affected() const noexcept;
-
       auto rows_affected() const
          -> std::size_t;
 
+      // information about the returned fields
       auto columns() const noexcept
          -> std::size_t;
 
@@ -46,27 +53,39 @@ namespace tao::pq
       auto index( const internal::zsv in_name ) const
          -> std::size_t;
 
+      // size of the result set
       bool empty() const;
 
       auto size() const
          -> std::size_t;
 
+      // iteration
       auto begin() const
          -> const_iterator;
 
       auto end() const
          -> const_iterator;
 
+      auto cbegin() const
+         -> const_iterator;
+
+      auto cend() const
+         -> const_iterator;
+
+      // get basic information about a field
       bool is_null( const std::size_t row, const std::size_t column ) const;
 
       auto get( const std::size_t row, const std::size_t column ) const
          -> const char*;
 
+      // access rows
       auto operator[]( const std::size_t row ) const noexcept
          -> pq::row;
 
       auto at( const std::size_t row ) const
          -> pq::row;
+
+      // convenience conversions for whole result sets
 
       // expects size()==1, converts the only row to T
       template< typename T >
@@ -276,5 +295,158 @@ namespace tao::pq
    }
 }
 ```
+
+## Non-Query Results
+
+For non-query results, i.e. when you called an `INSERT`-, `UPDATE`-, or `DELETE`-statement, you really only need the `rows_affected()`-method.
+In generic programming, when you might not know what kind of result you have, you can check whether or not a result is a non-query result by calling the `has_rows_affected()`-method.
+
+```c++
+bool tao::pq::result::has_rows_affected() const;
+auto tao::pq::result::rows_affected() const -> std::size_t;
+```
+
+## Query Results
+
+[Query results](https://www.postgresql.org/docs/current/queries-overview.html) are non-mutable data sets, they are cheap to copy, move, or assign and you can iterate over the data multiple times in random order.
+Likewise, rows are also non-mutable, as well as fields.
+This also means iterators will behave as constant iterators.
+
+Query results act similar to a random-access container.
+The don't fully implement the [container requirements](https://en.cppreference.com/w/cpp/named_req/Container), but a reasonable subset of those are provided.
+
+### Basics
+
+You can query the container's size, i.e. the number of rows it contains, by calling the `size()`-method.
+The `empty()`-method will, of course, return whether the size of the container is zero or not.
+
+```c++
+bool tao::pq::result::empty() const;
+auto tao::pq::result::size() const -> std::size_t;
+```
+
+The number of columns, column order, and the column name is the same for all rows of a result set.
+You can query the number of columns by calling the `columns()`-method.
+You can retrieve the name of a column using the `name()`-method, or the column index by using the `index()`-method.
+
+```c++
+auto tao::pq::result::columns() const -> std::size_t;
+auto tao::pq::result::name( std::size_t column ) const -> std::string;
+auto tao::pq::result::index( tao::pq::internal::zsv name ) const -> std::size_t;
+```
+
+Direct access to the data is provided by the `is_null()`- and the `get()`-methods.
+The latter returns the raw string as returned by `libpq`, it is a low level access method that is rarely used directly.
+
+```c++
+bool tao::pq::result::is_null( std::size_t row, std::size_t column ) const;
+auto tao::pq::result::get( std::size_t row, std::size_t column ) const -> const char*;
+```
+
+### Row Access
+
+You can iterate over the container's elements, the rows, with the usual methods.
+This is what the `begin()`- and `end()`-methods are for, also allowing for the convenient use of [range-based for loops](https://en.cppreference.com/w/cpp/language/range-for).
+
+```c++
+auto tao::pq::result::begin() const -> tao::pq::result::const_iterator;
+auto tao::pq::result::end() const -> tao::pq::result::const_iterator;
+```
+
+The identical `cbegin()`- and `cend()`-methods are provided for completeness.
+
+Here's an example of how to iterate all rows:
+
+```c++
+const tao::pq::result result = ...;
+for( const auto& row : result ) {
+   // use row to access your data
+}
+```
+
+Alternatively, you can use an index to access the rows.
+
+```c++
+const tao::pq::result result = ...;
+for( std::size_t i = 0; i < result.size(); ++i ) {
+   // use result[ i ] or result.at( i ) to access your data
+}
+```
+
+This is enabled by the accessors, the `at()`-method and the `[]`-operator.
+
+```c++
+auto tao::pq::result::at( std::size_t index ) const -> tao::pq::row;
+auto tao::pq::result::operator[]( std::size_t index ) const noexcept -> tao::pq::row;
+```
+
+More conversion methods will be discussed later, after we covered the basics for rows and fields.
+
+### Field Access
+
+Given a row, you can query information about the fields with the same methods as for the result itself.
+
+```c++
+auto tao::pq::row::columns() const -> std::size_t;
+auto tao::pq::row::name( std::size_t column ) const -> std::string;
+auto tao::pq::row::index( tao::pq::internal::zsv name ) const -> std::size_t;
+```
+
+Direct access to the data is provided by the `is_null()`- and the `get()`-methods.
+The latter returns the raw string as returned by `libpq`, it is a low level access method that is rarely used directly.
+
+```c++
+bool tao::pq::row::is_null( std::size_t column ) const;
+auto tao::pq::row::get( std::size_t column ) const -> const char*;
+```
+
+More conversion methods will be discussed later, after we covered the basics for fields.
+
+### Fields
+
+You can query a field's name by calling the `name()`-method.
+
+```c++
+auto tao::pq::field::name() const -> std::string;
+```
+
+Direct access to the data is provided by the `is_null()`- and the `get()`-methods.
+The latter returns the raw string as returned by `libpq`, it is a low level access method that is rarely used directly.
+
+```c++
+bool tao::pq::field::is_null() const;
+auto tao::pq::field::get() const -> const char*;
+```
+
+Now that we covered the basics, we can retrieve the actual data and convert it to the data types we need.
+
+## Field Data Conversion
+
+A field can be converted to any data type T that is a single field wide.
+What we mean by that is, that `tao::pq::result_traits_size< T >` yields 1.
+This is the case for `const char*`, `std::string`, `int`, etc.
+
+In order to convert a field to the data type you want, you can use the `as()`-method.
+
+```c++
+template< typename T >
+auto tao::pq::field::as() const -> T;
+```
+
+The conversion is handled by the `tao::pq::result_traits` class template, which is documented in the [result type conversion](Result-Type-Conversion.md) chapter.
+
+A field also has one convenience method to convert directly into a `std::optional<T>`.
+
+```c++
+template< typename T >
+auto tao::pq::field::optional() const
+{
+   return as< std::optional< T > >();
+}
+```
+
+## Row Data Conversion
+
+**TODO** Finish this up for rows and results...
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
