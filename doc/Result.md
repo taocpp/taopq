@@ -390,7 +390,7 @@ Alternatively, you can use an index to access the rows.
 ```c++
 const tao::pq::result result = ...;
 for( std::size_t i = 0; i < result.size(); ++i ) {
-   // use result[ i ] or result.at( i ) to access your data
+   // use result[ i ] or result.at( i ) to access your row's data
 }
 ```
 
@@ -419,6 +419,45 @@ The latter returns the raw string as returned by `libpq`, it is a low level acce
 ```c++
 bool tao::pq::row::is_null( std::size_t column ) const;
 auto tao::pq::row::get( std::size_t column ) const -> const char*;
+```
+
+You can iterate over the row's elements, the fields, with the usual methods.
+This is what the `begin()`- and `end()`-methods are for, also allowing for the convenient use of [range-based for loops](https://en.cppreference.com/w/cpp/language/range-for).
+
+```c++
+auto tao::pq::row::begin() const -> tao::pq::row::const_iterator;
+auto tao::pq::row::end() const -> tao::pq::row::const_iterator;
+```
+
+The identical `cbegin()`- and `cend()`-methods are provided for completeness.
+
+Here's an example of how to iterate all fields:
+
+```c++
+const tao::pq::result result = ...;
+for( const auto& row : result ) {
+   for( const auto& field : row ) {
+      // use field to access your data
+   }
+}
+```
+
+Alternatively, you can use an index to access the fields.
+
+```c++
+const tao::pq::result result = ...;
+for( std::size_t i = 0; i < result.size(); ++i ) {
+   for( std::size_t j = 0; j < result[ i ].columns(); ++j ) {
+      // use result[ i ][ j ] or result.at( i ).at( j ) to access your field's data
+   }
+}
+```
+
+This is enabled by the accessors, the `at()`-method and the `[]`-operator.
+
+```c++
+auto tao::pq::row::at( std::size_t index ) const -> tao::pq::field;
+auto tao::pq::row::operator[]( std::size_t index ) const noexcept -> tao::pq::field;
 ```
 
 More conversion methods will be discussed later, after we covered the basics for fields.
