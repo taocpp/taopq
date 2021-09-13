@@ -11,7 +11,7 @@ namespace tao::pq::internal
 {
 #if defined( __clang__ )
 
-#if defined( _LIBCPP_VERSION )
+   // #if defined( _LIBCPP_VERSION )
 
    template< typename T >
    [[nodiscard]] constexpr auto demangle() noexcept -> std::string_view
@@ -22,32 +22,32 @@ namespace tao::pq::internal
       return sv.substr( begin + 2, sv.size() - begin - 3 );
    }
 
-#else
+   // #else
 
-   // When using libstdc++ with clang, std::string_view::find is not constexpr :(
-   template< char C >
-   constexpr auto find( const char* p, std::size_t n ) noexcept -> const char*
-   {
-      while( n ) {
-         if( *p == C ) {
-            return p;
-         }
-         ++p;
-         --n;
-      }
-      return nullptr;
-   }
+   //    // When using libstdc++ with clang, std::string_view::find is not constexpr :(
+   //    template< char C >
+   //    constexpr auto find( const char* p, std::size_t n ) noexcept -> const char*
+   //    {
+   //       while( n ) {
+   //          if( *p == C ) {
+   //             return p;
+   //          }
+   //          ++p;
+   //          --n;
+   //       }
+   //       return nullptr;
+   //    }
 
-   template< typename T >
-   [[nodiscard]] constexpr auto demangle() noexcept -> std::string_view
-   {
-      constexpr std::string_view sv = __PRETTY_FUNCTION__;
-      constexpr auto begin = find< '=' >( sv.data(), sv.size() );
-      static_assert( begin != nullptr );
-      return { begin + 2, sv.data() + sv.size() - begin - 3 };
-   }
+   //    template< typename T >
+   //    [[nodiscard]] constexpr auto demangle() noexcept -> std::string_view
+   //    {
+   //       constexpr std::string_view sv = __PRETTY_FUNCTION__;
+   //       constexpr auto begin = find< '=' >( sv.data(), sv.size() );
+   //       static_assert( begin != nullptr );
+   //       return { begin + 2, sv.data() + sv.size() - begin - 3 };
+   //    }
 
-#endif
+   // #endif
 
 #elif defined( __GNUC__ )
 
