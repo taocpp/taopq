@@ -385,6 +385,15 @@ for( const auto& row : result ) {
 }
 ```
 
+or more traditionally:
+
+```c++
+const tao::pq::result result = ...;
+for( auto it = std::begin( result ); it != std::end( result ); ++it ) {
+   // use *it to access your row's data
+}
+```
+
 Alternatively, you can use an index to access the rows.
 
 ```c++
@@ -438,6 +447,17 @@ const tao::pq::result result = ...;
 for( const auto& row : result ) {
    for( const auto& field : row ) {
       // use field to access your data
+   }
+}
+```
+
+or more traditionally:
+
+```c++
+const tao::pq::result result = ...;
+for( auto it = std::begin( result ); it != std::end( result ); ++it ) {
+   for( auto jt = std::begin( *it ); jt != std::end( *it ); ++jt ) {
+      // use *jt to access your fields's data
    }
 }
 ```
