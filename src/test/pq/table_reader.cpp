@@ -26,13 +26,13 @@ void run()
 
       std::size_t count = 0;
       for( const auto& row : tr ) {
-         auto [ a, b, c ] = row.tuple< int, std::optional< double >, std::optional< std::string_view > >();
-         (void)a;
-         (void)b;
-         (void)c;
-         ++count;
+         for( const auto& field : row ) {
+            if( !field.is_null() ) {
+               ++count;
+            }
+         }
       }
-      TEST_ASSERT_MESSAGE( "validate count", count == 100000 );
+      TEST_ASSERT_MESSAGE( "validate count", count == 300000 );
    }
 
    TEST_THROWS( tao::pq::table_reader( connection->direct(), "SELECT 42" ) );

@@ -26,6 +26,7 @@ namespace tao::pq
    class table_row
    {
    protected:
+      friend class table_field;
       friend class table_reader;
 
       table_reader* m_reader;
@@ -46,6 +47,145 @@ namespace tao::pq
       [[nodiscard]] auto columns() const noexcept -> std::size_t
       {
          return m_columns;
+      }
+
+   private:
+      class const_iterator
+         : private table_field
+      {
+      private:
+         friend class table_row;
+
+         explicit const_iterator( const table_field& f ) noexcept
+            : table_field( f )
+         {}
+
+      public:
+         using difference_type = std::int32_t;
+         using value_type = const table_field;
+         using pointer = const table_field*;
+         using reference = const table_field&;
+         using iterator_category = std::random_access_iterator_tag;
+
+         const_iterator() = default;
+
+         auto operator++() noexcept -> const_iterator&
+         {
+            ++m_column;
+            return *this;
+         }
+
+         auto operator++( int ) noexcept -> const_iterator
+         {
+            return ++const_iterator( *this );
+         }
+
+         auto operator+=( const difference_type n ) noexcept -> const_iterator&
+         {
+            m_column += n;
+            return *this;
+         }
+
+         auto operator--() noexcept -> const_iterator&
+         {
+            --m_column;
+            return *this;
+         }
+
+         auto operator--( int ) noexcept -> const_iterator
+         {
+            return --const_iterator( *this );
+         }
+
+         auto operator-=( const difference_type n ) noexcept -> const_iterator&
+         {
+            m_column -= n;
+            return *this;
+         }
+
+         [[nodiscard]] auto operator*() const noexcept -> const table_field&
+         {
+            return *this;
+         }
+
+         [[nodiscard]] auto operator->() const noexcept -> const table_field*
+         {
+            return this;
+         }
+
+         [[nodiscard]] auto operator[]( const difference_type n ) const noexcept -> table_field
+         {
+            return *( const_iterator( *this ) += n );
+         }
+
+         friend void swap( const_iterator& lhs, const_iterator& rhs ) noexcept
+         {
+            return swap( static_cast< table_field& >( lhs ), static_cast< table_field& >( rhs ) );
+         }
+
+         [[nodiscard]] friend auto operator+( const const_iterator& lhs, const difference_type rhs ) noexcept
+         {
+            return const_iterator( lhs ) += rhs;
+         }
+
+         [[nodiscard]] friend auto operator+( const difference_type lhs, const const_iterator& rhs ) noexcept
+         {
+            return const_iterator( rhs ) += lhs;
+         }
+
+         [[nodiscard]] friend auto operator-( const const_iterator& lhs, const difference_type rhs ) noexcept
+         {
+            return const_iterator( lhs ) -= rhs;
+         }
+
+         [[nodiscard]] friend auto operator-( const const_iterator& lhs, const const_iterator& rhs ) noexcept -> difference_type
+         {
+            return static_cast< difference_type >( lhs.index() ) - static_cast< difference_type >( rhs.index() );
+         }
+
+         [[nodiscard]] friend auto operator==( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.index() == rhs.index();
+         }
+
+         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.index() != rhs.index();
+         }
+
+         [[nodiscard]] friend auto operator<( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.index() < rhs.index();
+         }
+
+         [[nodiscard]] friend auto operator>( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.index() > rhs.index();
+         }
+
+         [[nodiscard]] friend auto operator<=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.index() <= rhs.index();
+         }
+
+         [[nodiscard]] friend auto operator>=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         {
+            return lhs.index() >= rhs.index();
+         }
+      };
+
+   public:
+      [[nodiscard]] auto begin() const -> const_iterator;
+      [[nodiscard]] auto end() const -> const_iterator;
+
+      [[nodiscard]] auto cbegin() const
+      {
+         return begin();
+      }
+
+      [[nodiscard]] auto cend() const
+      {
+         return end();
       }
 
       [[nodiscard]] auto is_null( const std::size_t column ) const -> bool;
@@ -128,7 +268,7 @@ namespace tao::pq
    auto table_field::as() const
       -> std::enable_if_t< result_traits_size< T > == 1, T >
    {
-      return m_row.get< T >( m_column );
+      return m_row->get< T >( m_column );
    }
 
 }  // namespace tao::pq

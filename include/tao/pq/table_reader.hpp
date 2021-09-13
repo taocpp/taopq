@@ -142,6 +142,16 @@ namespace tao::pq
       [[nodiscard]] auto begin() -> const_iterator;
       [[nodiscard]] auto end() noexcept -> const_iterator;
 
+      [[nodiscard]] auto cbegin()
+      {
+         return begin();
+      }
+
+      [[nodiscard]] auto cend() noexcept
+      {
+         return end();
+      }
+
       template< typename T >
       [[nodiscard]] auto as_container() -> T
       {

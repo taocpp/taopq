@@ -24,6 +24,16 @@ namespace tao::pq
       return table_row( *m_reader, m_offset + offset, in_columns );
    }
 
+   auto table_row::begin() const -> table_row::const_iterator
+   {
+      return const_iterator( table_field( *this, m_offset ) );
+   }
+
+   auto table_row::end() const -> table_row::const_iterator
+   {
+      return const_iterator( table_field( *this, m_offset + m_columns ) );
+   }
+
    auto table_row::is_null( const std::size_t column ) const -> bool
    {
       return get( column ) == nullptr;
