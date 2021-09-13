@@ -18,23 +18,21 @@ namespace tao::pq::internal
    template< typename T >
    [[nodiscard]] auto from_chars( const std::string_view value ) -> T
    {
-      constexpr auto type = internal::demangle< T >();
       T result;
       const auto [ ptr, ec ] = std::from_chars( value.data(), value.data() + value.size(), result );
       if( ec == std::errc() ) {
          if( ptr == value.data() + value.size() ) {
             return result;
          }
+      }
+      const auto type = internal::demangle< T >();
+      if( ( ec == std::errc() ) || ( ec == std::errc::invalid_argument ) ) {
          throw std::invalid_argument( internal::printf( "tao::pq::internal::from_chars<%.*s>(): %.*s", static_cast< int >( type.size() ), type.data(), static_cast< int >( value.size() ), value.data() ) );
       }
-      switch( ec ) {
-         case std::errc::invalid_argument:
-            throw std::invalid_argument( internal::printf( "tao::pq::internal::from_chars<%.*s>(): %.*s", static_cast< int >( type.size() ), type.data(), static_cast< int >( value.size() ), value.data() ) );
-         case std::errc::result_out_of_range:
-            throw std::out_of_range( internal::printf( "tao::pq::internal::from_chars<%.*s>(): %.*s", static_cast< int >( type.size() ), type.data(), static_cast< int >( value.size() ), value.data() ) );
-         default:                // LCOV_EXCL_LINE
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+      if( ec == std::errc::result_out_of_range ) {
+         throw std::out_of_range( internal::printf( "tao::pq::internal::from_chars<%.*s>(): %.*s", static_cast< int >( type.size() ), type.data(), static_cast< int >( value.size() ), value.data() ) );
       }
+      TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
 }  // namespace tao::pq::internal
