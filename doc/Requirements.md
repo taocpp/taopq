@@ -8,12 +8,6 @@
   * [Linux](https://en.wikipedia.org/wiki/Linux).
 * Other systems might work.
 
-## Language Requirements
-
-* We require [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) or newer.
-* We require exception support. The `-fno-exceptions` option is not supported.
-* We require RTTI support. The `-fno-rtti` option is not supported.
-
 ## Compiler Support
 
 * We support:
@@ -22,6 +16,13 @@
   * [GCC](https://gcc.gnu.org/) version 8 or newer.
   * [Clang](https://clang.llvm.org/) version 8 or newer.
 * Other compilers might work.
+
+## Language Requirements
+
+* We require [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) or newer.
+* We require exception support. The `-fno-exceptions` option is not supported.
+* We do not require RTTI support on supported compilers. The `-fno-rtti` option is supported.
+  * On GCC 9.1 and GCC 9.2, we require RTTI support due to a bug in the compiler.
 
 ## Compiler Warnings
 
