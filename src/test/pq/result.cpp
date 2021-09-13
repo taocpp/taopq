@@ -151,7 +151,9 @@ void run()  // NOLINT(readability-function-size)
 
    int count = 0;
    for( const auto& row : connection->execute( "SELECT 1 UNION ALL SELECT 2" ) ) {
-      TEST_ASSERT( row.as< int >() == ++count );
+      for( const auto& field : row ) {
+         TEST_ASSERT( field.as< int >() == ++count );
+      }
    }
    TEST_ASSERT( count == 2 );
 }

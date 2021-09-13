@@ -18,21 +18,28 @@ namespace tao::pq
 {
    class row;
 
-   class field final
+   class field
    {
    private:
       friend class row;
 
-      const row& m_row;
-      const std::size_t m_column;
+      const row* m_row = nullptr;
+      std::size_t m_column = 0;
+
+      field() = default;
 
       field( const row& row, const std::size_t column ) noexcept
-         : m_row( row ),
+         : m_row( &row ),
            m_column( column )
       {}
 
    public:
       [[nodiscard]] auto name() const -> std::string;
+
+      [[nodiscard]] auto index() const
+      {
+         return m_column;
+      }
 
       [[nodiscard]] auto is_null() const -> bool;
       [[nodiscard]] auto get() const -> const char*;
@@ -53,6 +60,12 @@ namespace tao::pq
       [[nodiscard]] auto optional() const
       {
          return as< std::optional< T > >();
+      }
+
+      friend void swap( field& lhs, field& rhs ) noexcept
+      {
+         std::swap( lhs.m_row, rhs.m_row );
+         std::swap( lhs.m_column, rhs.m_column );
       }
    };
 

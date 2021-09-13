@@ -53,6 +53,16 @@ namespace tao::pq
       throw std::out_of_range( "column not found: " + std::string( in_name ) );
    }
 
+   auto row::begin() const -> row::const_iterator
+   {
+      return const_iterator( field( *this, m_offset ) );
+   }
+
+   auto row::end() const -> row::const_iterator
+   {
+      return const_iterator( field( *this, m_offset + m_columns ) );
+   }
+
    auto row::is_null( const std::size_t column ) const -> bool
    {
       ensure_column( column );
