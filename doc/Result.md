@@ -183,8 +183,13 @@ namespace tao::pq
          -> const PGresult*;
    };
 
-   class row /*final*/
+   class row
    {
+   private:
+      // satisfies LegacyRandomAccessIterator, see
+      // https://en.cppreference.com/w/cpp/named_req/RandomAccessIterator
+      class const_iterator;
+
    public:
       auto slice( const std::size_t offset, const std::size_t in_columns ) const
          -> row;
@@ -197,6 +202,19 @@ namespace tao::pq
 
       auto index( const internal::zsv in_name ) const
          -> std::size_t;
+
+      // iteration
+      auto begin() const
+         -> const_iterator;
+
+      auto end() const
+         -> const_iterator;
+
+      auto cbegin() const
+         -> const_iterator;
+
+      auto cend() const
+         -> const_iterator;
 
       bool is_null( const std::size_t column ) const;
 
@@ -250,10 +268,13 @@ namespace tao::pq
       friend void swap( row& lhs, row& rhs ) noexcept;
    };
 
-   class field final
+   class field
    {
       auto name() const
          -> std::string;
+
+      auto index() const
+         -> std::size_t;
 
       bool is_null() const;
       auto get() const

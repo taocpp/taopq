@@ -11,6 +11,11 @@ namespace tao::pq
       return m_row->name( m_column );
    }
 
+   auto field::index() const -> std::size_t
+   {
+      return m_column - m_row->m_offset;
+   }
+
    auto field::is_null() const -> bool
    {
       return m_row->is_null( m_column );

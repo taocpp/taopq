@@ -35,11 +35,7 @@ namespace tao::pq
 
    public:
       [[nodiscard]] auto name() const -> std::string;
-
-      [[nodiscard]] auto index() const
-      {
-         return m_column;
-      }
+      [[nodiscard]] auto index() const -> std::size_t;
 
       [[nodiscard]] auto is_null() const -> bool;
       [[nodiscard]] auto get() const -> const char*;

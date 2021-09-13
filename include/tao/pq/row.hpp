@@ -27,6 +27,7 @@ namespace tao::pq
    class row
    {
    protected:
+      friend class field;
       friend class result;
 
       const result* m_result = nullptr;
