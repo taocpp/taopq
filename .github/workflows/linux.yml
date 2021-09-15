@@ -120,6 +120,7 @@ jobs:
       matrix:
         compiler:
           - g++-10
+        flags: [ "-fno-rtti", "-D_GLIBCXX_USE_CXX11_ABI=0" ]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
@@ -154,7 +155,7 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS=-D_GLIBCXX_USE_CXX11_ABI=0
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.flags }}"
 
     - working-directory: build/
       run: cmake --build .
@@ -168,6 +169,7 @@ jobs:
       matrix:
         compiler:
           - clang++
+        flags: [ "-fno-rtti", "-fms-extensions" ]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
@@ -202,7 +204,7 @@ jobs:
     - run: cmake -E make_directory build
 
     - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="-fms-extensions"
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.flags }}"
 
     - working-directory: build/
       run: cmake --build .
