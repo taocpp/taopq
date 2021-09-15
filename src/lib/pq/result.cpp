@@ -8,6 +8,7 @@
 
 #include <libpq-fe.h>
 
+#include <tao/pq/exception.hpp>
 #include <tao/pq/result.hpp>
 
 #include <tao/pq/internal/from_chars.hpp>
@@ -63,10 +64,128 @@ namespace tao::pq
             throw std::runtime_error( "empty query" );
 
          default:
-            const std::string res_status = PQresStatus( status );
-            const char* sql_state = PQresultErrorField( pgresult, PG_DIAG_SQLSTATE );
             const char* error_message = PQresultErrorMessage( pgresult );
-            throw std::runtime_error( res_status + '/' + ( ( sql_state != nullptr ) ? sql_state : "?" ) + ": " + error_message );
+            const std::string_view sql_state = PQresultErrorField( pgresult, PG_DIAG_SQLSTATE );
+            switch( sql_state[ 0 ] ) {
+               case '0':
+                  switch( sql_state[ 1 ] ) {
+                     case '8':
+                        throw broken_connection( error_message, sql_state );
+
+                     case 'A':
+                        throw feature_not_supported( error_message, sql_state );
+                  }
+                  break;
+
+               case '2':
+                  switch( sql_state[ 1 ] ) {
+                     case '2':
+                        throw data_exception( error_message, sql_state );
+
+                     case '3':
+                        if( sql_state == "23001" ) {
+                           throw restrict_violation( error_message, sql_state );
+                        }
+                        if( sql_state == "23502" ) {
+                           throw not_null_violation( error_message, sql_state );
+                        }
+                        if( sql_state == "23503" ) {
+                           throw foreign_key_violation( error_message, sql_state );
+                        }
+                        if( sql_state == "23505" ) {
+                           throw unique_violation( error_message, sql_state );
+                        }
+                        if( sql_state == "23514" ) {
+                           throw check_violation( error_message, sql_state );
+                        }
+                        if( sql_state == "23P01" ) {
+                           throw exclusion_violation( error_message, sql_state );
+                        }
+                        throw integrity_constraint_violation( error_message, sql_state );
+
+                     case '4':
+                        throw invalid_cursor_state( error_message, sql_state );
+
+                     case '5':
+                        throw invalid_transaction_state( error_message, sql_state );
+                  }
+                  break;
+
+               case '4':
+                  switch( sql_state[ 1 ] ) {
+                     case '0':
+                        if( sql_state == "40001" ) {
+                           throw serialization_failure( error_message, sql_state );
+                        }
+                        if( sql_state == "40002" ) {
+                           throw transaction_integrity_constraint_violation( error_message, sql_state );
+                        }
+                        if( sql_state == "40003" ) {
+                           throw statement_completion_unknown( error_message, sql_state );
+                        }
+                        if( sql_state == "40P01" ) {
+                           throw deadlock_detected( error_message, sql_state );
+                        }
+                        throw transaction_rollback( error_message, sql_state );
+
+                     case '2':
+                        if( sql_state == "42501" ) {
+                           throw insufficient_privilege( error_message, sql_state );
+                        }
+                        if( sql_state == "42601" ) {
+                           throw syntax_error( error_message, sql_state );
+                        }
+                        if( sql_state == "42703" ) {
+                           throw undefined_column( error_message, sql_state );
+                        }
+                        if( sql_state == "42883" ) {
+                           throw undefined_function( error_message, sql_state );
+                        }
+                        if( sql_state == "42P01" ) {
+                           throw undefined_table( error_message, sql_state );
+                        }
+                        throw syntax_error_or_access_rule_violation( error_message, sql_state );
+                  }
+                  break;
+
+               case '5':
+                  switch( sql_state[ 1 ] ) {
+                     case '3':
+                        if( sql_state == "53100" ) {
+                           throw disk_full( error_message, sql_state );
+                        }
+                        if( sql_state == "53200" ) {
+                           throw out_of_memory( error_message, sql_state );
+                        }
+                        if( sql_state == "53300" ) {
+                           throw too_many_connections( error_message, sql_state );
+                        }
+                        if( sql_state == "53400" ) {
+                           throw configuration_limit_exceeded( error_message, sql_state );
+                        }
+                        throw insufficient_resources( error_message, sql_state );
+
+                     case '7':
+                        if( sql_state == "57014" ) {
+                           throw query_canceled( error_message, sql_state );
+                        }
+                        if( sql_state == "57P01" ) {
+                           throw admin_shutdown( error_message, sql_state );
+                        }
+                        if( sql_state == "57P02" ) {
+                           throw crash_shutdown( error_message, sql_state );
+                        }
+                        if( sql_state == "57P03" ) {
+                           throw cannot_connect_now( error_message, sql_state );
+                        }
+                        if( sql_state == "57P04" ) {
+                           throw database_dropped( error_message, sql_state );
+                        }
+                        throw operator_intervention( error_message, sql_state );
+                  }
+                  break;
+            }
+            throw sql_error( error_message, sql_state );
       }
 
       const std::string res_status = PQresStatus( status );

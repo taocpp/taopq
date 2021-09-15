@@ -18,6 +18,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/binary.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/exception.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/field.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/dependent_false.hpp
