@@ -21,8 +21,7 @@
 
 * We require [C++17](https://en.wikipedia.org/wiki/C%2B%2B17) or newer.
 * We require exception support. The `-fno-exceptions` option is not supported.
-* We do not require RTTI support on supported compilers. The `-fno-rtti` option is supported.
-  * On GCC 9.1 and GCC 9.2, we require RTTI support due to a bug in the compiler.
+* We require RTTI support. The `-fno-rtti` option is not supported.
 
 ## Compiler Warnings
 

@@ -120,7 +120,7 @@ jobs:
       matrix:
         compiler:
           - g++-10
-        flags: [ "-fno-rtti", "-D_GLIBCXX_USE_CXX11_ABI=0" ]
+        flags: [ "-D_GLIBCXX_USE_CXX11_ABI=0" ]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
@@ -169,7 +169,7 @@ jobs:
       matrix:
         compiler:
           - clang++
-        flags: [ "-fno-rtti", "-fms-extensions" ]
+        flags: [ "-fms-extensions" ]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
