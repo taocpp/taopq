@@ -66,6 +66,7 @@ namespace tao::pq
          default:
             const char* error_message = PQresultErrorMessage( pgresult );
             const std::string_view sql_state = PQresultErrorField( pgresult, PG_DIAG_SQLSTATE );
+            // LCOV_EXCL_START
             switch( sql_state[ 0 ] ) {
                case '0':
                   switch( sql_state[ 1 ] ) {
@@ -864,6 +865,7 @@ namespace tao::pq
                   break;
             }
             throw sql_error( error_message, sql_state );
+            // LCOV_EXCL_STOP
       }
 
       const std::string res_status = PQresStatus( status );
