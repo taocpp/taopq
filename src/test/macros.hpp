@@ -9,6 +9,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <tao/pq/internal/demangle.hpp>
+
 #define STRINGIFY_INTERNAL( ... ) #__VA_ARGS__
 #define STRINGIFY( ... ) STRINGIFY_INTERNAL( __VA_ARGS__ )
 #define FILE_AND_LINE __FILE__ ":" STRINGIFY( __LINE__ )
@@ -32,16 +34,17 @@
          TEST_FAILED;                             \
       } )
 
-#define TEST_THROWS_MESSAGE( MeSSaGe, ... )                                                       \
-   TEST_EXECUTE_MESSAGE(                                                                          \
-      MeSSaGe,                                                                                    \
-      try {                                                                                       \
-         __VA_ARGS__;                                                                             \
-         TEST_FAILED;                                                                             \
-      } catch( const std::exception& e ) {                                                        \
-         std::cout << "TEST caught [ " << e.what() << " ] in [ " FILE_AND_LINE " ]" << std::endl; \
-      } catch( ... ) {                                                                            \
-         std::cout << "TEST caught unknown exception in [ " FILE_AND_LINE " ]" << std::endl;      \
+#define TEST_THROWS_MESSAGE( MeSSaGe, ... )                                                   \
+   TEST_EXECUTE_MESSAGE(                                                                      \
+      MeSSaGe,                                                                                \
+      try {                                                                                   \
+         __VA_ARGS__;                                                                         \
+         TEST_FAILED;                                                                         \
+      } catch( const std::exception& e ) {                                                    \
+         std::cout << "TEST caught [ " << tao::pq::internal::demangle( typeid( e ) ) << " ] " \
+                   << "with [ " << e.what() << " ] in [ " FILE_AND_LINE " ]" << std::endl;    \
+      } catch( ... ) {                                                                        \
+         std::cout << "TEST caught unknown exception in [ " FILE_AND_LINE " ]" << std::endl;  \
       } )
 
 #define TEST_EXECUTE( ... ) TEST_EXECUTE_MESSAGE( "EXECUTE " #__VA_ARGS__, __VA_ARGS__ )
