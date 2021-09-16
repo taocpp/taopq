@@ -75,7 +75,7 @@ namespace tao::pq
                            throw null_value_eliminated_in_set_function( error_message, sql_state );
                         }
                         if( sql_state == "01004" ) {
-                           throw warning_string_data_right_truncation( error_message, sql_state );
+                           throw string_data_right_truncation< warning >( error_message, sql_state );
                         }
                         if( sql_state == "01006" ) {
                            throw privilege_not_revoked( error_message, sql_state );
@@ -271,7 +271,7 @@ namespace tao::pq
                            throw string_data_length_mismatch( error_message, sql_state );
                         }
                         if( sql_state == "22001" ) {
-                           throw string_data_right_truncation( error_message, sql_state );
+                           throw string_data_right_truncation< data_exception >( error_message, sql_state );
                         }
                         if( sql_state == "22011" ) {
                            throw substring_error( error_message, sql_state );
@@ -433,13 +433,13 @@ namespace tao::pq
 
                      case 'F':
                         if( sql_state == "2F002" ) {
-                           throw modifying_sql_data_not_permitted( error_message, sql_state );
+                           throw modifying_sql_data_not_permitted< sql_routine_exception >( error_message, sql_state );
                         }
                         if( sql_state == "2F003" ) {
-                           throw prohibited_sql_statement_attempted( error_message, sql_state );
+                           throw prohibited_sql_statement_attempted< sql_routine_exception >( error_message, sql_state );
                         }
                         if( sql_state == "2F004" ) {
-                           throw reading_sql_data_not_permitted( error_message, sql_state );
+                           throw reading_sql_data_not_permitted< sql_routine_exception >( error_message, sql_state );
                         }
                         if( sql_state == "2F005" ) {
                            throw function_executed_no_return_statement( error_message, sql_state );
@@ -458,13 +458,13 @@ namespace tao::pq
                            throw containing_sql_not_permitted( error_message, sql_state );
                         }
                         if( sql_state == "38002" ) {
-                           throw external_modifying_sql_data_not_permitted( error_message, sql_state );
+                           throw modifying_sql_data_not_permitted< external_routine_exception >( error_message, sql_state );
                         }
                         if( sql_state == "38003" ) {
-                           throw external_prohibited_sql_statement_attempted( error_message, sql_state );
+                           throw prohibited_sql_statement_attempted< external_routine_exception >( error_message, sql_state );
                         }
                         if( sql_state == "38004" ) {
-                           throw external_reading_sql_data_not_permitted( error_message, sql_state );
+                           throw reading_sql_data_not_permitted< external_routine_exception >( error_message, sql_state );
                         }
                         throw external_routine_exception( error_message, sql_state );
 

@@ -22,6 +22,20 @@ namespace tao::pq
       {}
    };
 
+   // when a condition name from PostgreSQL is ambiguous,
+   // we qualify the error class via a template parameter
+   template< typename >
+   struct string_data_right_truncation;
+
+   template< typename >
+   struct modifying_sql_data_not_permitted;
+
+   template< typename >
+   struct prohibited_sql_statement_attempted;
+
+   template< typename >
+   struct reading_sql_data_not_permitted;
+
    struct warning  // 01xxx
       : sql_error
    {
@@ -34,7 +48,8 @@ namespace tao::pq
       using warning::warning;
    };
 
-   struct warning_string_data_right_truncation  // 01004
+   template<>
+   struct string_data_right_truncation< warning >  // 01004
       : warning
    {
       using warning::warning;
@@ -418,7 +433,8 @@ namespace tao::pq
       using data_exception::data_exception;
    };
 
-   struct string_data_right_truncation  // 22001
+   template<>
+   struct string_data_right_truncation< data_exception >  // 22001
       : data_exception
    {
       using data_exception::data_exception;
@@ -706,19 +722,22 @@ namespace tao::pq
       using sql_error::sql_error;
    };
 
-   struct modifying_sql_data_not_permitted  // 2F002
+   template<>
+   struct modifying_sql_data_not_permitted< sql_routine_exception >  // 2F002
       : sql_routine_exception
    {
       using sql_routine_exception::sql_routine_exception;
    };
 
-   struct prohibited_sql_statement_attempted  // 2F003
+   template<>
+   struct prohibited_sql_statement_attempted< sql_routine_exception >  // 2F003
       : sql_routine_exception
    {
       using sql_routine_exception::sql_routine_exception;
    };
 
-   struct reading_sql_data_not_permitted  // 2F004
+   template<>
+   struct reading_sql_data_not_permitted< sql_routine_exception >  // 2F004
       : sql_routine_exception
    {
       using sql_routine_exception::sql_routine_exception;
@@ -748,19 +767,22 @@ namespace tao::pq
       using external_routine_exception::external_routine_exception;
    };
 
-   struct external_modifying_sql_data_not_permitted  // 38002
+   template<>
+   struct modifying_sql_data_not_permitted< external_routine_exception >  // 38002
       : external_routine_exception
    {
       using external_routine_exception::external_routine_exception;
    };
 
-   struct external_prohibited_sql_statement_attempted  // 38003
+   template<>
+   struct prohibited_sql_statement_attempted< external_routine_exception >  // 38003
       : external_routine_exception
    {
       using external_routine_exception::external_routine_exception;
    };
 
-   struct external_reading_sql_data_not_permitted  // 38004
+   template<>
+   struct reading_sql_data_not_permitted< external_routine_exception >  // 38004
       : external_routine_exception
    {
       using external_routine_exception::external_routine_exception;
