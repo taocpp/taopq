@@ -22,10 +22,6 @@ namespace tao::pq
    template< typename >
    inline constexpr bool is_array_result = false;
 
-   // TODO:
-   // template< typename T, std::size_t N >
-   // inline constexpr bool is_array_result< std::array< T, N > > = true;
-
    template< typename... Ts >
    inline constexpr bool is_array_result< std::list< Ts... > > = true;
 
