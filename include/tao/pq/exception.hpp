@@ -8,18 +8,18 @@
 #include <string>
 #include <string_view>
 
+#include <libpq-fe.h>
+
 namespace tao::pq
 {
+   // https://www.postgresql.org/docs/current/errcodes-appendix.html
+
    struct sql_error
       : std::runtime_error
    {
-      // https://www.postgresql.org/docs/current/errcodes-appendix.html
       std::string sqlstate;
 
-      sql_error( const char* what, const std::string_view in_sqlstate )
-         : std::runtime_error( what ),
-           sqlstate( in_sqlstate )
-      {}
+      sql_error( const char* what, const std::string_view in_sqlstate );
    };
 
    // when a condition name from PostgreSQL is ambiguous,
@@ -1519,6 +1519,12 @@ namespace tao::pq
    {
       using internal_error::internal_error;
    };
+
+   namespace internal
+   {
+      [[noreturn]] void throw_sqlstate( PGresult* pgresult );
+
+   }  // namespace internal
 
 }  // namespace tao::pq
 
