@@ -6,7 +6,7 @@
 namespace tao::pq
 {
    sql_error::sql_error( const char* what, const std::string_view in_sqlstate )
-      : std::runtime_error( what ),
+      : runtime_error( what ),
         sqlstate( in_sqlstate )
    {}
 
@@ -16,6 +16,11 @@ namespace tao::pq
       {
          const char* error_message = PQresultErrorMessage( pgresult );
          const std::string_view sql_state = PQresultErrorField( pgresult, PG_DIAG_SQLSTATE );
+         internal::throw_sqlstate( error_message, sql_state );
+      }
+
+      void throw_sqlstate( const char* error_message, const std::string_view sql_state )
+      {
          // LCOV_EXCL_START
          switch( sql_state[ 0 ] ) {
             case '0':

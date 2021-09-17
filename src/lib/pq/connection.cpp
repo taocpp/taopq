@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <string>
 
+#include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/oid.hpp>
 
@@ -161,7 +162,7 @@ namespace tao::pq
    {
       const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
       if( !buffer ) {
-         throw std::runtime_error( "PQescapeIdentifier failed: " + error_message() );  // LCOV_EXCL_LINE
+         throw std::invalid_argument( error_message() );  // LCOV_EXCL_LINE
       }
       return buffer.get();
    }
@@ -197,7 +198,9 @@ namespace tao::pq
         m_current_transaction( nullptr )
    {
       if( !is_open() ) {
-         throw std::runtime_error( "connection failed: " + error_message() );
+         // note that we can not access the sqlstate after PQconnectdb(),
+         // see https://stackoverflow.com/q/23349086/2073257
+         throw pq::connection_error( error_message() );
       }
    }
 
@@ -247,7 +250,7 @@ namespace tao::pq
    {
       connection::check_prepared_name( name );
       if( !connection::is_prepared( name ) ) {
-         throw std::runtime_error( "prepared statement name not found: " + name );
+         throw std::runtime_error( "prepared statement not found: " + name );
       }
       (void)execute_params( result::mode_t::expect_ok, ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
       m_prepared_statements.erase( name );

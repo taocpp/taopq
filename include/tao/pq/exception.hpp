@@ -12,10 +12,21 @@
 
 namespace tao::pq
 {
-   // https://www.postgresql.org/docs/current/errcodes-appendix.html
-
-   struct sql_error
+   struct runtime_error
       : std::runtime_error
+   {
+      using std::runtime_error::runtime_error;
+   };
+
+   struct connection_error
+      : runtime_error
+   {
+      using runtime_error::runtime_error;
+   };
+
+   // https://www.postgresql.org/docs/current/errcodes-appendix.html
+   struct sql_error
+      : runtime_error
    {
       std::string sqlstate;
 
@@ -1589,6 +1600,7 @@ namespace tao::pq
    namespace internal
    {
       [[noreturn]] void throw_sqlstate( PGresult* pgresult );
+      [[noreturn]] void throw_sqlstate( const char* error_message, const std::string_view sql_state );
 
    }  // namespace internal
 
