@@ -674,6 +674,72 @@ namespace tao::pq
       using sql_error::sql_error;
    };
 
+   struct active_sql_transaction  // 25001
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct branch_transaction_already_active  // 25002
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct held_cursor_requires_same_isolation_level  // 25008
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct inappropriate_access_mode_for_branch_transaction  // 25003
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct inappropriate_isolation_level_for_branch_transaction  // 25004
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct no_active_sql_transaction_for_branch_transaction  // 25005
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct read_only_sql_transaction  // 25006
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct schema_and_data_statement_mixing_not_supported  // 25007
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct no_active_sql_transaction  // 25P01
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct in_failed_sql_transaction  // 25P02
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
+   struct idle_in_transaction_session_timeout  // 25P03
+      : invalid_transaction_state
+   {
+      using invalid_transaction_state::invalid_transaction_state;
+   };
+
    struct invalid_sql_statement_name  // 26xxx
       : sql_error
    {

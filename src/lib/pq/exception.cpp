@@ -340,23 +340,38 @@ namespace tao::pq
                      throw invalid_cursor_state( error_message, sql_state );
 
                   case '5':
-                     if( sql_state == "08001" ) {
-                        throw sqlclient_unable_to_establish_sqlconnection( error_message, sql_state );
+                     if( sql_state == "25001" ) {
+                        throw active_sql_transaction( error_message, sql_state );
                      }
-                     if( sql_state == "08003" ) {
-                        throw connection_does_not_exist( error_message, sql_state );
+                     if( sql_state == "25002" ) {
+                        throw branch_transaction_already_active( error_message, sql_state );
                      }
-                     if( sql_state == "08004" ) {
-                        throw sqlserver_rejected_establishment_of_sqlconnection( error_message, sql_state );
+                     if( sql_state == "25008" ) {
+                        throw held_cursor_requires_same_isolation_level( error_message, sql_state );
                      }
-                     if( sql_state == "08006" ) {
-                        throw connection_failure( error_message, sql_state );
+                     if( sql_state == "25003" ) {
+                        throw inappropriate_access_mode_for_branch_transaction( error_message, sql_state );
                      }
-                     if( sql_state == "08007" ) {
-                        throw transaction_resolution_unknown( error_message, sql_state );
+                     if( sql_state == "25004" ) {
+                        throw inappropriate_isolation_level_for_branch_transaction( error_message, sql_state );
                      }
-                     if( sql_state == "08P01" ) {
-                        throw protocol_violation( error_message, sql_state );
+                     if( sql_state == "25005" ) {
+                        throw no_active_sql_transaction_for_branch_transaction( error_message, sql_state );
+                     }
+                     if( sql_state == "25006" ) {
+                        throw read_only_sql_transaction( error_message, sql_state );
+                     }
+                     if( sql_state == "25007" ) {
+                        throw schema_and_data_statement_mixing_not_supported( error_message, sql_state );
+                     }
+                     if( sql_state == "25P01" ) {
+                        throw no_active_sql_transaction( error_message, sql_state );
+                     }
+                     if( sql_state == "25P02" ) {
+                        throw in_failed_sql_transaction( error_message, sql_state );
+                     }
+                     if( sql_state == "25P03" ) {
+                        throw idle_in_transaction_session_timeout( error_message, sql_state );
                      }
                      throw invalid_transaction_state( error_message, sql_state );
 
