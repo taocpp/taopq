@@ -11,6 +11,9 @@ void run()
    // overwrite the default with an environment variable if needed
    const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );
 
+   // suppress false positive from clang-analyzer/clang-tidy
+   (void)connection_string;
+
    // connection_string must be valid
    TEST_THROWS( tao::pq::connection::create( "=" ) );
 
