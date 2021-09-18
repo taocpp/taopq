@@ -6,6 +6,8 @@
 
 #include <tao/pq/connection.hpp>
 
+#include <unistd.h>
+
 std::size_t counter = 0;
 
 void handle_notification( const tao::pq::notification& n )
@@ -38,6 +40,9 @@ void run()
    TEST_ASSERT( connection->notification_handler() );
    TEST_EXECUTE( connection->reset_notification_handler() );
    TEST_ASSERT( !connection->notification_handler() );
+
+   close( PQsocket( connection->underlying_raw_ptr() ) );  // nasty!
+   TEST_THROWS( connection->get_notifications() );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
