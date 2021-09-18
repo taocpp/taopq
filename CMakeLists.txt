@@ -34,6 +34,7 @@ set(TAOPQ_INCLUDE_FILES
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/internal/zsv.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/large_object.hpp
+  ${TAOPQ_INCLUDE_DIRS}/tao/pq/notification.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/null.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/oid.hpp
   ${TAOPQ_INCLUDE_DIRS}/tao/pq/parameter_traits.hpp
