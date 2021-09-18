@@ -175,28 +175,4 @@ namespace tao::pq
       v_reset();
    }
 
-   void transaction::listen( const std::string_view channel )
-   {
-      check_current_transaction();
-      (void)m_connection->execute_single( "LISTEN " + m_connection->escape_identifier( channel ) );
-   }
-
-   void transaction::unlisten( const std::string_view channel )
-   {
-      check_current_transaction();
-      (void)m_connection->execute_single( "UNLISTEN " + m_connection->escape_identifier( channel ) );
-   }
-
-   void transaction::notify( const std::string_view channel )
-   {
-      check_current_transaction();
-      (void)m_connection->execute_single( "NOTIFY " + m_connection->escape_identifier( channel ) );
-   }
-
-   void transaction::notify( const std::string_view channel, const std::string_view payload )
-   {
-      check_current_transaction();
-      (void)this->execute( "SELECT pg_notify( $1, $2 )", channel, payload );
-   }
-
 }  // namespace tao::pq

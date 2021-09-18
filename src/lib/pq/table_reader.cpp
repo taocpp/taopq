@@ -27,6 +27,7 @@ namespace tao::pq
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          case -1: {
             (void)pq::result( PQgetResult( m_transaction->connection()->underlying_raw_ptr() ) );
+            m_transaction->connection()->handle_notifications();
             m_transaction.reset();
             m_previous.reset();
             return {};

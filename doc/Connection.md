@@ -29,6 +29,7 @@ namespace tao::pq
       read_only
    };
 
+   class notification;
    class transaction;
 
    class connection final
@@ -96,6 +97,14 @@ namespace tao::pq
       {
          direct()->notify( channel, payload );
       }
+
+      auto notification_handler()
+         -> std::function< void( const notification& ) >;
+
+      void set_notification_handler( const std::function< void( const notification& ) >& );
+      void reset_notification_handler() noexcept;
+
+      void handle_notifications();
 
       // access underlying connection pointer from libpq
       auto underlying_raw_ptr() noexcept

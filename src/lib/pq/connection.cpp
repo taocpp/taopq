@@ -12,6 +12,7 @@
 
 #include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
 
 namespace tao::pq
@@ -179,6 +180,20 @@ namespace tao::pq
       return m_prepared_statements.find( name ) != m_prepared_statements.end();
    }
 
+   auto connection::execute_final( const result::mode_t mode,
+                                   const char* statement,
+                                   const int n_params,
+                                   const Oid types[],
+                                   const char* const values[],
+                                   const int lengths[],
+                                   const int formats[] ) -> result
+   {
+      if( is_prepared( statement ) ) {
+         return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ), mode );
+      }
+      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ), mode );
+   }
+
    auto connection::execute_params( const result::mode_t mode,
                                     const char* statement,
                                     const int n_params,
@@ -187,10 +202,9 @@ namespace tao::pq
                                     const int lengths[],
                                     const int formats[] ) -> result
    {
-      if( is_prepared( statement ) ) {
-         return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ), mode );
-      }
-      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ), mode );
+      const result nrv = execute_final( mode, statement, n_params, types, values, lengths, formats );
+      handle_notifications();
+      return nrv;
    }
 
    auto connection::execute_single( const internal::zsv statement ) -> result
@@ -199,7 +213,7 @@ namespace tao::pq
    }
 
    connection::connection( const private_key /*unused*/, const std::string& connection_info )
-      : m_pgconn( PQconnectdb( connection_info.c_str() ), deleter() ),
+      : m_pgconn( PQconnectdb( connection_info.c_str() ), &PQfinish ),
         m_current_transaction( nullptr )
    {
       if( !is_open() ) {
@@ -217,6 +231,21 @@ namespace tao::pq
    auto connection::error_message() const -> std::string
    {
       return PQerrorMessage( m_pgconn.get() );
+   }
+
+   auto connection::notification_handler() const -> std::function< void( const notification& ) >
+   {
+      return m_notification_handler;
+   }
+
+   void connection::set_notification_handler( const std::function< void( const notification& ) >& handler )
+   {
+      m_notification_handler = handler;
+   }
+
+   void connection::reset_notification_handler() noexcept
+   {
+      m_notification_handler = nullptr;
    }
 
    auto connection::is_open() const noexcept -> bool
@@ -247,8 +276,9 @@ namespace tao::pq
    void connection::prepare( const std::string& name, const std::string& statement )
    {
       connection::check_prepared_name( name );
-      result( PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );  // NOLINT(bugprone-unused-raii)
+      (void)result( PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );
       m_prepared_statements.insert( name );
+      handle_notifications();
    }
 
    void connection::deallocate( const std::string& name )
@@ -263,22 +293,38 @@ namespace tao::pq
 
    void connection::listen( const std::string_view channel )
    {
-      direct()->listen( channel );
+      (void)connection::execute_single( "LISTEN " + connection::escape_identifier( channel ) );
    }
 
    void connection::unlisten( const std::string_view channel )
    {
-      direct()->unlisten( channel );
+      (void)connection::execute_single( "UNLISTEN " + connection::escape_identifier( channel ) );
    }
 
    void connection::notify( const std::string_view channel )
    {
-      direct()->notify( channel );
+      (void)connection::execute_single( "NOTIFY " + connection::escape_identifier( channel ) );
    }
 
    void connection::notify( const std::string_view channel, const std::string_view payload )
    {
-      direct()->notify( channel, payload );
+      const parameter_traits< std::string_view > channel_param( channel );
+      const parameter_traits< std::string_view > payload_param( payload );
+      constexpr Oid types[] = { static_cast< Oid >( channel_param.type< 0 >() ), static_cast< Oid >( payload_param.type< 0 >() ) };
+      const char* const values[] = { channel_param.value< 0 >(), payload_param.value< 0 >() };
+      const int lengths[] = { channel_param.length< 0 >(), payload_param.length< 0 >() };
+      constexpr int formats[] = { channel_param.format< 0 >(), payload_param.format< 0 >() };
+      (void)execute_params( result::mode_t::expect_ok, "SELECT pg_notify( $1, $2 )", 2, types, values, lengths, formats );
+   }
+
+   void connection::handle_notifications()
+   {
+      while( PGnotify* pgnotify = PQnotifies( m_pgconn.get() ) ) {
+         const notification notify( pgnotify );
+         if( m_notification_handler ) {
+            m_notification_handler( notify );
+         }
+      }
    }
 
 }  // namespace tao::pq

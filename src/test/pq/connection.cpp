@@ -6,6 +6,11 @@
 
 #include <tao/pq/connection.hpp>
 
+void handle_notification( const tao::pq::notification& n )
+{
+   std::cout << n.channel_name() << " received " << n.payload() << std::endl;
+}
+
 void run()
 {
    // overwrite the default with an environment variable if needed
@@ -117,6 +122,13 @@ void run()
    TEST_THROWS( connection->execute( "SELECT $1", "\\" ).as< tao::pq::binary >() );
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa" ).as< tao::pq::binary >() );
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa." ).as< tao::pq::binary >() );
+
+   connection->set_notification_handler( handle_notification );
+   connection->listen( "FOO" );
+   connection->notify( "FOO", "with payload" );
+   (void)connection->execute( "SELECT 42" );
+   connection->notify( "FOO" );
+   (void)connection->execute( "SELECT 42" );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)

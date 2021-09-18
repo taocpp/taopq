@@ -33,6 +33,7 @@ namespace tao::pq
          throw std::runtime_error( "PQputCopyEnd() failed: " + m_transaction->connection()->error_message() );
       }
       const auto rows_affected = result( PQgetResult( m_transaction->connection()->underlying_raw_ptr() ) ).rows_affected();
+      m_transaction->connection()->handle_notifications();
       m_transaction.reset();
       m_previous.reset();
       return rows_affected;

@@ -16,6 +16,7 @@
 #include <tao/pq/access_mode.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/isolation_level.hpp>
+#include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
 #include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
@@ -31,22 +32,23 @@ namespace tao::pq
       friend class connection_pool;
       friend class transaction;
 
-      struct deleter final
-      {
-         void operator()( PGconn* p ) const noexcept
-         {
-            PQfinish( p );
-         }
-      };
-
-      const std::unique_ptr< PGconn, deleter > m_pgconn;
+      const std::unique_ptr< PGconn, decltype( &PQfinish ) > m_pgconn;
       pq::transaction* m_current_transaction;
       std::set< std::string, std::less<> > m_prepared_statements;
+      std::function< void( const notification& ) > m_notification_handler;
 
       [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::string;
 
       static void check_prepared_name( const std::string_view name );
       [[nodiscard]] auto is_prepared( const std::string_view name ) const noexcept -> bool;
+
+      [[nodiscard]] auto execute_final( const result::mode_t mode,
+                                        const char* statement,
+                                        const int n_params,
+                                        const Oid types[],
+                                        const char* const values[],
+                                        const int lengths[],
+                                        const int formats[] ) -> result;
 
       [[nodiscard]] auto execute_params( const result::mode_t mode,
                                          const char* statement,
@@ -80,6 +82,11 @@ namespace tao::pq
 
       [[nodiscard]] auto error_message() const -> std::string;
 
+      [[nodiscard]] auto notification_handler() const -> std::function< void( const notification& ) >;
+
+      void set_notification_handler( const std::function< void( const notification& ) >& handler );
+      void reset_notification_handler() noexcept;
+
       [[nodiscard]] auto is_open() const noexcept -> bool;
 
       [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
@@ -102,6 +109,8 @@ namespace tao::pq
 
       void notify( const std::string_view channel );
       void notify( const std::string_view channel, const std::string_view payload );
+
+      void handle_notifications();
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {
