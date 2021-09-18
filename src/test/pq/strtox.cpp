@@ -1,7 +1,7 @@
 // Copyright (c) 2016-2021 Daniel Frey and Dr. Colin Hirsch
 // Please see LICENSE for license or visit https://github.com/taocpp/taopq/
 
-#ifdef WIN32
+#if defined( _WIN32 )
 auto main() -> int {}
 #else
 

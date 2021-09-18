@@ -6,7 +6,11 @@
 
 #include <tao/pq/connection.hpp>
 
+#if defined( _WIN32 )
+#include <winsock.h>
+#else
 #include <unistd.h>
+#endif
 
 std::size_t counter = 0;
 
@@ -41,7 +45,12 @@ void run()
    TEST_EXECUTE( connection->reset_notification_handler() );
    TEST_ASSERT( !connection->notification_handler() );
 
-   close( PQsocket( connection->underlying_raw_ptr() ) );  // nasty!
+#if defined( _WIN32 )
+   closesocket( PQsocket( connection->underlying_raw_ptr() ) );
+#else
+   close( PQsocket( connection->underlying_raw_ptr() ) );
+#endif
+
    TEST_THROWS( connection->get_notifications() );
 }
 
