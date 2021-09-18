@@ -193,6 +193,11 @@ namespace tao::pq
       return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ), mode );
    }
 
+   auto connection::execute_single( const internal::zsv statement ) -> result
+   {
+      return execute_params( result::mode_t::expect_ok, statement, 0, nullptr, nullptr, nullptr, nullptr );
+   }
+
    connection::connection( const private_key /*unused*/, const std::string& connection_info )
       : m_pgconn( PQconnectdb( connection_info.c_str() ), deleter() ),
         m_current_transaction( nullptr )
@@ -252,8 +257,28 @@ namespace tao::pq
       if( !connection::is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement not found: " + name );
       }
-      (void)execute_params( result::mode_t::expect_ok, ( "DEALLOCATE " + escape_identifier( name ) ).c_str(), 0, nullptr, nullptr, nullptr, nullptr );
+      (void)execute_single( "DEALLOCATE " + escape_identifier( name ) );
       m_prepared_statements.erase( name );
+   }
+
+   void connection::listen( const std::string_view channel )
+   {
+      direct()->listen( channel );
+   }
+
+   void connection::unlisten( const std::string_view channel )
+   {
+      direct()->unlisten( channel );
+   }
+
+   void connection::notify( const std::string_view channel )
+   {
+      direct()->notify( channel );
+   }
+
+   void connection::notify( const std::string_view channel, const std::string_view payload )
+   {
+      direct()->notify( channel, payload );
    }
 
 }  // namespace tao::pq

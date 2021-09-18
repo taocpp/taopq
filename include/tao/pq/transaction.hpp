@@ -112,6 +112,12 @@ namespace tao::pq
 
       void commit();
       void rollback();
+
+      void listen( const std::string_view channel );
+      void unlisten( const std::string_view channel );
+
+      void notify( const std::string_view channel );
+      void notify( const std::string_view channel, const std::string_view payload );
    };
 
    namespace internal

@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <string>
+#include <string_view>
 
 namespace tao::pq::internal
 {
@@ -25,6 +26,11 @@ namespace tao::pq::internal
       {}
 
       constexpr operator const char*() const noexcept
+      {
+         return value;
+      }
+
+      constexpr operator std::string_view() const noexcept
       {
          return value;
       }

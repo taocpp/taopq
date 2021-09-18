@@ -76,6 +76,27 @@ namespace tao::pq
          return direct()->execute( statement, std::forward< As >( as )... );
       }
 
+      // listen/notify support
+      void listen( const std::string_view channel )
+      {
+         direct()->listen( channel );
+      }
+
+      void unlisten( const std::string_view channel )
+      {
+         direct()->unlisten( channel );
+      }
+
+      void notify( const std::string_view channel )
+      {
+         direct()->notify( channel );
+      }
+
+      void notify( const std::string_view channel, const std::string_view payload )
+      {
+         direct()->notify( channel, payload );
+      }
+
       // access underlying connection pointer from libpq
       auto underlying_raw_ptr() noexcept
          -> PGconn*;
@@ -159,6 +180,10 @@ We advise to use the methods offered by taoPQ's connection type.
 You can check a connection's status by calling the `is_open()`-method.
 It return `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
 For further details, check the documentation for the underlying [`PQstatus()`](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
+
+## Notification Framework
+
+**TODO**
 
 ## Underlying Connection Pointer
 

@@ -56,6 +56,8 @@ namespace tao::pq
                                          const int lengths[],
                                          const int formats[] ) -> result;
 
+      [[nodiscard]] auto execute_single( const internal::zsv statement ) -> result;
+
       // pass-key idiom
       class private_key final
       {
@@ -94,6 +96,12 @@ namespace tao::pq
       {
          return direct()->execute( statement, std::forward< As >( as )... );
       }
+
+      void listen( const std::string_view channel );
+      void unlisten( const std::string_view channel );
+
+      void notify( const std::string_view channel );
+      void notify( const std::string_view channel, const std::string_view payload );
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {
