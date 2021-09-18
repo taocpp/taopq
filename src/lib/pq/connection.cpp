@@ -325,4 +325,12 @@ namespace tao::pq
       }
    }
 
+   void connection::get_notifications()
+   {
+      if( PQconsumeInput( m_pgconn.get() ) == 0 ) {
+         throw pq::connection_error( error_message() );
+      }
+      handle_notifications();
+   }
+
 }  // namespace tao::pq

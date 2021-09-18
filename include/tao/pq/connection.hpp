@@ -111,6 +111,7 @@ namespace tao::pq
       void notify( const std::string_view channel, const std::string_view payload );
 
       void handle_notifications();
+      void get_notifications();
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {

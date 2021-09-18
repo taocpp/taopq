@@ -105,6 +105,7 @@ namespace tao::pq
       void reset_notification_handler() noexcept;
 
       void handle_notifications();
+      void get_notifications();
 
       // access underlying connection pointer from libpq
       auto underlying_raw_ptr() noexcept

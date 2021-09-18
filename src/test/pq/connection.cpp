@@ -126,9 +126,9 @@ void run()
    connection->set_notification_handler( handle_notification );
    connection->listen( "FOO" );
    connection->notify( "FOO", "with payload" );
-   (void)connection->execute( "SELECT 42" );
+   connection->get_notifications();
    connection->notify( "FOO" );
-   (void)connection->execute( "SELECT 42" );
+   connection->get_notifications();
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
