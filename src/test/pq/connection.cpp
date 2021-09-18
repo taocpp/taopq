@@ -6,20 +6,10 @@
 
 #include <tao/pq/connection.hpp>
 
-void handle_notification( const tao::pq::notification& n )
-{
-   std::cout << n.channel_name() << " received " << n.payload() << std::endl;
-}
-
 void run()
 {
    // overwrite the default with an environment variable if needed
    const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );
-
-#ifdef __clang_analyzer__
-   // suppress false positive from clang-analyzer
-   (void)connection_string;
-#endif
 
    // connection_string must be valid
    TEST_THROWS( tao::pq::connection::create( "=" ) );
@@ -122,13 +112,6 @@ void run()
    TEST_THROWS( connection->execute( "SELECT $1", "\\" ).as< tao::pq::binary >() );
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa" ).as< tao::pq::binary >() );
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa." ).as< tao::pq::binary >() );
-
-   connection->set_notification_handler( handle_notification );
-   connection->listen( "FOO" );
-   connection->notify( "FOO", "with payload" );
-   connection->get_notifications();
-   connection->notify( "FOO" );
-   connection->get_notifications();
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
