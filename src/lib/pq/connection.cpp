@@ -202,7 +202,7 @@ namespace tao::pq
                                     const int lengths[],
                                     const int formats[] ) -> result
    {
-      const result nrv = execute_final( mode, statement, n_params, types, values, lengths, formats );
+      result nrv = execute_final( mode, statement, n_params, types, values, lengths, formats );
       handle_notifications();
       return nrv;
    }
@@ -308,12 +308,10 @@ namespace tao::pq
 
    void connection::notify( const std::string_view channel, const std::string_view payload )
    {
-      const parameter_traits< std::string_view > channel_param( channel );
-      const parameter_traits< std::string_view > payload_param( payload );
-      constexpr Oid types[] = { static_cast< Oid >( channel_param.type< 0 >() ), static_cast< Oid >( payload_param.type< 0 >() ) };
-      const char* const values[] = { channel_param.value< 0 >(), payload_param.value< 0 >() };
-      const int lengths[] = { channel_param.length< 0 >(), payload_param.length< 0 >() };
-      constexpr int formats[] = { channel_param.format< 0 >(), payload_param.format< 0 >() };
+      constexpr Oid types[] = { static_cast< Oid >( oid::text ), static_cast< Oid >( oid::text ) };
+      const char* const values[] = { channel.data(), payload.data() };
+      const int lengths[] = { static_cast< int >( channel.size() ), static_cast< int >( payload.size() ) };
+      constexpr int formats[] = { 1, 1 };
       (void)execute_params( result::mode_t::expect_ok, "SELECT pg_notify( $1, $2 )", 2, types, values, lengths, formats );
    }
 
