@@ -193,7 +193,36 @@ For further details, check the documentation for the underlying [`PQstatus()`](h
 
 ## Notification Framework
 
-**TODO**
+PostgreSQL provides a simple [interprocess communication mechanism](https://www.postgresql.org/docs/current/sql-notify.html) for a collection of applications accessing the same database.
+
+### Sending Messages
+
+You can send events with the `notify()`-method, providing a channel name and optionally a payload as the second parameter.
+The channel name is case sensitive when using taoPQ's methods.
+
+### Receiving Messages
+
+Receiving messages requires you to register a notification handler.
+Each connection has its own notification handler.
+The notification handler is managed by a `std::function< void( const tao::pq::notification& >` object.
+
+The currently active notification handler is returned by the `notification_handler()`-method.
+If no notification handler is set, the [`std::function`](https://en.cppreference.com/w/cpp/utility/functional/function) will be empty.
+
+Setting a notification handler is done by calling the `set_notification_handler()`-method.
+If you want to deregister the current notification handler, you can call the `reset_notification_handler()`-method.
+
+Once you registered a notification handler, you can subscribe to channels to receive messages using the `listen()`-method, or unsubscribe by calling the `unlisten()`-method.
+Note that subscriptions are per connection.
+
+### Asynchronous Notifications
+
+taoPQ calls the registered notification handler after successful execution by calling the `handle_notifications()`-method.
+As a user, you rarely need to call the `handle_notifications()`-method manually.
+
+When you don't have any statement to execute, you can call the `get_notifications()`-method which will actively query the server for new events.
+
+**TODO** Support event loops? How?
 
 ## Underlying Connection Pointer
 
