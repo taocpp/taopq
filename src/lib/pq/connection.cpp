@@ -287,7 +287,7 @@ namespace tao::pq
       if( !connection::is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement not found: " + name );
       }
-      (void)execute_single( "DEALLOCATE " + escape_identifier( name ) );
+      (void)connection::execute_single( "DEALLOCATE " + escape_identifier( name ) );
       m_prepared_statements.erase( name );
    }
 
