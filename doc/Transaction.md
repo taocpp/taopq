@@ -44,13 +44,6 @@ namespace tao::pq
       // finalize
       void commit();
       void rollback();
-
-      // listen/notify support
-      void listen( const std::string_view channel );
-      void unlisten( const std::string_view channel );
-
-      void notify( const std::string_view channel );
-      void notify( const std::string_view channel, const std::string_view payload );
    };
 }
 ```
@@ -108,10 +101,6 @@ Likewise, you can manually create, commit, or rollback subtransactions by execut
 
 We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our library's transaction ordering framework.
 We advise to use the methods offered by taoPQ instead of manually handling transactions.
-
-## Notification Framework
-
-**TODO**
 
 ## Accessing the Connection
 
