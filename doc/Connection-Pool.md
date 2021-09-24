@@ -62,11 +62,22 @@ Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md)
 
 A connection pool is created by calling `tao::pq::connection_pool`'s static `create()`-method.
 
+```c++
+auto tao::pq::connection_pool::create( const std::string& connection_info )
+    -> std::shared_ptr< tao::pq::connection_pool >;
+```
+
 It takes a single parameter, the [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is used when new connections are opened by the pool.
 
 ## Borrowing Connections
 
 When you need a connection, you simply call the `connection()`-method.
+
+```c++
+auto tao::pq::connection_pool::connection()
+    -> std::shared_ptr< tao::pq::connection >;
+```
+
 This will either open a new connection when the pool is empty, or it will give you a reused connection from the pool.
 As long as you retain ownership of the returned shared pointer, it is yours to work with.
 When the last remaining shared pointer is destroyed or assigned another value, the connection is returned to the pool.
@@ -82,6 +93,10 @@ The connection pool will implicitly discard connections that are in a failed sta
 
 In some environments you might need to periodically clean up the connection pool to get rid of connections that are no longer valid.
 In order to do so, just call the `erase_invalid()`-method, which will check the status of each pooled connection and discard the invalid ones.
+
+```c++
+void tao::pq::connection_pool::erase_invalid();
+```
 
 ## Thread Safety
 

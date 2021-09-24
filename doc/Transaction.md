@@ -28,10 +28,6 @@ namespace tao::pq
 
       virtual ~transaction() = default;
 
-      // access connection
-      auto connection() const noexcept
-         -> const std::shared_ptr< pq::connection >&;
-
       // create transactions
       auto subtransaction()
          -> std::shared_ptr< transaction >;
@@ -44,6 +40,10 @@ namespace tao::pq
       // finalize
       void commit();
       void rollback();
+
+      // access connection
+      auto connection() const noexcept
+         -> const std::shared_ptr< pq::connection >&;
    };
 }
 ```
@@ -57,6 +57,12 @@ In short, you create a normal transaction with the connection's `transaction()`-
 Both return a shared pointer to a `tao::pq::transaction`-derived object.
 
 From any transaction, you can create a subtransaction by calling the `subtransaction()`-method.
+
+```c++
+auto tao::pq::transaction::subtransaction()
+   -> std::shared_ptr< tao::pq::transaction >;
+```
+
 It returns just another `tao::pq::transaction`-derived object from which you may create further, nested subtransactions if needed.
 
 All transactions then offer the above, unified interface.
@@ -67,6 +73,30 @@ On all transactions you can execute SQL statements.
 If you execute a statement on a connection object directly, is creates an implicit direct transaction and forwards the execution to that temporary transaction.
 The actual statement execution, i.e. the `execute()`-method, is described in the [Statement](Statement.md) chapter.
 
+## Terminate Transaction
+
+Transaction can be terminated in one of two ways.
+
+### Commit a Transaction
+
+In order to commit a transaction you call the `commit()`-method.
+
+```c++
+void tao::pq::transaction::commit();
+```
+
+All changes made by the transaction become visible to others and are guaranteed to be durable if a crash occurs.
+
+### Abort a Transaction
+
+In order to abort a transaction you call the `rollback()`-method.
+
+```c++
+void tao::pq::transaction::rollback();
+```
+
+Rolls back the current transaction and causes all the updates made by the transaction to be discarded.
+
 ## Transaction Ordering
 
 Any transactions created via taoPQ is registered in the connection object as the currently active transaction.
@@ -74,9 +104,8 @@ At any given time, a connection can only have a single active transaction.
 If you attempt to use a transaction object in the wrong order, taoPQ will notice and throw an appropriate `std::logic_error` exception.
 
 Note that the correct order depends on the *logical* lifetime of transactions.
-The logical lifetime of a transactions ends when you explicitly call either the `commit()`- or the `rollback()`-method.
-
-If the actual object's lifetime ends, the destructor will automatically perform a call to the `rollback()`-method if the lifetime was not ended explicitly.
+The logical lifetime of a transactions ends when you explicitly call either the `commit()`- or the `rollback()`-method, or if the object's lifetime ends.
+The destructor will automatically perform a call to the `rollback()`-method if the lifetime was not ended explicitly.
 This comes in handy when exceptions are thrown and the destructor call happens due to the associated stack unwinding.
 
 ## Direct Transactions
@@ -105,5 +134,12 @@ We advise to use the methods offered by taoPQ instead of manually handling trans
 ## Accessing the Connection
 
 If you need to access the connection that a transaction is bound to, you can call the `connection()`-method.
+
+```c++
+auto tao::pq::transaction::connection() const noexcept
+   -> const std::shared_ptr< tao::pq::connection >&;
+```
+
+Note that the shared pointer will be empty if the logical lifetime of the transaction ended.
 
 Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
