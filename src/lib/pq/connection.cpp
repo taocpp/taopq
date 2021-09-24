@@ -238,14 +238,33 @@ namespace tao::pq
       return m_notification_handler;
    }
 
+   auto connection::notification_handler( const std::string_view channel ) const -> std::function< void( const char* payload ) >
+   {
+      const auto it = m_notification_handlers.find( channel );
+      if( it != m_notification_handlers.end() ) {
+         return it->second;
+      }
+      return {};
+   }
+
    void connection::set_notification_handler( const std::function< void( const notification& ) >& handler )
    {
       m_notification_handler = handler;
    }
 
+   void connection::set_notification_handler( const std::string_view channel, const std::function< void( const char* payload ) >& handler )
+   {
+      m_notification_handlers[ std::string( channel ) ] = handler;
+   }
+
    void connection::reset_notification_handler() noexcept
    {
       m_notification_handler = nullptr;
+   }
+
+   void connection::reset_notification_handler( const std::string_view channel ) noexcept
+   {
+      m_notification_handlers.erase( std::string( channel ) );
    }
 
    auto connection::is_open() const noexcept -> bool
@@ -296,6 +315,12 @@ namespace tao::pq
       (void)connection::execute_single( "LISTEN " + connection::escape_identifier( channel ) );
    }
 
+   void connection::listen( const std::string_view channel, const std::function< void( const char* payload ) >& handler )
+   {
+      connection::set_notification_handler( channel, handler );
+      connection::listen( channel );
+   }
+
    void connection::unlisten( const std::string_view channel )
    {
       (void)connection::execute_single( "UNLISTEN " + connection::escape_identifier( channel ) );
@@ -321,6 +346,10 @@ namespace tao::pq
          const notification notify( pgnotify );
          if( m_notification_handler ) {
             m_notification_handler( notify );
+         }
+         const auto it = m_notification_handlers.find( notify.channel_name() );
+         if( it != m_notification_handlers.end() ) {
+            it->second( notify.payload() );
          }
       }
    }

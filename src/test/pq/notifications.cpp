@@ -16,8 +16,16 @@ std::size_t counter = 0;
 
 void handle_notification( const tao::pq::notification& n )
 {
-   std::cout << n.channel_name() << " received " << n.payload() << std::endl;
+   std::cout << "channel '" << n.channel_name() << "' received '" << n.payload() << "'\n";
    ++counter;
+}
+
+std::size_t foo_counter = 0;
+
+void handle_foo_notification( const char* payload )
+{
+   std::cout << "foo handler received '" << payload << "'\n";
+   ++foo_counter;
 }
 
 void run()
@@ -27,14 +35,18 @@ void run()
    const auto connection = tao::pq::connection::create( connection_string );
 
    TEST_EXECUTE( connection->set_notification_handler( handle_notification ) );
-   TEST_EXECUTE( connection->listen( "FOO" ) );
+   TEST_EXECUTE( connection->listen( "FOO", handle_foo_notification ) );
    TEST_ASSERT( counter == 0 );
+   TEST_ASSERT( foo_counter == 0 );
 
    TEST_EXECUTE( connection->notify( "FOO" ) );
    TEST_ASSERT( counter == 1 );
+   TEST_ASSERT( foo_counter == 1 );
 
+   TEST_EXECUTE( connection->reset_notification_handler( "FOO" ) );
    TEST_EXECUTE( connection->notify( "FOO", "with payload" ) );
    TEST_ASSERT( counter == 2 );
+   TEST_ASSERT( foo_counter == 1 );
 
    TEST_EXECUTE( connection->unlisten( "FOO" ) );
    TEST_EXECUTE( connection->notify( "FOO" ) );

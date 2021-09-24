@@ -78,31 +78,25 @@ namespace tao::pq
       }
 
       // listen/notify support
-      void listen( const std::string_view channel )
-      {
-         direct()->listen( channel );
-      }
+      void listen( const std::string_view channel );
+      void listen( const std::string_view channel, const std::function< void( const char* ) >& handler );
 
-      void unlisten( const std::string_view channel )
-      {
-         direct()->unlisten( channel );
-      }
+      void unlisten( const std::string_view channel );
 
-      void notify( const std::string_view channel )
-      {
-         direct()->notify( channel );
-      }
-
-      void notify( const std::string_view channel, const std::string_view payload )
-      {
-         direct()->notify( channel, payload );
-      }
+      void notify( const std::string_view channel );
+      void notify( const std::string_view channel, const std::string_view payload );
 
       auto notification_handler()
          -> std::function< void( const notification& ) >;
 
-      void set_notification_handler( const std::function< void( const notification& ) >& );
+      void set_notification_handler( const std::function< void( const notification& ) >& handler );
       void reset_notification_handler() noexcept;
+
+      auto notification_handler( const std::string_view channel )
+         -> std::function< void( const char* ) >;
+
+      void set_notification_handler( const std::string_view channel, const std::function< void( const char* ) >& handler );
+      void reset_notification_handler( const std::string_view channel ) noexcept;
 
       void handle_notifications();
       void get_notifications();
@@ -214,6 +208,13 @@ If you want to deregister the current notification handler, you can call the `re
 
 Once you registered a notification handler, you can subscribe to channels to receive messages using the `listen()`-method, or unsubscribe by calling the `unlisten()`-method.
 Note that subscriptions are per connection.
+
+### Per Channel Handlers
+
+Besides the above general notification handler, there is also the option to register a per channel handler.
+Per channel handlers only receive the payload as a parameter.
+
+When you subscribe to a channel with the `listen()`-method, you can optionally register a channel handler.
 
 ### Asynchronous Notifications
 

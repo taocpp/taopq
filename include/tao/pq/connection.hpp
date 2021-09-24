@@ -5,6 +5,7 @@
 #define TAO_PQ_CONNECTION_HPP
 
 #include <functional>
+#include <map>
 #include <memory>
 #include <set>
 #include <string>
@@ -36,6 +37,7 @@ namespace tao::pq
       pq::transaction* m_current_transaction;
       std::set< std::string, std::less<> > m_prepared_statements;
       std::function< void( const notification& ) > m_notification_handler;
+      std::map< std::string, std::function< void( const char* ) >, std::less<> > m_notification_handlers;
 
       [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::string;
 
@@ -83,9 +85,13 @@ namespace tao::pq
       [[nodiscard]] auto error_message() const -> std::string;
 
       [[nodiscard]] auto notification_handler() const -> std::function< void( const notification& ) >;
+      [[nodiscard]] auto notification_handler( const std::string_view channel ) const -> std::function< void( const char* payload ) >;
 
       void set_notification_handler( const std::function< void( const notification& ) >& handler );
+      void set_notification_handler( const std::string_view channel, const std::function< void( const char* payload ) >& handler );
+
       void reset_notification_handler() noexcept;
+      void reset_notification_handler( const std::string_view channel ) noexcept;
 
       [[nodiscard]] auto is_open() const noexcept -> bool;
 
@@ -105,6 +111,7 @@ namespace tao::pq
       }
 
       void listen( const std::string_view channel );
+      void listen( const std::string_view channel, const std::function< void( const char* payload ) >& handler );
       void unlisten( const std::string_view channel );
 
       void notify( const std::string_view channel );
