@@ -43,7 +43,11 @@ void run()
    TEST_ASSERT( counter == 1 );
    TEST_ASSERT( foo_counter == 1 );
 
+   TEST_ASSERT( connection->notification_handler( "FOO" ) );
+   TEST_ASSERT( !connection->notification_handler( "BAR" ) );
    TEST_EXECUTE( connection->reset_notification_handler( "FOO" ) );
+   TEST_ASSERT( !connection->notification_handler( "FOO" ) );
+
    TEST_EXECUTE( connection->notify( "FOO", "with payload" ) );
    TEST_ASSERT( counter == 2 );
    TEST_ASSERT( foo_counter == 1 );
