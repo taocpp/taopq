@@ -121,6 +121,10 @@ In generic code you might receive a transaction from somewhere else and you migh
 
 In case you need to know whether a given transaction object is a direct transaction or not, you can call the `is_direct()`-method.
 
+```c++
+bool tao::pq::transaction::is_direct() const noexcept;
+```
+
 Note that opening a subtransaction from a direct connection is possible and simply starts a normal transaction on the connection object.
 
 ## Manual Transaction Handling
