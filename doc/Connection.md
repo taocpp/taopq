@@ -32,7 +32,7 @@ namespace tao::pq
    class notification final
    {
    public:
-      auto channel_name() const noexcept -> const char*;
+      auto channel() const noexcept -> const char*;
       auto payload() const noexcept -> const char*;
 
       auto underlying_raw_ptr() noexcept -> PGnotify*;
