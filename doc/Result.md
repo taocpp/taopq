@@ -40,61 +40,41 @@ namespace tao::pq
    public:
       // non-query result access
       bool has_rows_affected() const noexcept;
-      auto rows_affected() const
-         -> std::size_t;
+      auto rows_affected() const -> std::size_t;
 
       // information about the returned fields
-      auto columns() const noexcept
-         -> std::size_t;
+      auto columns() const noexcept -> std::size_t;
 
-      auto name( const std::size_t column ) const
-         -> std::string;
-
-      auto index( const internal::zsv in_name ) const
-         -> std::size_t;
+      auto name( const std::size_t column ) const -> std::string;
+      auto index( const internal::zsv in_name ) const -> std::size_t;
 
       // size of the result set
       bool empty() const;
-
-      auto size() const
-         -> std::size_t;
+      auto size() const -> std::size_t;
 
       // iteration
-      auto begin() const
-         -> const_iterator;
+      auto begin() const -> const_iterator;
+      auto end() const -> const_iterator;
 
-      auto end() const
-         -> const_iterator;
-
-      auto cbegin() const
-         -> const_iterator;
-
-      auto cend() const
-         -> const_iterator;
+      auto cbegin() const -> const_iterator;
+      auto cend() const -> const_iterator;
 
       // get basic information about a field
       bool is_null( const std::size_t row, const std::size_t column ) const;
-
-      auto get( const std::size_t row, const std::size_t column ) const
-         -> const char*;
+      auto get( const std::size_t row, const std::size_t column ) const -> const char*;
 
       // access rows
-      auto operator[]( const std::size_t row ) const noexcept
-         -> pq::row;
-
-      auto at( const std::size_t row ) const
-         -> pq::row;
+      auto operator[]( const std::size_t row ) const noexcept -> pq::row;
+      auto at( const std::size_t row ) const -> pq::row;
 
       // convenience conversions for whole result sets
 
       // expects size()==1, converts the only row to T
       template< typename T >
-      auto as() const
-         -> T;
+      auto as() const -> T;
 
       template< typename T >
-      auto optional() const
-         -> std::optional< T >;
+      auto optional() const -> std::optional< T >;
 
       // convenience conversions to pair/tuple
       template< typename T, typename U >
@@ -111,8 +91,7 @@ namespace tao::pq
 
       // convert each row into T::value_type and add to a container of type T
       template< typename T >
-      auto as_container() const
-         -> T;
+      auto as_container() const -> T;
 
       // convenience conversions to standard containers
       template< typename... Ts >
@@ -176,11 +155,8 @@ namespace tao::pq
       }
 
       // access underlying result pointer from libpq
-      auto underlying_raw_ptr() noexcept
-         -> PGresult*;
-
-      auto underlying_raw_ptr() const noexcept
-         -> const PGresult*;
+      auto underlying_raw_ptr() noexcept -> PGresult*;
+      auto underlying_raw_ptr() const noexcept -> const PGresult*;
    };
 
    class row
@@ -191,39 +167,25 @@ namespace tao::pq
       class const_iterator;
 
    public:
-      auto slice( const std::size_t offset, const std::size_t in_columns ) const
-         -> row;
+      auto slice( const std::size_t offset, const std::size_t in_columns ) const -> row;
 
-      auto columns() const noexcept
-         -> std::size_t;
+      auto columns() const noexcept -> std::size_t;
 
-      auto name( const std::size_t column ) const
-         -> std::string;
-
-      auto index( const internal::zsv in_name ) const
-         -> std::size_t;
+      auto name( const std::size_t column ) const -> std::string;
+      auto index( const internal::zsv in_name ) const -> std::size_t;
 
       // iteration
-      auto begin() const
-         -> const_iterator;
+      auto begin() const -> const_iterator;
+      auto end() const -> const_iterator;
 
-      auto end() const
-         -> const_iterator;
-
-      auto cbegin() const
-         -> const_iterator;
-
-      auto cend() const
-         -> const_iterator;
+      auto cbegin() const -> const_iterator;
+      auto cend() const -> const_iterator;
 
       bool is_null( const std::size_t column ) const;
-
-      auto get( const std::size_t column ) const
-         -> const char*;
+      auto get( const std::size_t column ) const -> const char*;
 
       template< typename T >
-      auto get( const std::size_t column ) const
-         -> T;
+      auto get( const std::size_t column ) const -> T;
 
       template< typename T >
       auto optional( const std::size_t column ) const
@@ -232,8 +194,7 @@ namespace tao::pq
       }
 
       template< typename T >
-      auto as() const
-         -> T;
+      auto as() const -> T;
 
       template< typename T >
       auto optional() const
@@ -253,32 +214,23 @@ namespace tao::pq
          return as< std::tuple< Ts... > >();
       }
 
-      auto at( const std::size_t column ) const
-         -> field;
+      auto at( const std::size_t column ) const -> field;
+      auto operator[]( const std::size_t column ) const noexcept -> field;
 
-      auto operator[]( const std::size_t column ) const noexcept
-         -> field;
-
-      auto at( const internal::zsv in_name ) const
-         -> field;
-
-      auto operator[]( const internal::zsv in_name ) const
-         -> field;
+      auto at( const internal::zsv in_name ) const -> field;
+      auto operator[]( const internal::zsv in_name ) const -> field;
 
       friend void swap( row& lhs, row& rhs ) noexcept;
    };
 
    class field
    {
-      auto name() const
-         -> std::string;
-
-      auto index() const
-         -> std::size_t;
+   public:
+      auto name() const -> std::string;
+      auto index() const -> std::size_t;
 
       bool is_null() const;
-      auto get() const
-         -> const char*;
+      auto get() const -> const char*;
 
       template< typename T >
       auto as() const noexcept

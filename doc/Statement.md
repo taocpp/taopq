@@ -12,8 +12,7 @@ The synopsis of the execute methods of those types (`Type` being `tao::pq::trans
 
 ```c++
 template< typename... As >
-auto Type::execute( const tao::pq::internal::zsv statement, As&&... as )
-   -> tao::pq::result;
+auto Type::execute( const tao::pq::internal::zsv statement, As&&... as ) -> tao::pq::result;
 ```
 
 For the purpose of this chapter, it makes no difference which `Type` is used.

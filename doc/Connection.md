@@ -31,15 +31,12 @@ namespace tao::pq
 
    class notification final
    {
-      auto channel_name() const noexcept
-         -> const char*
-      auto payload() const noexcept
-         -> const char*
+   public:
+      auto channel_name() const noexcept -> const char*
+      auto payload() const noexcept -> const char*
 
-      auto underlying_raw_ptr() noexcept
-         -> PGnotify*
-      auto underlying_raw_ptr() const noexcept
-         -> const PGnotify*
+      auto underlying_raw_ptr() noexcept -> PGnotify*
+      auto underlying_raw_ptr() const noexcept -> const PGnotify*
    };
 
    class transaction;
@@ -114,15 +111,11 @@ namespace tao::pq
       void get_notifications();
 
       // access underlying connection pointer from libpq
-      auto underlying_raw_ptr() noexcept
-         -> PGconn*;
-
-      auto underlying_raw_ptr() const noexcept
-         -> const PGconn*;
+      auto underlying_raw_ptr() noexcept -> PGconn*;
+      auto underlying_raw_ptr() const noexcept -> const PGconn*;
 
       // error message
-      auto error_message() const
-         -> std::string;
+      auto error_message() const -> std::string;
    };
 }
 ```
@@ -335,11 +328,8 @@ void tao::pq::connection::get_notifications();
 If you need to access the underlying raw connection pointer from `libpq`, you can call the `underlying_raw_ptr()`-method.
 
 ```c++
-auto tao::pq::connection::underlying_raw_ptr() noexcept
-   -> PGconn*;
-
-auto tao::pq::connection::underlying_raw_ptr() const noexcept
-   -> const PGconn*;
+auto tao::pq::connection::underlying_raw_ptr() noexcept -> PGconn*;
+auto tao::pq::connection::underlying_raw_ptr() const noexcept -> const PGconn*;
 ```
 
 ## Error Messages
@@ -347,8 +337,7 @@ auto tao::pq::connection::underlying_raw_ptr() const noexcept
 You can retrieve the last error message (if applicable) by calling the `error_message()`-method.
 
 ```c++
-auto tao::pq::connection::error_message() const
-   -> std::string;
+auto tao::pq::connection::error_message() const -> std::string;
 ```
 
 When taoPQ throws an exception this is usually done internally and the message is part of the exception's `what()` message.
