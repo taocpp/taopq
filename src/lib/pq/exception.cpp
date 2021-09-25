@@ -25,6 +25,9 @@ namespace tao::pq
          switch( sql_state[ 0 ] ) {
             case '0':
                switch( sql_state[ 1 ] ) {
+                  case '0':
+                     throw success( error_message, sql_state );
+
                   case '1':
                      if( sql_state == "01003" ) {
                         throw null_value_eliminated_in_set_function( error_message, sql_state );

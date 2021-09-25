@@ -47,6 +47,12 @@ namespace tao::pq
       sql_error( const char* what, const std::string_view in_sqlstate );
    };
 
+   struct success  // 00xxx
+      : sql_error
+   {
+      using sql_error::sql_error;
+   };
+
    struct warning  // 01xxx
       : sql_error
    {
