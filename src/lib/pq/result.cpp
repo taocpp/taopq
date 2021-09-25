@@ -61,14 +61,14 @@ namespace tao::pq
             break;
 
          case PGRES_EMPTY_QUERY:
-            throw std::runtime_error( "empty query" );
+            throw pq::runtime_error( "empty query" );
 
          default:
             internal::throw_sqlstate( pgresult );
       }
 
       const std::string res_status = PQresStatus( status );
-      throw std::runtime_error( "unexpected result: " + res_status );
+      throw pq::runtime_error( "unexpected result: " + res_status );
    }
 
    auto result::has_rows_affected() const noexcept -> bool
