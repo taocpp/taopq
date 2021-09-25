@@ -27,7 +27,7 @@ namespace tao::pq
       }
 
    public:
-      [[nodiscard]] auto channel_name() const noexcept -> const char*
+      [[nodiscard]] auto channel() const noexcept -> const char*
       {
          return m_pgnotify->relname;
       }

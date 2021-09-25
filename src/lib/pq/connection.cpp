@@ -347,7 +347,7 @@ namespace tao::pq
          if( m_notification_handler ) {
             m_notification_handler( notify );
          }
-         const auto it = m_notification_handlers.find( notify.channel_name() );
+         const auto it = m_notification_handlers.find( notify.channel() );
          if( it != m_notification_handlers.end() ) {
             it->second( notify.payload() );
          }

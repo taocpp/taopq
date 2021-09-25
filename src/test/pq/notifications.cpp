@@ -16,7 +16,7 @@ std::size_t counter = 0;
 
 void handle_notification( const tao::pq::notification& n )
 {
-   std::cout << "channel '" << n.channel_name() << "' received '" << n.payload() << "'\n";
+   std::cout << "channel '" << n.channel() << "' received '" << n.payload() << "'\n";
    ++counter;
 }
 
