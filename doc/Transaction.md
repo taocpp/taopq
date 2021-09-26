@@ -146,4 +146,12 @@ auto tao::pq::transaction::connection() const noexcept
 
 Note that the shared pointer will be empty if the logical lifetime of the transaction ended.
 
-Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
+---
+
+<small>
+This document is part of [taoPQ](https://github.com/taocpp/taopq).
+
+Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch<br>
+Distributed under the Boost Software License, Version 1.0<br>
+See accompanying file [LICENSE_1_0.txt](https://github.com/taocpp/taopq/LICENSE_1_0.txt) or copy at https://www.boost.org/LICENSE_1_0.txt
+</small>
