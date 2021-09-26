@@ -121,4 +121,10 @@ Besides basic types like strings or integers, you can also use more complex type
 You can even register your own data types to generate one or more parameters from them.
 The [Parameter Type Conversion](Parameter-Type-Conversion.md) chapter explains which data types are supported out-of-the-box, and how you can register your own custom data types.
 
-Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
+---
+
+This document is part of [taoPQ](https://github.com/taocpp/taopq).
+
+Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch<br>
+Distributed under the Boost Software License, Version 1.0<br>
+See accompanying file [LICENSE_1_0.txt](../LICENSE_1_0.txt) or copy at https://www.boost.org/LICENSE_1_0.txt

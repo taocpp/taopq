@@ -106,4 +106,10 @@ You can also call the `erase_invalid()`-method at any time.
 Internally, the connection pool uses a [mutex](https://en.cppreference.com/w/cpp/thread/mutex) to serialize the above operations.
 We minimized the work in the [critical sections](https://en.wikipedia.org/wiki/Critical_section) as far as possible.
 
-Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch
+---
+
+This document is part of [taoPQ](https://github.com/taocpp/taopq).
+
+Copyright (c) 2021 Daniel Frey and Dr. Colin Hirsch<br>
+Distributed under the Boost Software License, Version 1.0<br>
+See accompanying file [LICENSE_1_0.txt](../LICENSE_1_0.txt) or copy at https://www.boost.org/LICENSE_1_0.txt
