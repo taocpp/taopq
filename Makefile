@@ -1,6 +1,8 @@
 # The Art of C++
+
 # Copyright (c) 2016-2021 Daniel Frey
-# Please see LICENSE for license or visit https://github.com/taocpp/taopq
+# Distributed under the Boost Software License, Version 1.0.
+# (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 .SUFFIXES:
 .SECONDARY:
