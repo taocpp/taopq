@@ -90,7 +90,7 @@ taoPQ is part of [The Art of C++](https://taocpp.github.io/).
 Copyright (c) 2016-2021 Daniel Frey and Dr. Colin Hirsch
 
 taoPQ is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
-It is distributed under the terms of the [Boost Software License, Version 1.0](https://www.boost.org/LICENSE_1_0.txt) reproduced here.
+It is [licensed](https://pdimov.github.io/blog/2020/09/06/why-use-the-boost-license/) under the terms of the [Boost Software License, Version 1.0](https://www.boost.org/LICENSE_1_0.txt) reproduced here.
 
 > Boost Software License - Version 1.0 - August 17th, 2003
 >
