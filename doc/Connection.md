@@ -1,7 +1,7 @@
 # Connection
 
 All communication with a database server is handled through a connection, represented by the `tao::pq::connection` type in taoPQ.
-A connection object takes care of [error handling](Error-Handling.md), tracking [transactions](Transaction.md), and it has its own set of [prepared statements](Prepared-Statements.md).
+A connection object takes care of tracking [transactions](Transaction.md), [error handling](Error-Handling.md), and it has its own set of prepared statements.
 
 ## Synopsis
 
@@ -186,7 +186,7 @@ You can [execute statements](Statement.md) on a connection object directly, whic
 
 ## Prepared Statements
 
-[Prepared statements](Prepared-Statements.md) only last for the duration of a connection, and are bound to a connection, i.e. the set of prepared statements is independent for each connection.
+Prepared statements only last for the duration of a connection, and are bound to a connection, i.e. the set of prepared statements is independent for each connection.
 
 You can [prepare](https://www.postgresql.org/docs/current/sql-prepare.html) a statement by calling the `prepare()`-method.
 
