@@ -13,18 +13,6 @@
 
 namespace tao::pq
 {
-   struct runtime_error
-      : std::runtime_error
-   {
-      using std::runtime_error::runtime_error;
-   };
-
-   struct connection_error
-      : runtime_error
-   {
-      using runtime_error::runtime_error;
-   };
-
    // when a condition name from PostgreSQL is ambiguous,
    // we qualify the error class via a template parameter
    template< typename >
@@ -41,7 +29,7 @@ namespace tao::pq
 
    // https://www.postgresql.org/docs/current/errcodes-appendix.html
    struct sql_error
-      : runtime_error
+      : std::runtime_error
    {
       std::string sqlstate;
 
@@ -121,46 +109,46 @@ namespace tao::pq
       using sql_error::sql_error;
    };
 
-   struct broken_connection  // 08xxx
+   struct connection_error  // 08xxx
       : sql_error
    {
       using sql_error::sql_error;
    };
 
    struct sqlclient_unable_to_establish_sqlconnection  // 08001
-      : broken_connection
+      : connection_error
    {
-      using broken_connection::broken_connection;
+      using connection_error::connection_error;
    };
 
    struct connection_does_not_exist  // 08003
-      : broken_connection
+      : connection_error
    {
-      using broken_connection::broken_connection;
+      using connection_error::connection_error;
    };
 
    struct sqlserver_rejected_establishment_of_sqlconnection  // 08004
-      : broken_connection
+      : connection_error
    {
-      using broken_connection::broken_connection;
+      using connection_error::connection_error;
    };
 
    struct connection_failure  // 08006
-      : broken_connection
+      : connection_error
    {
-      using broken_connection::broken_connection;
+      using connection_error::connection_error;
    };
 
    struct transaction_resolution_unknown  // 08007
-      : broken_connection
+      : connection_error
    {
-      using broken_connection::broken_connection;
+      using connection_error::connection_error;
    };
 
    struct protocol_violation  // 08P01
-      : broken_connection
+      : connection_error
    {
-      using broken_connection::broken_connection;
+      using connection_error::connection_error;
    };
 
    struct triggered_action_exception  // 09xxx

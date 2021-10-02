@@ -164,7 +164,7 @@ namespace tao::pq
    {
       const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
       if( !buffer ) {
-         throw std::invalid_argument( error_message() );  // LCOV_EXCL_LINE
+         throw std::invalid_argument( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
       }
       return buffer.get();
    }
@@ -220,7 +220,7 @@ namespace tao::pq
       if( !is_open() ) {
          // note that we can not access the sqlstate after PQconnectdb(),
          // see https://stackoverflow.com/q/23349086/2073257
-         throw pq::connection_error( error_message() );
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
       }
    }
 
@@ -358,7 +358,7 @@ namespace tao::pq
    void connection::get_notifications()
    {
       if( PQconsumeInput( m_pgconn.get() ) == 0 ) {
-         throw pq::connection_error( error_message() );
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
       }
       handle_notifications();
    }

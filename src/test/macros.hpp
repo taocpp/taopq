@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <tao/pq/exception.hpp>
 #include <tao/pq/internal/demangle.hpp>
 
 #define STRINGIFY_INTERNAL( ... ) #__VA_ARGS__
@@ -41,6 +42,10 @@
       try {                                                                                   \
          __VA_ARGS__;                                                                         \
          TEST_FAILED;                                                                         \
+      } catch( const tao::pq::sql_error& e ) {                                                \
+         std::cout << "TEST caught [ " << tao::pq::internal::demangle( typeid( e ) ) << " ] " \
+                   << "with SQLSTATE [ " << e.sqlstate << " ] "                               \
+                   << "and [ " << e.what() << " ] in [ " FILE_AND_LINE " ]" << std::endl;     \
       } catch( const std::exception& e ) {                                                    \
          std::cout << "TEST caught [ " << tao::pq::internal::demangle( typeid( e ) ) << " ] " \
                    << "with [ " << e.what() << " ] in [ " FILE_AND_LINE " ]" << std::endl;    \

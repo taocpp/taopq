@@ -7,7 +7,7 @@
 namespace tao::pq
 {
    sql_error::sql_error( const char* what, const std::string_view in_sqlstate )
-      : runtime_error( what ),
+      : std::runtime_error( what ),
         sqlstate( in_sqlstate )
    {}
 
@@ -81,7 +81,7 @@ namespace tao::pq
                      if( sql_state == "08P01" ) {
                         throw protocol_violation( error_message, sql_state );
                      }
-                     throw broken_connection( error_message, sql_state );
+                     throw connection_error( error_message, sql_state );
 
                   case '9':
                      throw triggered_action_exception( error_message, sql_state );
