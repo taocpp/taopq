@@ -154,8 +154,8 @@ The first three methods write a chunk of data starting at `data` that is `size` 
 
 The fourth method expects a zero-terminated string, which will be written to the large object.
 
-The fifth method template forwards its arguments to a call to [`tao::pq::to_binary()`](Binary-Data.md), then writes the binary data to the large object.
-This allows all data types that are accepted by `tao::pq::to_binary()` to be written seamlessly into large objects.
+The fifth method template forwards its arguments to a call to [`tao::pq::to_binary_view()`](Binary-Data.md), then writes the binary data to the large object.
+This allows all data types that are accepted by `tao::pq::to_binary_view()` to be written seamlessly into large objects.
 
 If an error occurs an exception will be thrown.
 
