@@ -8,7 +8,7 @@ Large Objects in taoPQ have their own representation discussed in the [Large Obj
 
 In PostgreSQL strings are a sequence of bytes that is valid in a given encoding.
 One or more bytes can represent individual characters or code points.
-This means that not all sequences of bytes are a valid string and can therefore not be generally represented by PostgreSQL as a string.
+This means that not all sequences of bytes are a valid string and therefore binary data can generally not be represented by PostgreSQL as a string.
 
 Binary data is different from strings, as binary data is a collection of an arbitrary sequence of bytes.
 Any byte is treated independently of its surrounding bytes and can have any value, including '\0'.
@@ -25,7 +25,7 @@ Other types are supported as well, specifically `std::basic_string<unsigned char
 ## Passing Binary Data
 
 When you pass binary data to taoPQ, we only require a view to be passed.
-As a view is a non-owning data type, constructing as instance of it is cheap.
+As a view is a non-owning data type, constructing an instance of it is cheap.
 
 If you have other data types like `std::vector<std::byte>` or `std::span<std::byte>` (C++20), you can create a binary data view by using
 
@@ -40,11 +40,11 @@ auto tao::pq::to_binary_view( const T& data ) noexcept
 }
 ```
 
-Note that you can only create binary view for contiguous chunks of memory.
-We do not offer any convenience methods to create binary data from distributed data structures, i.e. `std::list<std::byte>` is not supported.
-
 The former function requires (and checks) that `T` has a size of 1 byte.
 If you want to store larger `T`s as binary data you need to manually convert the pointer and size appropriately.
+
+The second method requires the data type `T` to be a suitable candidate for [`std::data()`➚](https://en.cppreference.com/w/cpp/iterator/data) and [`std::size()`➚](https://en.cppreference.com/w/cpp/iterator/size), which requires the data to be stored in a contiguous block of memory.
+We do not offer any convenience methods to create binary data from distributed data structures, i.e. `std::list<std::byte>` is not supported.
 
 ## Receiving Binary Data
 
