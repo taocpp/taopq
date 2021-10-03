@@ -22,9 +22,9 @@ namespace tao::pq
    }
 
    template< typename T >
-   [[nodiscard]] auto to_binary_view( const T& data ) noexcept -> binary_view
+   [[nodiscard]] auto to_binary_view( const T& value ) noexcept -> binary_view
    {
-      return pq::to_binary_view( std::data( data ), std::size( data ) );
+      return pq::to_binary_view( std::data( value ), std::size( value ) );
    }
 
    template< typename T >
@@ -35,9 +35,9 @@ namespace tao::pq
    }
 
    template< typename T >
-   [[nodiscard]] auto to_binary( const T& data ) -> binary
+   [[nodiscard]] auto to_binary( const T& value ) -> binary
    {
-      return pq::to_binary( std::data( data ), std::size( data ) );
+      return pq::to_binary( std::data( value ), std::size( value ) );
    }
 
 }  // namespace tao::pq
