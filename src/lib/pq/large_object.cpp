@@ -126,16 +126,18 @@ namespace tao::pq
       }
    }
 
-   void large_object::seek( const std::int64_t offset, const std::ios_base::seekdir whence )
+   auto large_object::seek( const std::int64_t offset, const std::ios_base::seekdir whence ) -> std::int64_t
    {
       static_assert( std::ios_base::beg == SEEK_SET );
       static_assert( std::ios_base::cur == SEEK_CUR );
       static_assert( std::ios_base::end == SEEK_END );
 
       assert( m_transaction );
-      if( lo_lseek64( m_transaction->connection()->underlying_raw_ptr(), m_fd, offset, whence ) == -1 ) {
-         throw std::runtime_error( "tao::pq::large_object::resize() failed: " + m_transaction->connection()->error_message() );
+      const auto result = lo_lseek64( m_transaction->connection()->underlying_raw_ptr(), m_fd, offset, whence );
+      if( result == -1 ) {
+         throw std::runtime_error( "tao::pq::large_object::seek() failed: " + m_transaction->connection()->error_message() );
       }
+      return result;
    }
 
    auto large_object::tell() const -> std::int64_t

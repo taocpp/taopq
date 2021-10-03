@@ -83,7 +83,7 @@ namespace tao::pq
 
       void resize( const std::int64_t size );
 
-      void seek( const std::int64_t offset, const std::ios_base::seekdir whence );
+      auto seek( const std::int64_t offset, const std::ios_base::seekdir whence ) -> std::int64_t;
       [[nodiscard]] auto tell() const -> std::int64_t;
    };
 

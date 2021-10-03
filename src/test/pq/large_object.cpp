@@ -48,13 +48,13 @@ void run()
       lo = std::move( lo2 );
       TEST_ASSERT( lo.tell() == 0 );
       lo.resize( 42 );
-      lo.seek( 20, std::ios_base::beg );
+      TEST_ASSERT( lo.seek( 20, std::ios_base::beg ) == 20 );
       TEST_ASSERT( lo.tell() == 20 );
-      lo.seek( -20, std::ios_base::end );
+      TEST_ASSERT( lo.seek( -20, std::ios_base::end ) == 22 );
       TEST_ASSERT( lo.tell() == 22 );
-      lo.seek( 5, std::ios_base::cur );
+      TEST_ASSERT( lo.seek( 5, std::ios_base::cur ) == 27 );
       TEST_ASSERT( lo.tell() == 27 );
-      lo.seek( -7, std::ios_base::cur );
+      TEST_ASSERT( lo.seek( -7, std::ios_base::cur ) == 20 );
       TEST_ASSERT( lo.tell() == 20 );
       TEST_THROWS( lo.seek( -60, std::ios_base::end ) );
    }
