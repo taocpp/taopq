@@ -1,6 +1,6 @@
 # Getting Started
 
-Before we start with taoPQ, we'd like to point you to the excellent [PostgreSQL documentation](https://www.postgresql.org/docs/current/index.html).
+Before we start with taoPQ, we'd like to point you to the excellent [PostgreSQL documentation➚](https://www.postgresql.org/docs/current/index.html).
 We will assume that you are familiar with PostgreSQL and SQL in general, so we will *not* explain what a certain SQL statement does in the database.
 
 Getting started with taoPQ is really simple, a minimalistic program looks as follows:
@@ -23,7 +23,7 @@ int main()
 Let's go through the above code and explain some basic principles, slowly expanding our knowledge of taoPQ.
 
 Starting with `tao::pq::connection::create("dbname=template1")`, we can see that the `tao::pq::connection` class has a static `create()`-method.
-You provide a single parameter, the [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), and the method then returns a `std::shared_ptr<tao::pq::connection>` that holds the connection object it opened.
+You provide a single parameter, the [connection string➚](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), and the method then returns a `std::shared_ptr<tao::pq::connection>` that holds the connection object it opened.
 The reason why connections (and several other objects in taoPQ) are handled via smart pointers will be explained later.
 Note that you can use `auto` as shown above to simplify your code.
 
@@ -53,12 +53,12 @@ The following chapters are good next steps to get to know taoPQ:
 * The [Error Handling](Error-Handling.md) chapter gives some general hints as to how we manage error scenarios and how those are communicated to the application.
 * The [Parameter Type Conversion](Parameter-Type-Conversion.md) chapter explains what C++ data types can be used as parameters when executing SQL statements, how NULL values are mapped to C++ data types, and how you can extend the supported types by registering your own types.
 * The [Result Type Conversion](Result-Type-Conversion.md) chapter explains what C++ data types can be extracted from results, how you can extend the supported types by registering your own types, and how to use `tao::pq::result`'s API elegantly and efficiently.
-* The [Binary Data](Binary-Data.md) chapter explains the support for PostgreSQL's [`BYTEA`](https://www.postgresql.org/docs/current/datatype-binary.html) data type in taoPQ and some design decisions regarding the C++ interface.
-* The [Arrays](Arrays.md) chapter explains the support for PostgreSQL's [`ARRAY`](https://www.postgresql.org/docs/current/arrays.html) data types in taoPQ and some design decisions regarding the C++ interface.
+* The [Binary Data](Binary-Data.md) chapter explains the support for PostgreSQL's [`BYTEA`➚](https://www.postgresql.org/docs/current/datatype-binary.html) data type in taoPQ and some design decisions regarding the C++ interface.
+* The [Arrays](Arrays.md) chapter explains the support for PostgreSQL's [`ARRAY`➚](https://www.postgresql.org/docs/current/arrays.html) data types in taoPQ and some design decisions regarding the C++ interface.
 
 * The [Connection Pool](Connection-Pool.md) chapter explains how a connection pool might help your application, especially when you use multi-threading. Our connection pool offers some novel features that ease the handling of borrowed connections significantly.
-* The [Bulk Transfer](Bulk-Transfer.md) chapter explains how we support high-speed [bulk data transfer](https://www.postgresql.org/docs/current/sql-copy.html) to or from the server.
-* The [Large Object](Large-Object.md) chapter provides access to PostgreSQL's [large object](https://www.postgresql.org/docs/current/largeobjects.html) facility.
+* The [Bulk Transfer](Bulk-Transfer.md) chapter explains how we support high-speed [bulk data transfer➚](https://www.postgresql.org/docs/current/sql-copy.html) to or from the server.
+* The [Large Object](Large-Object.md) chapter provides access to PostgreSQL's [large object➚](https://www.postgresql.org/docs/current/largeobjects.html) facility.
 * The [Performance](Performance.md) chapter gives hints on how to improve your application's performance, as well as explaining some gotchas you might encounter when using taoPQ.
 
 ---

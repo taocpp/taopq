@@ -18,7 +18,7 @@ The exception's `what()`-method will return the error message returned from the 
 
 ## SQLSTATE
 
-Depending on the [SQLSTATE](https://en.wikipedia.org/wiki/SQLSTATE) returned from the server as documented in [Appendix A](https://www.postgresql.org/docs/current/errcodes-appendix.html) of the PostgreSQL documentation, we throw an accordingly named exception class.
+Depending on the [SQLSTATE➚](https://en.wikipedia.org/wiki/SQLSTATE) returned from the server as documented in [Appendix A➚](https://www.postgresql.org/docs/current/errcodes-appendix.html) of the PostgreSQL documentation, we throw an accordingly named exception class.
 
 ### Class of Error
 
@@ -30,7 +30,7 @@ As an example, if the class is "02" ("no data"), the exception class that is thr
 
 ### Specific Error Conditions
 
-If a specific error condition is recognized, an exception named after [Appendix A](https://www.postgresql.org/docs/current/errcodes-appendix.html) will be thrown, derived from the exception class of the class of error.
+If a specific error condition is recognized, an exception named after [Appendix A➚](https://www.postgresql.org/docs/current/errcodes-appendix.html) will be thrown, derived from the exception class of the class of error.
 
 There are some cases in which the name can not be simply taken from that table, as they are used multiple times in different classes of errors.
 In those cases the exception class is a class template and you need to add the class of error as a template parameter.

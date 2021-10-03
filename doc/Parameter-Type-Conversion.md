@@ -33,12 +33,12 @@ If you want to pass NULL to the database, you pass `tao::pq::null`.
   * `const char*`
   * `std::string`
   * `std::string_view`
-* [Binary](Binary-Data.md) ([`BYTEA`](https://www.postgresql.org/docs/current/datatype-binary.html))
+* [Binary](Binary-Data.md) ([`BYTEA`➚](https://www.postgresql.org/docs/current/datatype-binary.html))
   * `std::basic_string< unsigned char >`
   * `std::basic_string< std::byte >`
   * `std::basic_string_view< unsigned char >`
   * `std::basic_string_view< std::byte >`
-* [Arrays](Arrays.md) ([`ARRAY`](https://www.postgresql.org/docs/current/arrays.html))
+* [Arrays](Arrays.md) ([`ARRAY`➚](https://www.postgresql.org/docs/current/arrays.html))
   * `std::array< T, N >`
   * `std::list< T >`
   * `std::set< T >`
@@ -47,7 +47,7 @@ If you want to pass NULL to the database, you pass `tao::pq::null`.
 
 ## `std::optional< T >`
 
-Represents a [nullable](https://en.wikipedia.org/wiki/Nullable_type) type.
+Represents a [nullable➚](https://en.wikipedia.org/wiki/Nullable_type) type.
 
 If the optional is not empty, then the parameters from `T` are generated.
 If the optional is empty, it is equivalent to one or more `tao::pq::null` parameter(s).
@@ -127,7 +127,7 @@ auto to_taopq_param( const some_coordinates& v ) noexcept
 }
 ```
 
-The free function is found either by [ADL](https://en.cppreference.com/w/cpp/language/adl) or in namespace `tao::pq`.
+The free function is found either by [ADL➚](https://en.cppreference.com/w/cpp/language/adl) or in namespace `tao::pq`.
 
 Note that any returned value in the above examples can itself be a registered custom type.
 taoPQ will simply expand parameters recursively.

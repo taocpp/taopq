@@ -131,9 +131,9 @@ auto tao::pq::connection::create( const std::string& connection_info )
     -> std::shared_ptr< tao::pq::connection >;
 ```
 
-It takes a single parameter, the [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is passed to the underlying `libpq` for opening the database connection.
+It takes a single parameter, the [connection string➚](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is passed to the underlying `libpq` for opening the database connection.
 The connection string contains parameters and options, such as the server address or the database name.
-Connection parameters that are not specified in the connection string might also be set via [environment variables](https://www.postgresql.org/docs/current/libpq-envars.html).
+Connection parameters that are not specified in the connection string might also be set via [environment variables➚](https://www.postgresql.org/docs/current/libpq-envars.html).
 
 The method returns a `std::shared_ptr<tao::pq::connection>` or, in case of an error, throws an exception.
 When the last reference to a connection is deleted, i.e. the last shared pointer referencing it is deleted or reset, the connection is closed via its destructor which takes care of freeing underlying resources.
@@ -161,7 +161,7 @@ However, calling either the `commit()`- or `rollback()`-method will end the tran
 
 ### Creating a Database Transaction
 
-The `transaction()`-method begins a real [database transaction](https://www.postgresql.org/docs/current/tutorial-transactions.html).
+The `transaction()`-method begins a real [database transaction➚](https://www.postgresql.org/docs/current/tutorial-transactions.html).
 
 ```c++
 auto tao::pq::connection::transaction()
@@ -176,9 +176,9 @@ auto tao::pq::connection::transaction( const tao::pq::access_mode am,
     -> std::shared_ptr< tao::pq::transaction >;
 ```
 
-You may specify two optional parameters, the [isolation level](https://www.postgresql.org/docs/current/transaction-iso.html) and the [access mode](https://www.postgresql.org/docs/current/sql-set-transaction.html).
+You may specify two optional parameters, the [isolation level➚](https://www.postgresql.org/docs/current/transaction-iso.html) and the [access mode➚](https://www.postgresql.org/docs/current/sql-set-transaction.html).
 
-When `tao::pq::isolation_level::default_isolation_level` or `tao::pq::access_mode::default_access_mode` are used the transaction inherits its isolation level or access mode from the session, as described in the [PostgreSQL documentation](https://www.postgresql.org/docs/current/sql-set-transaction.html).
+When `tao::pq::isolation_level::default_isolation_level` or `tao::pq::access_mode::default_access_mode` are used the transaction inherits its isolation level or access mode from the session, as described in the [PostgreSQL documentation➚](https://www.postgresql.org/docs/current/sql-set-transaction.html).
 
 ## Executing Statements
 
@@ -188,7 +188,7 @@ You can [execute statements](Statement.md) on a connection object directly, whic
 
 Prepared statements only last for the duration of a connection, and are bound to a connection, i.e. the set of prepared statements is independent for each connection.
 
-You can [prepare](https://www.postgresql.org/docs/current/sql-prepare.html) a statement by calling the `prepare()`-method.
+You can [prepare➚](https://www.postgresql.org/docs/current/sql-prepare.html) a statement by calling the `prepare()`-method.
 
 ```c++
 void tao::pq::connection::prepare( const std::string& name, const std::string& statement );
@@ -199,7 +199,7 @@ taoPQ limits the name to classic C-style identifiers, i.e. a non-empty sequence 
 A valid identifier must begin with a non-digit character.
 Identifiers are case-sensitive (lowercase and uppercase letters are distinct).
 
-A previously prepared statement can be [deallocated](https://www.postgresql.org/docs/current/sql-deallocate.html), although this is rare in pratice.
+A previously prepared statement can be [deallocated➚](https://www.postgresql.org/docs/current/sql-deallocate.html), although this is rare in pratice.
 To deallocate a prepared statement, call the `deallocate()`-method.
 
 ```c++
@@ -211,9 +211,9 @@ This allows the [execution](Statement.md) of those prepared statements transpare
 
 ### Manually Prepared Statements
 
-You can manually prepare statements by executing [`PREPARE`](https://www.postgresql.org/docs/current/sql-prepare.html) statements directly via an `execute()`-method.
+You can manually prepare statements by executing [`PREPARE`➚](https://www.postgresql.org/docs/current/sql-prepare.html) statements directly via an `execute()`-method.
 While those prepared statements live on the same connection, there are some important differences.
-You can only execute those prepared statements by executing [`EXECUTE`](https://www.postgresql.org/docs/current/sql-execute.html) statements directly via an `execute()`-method, and you can only deallocate them by executing [`DEALLOCATE`](https://www.postgresql.org/docs/current/sql-deallocate.html) statements directly via an `execute()`-method.
+You can only execute those prepared statements by executing [`EXECUTE`➚](https://www.postgresql.org/docs/current/sql-execute.html) statements directly via an `execute()`-method, and you can only deallocate them by executing [`DEALLOCATE`➚](https://www.postgresql.org/docs/current/sql-deallocate.html) statements directly via an `execute()`-method.
 
 We advise to use the methods offered by taoPQ's connection type.
 
@@ -226,11 +226,11 @@ bool tao::pq::connection::is_open() const noexcept;
 ```
 
 It return `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
-For further details, check the documentation for the underlying [`PQstatus()`](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
+For further details, check the documentation for the underlying [`PQstatus()`➚](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
 
 ## Notification Framework
 
-PostgreSQL provides a simple [interprocess communication mechanism](https://www.postgresql.org/docs/current/sql-notify.html) for a collection of applications accessing the same database.
+PostgreSQL provides a simple [interprocess communication mechanism➚](https://www.postgresql.org/docs/current/sql-notify.html) for a collection of applications accessing the same database.
 
 ### Sending Messages
 
@@ -267,7 +267,7 @@ auto tao::pq::connection::notification_handler()
    -> std::function< void( const tao::pq::notification& ) >;
 ```
 
-If no notification handler is set, the [`std::function`](https://en.cppreference.com/w/cpp/utility/functional/function) will be empty.
+If no notification handler is set, the [`std::function`➚](https://en.cppreference.com/w/cpp/utility/functional/function) will be empty.
 
 Setting a notification handler is done by calling the `set_notification_handler()`-method.
 

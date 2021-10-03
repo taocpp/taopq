@@ -1,6 +1,6 @@
 # Transaction
 
-Before we continue with our own documentation, we'd like to once again point you to the excellent [PostgreSQL documentation](https://www.postgresql.org/docs/current/tutorial-transactions.html) on transactions.
+Before we continue with our own documentation, we'd like to once again point you to the excellent [PostgreSQL documentation➚](https://www.postgresql.org/docs/current/tutorial-transactions.html) on transactions.
 We will assume that you are familiar with how transactions work on PostgreSQL and in general, so we will *not* repeat this here.
 
 ## Synopsis
@@ -110,7 +110,7 @@ This comes in handy when exceptions are thrown and the destructor call happens d
 
 ## Direct Transactions
 
-Without an active transaction PostgreSQL works in ["autocommit"](https://www.postgresql.org/docs/current/sql-begin.html) mode.
+Without an active transaction PostgreSQL works in ["autocommit"➚](https://www.postgresql.org/docs/current/sql-begin.html) mode.
 This means that each statement is executed in its own internal transaction and a commit is implicitly performed at the end of the statement (if execution was successful, otherwise a rollback is done).
 A "direct transaction" represents this concept in taoPQ.
 
@@ -129,8 +129,8 @@ Note that opening a subtransaction from a direct connection is possible and simp
 
 ## Manual Transaction Handling
 
-You can manually begin, commit, or rollback transactions by executing [`BEGIN`](https://www.postgresql.org/docs/current/sql-begin.html), [`COMMIT`](https://www.postgresql.org/docs/current/sql-commit.html), or [`ROLLBACK`](https://www.postgresql.org/docs/current/sql-rollback.html) statements directly via the `execute()`-method.
-Likewise, you can manually create, commit, or rollback subtransactions by executing [`SAVEPOINT`](https://www.postgresql.org/docs/current/sql-savepoint.html), [`RELEASE SAVEPOINT`](https://www.postgresql.org/docs/current/sql-release-savepoint.html), or [`ROLLBACK TO SAVEPOINT`](https://www.postgresql.org/docs/current/sql-rollback-to.html) statements directly via the `execute()`-method.
+You can manually begin, commit, or rollback transactions by executing [`BEGIN`➚](https://www.postgresql.org/docs/current/sql-begin.html), [`COMMIT`➚](https://www.postgresql.org/docs/current/sql-commit.html), or [`ROLLBACK`➚](https://www.postgresql.org/docs/current/sql-rollback.html) statements directly via the `execute()`-method.
+Likewise, you can manually create, commit, or rollback subtransactions by executing [`SAVEPOINT`➚](https://www.postgresql.org/docs/current/sql-savepoint.html), [`RELEASE SAVEPOINT`➚](https://www.postgresql.org/docs/current/sql-release-savepoint.html), or [`ROLLBACK TO SAVEPOINT`➚](https://www.postgresql.org/docs/current/sql-rollback-to.html) statements directly via the `execute()`-method.
 
 We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our library's transaction ordering framework.
 We advise to use the methods offered by taoPQ instead of manually handling transactions.

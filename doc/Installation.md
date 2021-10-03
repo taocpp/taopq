@@ -6,7 +6,7 @@
 
 ## Using Conan package manager
 
-[Conan](https://conan.io) is a dedicated C/C++ package manager which supports many popular projects, including Taocpp.
+[Conan➚](https://conan.io) is a dedicated C/C++ package manager which supports many popular projects, including Taocpp.
 To install install taoPQ using Conan, first we need to create a file named ``conanfile.txt`` which points taoPQ as our dependency:
 
 ```ini
@@ -58,7 +58,7 @@ Once done, your project should be built correctly and linked to taoPQ, libpq and
 
 ## Using CMake
 
-Since CMake 3.11, the feature [FetchContent](https://cmake.org/cmake/help/latest/module/FetchContent.html) can be used to download and build project dependencies.
+Since CMake 3.11, the feature [FetchContent➚](https://cmake.org/cmake/help/latest/module/FetchContent.html) can be used to download and build project dependencies.
 This mechanism makes our development much easier, but it lacks in terms of reproducibility, so be careful if you are using it for production. Also, we will use `FetchContent_MakeAvailable` which is available since CMake 3.14:
 
 ```cmake
@@ -95,7 +95,7 @@ When executing the build step, taoPQ will be built first, as its target is requi
 If you want to use `libpq` from your system, there are few ways to install it:
 
 * Windows
-   * See PostgreSQL installation [page](https://www.postgresql.org/docs/current/install-win32.html)
+   * See PostgreSQL installation [page➚](https://www.postgresql.org/docs/current/install-win32.html)
 
 * macOS
    * `$ brew install libpq`

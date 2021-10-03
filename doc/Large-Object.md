@@ -1,6 +1,6 @@
 # Large Object
 
-PostgreSQL has a [large object](https://www.postgresql.org/docs/current/largeobjects.html) facility, which provides stream-style access to user data that is stored in a special large-object structure.
+PostgreSQL has a [large object➚](https://www.postgresql.org/docs/current/largeobjects.html) facility, which provides stream-style access to user data that is stored in a special large-object structure.
 Streaming access is useful when working with data values that are too large to manipulate conveniently as a whole.
 
 ## Synopsis
@@ -77,7 +77,7 @@ All large object manipulation using these functions must take place within an SQ
 
 ## Creating a Large Object
 
-To [create](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-CREATE) a new large object, call
+To [create➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-CREATE) a new large object, call
 
 ```c++
 static auto tao::pq::large_object::create( const std::shared_ptr<tao::pq::transaction>& transaction,
@@ -89,7 +89,7 @@ If you specify a desired oid and that oid is already used, or if any other error
 
 ## Removing a Large Object
 
-To [remove](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-UNLINK) a large object from the database, call
+To [remove➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-UNLINK) a large object from the database, call
 
 ```c++
 static void tao::pq::large_object::remove( const std::shared_ptr<tao::pq::transaction>& transaction, const tao::pq::oid id );
@@ -97,7 +97,7 @@ static void tao::pq::large_object::remove( const std::shared_ptr<tao::pq::transa
 
 ## Importing a Large Object
 
-To [import](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-IMPORT) an operating system file as a large object, call
+To [import➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-IMPORT) an operating system file as a large object, call
 
 ```c++
 static auto tao::pq::large_object::import_file( const std::shared_ptr<tao::pq::transaction>& transaction,
@@ -110,7 +110,7 @@ If you specify a desired oid and that oid is already used, or if any other error
 
 ## Exporting a Large Object
 
-To [export](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-EXPORT) a large object into an operating system file, call
+To [export➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-EXPORT) a large object into an operating system file, call
 
 ```c++
 static void tao::pq::large_object::export_file( const std::shared_ptr<tao::pq::transaction>& transaction,
@@ -122,7 +122,7 @@ If an error occurs an exception will be thrown.
 
 ## Opening an Existing Large Object
 
-To [open](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-OPEN) an existing large object for reading or writing, call
+To [open➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-OPEN) an existing large object for reading or writing, call
 
 ```c++
 tao::pq::large_object::large_object( const std::shared_ptr<tao::pq::transaction>& transaction,
@@ -133,11 +133,11 @@ tao::pq::large_object::large_object( const std::shared_ptr<tao::pq::transaction>
 The mode `m` bits control whether the object is opened for reading (`std::ios_base::in`), writing (`std::ios_base::out`), or both.
 If an error occurs an exception will be thrown.
 
-The destructor will take care of [closing](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-CLOSE) the large object descriptor.
+The destructor will take care of [closing➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-CLOSE) the large object descriptor.
 
 ## Writing Data to a Large Object
 
-To [write](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-WRITE) data to a large object, several methods are available.
+To [write➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-WRITE) data to a large object, several methods are available.
 
 ```c++
 void tao::pq::large_object::write( const char* data, const std::size_t size );
@@ -161,7 +161,7 @@ If an error occurs an exception will be thrown.
 
 ## Reading Data from a Large Object
 
-To [read](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-READ) data from a large object, several methods are available.
+To [read➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-READ) data from a large object, several methods are available.
 
 ```c++
 auto tao::pq::large_object::read( char* data, const std::size_t size ) -> std::size_t;
@@ -189,7 +189,7 @@ If an error occurs an exception will be thrown.
 
 ## Seeking in a Large Object
 
-To change the [current read or write](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-SEEK) location associated with a large object, call
+To change the [current read or write➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-SEEK) location associated with a large object, call
 
 ```c++
 auto tao::pq::large_object::seek( const std::int64_t offset, const std::ios_base::seekdir whence ) -> std::int64_t;
@@ -203,7 +203,7 @@ If an error occurs an exception will be thrown.
 
 ## Obtaining the Seek Position of a Large Object
 
-To [obtain](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-TELL) the current read or write location of a large object, call
+To [obtain➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-TELL) the current read or write location of a large object, call
 
 ```c++
 auto tao::pq::large_object::tell() const -> std::int64_t;
@@ -213,7 +213,7 @@ If an error occurs an exception will be thrown.
 
 ## Truncating a Large Object
 
-To [truncate](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-TRUNCATE) a large object to a given size, call
+To [truncate➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-TRUNCATE) a large object to a given size, call
 
 ```c++
 void tao::pq::large_object::resize( const std::int64_t size );

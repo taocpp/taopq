@@ -1,6 +1,6 @@
 # Statement
 
-Before showing you how to execute statements with taoPQ, we'd like to take a moment to talk about [SQL injection](https://en.wikipedia.org/wiki/SQL_injection).
+Before showing you how to execute statements with taoPQ, we'd like to take a moment to talk about [SQL injection➚](https://en.wikipedia.org/wiki/SQL_injection).
 SQL injection is a large family of security issues that has plagued the internet for decades.
 We designed taoPQ to allow you to *safely* and *conveniently* write code that does not allow SQL injection.
 With that said, let's start executing statements with taoPQ.
@@ -29,7 +29,7 @@ Note that we do not accept `std::string_view`, as the underlying C-API of `libpq
 
 ## Positional Parameters
 
-To reference the parameters you supplied in the statement, you use [positional parameters](https://www.postgresql.org/docs/current/sql-expressions.html).
+To reference the parameters you supplied in the statement, you use [positional parameters➚](https://www.postgresql.org/docs/current/sql-expressions.html).
 Positional parameters are of the form `$n` where `n` is a number starting at 1.
 Here's an example of how you can insert a row with two columns into the database:
 
@@ -60,9 +60,9 @@ What happens, if a user enters the following "name":
 
 `Robert'; DELETE FROM user WHERE name <> 'Little Bobby Tables`
 
-Yupp, all users other than [`Little Bobby Tables`](https://xkcd.com/327/) have just been deleted from the database.
+Yupp, all users other than [`Little Bobby Tables`➚](https://xkcd.com/327/) have just been deleted from the database.
 
-You might have seen other libraries where you should [escape the data explicitly](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-EXEC-ESCAPE-STRING), something like:
+You might have seen other libraries where you should [escape the data explicitly➚](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-EXEC-ESCAPE-STRING), something like:
 
 ```c++
 auto find_user( const std::string& name )
@@ -88,7 +88,7 @@ auto find_user( const std::string& name )
 ## Multi-Query Commands
 
 Some SQL client libraries allow multi-query commands, i.e. the command string can include multiple SQL statements.
-In `libpq`, this is supported by the [`PQexec()`](https://www.postgresql.org/docs/current/libpq-exec.html)-function.
+In `libpq`, this is supported by the [`PQexec()`➚](https://www.postgresql.org/docs/current/libpq-exec.html)-function.
 As an extra defense against SQL injection, taoPQ *never* calls the `PQexec()`-function.
 We allow at most one SQL command in the given statement passed to an `execute()`-method.
 

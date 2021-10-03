@@ -3,12 +3,12 @@
 When [executing statements](Statement.md) you receive a result object.
 A result comes in two flavours, depending on what statement was executed.
 
-When executing a [query statement](https://www.postgresql.org/docs/current/queries-overview.html), the database returns a result set, i.e. any number of rows containing one or more fields of data.
+When executing a [query statement➚](https://www.postgresql.org/docs/current/queries-overview.html), the database returns a result set, i.e. any number of rows containing one or more fields of data.
 
 When executing non-query statements, you can usually only extract the number of affected rows.
 
 Query results can be iterated or conveniently converted into a C++ data structure.
-Predefined types include most arithmetic C++ data types, STL containers, `std::pair`/`std::tuple`, and `std::optional` for [nullable](https://en.wikipedia.org/wiki/Nullable_type) values.
+Predefined types include most arithmetic C++ data types, STL containers, `std::pair`/`std::tuple`, and `std::optional` for [nullable➚](https://en.wikipedia.org/wiki/Nullable_type) values.
 Again custom types can be added with custom conversion functions.
 
 ## Synopsis
@@ -281,12 +281,12 @@ auto tao::pq::result::rows_affected() const -> std::size_t;
 
 ## Query Results
 
-[Query results](https://www.postgresql.org/docs/current/queries-overview.html) are non-mutable data sets, they are cheap to copy, move, or assign and you can iterate over the data multiple times in random order.
+[Query results➚](https://www.postgresql.org/docs/current/queries-overview.html) are non-mutable data sets, they are cheap to copy, move, or assign and you can iterate over the data multiple times in random order.
 Likewise, rows are also non-mutable, as well as fields.
 This also means iterators will behave as constant iterators.
 
 Query results act similar to a random-access container.
-The don't fully implement the [container requirements](https://en.cppreference.com/w/cpp/named_req/Container), but a reasonable subset of those are provided.
+The don't fully implement the [container requirements➚](https://en.cppreference.com/w/cpp/named_req/Container), but a reasonable subset of those are provided.
 
 ### Basics
 
@@ -319,7 +319,7 @@ auto tao::pq::result::get( std::size_t row, std::size_t column ) const -> const 
 ### Row Access
 
 You can iterate over the container's elements, the rows, with the usual methods.
-This is what the `begin()`- and `end()`-methods are for, also allowing for the convenient use of [range-based for loops](https://en.cppreference.com/w/cpp/language/range-for).
+This is what the `begin()`- and `end()`-methods are for, also allowing for the convenient use of [range-based for loops➚](https://en.cppreference.com/w/cpp/language/range-for).
 
 ```c++
 auto tao::pq::result::begin() const -> tao::pq::result::const_iterator;
@@ -383,7 +383,7 @@ auto tao::pq::row::get( std::size_t column ) const -> const char*;
 ```
 
 You can iterate over the row's elements, the fields, with the usual methods.
-This is what the `begin()`- and `end()`-methods are for, also allowing for the convenient use of [range-based for loops](https://en.cppreference.com/w/cpp/language/range-for).
+This is what the `begin()`- and `end()`-methods are for, also allowing for the convenient use of [range-based for loops➚](https://en.cppreference.com/w/cpp/language/range-for).
 
 ```c++
 auto tao::pq::row::begin() const -> tao::pq::row::const_iterator;
@@ -465,7 +465,7 @@ template< typename T >
 auto tao::pq::field::as() const -> T;
 ```
 
-The conversion is handled by the `tao::pq::result_traits` class template, which is documented in the [result type conversion](Result-Type-Conversion.md) chapter.
+The conversion is handled by the `tao::pq::result_traits` class template, which is documented in the [result type conversion➚](Result-Type-Conversion.md) chapter.
 
 A field also has one convenience method to convert directly into a `std::optional<T>`.
 

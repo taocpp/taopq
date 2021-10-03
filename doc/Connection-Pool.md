@@ -67,7 +67,7 @@ auto tao::pq::connection_pool::create( const std::string& connection_info )
     -> std::shared_ptr< tao::pq::connection_pool >;
 ```
 
-It takes a single parameter, the [connection string](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is used when new connections are opened by the pool.
+It takes a single parameter, the [connection string➚](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is used when new connections are opened by the pool.
 
 ## Borrowing Connections
 
@@ -103,8 +103,8 @@ void tao::pq::connection_pool::erase_invalid();
 The connection pool's borrowing mechanism is thread-safe, i.e. multiple threads can make calls to the `connection()`-method or return connections simultaneously.
 You can also call the `erase_invalid()`-method at any time.
 
-Internally, the connection pool uses a [mutex](https://en.cppreference.com/w/cpp/thread/mutex) to serialize the above operations.
-We minimized the work in the [critical sections](https://en.wikipedia.org/wiki/Critical_section) as far as possible.
+Internally, the connection pool uses a [mutex➚](https://en.cppreference.com/w/cpp/thread/mutex) to serialize the above operations.
+We minimized the work in the [critical sections➚](https://en.wikipedia.org/wiki/Critical_section) as far as possible.
 
 ---
 
