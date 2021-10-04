@@ -288,6 +288,8 @@ This also means iterators will behave as constant iterators.
 Query results act similar to a random-access container.
 The don't fully implement the [container requirements➚](https://en.cppreference.com/w/cpp/named_req/Container), but a reasonable subset of those are provided.
 
+Rows and fields are non-owning, meaning they are only valid as long as the query result instance is still valid.
+
 ### Basics
 
 You can query the container's size, i.e. the number of rows it contains, by calling the `size()`-method.
