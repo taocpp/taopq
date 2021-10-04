@@ -10,7 +10,7 @@
 [![Code Coverage](https://codecov.io/gh/taocpp/taopq/branch/main/graph/badge.svg?token=ykWa8RRdyk)](https://codecov.io/gh/taocpp/taopq)
 
 taoPQ is a lightweight C++ client library for accessing a PostgreSQL database.
-It has no dependencies beyond [`libpq`](https://www.postgresql.org/docs/current/libpq.html), the C application programmer's interface to PostgreSQL.
+It has no dependencies beyond [`libpq`➚](https://www.postgresql.org/docs/current/libpq.html), the C application programmer's interface to PostgreSQL.
 
 ## Introduction
 
@@ -73,7 +73,7 @@ int main()
 
 <a href="https://discord.gg/VQYkppcgqN"><img align="right" src="https://discordapp.com/api/guilds/790164930083028993/embed.png?style=banner2" alt="Join us on Discord"></a>
 
-For questions and suggestions regarding taoPQ, success or failure stories, and any other kind of feedback, please feel free to join our [Discord](https://discord.gg/VQYkppcgqN) server, open a [discussion](https://github.com/taocpp/taopq/discussions), an [issue](https://github.com/taocpp/taopq/issues) or a [pull request](https://github.com/taocpp/taopq/pulls) on GitHub or contact the authors at `taocpp(at)icemx.net`.
+For questions and suggestions regarding taoPQ, success or failure stories, and any other kind of feedback, please feel free to join our [Discord➚](https://discord.gg/VQYkppcgqN) server, open a [discussion](https://github.com/taocpp/taopq/discussions), an [issue](https://github.com/taocpp/taopq/issues) or a [pull request](https://github.com/taocpp/taopq/pulls) on GitHub or contact the authors at `taocpp(at)icemx.net`.
 
 ## The Art of C++
 
@@ -89,8 +89,8 @@ taoPQ is part of [The Art of C++](https://taocpp.github.io/).
 
 Copyright (c) 2016-2021 Daniel Frey and Dr. Colin Hirsch
 
-taoPQ is certified [Open Source](http://www.opensource.org/docs/definition.html) software.
-It is [licensed](https://pdimov.github.io/blog/2020/09/06/why-use-the-boost-license/) under the terms of the [Boost Software License, Version 1.0](https://www.boost.org/LICENSE_1_0.txt) reproduced here.
+taoPQ is certified [Open Source➚](http://www.opensource.org/docs/definition.html) software.
+It is [licensed➚](https://pdimov.github.io/blog/2020/09/06/why-use-the-boost-license/) under the terms of the [Boost Software License, Version 1.0➚](https://www.boost.org/LICENSE_1_0.txt) reproduced here.
 
 > Boost Software License - Version 1.0 - August 17th, 2003
 >
