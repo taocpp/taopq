@@ -213,9 +213,6 @@ namespace tao::pq
                   return result_traits< T >::null();
                }
             }
-            else {
-               ensure_column( column );
-            }
             return result_traits< T >::from( get( column ) );
          }
          else {
