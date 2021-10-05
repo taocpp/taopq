@@ -27,7 +27,8 @@ namespace tao::pq
          return result_traits< T >::from( value );
       }
 
-      [[nodiscard]] static auto from( const row& row ) -> std::optional< T >
+      template< typename Row >
+      [[nodiscard]] static auto from( const Row& row ) -> std::optional< T >
       {
          for( std::size_t column = 0; column < row.columns(); ++column ) {
             if( !row.is_null( column ) ) {

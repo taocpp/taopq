@@ -12,13 +12,11 @@
 
 namespace example
 {
-   class user
+   struct user
    {
-   private:
       int a, b, c, d;
 
-   public:
-      explicit user( int i )
+      explicit user( const int i ) noexcept
          : a( i ), b( i + 1 ), c( i + 2 ), d( i + 3 )
       {}
 
@@ -26,14 +24,29 @@ namespace example
       {
          return std::tie( a, b, c, d );
       }
+
+   private:
+      user( const int in_a, const int in_b, const int in_c, const int in_d ) noexcept
+         : a( in_a ), b( in_b ), c( in_c ), d( in_d )
+      {}
+
+   public:
+      [[nodiscard]] static auto from_taopq( const int in_a, const int in_b, const int in_c, const int in_d ) noexcept
+      {
+         return user( in_a, in_b, in_c, in_d );
+      }
    };
 
    struct user2
    {
       int a, b, c, d;
 
-      explicit user2( int i )
+      explicit user2( int i ) noexcept
          : a( i ), b( i + 1 ), c( i + 2 ), d( i + 3 )
+      {}
+
+      user2( const int in_a, const int in_b, const int in_c, const int in_d ) noexcept
+         : a( in_a ), b( in_b ), c( in_c ), d( in_d )
       {}
    };
 
@@ -88,6 +101,26 @@ void run()
          TEST_ASSERT( d == c + 1 );
       }
    }
+
+   TEST_EXECUTE( connection->execute( "DELETE FROM tao_parameter_test" ) );
+   TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", example::user( 8 ) ) );
+   {
+      const auto user = connection->execute( "SELECT * FROM tao_parameter_test" ).as< example::user >();
+      TEST_ASSERT( user.a == 8 );
+      TEST_ASSERT( user.b == 9 );
+      TEST_ASSERT( user.c == 10 );
+      TEST_ASSERT( user.d == 11 );
+   }
+
+   // TEST_EXECUTE( connection->execute( "DELETE FROM tao_parameter_test" ) );
+   // TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", example::user( 9 ) ) );
+   // {
+   //    const auto user = connection->execute( "SELECT * FROM tao_parameter_test" ).as< example::user2 >();
+   //    TEST_ASSERT( user.a == 9 );
+   //    TEST_ASSERT( user.b == 10 );
+   //    TEST_ASSERT( user.c == 11 );
+   //    TEST_ASSERT( user.d == 12 );
+   // }
 }
 
 auto main() -> int  //NOLINT(bugprone-exception-escape)
