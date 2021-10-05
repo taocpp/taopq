@@ -22,6 +22,9 @@ int main()
 
 Let's go through the above code and explain some basic principles, slowly expanding our knowledge of taoPQ.
 
+To use taoPQ, you include the top-level header with `#include <tao/pq.hpp>`.
+The individual include files in `tao/pq/` are not meant to be included directly.
+
 Starting with `tao::pq::connection::create("dbname=template1")`, we can see that the `tao::pq::connection` class has a static `create()`-method.
 You provide a single parameter, the [connection string➚](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), and the method then returns a `std::shared_ptr<tao::pq::connection>` that holds the connection object it opened.
 The reason why connections (and several other objects in taoPQ) are handled via smart pointers will be explained later.
