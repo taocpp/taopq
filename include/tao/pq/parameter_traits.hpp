@@ -466,37 +466,37 @@ namespace tao::pq
       using parameter_traits< binary_view >::parameter_traits;
    };
 
-   // default free function to detect member function to_taopq_param()
+   // default free function to detect member function to_taopq()
    template< typename T >
-   auto to_taopq_param( const T& t ) noexcept( noexcept( t.to_taopq_param() ) )
-      -> decltype( t.to_taopq_param() )
+   auto to_taopq( const T& t ) noexcept( noexcept( t.to_taopq() ) )
+      -> decltype( t.to_taopq() )
    {
-      return t.to_taopq_param();
+      return t.to_taopq();
    }
 
-   // note: calls to to_taopq_param are unqualified to enable ADL
+   // note: calls to to_taopq are unqualified to enable ADL
 
    namespace internal
    {
       template< typename T >
       struct parameter_holder
       {
-         using result_t = decltype( to_taopq_param( std::declval< const T& >() ) );
+         using result_t = decltype( to_taopq( std::declval< const T& >() ) );
          const result_t result;
 
-         explicit parameter_holder( const T& t ) noexcept( noexcept( result_t( to_taopq_param( t ) ) ) )
-            : result( to_taopq_param( t ) )
+         explicit parameter_holder( const T& t ) noexcept( noexcept( result_t( to_taopq( t ) ) ) )
+            : result( to_taopq( t ) )
          {}
 
-         explicit parameter_holder( T&& t ) noexcept( noexcept( result_t( to_taopq_param( std::move( t ) ) ) ) )
-            : result( to_taopq_param( std::move( t ) ) )
+         explicit parameter_holder( T&& t ) noexcept( noexcept( result_t( to_taopq( std::move( t ) ) ) ) )
+            : result( to_taopq( std::move( t ) ) )
          {}
       };
 
    }  // namespace internal
 
    template< typename T >
-   struct parameter_traits< T, std::void_t< decltype( to_taopq_param( std::declval< const T& >() ) ) > >
+   struct parameter_traits< T, std::void_t< decltype( to_taopq( std::declval< const T& >() ) ) > >
       : private internal::parameter_holder< T >,
         public parameter_traits< typename internal::parameter_holder< T >::result_t >
    {

@@ -67,9 +67,9 @@ As a generalisation of pairs, tuples generate all parameters for their individua
 
 Custom data types can be registered in two different ways.
 
-### `to_taopq_param()`
+### `to_taopq()`
 
-You can add a method called `to_taopq_param()` to your class, any value returned will then be fed into the parameters as outlined above.
+You can add a method called `to_taopq()` to your class, any value returned will then be fed into the parameters as outlined above.
 Usually, that means a simple conversion will return a single known type, more complicated types return a `std::tuple` to return multiple parameters for the SQL statement.
 Let's look at two examples, starting with the simplest case first:
 
@@ -82,7 +82,7 @@ private:
 public:
    explicit my_int_wrapper( int v ) : value( v ) {}
 
-   auto to_taopq_param() const noexcept
+   auto to_taopq() const noexcept
    {
       return value;
    }
@@ -102,7 +102,7 @@ private:
 public:
    //  ctors, etc.
 
-   auto to_taopq_param() const noexcept
+   auto to_taopq() const noexcept
    {
       return std::tie( x, y, z );
    }
@@ -111,7 +111,7 @@ public:
 
 The above means that each time you pass a `my_coordinates` instance as a parameter to an `execute()`-method, three positional parameters are added and can be referenced from the SQL statement.
 
-If you can't modify the class you could provide a free function called `to_taopq_param` instead.
+If you can't modify the class you could provide a free function called `to_taopq` instead.
 That function must accept a single parameter of the class you want to register.
 Example:
 
@@ -121,7 +121,7 @@ struct some_coordinates
    double x,y,z;
 };
 
-auto to_taopq_param( const some_coordinates& v ) noexcept
+auto to_taopq( const some_coordinates& v ) noexcept
 {
    return std::tie( v.x, v.y, v.z );
 }
@@ -134,7 +134,7 @@ taoPQ will simply expand parameters recursively.
 
 ### `tao::pq::parameter_traits< T >`
 
-If the above custom data type registration via `to_taopq_param()` is somehow not sufficient, you can specialize the `tao::pq::parameter_traits` class template.
+If the above custom data type registration via `to_taopq()` is somehow not sufficient, you can specialize the `tao::pq::parameter_traits` class template.
 For now please consult the source code or ask the developers.
 TODO: Write proper documentation.
 
