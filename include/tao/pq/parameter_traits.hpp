@@ -492,7 +492,7 @@ namespace tao::pq
       template< typename T >
       struct parameter_holder
       {
-         using result_t = decltype( (void)to_taopq( std::declval< const T& >() ) );
+         using result_t = decltype( to_taopq( std::declval< const T& >() ) );
          const result_t result;
 
          explicit parameter_holder( const T& t ) noexcept( noexcept( result_t( to_taopq( t ) ) ) )
