@@ -492,7 +492,7 @@ namespace tao::pq
       template< typename T >
       struct parameter_holder
       {
-         using result_t = decltype( to_taopq( std::declval< const T& >() ) );
+         using result_t = decltype( (void)to_taopq( std::declval< const T& >() ) );
          const result_t result;
 
          explicit parameter_holder( const T& t ) noexcept( noexcept( result_t( to_taopq( t ) ) ) )
@@ -507,7 +507,7 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct parameter_traits< T, decltype( to_taopq( std::declval< const T& >() ), void() ) >
+   struct parameter_traits< T, decltype( (void)to_taopq( std::declval< const T& >() ) ) >
       : private internal::parameter_holder< T >,
         public parameter_traits< typename internal::parameter_holder< T >::result_t >
    {
