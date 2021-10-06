@@ -198,7 +198,7 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct result_traits< T, std::void_t< decltype( T::from_taopq ) > >
+   struct result_traits< T, decltype( T::from_taopq, void() ) >
       : internal::from_taopq< T, T, decltype( T::from_taopq ) >
    {};
 
@@ -206,7 +206,7 @@ namespace tao::pq
    struct bind;
 
    template< typename T >
-   struct result_traits< T, std::void_t< decltype( bind< T >::from_taopq ) > >
+   struct result_traits< T, decltype( bind< T >::from_taopq, void() ) >
       : internal::from_taopq< bind< T >, T, decltype( bind< T >::from_taopq ) >
    {};
 
