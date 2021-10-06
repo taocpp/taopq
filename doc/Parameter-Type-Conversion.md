@@ -69,9 +69,14 @@ Custom data types can be registered in two different ways.
 
 ### `to_taopq()`
 
-You can add a method called `to_taopq()` to your class, any value returned will then be fed into the parameters as outlined above.
+You can use a function or method called `to_taopq()`, any value returned will then be fed into the parameters as outlined above.
 Usually, that means a simple conversion will return a single known type, more complicated types return a `std::tuple` to return multiple parameters for the SQL statement.
-Let's look at two examples, starting with the simplest case first:
+There are multiple places where this function or method can be placed.
+
+#### Intrusive Placement
+
+If you have control over a class type, you can add a method called `to_taopq()` that can be called with no parameters.
+The method can be marked `const` and/or `noexcept` as applicable.
 
 ```c++
 class my_int_wrapper
@@ -111,9 +116,33 @@ public:
 
 The above means that each time you pass a `my_coordinates` instance as a parameter to an `execute()`-method, three positional parameters are added and can be referenced from the SQL statement.
 
-If you can't modify the class you could provide a free function called `to_taopq` instead.
-That function must accept a single parameter of the class you want to register.
-Example:
+#### Non-Intrusive Placement
+
+If you can't modify the class you could specalize `tao::pq::bind<...>` and place a static `to_taopq()`-method inside the specialization, or provide a free function called `to_taopq()` instead.
+Those functions must accept a single parameter of the class you want to register.
+
+Example for the specialization of `tao::pq::bind<...>`:
+
+```c++
+struct some_coordinates
+{
+   double x,y,z;
+};
+
+namespace tao::pq
+{
+   template<>
+   struct bind< some_coordinates >
+   {
+      static auto to_taopq( const some_coordinates& v ) noexcept
+      {
+         return std::tie( v.x, v.y, v.z );
+      }
+   };
+}
+```
+
+Example for the free function:
 
 ```c++
 struct some_coordinates
