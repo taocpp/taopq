@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <optional>
 #include <string>
-#include <type_traits>
+#include <utility>
 
 #include <tao/pq/null.hpp>
 #include <tao/pq/result_traits.hpp>

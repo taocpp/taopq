@@ -7,7 +7,7 @@
 
 #include <cstddef>
 #include <optional>
-#include <type_traits>
+#include <utility>
 
 #include <tao/pq/null.hpp>
 #include <tao/pq/result_traits.hpp>
