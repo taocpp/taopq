@@ -9,8 +9,6 @@
 #include <optional>
 #include <type_traits>
 
-#include <tao/pq/internal/dependent_false.hpp>
-#include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/null.hpp>
 #include <tao/pq/result_traits.hpp>
 
@@ -40,16 +38,7 @@ namespace tao::pq
       [[nodiscard]] auto get() const -> const char*;
 
       template< typename T >
-      [[nodiscard]] auto as() const noexcept
-         -> std::enable_if_t< result_traits_size< T > != 1, T >
-      {
-         static_assert( internal::dependent_false< T >, "tao::pq::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
-         TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
-      }
-
-      template< typename T >
-      [[nodiscard]] auto as() const
-         -> std::enable_if_t< result_traits_size< T > == 1, T >;  // implemented in table_row.hpp
+      [[nodiscard]] auto as() const -> T;  // implemented in table_row.hpp
 
       template< typename T >
       [[nodiscard]] auto optional() const

@@ -282,9 +282,9 @@ namespace tao::pq
    };
 
    template< typename T >
-   auto field::as() const
-      -> std::enable_if_t< result_traits_size< T > == 1, T >
+   auto field::as() const -> T
    {
+      static_assert( result_traits_size< T > == 1, "tao::pq::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
       return m_row->get< T >( m_column );
    }
 
