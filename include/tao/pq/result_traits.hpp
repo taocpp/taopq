@@ -169,37 +169,45 @@ namespace tao::pq
 
    namespace internal
    {
-      template< typename, typename >
+      template< typename, typename, typename >
       struct from_taopq;
 
       template< typename T, typename R, typename... As >
-      struct from_taopq< T, R( As... ) >
+      struct from_taopq< T, R, R( As... ) >
       {
          static constexpr std::size_t size{ (0 + ... + result_traits_size< std::decay_t< As > >)};
 
          template< typename Row, std::size_t... Ns >
-         [[nodiscard]] static auto from( const Row& row, std::index_sequence< Ns... > /*unused*/ ) -> T
+         [[nodiscard]] static auto from( const Row& row, std::index_sequence< Ns... > /*unused*/ ) -> R
          {
             return T::from_taopq( row.template get< std::decay_t< As > >( Ns )... );
          }
 
          template< typename Row >
-         [[nodiscard]] static auto from( const Row& row ) -> T
+         [[nodiscard]] static auto from( const Row& row ) -> R
          {
             return from_taopq::from( row, exclusive_scan_t< std::index_sequence< result_traits_size< std::decay_t< As > >... > >() );
          }
       };
 
       template< typename T, typename R, typename... As >
-      struct from_taopq< T, R( As... ) noexcept >
-         : from_taopq< T, R( As... ) >
+      struct from_taopq< T, R, R( As... ) noexcept >
+         : from_taopq< T, R, R( As... ) >
       {};
 
    }  // namespace internal
 
    template< typename T >
    struct result_traits< T, std::void_t< decltype( T::from_taopq ) > >
-      : internal::from_taopq< T, decltype( T::from_taopq ) >
+      : internal::from_taopq< T, T, decltype( T::from_taopq ) >
+   {};
+
+   template< typename >
+   struct bind;
+
+   template< typename T >
+   struct result_traits< T, std::void_t< decltype( bind< T >::from_taopq ) > >
+      : internal::from_taopq< bind< T >, T, decltype( bind< T >::from_taopq ) >
    {};
 
 }  // namespace tao::pq

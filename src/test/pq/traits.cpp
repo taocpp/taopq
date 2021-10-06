@@ -50,12 +50,43 @@ namespace example
       {}
    };
 
-   [[nodiscard]] auto to_taopq( const user2& v ) noexcept
+   struct user3
+   {
+      int a, b, c, d;
+
+      explicit user3( int i ) noexcept
+         : a( i ), b( i + 1 ), c( i + 2 ), d( i + 3 )
+      {}
+
+      user3( const int in_a, const int in_b, const int in_c, const int in_d ) noexcept
+         : a( in_a ), b( in_b ), c( in_c ), d( in_d )
+      {}
+   };
+
+   [[nodiscard]] auto to_taopq( const user3& v ) noexcept
    {
       return std::tie( v.a, v.b, v.c, v.d );
    }
 
 }  // namespace example
+
+namespace tao::pq
+{
+   template<>
+   struct bind< example::user2 >
+   {
+      [[nodiscard]] static auto to_taopq( const example::user2& v ) noexcept
+      {
+         return std::tie( v.a, v.b, v.c, v.d );
+      }
+
+      [[nodiscard]] static auto from_taopq( const int a, const int b, const int c, const int d ) noexcept
+      {
+         return example::user2( a, b, c, d );
+      }
+   };
+
+}  // namespace tao::pq
 
 void run()
 {
@@ -112,15 +143,15 @@ void run()
       TEST_ASSERT( user.d == 11 );
    }
 
-   // TEST_EXECUTE( connection->execute( "DELETE FROM tao_parameter_test" ) );
-   // TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", example::user( 9 ) ) );
-   // {
-   //    const auto user = connection->execute( "SELECT * FROM tao_parameter_test" ).as< example::user2 >();
-   //    TEST_ASSERT( user.a == 9 );
-   //    TEST_ASSERT( user.b == 10 );
-   //    TEST_ASSERT( user.c == 11 );
-   //    TEST_ASSERT( user.d == 12 );
-   // }
+   TEST_EXECUTE( connection->execute( "DELETE FROM tao_parameter_test" ) );
+   TEST_EXECUTE( connection->execute( "INSERT INTO tao_parameter_test VALUES ( $1, $2, $3, $4 )", example::user3( 9 ) ) );
+   {
+      const auto user = connection->execute( "SELECT * FROM tao_parameter_test" ).as< example::user2 >();
+      TEST_ASSERT( user.a == 9 );
+      TEST_ASSERT( user.b == 10 );
+      TEST_ASSERT( user.c == 11 );
+      TEST_ASSERT( user.d == 12 );
+   }
 }
 
 auto main() -> int  //NOLINT(bugprone-exception-escape)

@@ -468,10 +468,21 @@ namespace tao::pq
 
    // default free function to detect member function to_taopq()
    template< typename T >
-   auto to_taopq( const T& t ) noexcept( noexcept( t.to_taopq() ) )
+   [[nodiscard]] auto to_taopq( const T& t ) noexcept( noexcept( t.to_taopq() ) )
       -> decltype( t.to_taopq() )
    {
       return t.to_taopq();
+   }
+
+   template< typename >
+   struct bind;
+
+   // default free function to detect bind<T>::to_taopq()
+   template< typename T >
+   [[nodiscard]] auto to_taopq( const T& t ) noexcept( noexcept( bind< T >::to_taopq( t ) ) )
+      -> decltype( bind< T >::to_taopq( t ) )
+   {
+      return bind< T >::to_taopq( t );
    }
 
    // note: calls to to_taopq are unqualified to enable ADL
