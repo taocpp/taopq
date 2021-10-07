@@ -61,11 +61,11 @@ Pairs can be nested, e.g. `std::pair<std::pair<int,int>,int>` would generate thr
 
 ## `std::tuple< Ts... >`
 
-As a generalisation of pairs, tuples generate all parameters for their individual element, in order.
+As a generalisation of pairs, tuples generate all parameters for their individual elements, in order.
 
 ## Custom Data Types
 
-Custom data types can be registered in two different ways.
+Custom data types can be registered in two different ways, by using a `to_taopq()` function or method, or by specializing the `tao::pq::parameter_traits` class template.
 
 ### `to_taopq()`
 
@@ -118,7 +118,7 @@ The above means that each time you pass a `my_coordinates` instance as a paramet
 
 #### Non-Intrusive Placement
 
-If you can't modify the class you could specalize `tao::pq::bind<...>` and place a static `to_taopq()`-method inside the specialization, or provide a free function called `to_taopq()` instead.
+If you can't modify the class you could specialize `tao::pq::bind<...>` and place a static `to_taopq()`-method inside the specialization, or provide a free function called `to_taopq()` instead.
 Those functions must accept a single parameter of the class you want to register.
 
 Example for the specialization of `tao::pq::bind<...>`:
@@ -165,6 +165,7 @@ taoPQ will simply expand parameters recursively.
 
 If the above custom data type registration via `to_taopq()` is somehow not sufficient, you can specialize the `tao::pq::parameter_traits` class template.
 For now please consult the source code or ask the developers.
+
 TODO: Write proper documentation.
 
 ---

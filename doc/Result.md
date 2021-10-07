@@ -469,7 +469,7 @@ auto tao::pq::field::as() const -> T;
 
 The conversion is handled by the `tao::pq::result_traits` class template, which is documented in the [result type conversion](Result-Type-Conversion.md) chapter.
 
-A field also has one convenience method to convert directly into a `std::optional<T>`.
+A field also has a convenience method to convert directly into a `std::optional<T>`.
 
 ```c++
 template< typename T >
