@@ -3,9 +3,10 @@
 Depending on what type of [statement](Statement.md) was executed, you receive a [result](Result.md) containing a query result set.
 Those results then offer conversions to C++ data types through various methods, e.g. `tao::pq::row::as<T>()`.
 This chapter discusses the data types that are available by default and how to register your own custom data types when needed.
-By default, the following C++ types are available for use as result types.
 
 ## Fundamental Types
+
+By default, the following C++ types are available for use as result types.
 
 * Booleans
   * `bool`
@@ -118,9 +119,6 @@ Note that unlike [`to_taopq()`](Parameter-Type-Conversion.md), there is no free 
 This is due to the fact that the custom data type is not a parameter, but rather the returned value.
 The parameter list can therefore be identical for multiple custom data types and this could leads to conflicting overloads.
 Also, [ADL➚](https://en.cppreference.com/w/cpp/language/adl) would be unavailable as only the parameters' types are considered for ADL.
-
-Note that any returned value in the above examples can itself be a registered custom type.
-taoPQ will simply expand parameters recursively.
 
 ### `tao::pq::result_traits< T >`
 
