@@ -57,7 +57,6 @@ The following chapters are good next steps to get to know taoPQ:
 * The [Parameter Type Conversion](Parameter-Type-Conversion.md) chapter explains what C++ data types can be used as parameters when executing SQL statements, how NULL values are mapped to C++ data types, and how you can extend the supported types by registering your own types.
 * The [Result Type Conversion](Result-Type-Conversion.md) chapter explains what C++ data types can be extracted from results, how you can extend the supported types by registering your own types, and how to use `tao::pq::result`'s API elegantly and efficiently.
 * The [Binary Data](Binary-Data.md) chapter explains the support for PostgreSQL's [`BYTEA`➚](https://www.postgresql.org/docs/current/datatype-binary.html) data type in taoPQ and some design decisions regarding the C++ interface.
-* The [Arrays](Arrays.md) chapter explains the support for PostgreSQL's [`ARRAY`➚](https://www.postgresql.org/docs/current/arrays.html) data types in taoPQ and some design decisions regarding the C++ interface.
 
 * The [Connection Pool](Connection-Pool.md) chapter explains how a connection pool might help your application, especially when you use multi-threading. Our connection pool offers some novel features that ease the handling of borrowed connections significantly.
 * The [Bulk Transfer](Bulk-Transfer.md) chapter explains how we support high-speed [bulk data transfer➚](https://www.postgresql.org/docs/current/sql-copy.html) to or from the server.

@@ -38,7 +38,7 @@ If you want to pass NULL to the database, you pass `tao::pq::null`.
   * `std::basic_string< std::byte >`
   * `std::basic_string_view< unsigned char >`
   * `std::basic_string_view< std::byte >`
-* [Arrays](Arrays.md) ([`ARRAY`➚](https://www.postgresql.org/docs/current/arrays.html))
+* [`ARRAY`➚](https://www.postgresql.org/docs/current/arrays.html)
   * `std::array< T, N >`
   * `std::list< T >`
   * `std::set< T >`
