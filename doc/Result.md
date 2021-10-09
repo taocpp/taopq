@@ -233,12 +233,7 @@ namespace tao::pq
       auto get() const -> const char*;
 
       template< typename T >
-      auto as() const noexcept
-         -> std::enable_if_t< result_traits_size< T > != 1, T >;
-
-      template< typename T >
-      auto as() const
-         -> std::enable_if_t< result_traits_size< T > == 1, T >;
+      auto as() const -> T;
 
       template< typename T >
       auto optional() const
@@ -456,7 +451,7 @@ Now that we covered the basics, we can retrieve the actual data and convert it t
 
 ## Field Data Conversion
 
-A field can be converted to any data type T that is a single field wide.
+A field can be converted to any data type `T` that is a single field wide.
 What we mean by that is, that `tao::pq::result_traits_size< T >` yields 1.
 This is the case for `const char*`, `std::string`, `int`, etc.
 

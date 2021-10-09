@@ -213,12 +213,7 @@ namespace tao::pq
       auto get() const -> const char*;
 
       template< typename T >
-      auto as() const noexcept
-         -> std::enable_if_t< result_traits_size< T > != 1, T >;
-
-      template< typename T >
-      auto as() const
-         -> std::enable_if_t< result_traits_size< T > == 1, T >;
+      auto as() const -> T;
 
       template< typename T >
       auto optional() const
