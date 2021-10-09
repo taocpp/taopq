@@ -34,6 +34,8 @@ namespace tao::pq::internal
 
 #if defined( _WIN32 )
 
+   // not sure if this work-around is still needed,
+   // check when CI is working again
    template< std::size_t... Ns >
    struct gen2
    {
