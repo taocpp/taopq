@@ -3,7 +3,7 @@ include(CMakeFindDependencyMacro)
 
 list(APPEND CMAKE_MODULE_PATH ${taopq_CMAKE_DIR})
 
-find_package(PostgreSQL REQUIRED MODULE)
+find_package(PostgreSQL REQUIRED)
 list(REMOVE_AT CMAKE_MODULE_PATH -1)
 
 if(NOT TARGET taocpp::taopq)
