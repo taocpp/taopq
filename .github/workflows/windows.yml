@@ -23,10 +23,6 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
 
     steps:
-    - run: choco uninstall postgresql
-
-    - run: choco install postgresql13 -y
-
     - uses: actions/checkout@v2
 
     - run: |
@@ -46,7 +42,7 @@ jobs:
 
     - shell: bash
       working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019"
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -DPostgreSQL_ADDITIONAL_VERSIONS=14
 
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
@@ -66,10 +62,6 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
 
     steps:
-    - run: choco uninstall postgresql
-
-    - run: choco install postgresql13 -y
-
     - uses: actions/checkout@v2
 
     - run: |
@@ -89,7 +81,7 @@ jobs:
 
     - shell: bash
       working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -T ClangCL
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -T ClangCL -DPostgreSQL_ADDITIONAL_VERSIONS=14
 
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
@@ -109,10 +101,6 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
 
     steps:
-    - run: choco uninstall postgresql
-
-    - run: choco install postgresql13 -y
-
     - uses: actions/checkout@v2
 
     - run: |
@@ -132,7 +120,7 @@ jobs:
 
     - shell: bash
       working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 15 2017 Win64"
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 15 2017 Win64" -DPostgreSQL_ADDITIONAL_VERSIONS=14
 
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
