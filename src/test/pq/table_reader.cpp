@@ -65,7 +65,6 @@ void run()
       TEST_ASSERT( result[ 3 ] == tao::pq::to_binary_view( "F\"O\\O" ) );
       TEST_ASSERT( result[ 4 ] == tao::pq::to_binary_view( "NU\0LL" ) );
    }
-   return;
 
    connection->execute( "DROP TABLE IF EXISTS tao_table_reader_test" );
    connection->execute( "CREATE TABLE tao_table_reader_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
