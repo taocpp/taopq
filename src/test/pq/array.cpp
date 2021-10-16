@@ -66,6 +66,20 @@ void run()
       TEST_ASSERT( r == v );
    }
 
+   {
+      connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
+      connection->execute( "CREATE TABLE tao_array_test ( a BYTEA[][] NOT NULL )" );
+
+      std::vector< tao::pq::binary > v = { tao::pq::to_binary( "1" ),
+                                           tao::pq::binary(),
+                                           tao::pq::to_binary( "F\"O\\O" ),
+                                           tao::pq::to_binary( "NU\0LL" ) };
+      connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
+
+      const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< std::vector< tao::pq::binary > >();
+      TEST_ASSERT( r == v );
+   }
+
    TEST_THROWS( connection->execute( "SELECT $1", "" ).as< std::vector< std::string > >() );
    TEST_THROWS( connection->execute( "SELECT $1", "{" ).as< std::vector< std::string > >() );
    TEST_THROWS( connection->execute( "SELECT $1", "{FOO" ).as< std::vector< std::string > >() );
