@@ -432,7 +432,7 @@ namespace tao::pq
          data[ pos++ ] = '\\';
          data[ pos++ ] = 'x';
          for( auto c : m_v ) {
-            data[ pos++ ] = hex[ ( c >> 4 ) & 15 ];
+            data[ pos++ ] = hex[ c >> 4 ];
             data[ pos++ ] = hex[ c & 15 ];
          }
       }
