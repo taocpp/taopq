@@ -22,6 +22,7 @@
 #include <tao/pq/null.hpp>
 #include <tao/pq/oid.hpp>
 
+
 namespace tao::pq
 {
    namespace internal
@@ -426,13 +427,14 @@ namespace tao::pq
       {
          // generate bytea hex format
          constexpr char hex[] = "0123456789abcdef";
-         auto pos = data.size();
-         internal::resize_uninitialized( data, pos + 2 + m_v.size() * 2 );
+         std::size_t pos = data.size();
+         internal::resize_uninitialized( data, data.size() + 3 + 2 * m_v.size() );
+         data[ pos++ ] = '\\';
          data[ pos++ ] = '\\';
          data[ pos++ ] = 'x';
          for( auto c : m_v ) {
-            data[ pos++ ] = hex[ ( c >> 4 ) % 15 ];
-            data[ pos++ ] = hex[ c % 15 ];
+            data[ pos++ ] = hex[ c >> 4];
+            data[ pos++ ] = hex[ c % 16];
          }
       }
 
