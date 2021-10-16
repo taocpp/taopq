@@ -49,21 +49,21 @@ void run()
    connection->execute( "CREATE TABLE tao_table_reader_test ( a BYTEA )" );
    {
       tao::pq::table_writer tw( connection->direct(), "COPY tao_table_reader_test ( a ) FROM STDIN" );
-      tw.insert( tao::pq::to_binary( "1" ) );
-      tw.insert( tao::pq::binary() );
+      tw.insert( tao::pq::to_binary_view( "1" ) );
+      tw.insert( tao::pq::binary_view() );
       tw.insert( tao::pq::null );
-      tw.insert( tao::pq::to_binary( "F\"O\\O" ) );
-      tw.insert( tao::pq::to_binary( "NU\0LL" ) );
+      tw.insert( tao::pq::to_binary_view( "F\"O\\O" ) );
+      tw.insert( tao::pq::to_binary_view( "NU\0LL" ) );
       TEST_ASSERT( tw.commit() == 5 );
 
       tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a ) TO STDOUT" );
       const auto result = tr.vector< std::optional< tao::pq::binary > >();
       TEST_ASSERT( result.size() == 5 );
-      TEST_ASSERT( result[ 0 ] == tao::pq::to_binary( "1" ) );
-      TEST_ASSERT( result[ 1 ] == tao::pq::binary() );
+      TEST_ASSERT( result[ 0 ] == tao::pq::to_binary_view( "1" ) );
+      TEST_ASSERT( result[ 1 ] == tao::pq::binary_view() );
       TEST_ASSERT( !result[ 2 ] );
-      TEST_ASSERT( result[ 3 ] == tao::pq::to_binary( "F\"O\\O" ) );
-      TEST_ASSERT( result[ 4 ] == tao::pq::to_binary( "NU\0LL" ) );
+      TEST_ASSERT( result[ 3 ] == tao::pq::to_binary_view( "F\"O\\O" ) );
+      TEST_ASSERT( result[ 4 ] == tao::pq::to_binary_view( "NU\0LL" ) );
    }
    return;
 
