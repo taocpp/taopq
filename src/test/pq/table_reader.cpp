@@ -14,12 +14,14 @@ void run()
    connection->execute( "CREATE TABLE tao_table_reader_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
 
    // we use a table_writer to fill the table with 100.000 rows.
-   tao::pq::table_writer tw( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) FROM STDIN" );
-   for( unsigned n = 0; n < 100000; ++n ) {
-      tw.insert( n, n / 100.0, "EUR" );
+   {
+      tao::pq::table_writer tw( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) FROM STDIN" );
+      for( unsigned n = 0; n < 100000; ++n ) {
+         tw.insert( n, n / 100.0, "EUR" );
+      }
+      TEST_ASSERT_MESSAGE( "validate reported result size", tw.commit() == 100000 );
+      TEST_ASSERT_MESSAGE( "validate actual result size", connection->execute( "SELECT COUNT(*) FROM tao_table_reader_test" ).as< std::size_t >() == 100000 );
    }
-   TEST_ASSERT_MESSAGE( "validate reported result size", tw.commit() == 100000 );
-   TEST_ASSERT_MESSAGE( "validate actual result size", connection->execute( "SELECT COUNT(*) FROM tao_table_reader_test" ).as< std::size_t >() == 100000 );
 
    {
       tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" );
@@ -43,7 +45,30 @@ void run()
 
    TEST_THROWS( connection->execute( "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" ) );
 
-   connection->execute( "DELETE FROM tao_table_reader_test" );
+   connection->execute( "DROP TABLE IF EXISTS tao_table_reader_test" );
+   connection->execute( "CREATE TABLE tao_table_reader_test ( a BYTEA )" );
+   {
+      tao::pq::table_writer tw( connection->direct(), "COPY tao_table_reader_test ( a ) FROM STDIN" );
+      tw.insert( tao::pq::to_binary( "1" ) );
+      tw.insert( tao::pq::binary() );
+      tw.insert( tao::pq::null );
+      tw.insert( tao::pq::to_binary( "F\"O\\O" ) );
+      tw.insert( tao::pq::to_binary( "NU\0LL" ) );
+      TEST_ASSERT( tw.commit() == 5 );
+
+      tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a ) TO STDOUT" );
+      const auto result = tr.vector< std::optional< tao::pq::binary > >();
+      TEST_ASSERT( result.size() == 5 );
+      TEST_ASSERT( result[ 0 ] == tao::pq::to_binary( "1" ) );
+      TEST_ASSERT( result[ 1 ] == tao::pq::binary() );
+      TEST_ASSERT( !result[ 2 ] );
+      TEST_ASSERT( result[ 3 ] == tao::pq::to_binary( "F\"O\\O" ) );
+      TEST_ASSERT( result[ 4 ] == tao::pq::to_binary( "NU\0LL" ) );
+   }
+   return;
+
+   connection->execute( "DROP TABLE IF EXISTS tao_table_reader_test" );
+   connection->execute( "CREATE TABLE tao_table_reader_test ( a INTEGER NOT NULL, b DOUBLE PRECISION, c TEXT )" );
    connection->execute( "INSERT INTO tao_table_reader_test VALUES( $1, $2, $3 )", 1, 3.141592, "A\bB\fC\"D'E\n\rF\tGH\vI\\J" );
    connection->execute( "INSERT INTO tao_table_reader_test VALUES( $1, $2, $3 )", 2, tao::pq::null, tao::pq::null );
    connection->execute( "INSERT INTO tao_table_reader_test VALUES( $1, $2, $3 )", 3, 42, "FOO" );
