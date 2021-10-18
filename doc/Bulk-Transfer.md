@@ -47,8 +47,6 @@ namespace tao::pq
    class table_reader final
    {
    private:
-      // satisfies LegacyForwardIterator, see
-      // https://en.cppreference.com/w/cpp/named_req/ForwardIterator
       class const_iterator;
 
    public:
