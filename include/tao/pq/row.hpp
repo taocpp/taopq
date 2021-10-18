@@ -6,6 +6,7 @@
 #define TAO_PQ_ROW_HPP
 
 #include <cstddef>
+#include <iterator>
 #include <optional>
 #include <stdexcept>
 #include <string>
@@ -86,7 +87,9 @@ namespace tao::pq
 
          auto operator++( int ) noexcept -> const_iterator
          {
-            return ++const_iterator( *this );
+            const_iterator nrv( *this );
+            ++*this;
+            return nrv;
          }
 
          auto operator+=( const difference_type n ) noexcept -> const_iterator&
@@ -103,7 +106,9 @@ namespace tao::pq
 
          auto operator--( int ) noexcept -> const_iterator
          {
-            return --const_iterator( *this );
+            const_iterator nrv( *this );
+            --*this;
+            return nrv;
          }
 
          auto operator-=( const difference_type n ) noexcept -> const_iterator&
@@ -124,7 +129,7 @@ namespace tao::pq
 
          [[nodiscard]] auto operator[]( const difference_type n ) const noexcept -> field
          {
-            return *( const_iterator( *this ) += n );
+            return *( *this + n );
          }
 
          friend void swap( const_iterator& lhs, const_iterator& rhs ) noexcept
@@ -132,19 +137,25 @@ namespace tao::pq
             return swap( static_cast< field& >( lhs ), static_cast< field& >( rhs ) );
          }
 
-         [[nodiscard]] friend auto operator+( const const_iterator& lhs, const difference_type rhs ) noexcept
+         [[nodiscard]] friend auto operator+( const const_iterator& lhs, const difference_type rhs ) noexcept -> const_iterator
          {
-            return const_iterator( lhs ) += rhs;
+            const_iterator nrv( lhs );
+            nrv += rhs;
+            return nrv;
          }
 
-         [[nodiscard]] friend auto operator+( const difference_type lhs, const const_iterator& rhs ) noexcept
+         [[nodiscard]] friend auto operator+( const difference_type lhs, const const_iterator& rhs ) noexcept -> const_iterator
          {
-            return const_iterator( rhs ) += lhs;
+            const_iterator nrv( rhs );
+            nrv += lhs;
+            return nrv;
          }
 
-         [[nodiscard]] friend auto operator-( const const_iterator& lhs, const difference_type rhs ) noexcept
+         [[nodiscard]] friend auto operator-( const const_iterator& lhs, const difference_type rhs ) noexcept -> const_iterator
          {
-            return const_iterator( lhs ) -= rhs;
+            const_iterator nrv( lhs );
+            nrv -= rhs;
+            return nrv;
          }
 
          [[nodiscard]] friend auto operator-( const const_iterator& lhs, const const_iterator& rhs ) noexcept -> difference_type

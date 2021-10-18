@@ -98,7 +98,6 @@ namespace tao::pq
          using value_type = const table_row;
          using pointer = const table_row*;
          using reference = const table_row&;
-         using iterator_category = std::input_iterator_tag;
 
          auto operator++() noexcept -> const_iterator&
          {
@@ -106,11 +105,6 @@ namespace tao::pq
                m_columns = 0;
             }
             return *this;
-         }
-
-         auto operator++( int ) noexcept -> const_iterator
-         {
-            return ++const_iterator( *this );
          }
 
          [[nodiscard]] auto operator*() const noexcept -> const table_row&
