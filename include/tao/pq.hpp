@@ -5,6 +5,10 @@
 #ifndef TAO_PQ_HPP
 #define TAO_PQ_HPP
 
+#if __cplusplus < 201703L
+#error "taoPQ requires C++17 or newer"
+#else
+
 #include <tao/pq/version.hpp>
 
 #include <tao/pq/binary.hpp>
@@ -35,4 +39,5 @@
 
 #include <tao/pq/large_object.hpp>
 
+#endif
 #endif
