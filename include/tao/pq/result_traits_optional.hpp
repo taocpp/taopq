@@ -10,35 +10,31 @@
 #include <tao/pq/result_traits.hpp>
 #include <tao/pq/row.hpp>
 
-namespace tao::pq
+template< typename T >
+struct tao::pq::result_traits< std::optional< T > >
 {
-   template< typename T >
-   struct result_traits< std::optional< T > >
+   static constexpr std::size_t size = result_traits_size< T >;
+
+   [[nodiscard]] static auto null() noexcept -> std::optional< T >
    {
-      static constexpr std::size_t size = result_traits_size< T >;
+      return std::nullopt;
+   }
 
-      [[nodiscard]] static auto null() noexcept -> std::optional< T >
-      {
-         return std::nullopt;
-      }
+   [[nodiscard]] static auto from( const char* value ) -> std::optional< T >
+   {
+      return result_traits< T >::from( value );
+   }
 
-      [[nodiscard]] static auto from( const char* value ) -> std::optional< T >
-      {
-         return result_traits< T >::from( value );
-      }
-
-      template< typename Row >
-      [[nodiscard]] static auto from( const Row& row ) -> std::optional< T >
-      {
-         for( std::size_t column = 0; column < row.columns(); ++column ) {
-            if( !row.is_null( column ) ) {
-               return result_traits< T >::from( row );
-            }
+   template< typename Row >
+   [[nodiscard]] static auto from( const Row& row ) -> std::optional< T >
+   {
+      for( std::size_t column = 0; column < row.columns(); ++column ) {
+         if( !row.is_null( column ) ) {
+            return result_traits< T >::from( row );
          }
-         return null();
       }
-   };
-
-}  // namespace tao::pq
+      return null();
+   }
+};
 
 #endif

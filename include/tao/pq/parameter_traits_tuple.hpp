@@ -12,59 +12,55 @@
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/parameter_traits.hpp>
 
-namespace tao::pq
+template< typename... Ts >
+struct tao::pq::parameter_traits< std::tuple< Ts... > >
 {
-   template< typename... Ts >
-   struct parameter_traits< std::tuple< Ts... > >
+private:
+   using tuple_t = std::tuple< parameter_traits< std::decay_t< Ts > >... >;
+   tuple_t m_tuple;
+
+   using gen = internal::gen< parameter_traits< std::decay_t< Ts > >::columns... >;
+
+public:
+   explicit parameter_traits( const std::tuple< Ts... >& tuple ) noexcept( noexcept( tuple_t( tuple ) ) )
+      : m_tuple( tuple )
+   {}
+
+   explicit parameter_traits( std::tuple< Ts... >&& tuple ) noexcept( noexcept( tuple_t( std::move( tuple ) ) ) )
+      : m_tuple( std::move( tuple ) )
+   {}
+
+   static constexpr std::size_t columns{ ( 0 + ... + parameter_traits< std::decay_t< Ts > >::columns ) };
+
+   template< std::size_t I >
+   [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) ) -> oid
    {
-   private:
-      using tuple_t = std::tuple< parameter_traits< std::decay_t< Ts > >... >;
-      tuple_t m_tuple;
+      return std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >();
+   }
 
-      using gen = internal::gen< parameter_traits< std::decay_t< Ts > >::columns... >;
+   template< std::size_t I >
+   [[nodiscard]] constexpr auto value() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >() ) ) -> const char*
+   {
+      return std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >();
+   }
 
-   public:
-      explicit parameter_traits( const std::tuple< Ts... >& tuple ) noexcept( noexcept( tuple_t( tuple ) ) )
-         : m_tuple( tuple )
-      {}
+   template< std::size_t I >
+   [[nodiscard]] constexpr auto length() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >() ) ) -> int
+   {
+      return std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >();
+   }
 
-      explicit parameter_traits( std::tuple< Ts... >&& tuple ) noexcept( noexcept( tuple_t( std::move( tuple ) ) ) )
-         : m_tuple( std::move( tuple ) )
-      {}
+   template< std::size_t I >
+   [[nodiscard]] constexpr auto format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >() ) ) -> int
+   {
+      return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
+   }
 
-      static constexpr std::size_t columns{ ( 0 + ... + parameter_traits< std::decay_t< Ts > >::columns ) };
-
-      template< std::size_t I >
-      [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) ) -> oid
-      {
-         return std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >();
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] constexpr auto value() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >() ) ) -> const char*
-      {
-         return std::get< gen::template outer< I > >( m_tuple ).template value< gen::template inner< I > >();
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] constexpr auto length() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >() ) ) -> int
-      {
-         return std::get< gen::template outer< I > >( m_tuple ).template length< gen::template inner< I > >();
-      }
-
-      template< std::size_t I >
-      [[nodiscard]] constexpr auto format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >() ) ) -> int
-      {
-         return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
-      }
-
-      template< std::size_t I >
-      void copy_to( std::string& data ) const
-      {
-         std::get< gen::template outer< I > >( m_tuple ).template copy_to< gen::template inner< I > >( data );
-      }
-   };
-
-}  // namespace tao::pq
+   template< std::size_t I >
+   void copy_to( std::string& data ) const
+   {
+      std::get< gen::template outer< I > >( m_tuple ).template copy_to< gen::template inner< I > >( data );
+   }
+};
 
 #endif
