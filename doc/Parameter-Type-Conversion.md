@@ -129,17 +129,14 @@ struct some_coordinates
    double x,y,z;
 };
 
-namespace tao::pq
+template<>
+struct tao::pq::bind< some_coordinates >
 {
-   template<>
-   struct bind< some_coordinates >
+   static auto to_taopq( const some_coordinates& v ) noexcept
    {
-      static auto to_taopq( const some_coordinates& v ) noexcept
-      {
-         return std::tie( v.x, v.y, v.z );
-      }
-   };
-}
+      return std::tie( v.x, v.y, v.z );
+   }
+};
 ```
 
 Example for the free function:

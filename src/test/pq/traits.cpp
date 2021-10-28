@@ -70,23 +70,19 @@ namespace example
 
 }  // namespace example
 
-namespace tao::pq
+template<>
+struct tao::pq::bind< example::user2 >
 {
-   template<>
-   struct bind< example::user2 >
+   [[nodiscard]] static auto to_taopq( const example::user2& v ) noexcept
    {
-      [[nodiscard]] static auto to_taopq( const example::user2& v ) noexcept
-      {
-         return std::tie( v.a, v.b, v.c, v.d );
-      }
+      return std::tie( v.a, v.b, v.c, v.d );
+   }
 
-      [[nodiscard]] static auto from_taopq( const int a, const int b, const int c, const int d ) noexcept
-      {
-         return example::user2( a, b, c, d );
-      }
-   };
-
-}  // namespace tao::pq
+   [[nodiscard]] static auto from_taopq( const int a, const int b, const int c, const int d ) noexcept
+   {
+      return example::user2( a, b, c, d );
+   }
+};
 
 void run()
 {

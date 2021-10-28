@@ -102,17 +102,14 @@ struct some_coordinates
    double x,y,z;
 };
 
-namespace tao::pq
+template<>
+struct tao::pq::bind< some_coordinates >
 {
-   template<>
-   struct bind< some_coordinates >
+   static auto from_taopq( const double x, const double y, const double z ) noexcept
    {
-      static auto from_taopq( const double x, const double y, const double z ) noexcept
-      {
-         return some_coordinates{ x, y, z };
-      }
-   };
-}
+      return some_coordinates{ x, y, z };
+   }
+};
 ```
 
 Note that unlike [`to_taopq()`](Parameter-Type-Conversion.md), there is no free function version for `from_taopq()` available.
