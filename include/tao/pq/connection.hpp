@@ -20,12 +20,12 @@
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
-#include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {
    class connection_pool;
+   class table_writer;
 
    class connection final
       : public std::enable_shared_from_this< connection >
@@ -33,6 +33,7 @@ namespace tao::pq
    private:
       friend class connection_pool;
       friend class transaction;
+      friend class table_writer;
 
       const std::unique_ptr< PGconn, decltype( &PQfinish ) > m_pgconn;
       pq::transaction* m_current_transaction;
@@ -45,23 +46,14 @@ namespace tao::pq
       static void check_prepared_name( const std::string_view name );
       [[nodiscard]] auto is_prepared( const std::string_view name ) const noexcept -> bool;
 
-      [[nodiscard]] auto execute_final( const result::mode_t mode,
-                                        const char* statement,
-                                        const int n_params,
-                                        const Oid types[],
-                                        const char* const values[],
-                                        const int lengths[],
-                                        const int formats[] ) -> result;
+      void send_params( const char* statement,
+                        const int n_params,
+                        const Oid types[],
+                        const char* const values[],
+                        const int lengths[],
+                        const int formats[] );
 
-      [[nodiscard]] auto execute_params( const result::mode_t mode,
-                                         const char* statement,
-                                         const int n_params,
-                                         const Oid types[],
-                                         const char* const values[],
-                                         const int lengths[],
-                                         const int formats[] ) -> result;
-
-      [[nodiscard]] auto execute_single( const internal::zsv statement ) -> result;
+      [[nodiscard]] auto get_result() noexcept -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
 
       // pass-key idiom
       class private_key final

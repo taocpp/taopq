@@ -125,16 +125,41 @@ namespace tao::pq
       }
    }
 
-   auto transaction::execute_params( const result::mode_t mode,
-                                     const char* statement,
-                                     const int n_params,
-                                     const Oid types[],
-                                     const char* const values[],
-                                     const int lengths[],
-                                     const int formats[] ) -> result
+   void transaction::send_params( const char* statement,
+                                  const int n_params,
+                                  const Oid types[],
+                                  const char* const values[],
+                                  const int lengths[],
+                                  const int formats[] )
+   {
+      m_connection->send_params( statement, n_params, types, values, lengths, formats );
+   }
+
+   auto transaction::get_result() -> result
    {
       check_current_transaction();
-      return m_connection->execute_params( mode, statement, n_params, types, values, lengths, formats );
+
+      auto result = m_connection->get_result();
+      if( result ) {
+         switch( PQresultStatus( result.get() ) ) {
+            case PGRES_COPY_IN:
+               if( PQputCopyEnd( m_connection->underlying_raw_ptr(), "unexpected COPY FROM statement" ) < 0 ) {
+                  throw std::runtime_error( "PQputCopyEnd() failed: " + m_connection->error_message() );  // LCOV_EXCL_LINE
+               }
+               break;
+
+            case PGRES_COPY_OUT:
+               // TODO: How to cancel an unexpected PGRES_COPY_OUT?
+               break;
+
+            default:;
+         }
+         while( auto next = m_connection->get_result() ) {
+            result = std::move( next );
+         }
+      }
+
+      return pq::result( result.release() );
    }
 
    auto transaction::subtransaction() -> std::shared_ptr< transaction >

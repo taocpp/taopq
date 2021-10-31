@@ -35,7 +35,7 @@ namespace tao::pq
       }
    }
 
-   result::result( PGresult* pgresult, const mode_t mode )
+   result::result( PGresult* pgresult )
       : m_pgresult( pgresult, &PQclear ),
         m_columns( PQnfields( pgresult ) ),
         m_rows( PQntuples( pgresult ) )
@@ -44,22 +44,13 @@ namespace tao::pq
       switch( status ) {
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
-            if( mode == mode_t::expect_ok ) {
-               return;
-            }
-            break;
+            return;
 
          case PGRES_COPY_IN:
-            if( mode == mode_t::expect_copy_in ) {
-               return;
-            }
-            break;
+            throw std::runtime_error( "unexpected PGRES_COPY_IN" );
 
          case PGRES_COPY_OUT:
-            if( mode == mode_t::expect_copy_out ) {
-               return;
-            }
-            break;
+            throw std::runtime_error( "unexpected PGRES_COPY_OUT" );
 
          case PGRES_EMPTY_QUERY:
             throw std::runtime_error( "empty query" );
@@ -67,9 +58,6 @@ namespace tao::pq
          default:
             internal::throw_sqlstate( pgresult );
       }
-
-      const std::string res_status = PQresStatus( status );
-      throw std::runtime_error( "unexpected result: " + res_status );
    }
 
    auto result::has_rows_affected() const noexcept -> bool

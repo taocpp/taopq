@@ -57,44 +57,31 @@ namespace tao::pq
       [[nodiscard]] auto current_transaction() const noexcept -> transaction*&;
       void check_current_transaction() const;
 
-      [[nodiscard]] auto execute_params( const result::mode_t mode,
-                                         const char* statement,
-                                         const int n_params,
-                                         const Oid types[],
-                                         const char* const values[],
-                                         const int lengths[],
-                                         const int formats[] ) -> result;
+      void send_params( const char* statement,
+                        const int n_params,
+                        const Oid types[],
+                        const char* const values[],
+                        const int lengths[],
+                        const int formats[] );
 
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
-      [[nodiscard]] auto execute_indexed( const result::mode_t mode,
-                                          const char* statement,
-                                          std::index_sequence< Os... > /*unused*/,
-                                          std::index_sequence< Is... > /*unused*/,
-                                          const std::tuple< Ts... >& tuple )
+      void send_indexed( const char* statement,
+                         std::index_sequence< Os... > /*unused*/,
+                         std::index_sequence< Is... > /*unused*/,
+                         const std::tuple< Ts... >& tuple )
       {
          const Oid types[] = { static_cast< Oid >( std::get< Os >( tuple ).template type< Is >() )... };
          const char* const values[] = { std::get< Os >( tuple ).template value< Is >()... };
          const int lengths[] = { std::get< Os >( tuple ).template length< Is >()... };
          const int formats[] = { std::get< Os >( tuple ).template format< Is >()... };
-         return execute_params( mode, statement, sizeof...( Os ), types, values, lengths, formats );
+         send_params( statement, sizeof...( Os ), types, values, lengths, formats );
       }
 
       template< typename... Ts >
-      [[nodiscard]] auto execute_traits( const result::mode_t mode, const char* statement, const Ts&... ts )
+      void send_traits( const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         return transaction::execute_indexed( mode, statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
-      }
-
-      template< typename... As >
-      auto execute_mode( const result::mode_t mode, const char* statement, As&&... as )
-      {
-         if constexpr( sizeof...( As ) == 0 ) {
-            return execute_params( mode, statement, 0, nullptr, nullptr, nullptr, nullptr );
-         }
-         else {
-            return execute_traits( mode, statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
-         }
+         transaction::send_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
    public:
@@ -106,9 +93,24 @@ namespace tao::pq
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
       template< typename... As >
+      void send( const internal::zsv statement, As&&... as )
+      {
+         check_current_transaction();
+         if constexpr( sizeof...( As ) == 0 ) {
+            send_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
+         }
+         else {
+            send_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
+         }
+      }
+
+      auto get_result() -> result;
+
+      template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )
       {
-         return transaction::execute_mode( result::mode_t::expect_ok, statement, std::forward< As >( as )... );
+         transaction::send( statement, std::forward< As >( as )... );
+         return get_result();
       }
 
       void commit();

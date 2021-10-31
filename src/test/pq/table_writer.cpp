@@ -35,7 +35,8 @@ void run()
    TEST_THROWS( tao::pq::table_writer( connection->direct(), "SELECT 42" ) );
    TEST_THROWS( tao::pq::table_writer( connection->direct(), "" ) );
    TEST_THROWS( tao::pq::table_writer( connection->direct(), "COPY tao_table_writer_test ( a, b, c, d ) FROM STDIN" ) );
-   TEST_THROWS( tao::pq::table_writer( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) TO STDOUT" ) );
+   // TODO: Once we know how to cancel COPY TO statements, activate this:
+   // TEST_THROWS( tao::pq::table_writer( connection->direct(), "COPY tao_table_writer_test ( a, b, c ) TO STDOUT" ) );
 
    TEST_THROWS( connection->execute( "COPY tao_table_writer_test ( a, b, c ) FROM STDIN" ) );
 

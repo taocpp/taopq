@@ -7,6 +7,7 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/connection.hpp>
+#include <tao/pq/exception.hpp>
 #include <tao/pq/result.hpp>
 #include <tao/pq/transaction.hpp>
 
@@ -15,7 +16,30 @@ namespace tao::pq
    table_writer::~table_writer()
    {
       if( m_transaction ) {
-         PQputCopyEnd( m_transaction->connection()->underlying_raw_ptr(), "cancelled in dtor" );
+         PQputCopyEnd( m_transaction->connection()->underlying_raw_ptr(), "cancel COPY FROM in dtor" );
+      }
+   }
+
+   void table_writer::check_result()
+   {
+      auto result = m_transaction->connection()->get_result();
+      switch( PQresultStatus( result.get() ) ) {
+         case PGRES_COPY_IN:
+            break;
+
+         case PGRES_COPY_OUT:
+            // TODO: How to cancel an unexpected PGRES_COPY_OUT?
+            throw std::runtime_error( "unexpected COPY TO statement" );
+
+         case PGRES_COMMAND_OK:
+         case PGRES_TUPLES_OK:
+            throw std::runtime_error( "expected COPY FROM statement" );
+
+         case PGRES_EMPTY_QUERY:
+            throw std::runtime_error( "unexpected empty query" );
+
+         default:
+            internal::throw_sqlstate( result.get() );
       }
    }
 
@@ -33,8 +57,7 @@ namespace tao::pq
       if( r != 1 ) {
          throw std::runtime_error( "PQputCopyEnd() failed: " + m_transaction->connection()->error_message() );
       }
-      const auto rows_affected = result( PQgetResult( m_transaction->connection()->underlying_raw_ptr() ) ).rows_affected();
-      m_transaction->connection()->handle_notifications();
+      const auto rows_affected = m_transaction->get_result().rows_affected();
       m_transaction.reset();
       m_previous.reset();
       return rows_affected;

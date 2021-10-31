@@ -43,13 +43,16 @@ namespace tao::pq
          table_writer::insert_indexed( typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
+      void check_result();
+
    public:
       template< typename... As >
       table_writer( const std::shared_ptr< transaction >& transaction, const internal::zsv statement, As&&... as )
          : m_previous( transaction ),
            m_transaction( std::make_shared< internal::transaction_guard >( transaction->connection() ) )
       {
-         m_transaction->execute_mode( result::mode_t::expect_copy_in, statement, std::forward< As >( as )... );
+         m_transaction->send( statement, std::forward< As >( as )... );
+         check_result();
       }
 
       ~table_writer();

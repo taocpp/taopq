@@ -57,14 +57,7 @@ namespace tao::pq
       void check_has_result_set() const;
       void check_row( const std::size_t row ) const;
 
-      enum class mode_t
-      {
-         expect_ok,
-         expect_copy_in,
-         expect_copy_out
-      };
-
-      result( PGresult* pgresult, const mode_t mode = mode_t::expect_ok );
+      explicit result( PGresult* pgresult );
 
    public:
       [[nodiscard]] auto has_rows_affected() const noexcept -> bool;

@@ -15,6 +15,7 @@
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
+#include <tao/pq/result.hpp>
 
 namespace tao::pq
 {
@@ -121,7 +122,7 @@ namespace tao::pq
                   rollback();
                }
                // LCOV_EXCL_START
-               catch( const std::exception& ) {
+               catch( const std::exception& e ) {
                   // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
                }
                catch( ... ) {
@@ -181,36 +182,25 @@ namespace tao::pq
       return m_prepared_statements.find( name ) != m_prepared_statements.end();
    }
 
-   auto connection::execute_final( const result::mode_t mode,
-                                   const char* statement,
-                                   const int n_params,
-                                   const Oid types[],
-                                   const char* const values[],
-                                   const int lengths[],
-                                   const int formats[] ) -> result
+   void connection::send_params( const char* statement,
+                                 const int n_params,
+                                 const Oid types[],
+                                 const char* const values[],
+                                 const int lengths[],
+                                 const int formats[] )
    {
-      if( is_prepared( statement ) ) {
-         return result( PQexecPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ), mode );
+      if( !( is_prepared( statement ) ?
+                PQsendQueryPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) :
+                PQsendQueryParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) ) ) {
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
       }
-      return result( PQexecParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ), mode );
    }
 
-   auto connection::execute_params( const result::mode_t mode,
-                                    const char* statement,
-                                    const int n_params,
-                                    const Oid types[],
-                                    const char* const values[],
-                                    const int lengths[],
-                                    const int formats[] ) -> result
+   auto connection::get_result() noexcept -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
-      result nrv = execute_final( mode, statement, n_params, types, values, lengths, formats );
+      std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );
       handle_notifications();
-      return nrv;
-   }
-
-   auto connection::execute_single( const internal::zsv statement ) -> result
-   {
-      return execute_params( result::mode_t::expect_ok, statement, 0, nullptr, nullptr, nullptr, nullptr );
+      return result;
    }
 
    connection::connection( const private_key /*unused*/, const std::string& connection_info )
@@ -307,13 +297,13 @@ namespace tao::pq
       if( !connection::is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement not found: " + name );
       }
-      (void)connection::execute_single( "DEALLOCATE " + escape_identifier( name ) );
+      (void)connection::execute( "DEALLOCATE " + escape_identifier( name ) );
       m_prepared_statements.erase( name );
    }
 
    void connection::listen( const std::string_view channel )
    {
-      (void)connection::execute_single( "LISTEN " + connection::escape_identifier( channel ) );
+      (void)connection::execute( "LISTEN " + connection::escape_identifier( channel ) );
    }
 
    void connection::listen( const std::string_view channel, const std::function< void( const char* payload ) >& handler )
@@ -324,21 +314,17 @@ namespace tao::pq
 
    void connection::unlisten( const std::string_view channel )
    {
-      (void)connection::execute_single( "UNLISTEN " + connection::escape_identifier( channel ) );
+      (void)connection::execute( "UNLISTEN " + connection::escape_identifier( channel ) );
    }
 
    void connection::notify( const std::string_view channel )
    {
-      (void)connection::execute_single( "NOTIFY " + connection::escape_identifier( channel ) );
+      (void)connection::execute( "NOTIFY " + connection::escape_identifier( channel ) );
    }
 
    void connection::notify( const std::string_view channel, const std::string_view payload )
    {
-      constexpr Oid types[] = { static_cast< Oid >( oid::text ), static_cast< Oid >( oid::text ) };
-      const char* const values[] = { channel.data(), payload.data() };
-      const int lengths[] = { static_cast< int >( channel.size() ), static_cast< int >( payload.size() ) };
-      constexpr int formats[] = { 1, 1 };
-      (void)execute_params( result::mode_t::expect_ok, "SELECT pg_notify( $1, $2 )", 2, types, values, lengths, formats );
+      (void)connection::execute( "SELECT pg_notify( $1, $2 )", channel, payload );
    }
 
    void connection::handle_notifications()
