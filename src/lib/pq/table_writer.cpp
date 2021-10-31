@@ -16,7 +16,11 @@ namespace tao::pq
    table_writer::~table_writer()
    {
       if( m_transaction ) {
-         PQputCopyEnd( m_transaction->connection()->underlying_raw_ptr(), "cancel COPY FROM in dtor" );
+         try {
+            m_transaction->get_result();
+         }
+         catch( ... ) {
+         }
       }
    }
 
