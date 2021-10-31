@@ -25,6 +25,7 @@
 namespace tao::pq
 {
    class connection_pool;
+   class table_reader;
    class table_writer;
 
    class connection final
@@ -32,8 +33,9 @@ namespace tao::pq
    {
    private:
       friend class connection_pool;
-      friend class transaction;
+      friend class table_reader;
       friend class table_writer;
+      friend class transaction;
 
       const std::unique_ptr< PGconn, decltype( &PQfinish ) > m_pgconn;
       pq::transaction* m_current_transaction;

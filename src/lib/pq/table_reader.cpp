@@ -10,11 +10,36 @@
 #include <cstring>
 
 #include <tao/pq/connection.hpp>
+#include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {
+   void table_reader::check_result()
+   {
+      auto result = m_transaction->connection()->get_result();
+      switch( PQresultStatus( result.get() ) ) {
+         case PGRES_COPY_OUT:
+            m_columns = PQnfields( result.get() );
+            break;
+
+         case PGRES_COPY_IN:
+            m_transaction->get_result();
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+
+         case PGRES_COMMAND_OK:
+         case PGRES_TUPLES_OK:
+            throw std::runtime_error( "expected COPY TO statement" );
+
+         case PGRES_EMPTY_QUERY:
+            throw std::runtime_error( "unexpected empty query" );
+
+         default:
+            internal::throw_sqlstate( result.get() );
+      }
+   }
+
    auto table_reader::get_raw_data() -> std::string_view
    {
       char* buffer = nullptr;

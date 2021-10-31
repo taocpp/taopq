@@ -30,18 +30,23 @@ namespace tao::pq
    protected:
       std::shared_ptr< transaction > m_previous;
       std::shared_ptr< transaction > m_transaction;
-      const result m_result;
+      std::size_t m_columns;
       std::unique_ptr< char, decltype( &PQfreemem ) > m_buffer;
       std::vector< const char* > m_data;
+
+      void check_result();
 
    public:
       template< typename... As >
       table_reader( const std::shared_ptr< transaction >& transaction, const internal::zsv statement, As&&... as )
          : m_previous( transaction ),
            m_transaction( std::make_shared< internal::transaction_guard >( transaction->connection() ) ),
-           m_result( m_transaction->execute( statement, std::forward< As >( as )... ) ),  // result::mode_t::expect_copy_out
+           m_columns( 0 ),
            m_buffer( nullptr, &PQfreemem )
-      {}
+      {
+         m_transaction->send( statement, std::forward< As >( as )... );
+         check_result();
+      }
 
       ~table_reader() = default;
 
@@ -52,7 +57,7 @@ namespace tao::pq
 
       [[nodiscard]] auto columns() const noexcept -> std::size_t
       {
-         return m_result.columns();
+         return m_columns;
       }
 
       // note: the following API is experimental and subject to change
