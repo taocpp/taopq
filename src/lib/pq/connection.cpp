@@ -29,7 +29,7 @@ namespace tao::pq
             : transaction( connection )
          {
             if( current_transaction() != nullptr ) {
-               throw std::logic_error( "transaction order error" );
+               throw std::logic_error( "invalid transaction order" );
             }
             current_transaction() = this;
          }
