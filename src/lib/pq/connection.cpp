@@ -287,9 +287,26 @@ namespace tao::pq
    void connection::prepare( const std::string& name, const std::string& statement )
    {
       connection::check_prepared_name( name );
-      (void)result( PQprepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) );
+      if( PQsendPrepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) == 0 ) {
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
+      }
+      auto result = get_result();
+      switch( PQresultStatus( result.get() ) ) {
+         case PGRES_COMMAND_OK:
+            break;
+
+         case PGRES_TUPLES_OK:
+         case PGRES_EMPTY_QUERY:
+         case PGRES_COPY_IN:
+         case PGRES_COPY_OUT:
+            TAO_PQ_UNREACHABLE;
+
+         default:
+            while( get_result() ) {
+            }
+            internal::throw_sqlstate( result.get() );
+      }
       m_prepared_statements.insert( name );
-      handle_notifications();
    }
 
    void connection::deallocate( const std::string& name )
