@@ -122,7 +122,7 @@ namespace tao::pq
                   rollback();
                }
                // LCOV_EXCL_START
-               catch( const std::exception& e ) {
+               catch( const std::exception& ) {
                   // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
                }
                catch( ... ) {
@@ -298,13 +298,13 @@ namespace tao::pq
       if( !connection::is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement not found: " + name );
       }
-      (void)connection::execute( "DEALLOCATE " + escape_identifier( name ) );
+      connection::execute( "DEALLOCATE " + escape_identifier( name ) );
       m_prepared_statements.erase( name );
    }
 
    void connection::listen( const std::string_view channel )
    {
-      (void)connection::execute( "LISTEN " + connection::escape_identifier( channel ) );
+      connection::execute( "LISTEN " + connection::escape_identifier( channel ) );
    }
 
    void connection::listen( const std::string_view channel, const std::function< void( const char* payload ) >& handler )
@@ -315,17 +315,17 @@ namespace tao::pq
 
    void connection::unlisten( const std::string_view channel )
    {
-      (void)connection::execute( "UNLISTEN " + connection::escape_identifier( channel ) );
+      connection::execute( "UNLISTEN " + connection::escape_identifier( channel ) );
    }
 
    void connection::notify( const std::string_view channel )
    {
-      (void)connection::execute( "NOTIFY " + connection::escape_identifier( channel ) );
+      connection::execute( "NOTIFY " + connection::escape_identifier( channel ) );
    }
 
    void connection::notify( const std::string_view channel, const std::string_view payload )
    {
-      (void)connection::execute( "SELECT pg_notify( $1, $2 )", channel, payload );
+      connection::execute( "SELECT pg_notify( $1, $2 )", channel, payload );
    }
 
    void connection::handle_notifications()
