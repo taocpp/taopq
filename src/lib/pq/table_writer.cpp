@@ -33,16 +33,24 @@ namespace tao::pq
 
          case PGRES_COPY_OUT:
             // TODO: How to cancel an unexpected PGRES_COPY_OUT?
+            while( m_transaction->connection()->get_result() ) {
+            }
             throw std::runtime_error( "unexpected COPY TO statement" );
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
+            while( m_transaction->connection()->get_result() ) {
+            }
             throw std::runtime_error( "expected COPY FROM statement" );
 
          case PGRES_EMPTY_QUERY:
+            while( m_transaction->connection()->get_result() ) {
+            }
             throw std::runtime_error( "unexpected empty query" );
 
          default:
+            while( m_transaction->connection()->get_result() ) {
+            }
             internal::throw_sqlstate( result.get() );
       }
    }
