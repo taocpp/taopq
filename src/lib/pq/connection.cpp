@@ -189,9 +189,10 @@ namespace tao::pq
                                  const int lengths[],
                                  const int formats[] )
    {
-      if( !( is_prepared( statement ) ?
-                PQsendQueryPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) :
-                PQsendQueryParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 ) ) ) {
+      const auto result = is_prepared( statement ) ?
+                             PQsendQueryPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) :
+                             PQsendQueryParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 );
+      if( result == 0 ) {
          throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
       }
    }

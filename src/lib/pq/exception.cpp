@@ -17,7 +17,7 @@ namespace tao::pq
       {
          const char* error_message = PQresultErrorMessage( pgresult );
          const char* sql_state = PQresultErrorField( pgresult, PG_DIAG_SQLSTATE );
-         if( !sql_state ) {
+         if( sql_state == nullptr ) {
             throw std::runtime_error( error_message );
          }
          internal::throw_sqlstate( error_message, sql_state );
