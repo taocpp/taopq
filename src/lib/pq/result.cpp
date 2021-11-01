@@ -47,13 +47,13 @@ namespace tao::pq
             return;
 
          case PGRES_COPY_IN:
-            throw std::runtime_error( "unexpected PGRES_COPY_IN" );
+            throw std::runtime_error( "unexpected COPY FROM statement" );
 
          case PGRES_COPY_OUT:
-            throw std::runtime_error( "unexpected PGRES_COPY_OUT" );
+            throw std::runtime_error( "unexpected COPY TO statement" );
 
          case PGRES_EMPTY_QUERY:
-            throw std::runtime_error( "empty query" );
+            throw std::runtime_error( "unexpected empty query" );
 
          default:
             internal::throw_sqlstate( pgresult );
