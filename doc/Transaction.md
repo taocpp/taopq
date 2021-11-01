@@ -32,10 +32,20 @@ namespace tao::pq
       auto subtransaction()
          -> std::shared_ptr< transaction >;
 
-      // statement execution
+      // asynchronous statement execution
+      template< typename... As >
+      void send( const internal::zsv statement, As&&... as );
+
+      // asynchronous result retrieval
+      auto get_result() -> result;
+
+      // synchronous statement execution
       template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )
-         -> result;
+      {
+         send( statement, std::forward< As >( as )... );
+         return get_result();
+      }
 
       // finalize
       void commit();
