@@ -40,8 +40,7 @@ namespace tao::pq
         m_columns( PQnfields( pgresult ) ),
         m_rows( PQntuples( pgresult ) )
    {
-      const auto status = PQresultStatus( pgresult );
-      switch( status ) {
+      switch( PQresultStatus( pgresult ) ) {
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
             return;
