@@ -104,7 +104,7 @@ namespace tao::pq
          }
       }
 
-      auto get_result() -> result;
+      [[nodiscard]] auto get_result() -> result;
 
       template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )

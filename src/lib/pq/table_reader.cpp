@@ -25,7 +25,7 @@ namespace tao::pq
             break;
 
          case PGRES_COPY_IN:
-            m_transaction->get_result();
+            (void)m_transaction->get_result();
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
 
          case PGRES_COMMAND_OK:
@@ -58,8 +58,7 @@ namespace tao::pq
          case 0:                 // LCOV_EXCL_LINE
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          case -1: {
-            (void)pq::result( PQgetResult( m_transaction->connection()->underlying_raw_ptr() ) );
-            m_transaction->connection()->handle_notifications();
+            (void)pq::result( m_transaction->connection()->get_result().release() );
             m_transaction.reset();
             m_previous.reset();
             return {};

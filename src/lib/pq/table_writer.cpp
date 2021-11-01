@@ -17,7 +17,7 @@ namespace tao::pq
    {
       if( m_transaction ) {
          try {
-            m_transaction->get_result();
+            (void)m_transaction->get_result();
          }
          catch( ... ) {
          }
