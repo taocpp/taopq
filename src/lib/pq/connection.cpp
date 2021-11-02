@@ -206,10 +206,12 @@ namespace tao::pq
                break;
             case 1:
                return;
+               // LCOV_EXCL_START
             case -1:
-               throw std::runtime_error( "PQputCopyData() failed: " + error_message() );  // LCOV_EXCL_LINE
+               throw std::runtime_error( "PQputCopyData() failed: " + error_message() );
             default:
-               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_END
          }
       }
    }
@@ -220,13 +222,40 @@ namespace tao::pq
          switch( PQputCopyEnd( m_pgconn.get(), error_message ) ) {
             case 0:
                // TODO: wait( POLLOUT );
+               // TODO: What about notifications? POLLIN|POLLOUT?
                break;
             case 1:
                return;
+               // LCOV_EXCL_START
             case -1:
-               throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );  // LCOV_EXCL_LINE
+               throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );
             default:
-               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_END
+         }
+      }
+   }
+
+   auto connection::get_copy_data( char*& buffer ) -> std::size_t
+   {
+      while( true ) {
+         const auto result = PQgetCopyData( m_pgconn.get(), &buffer, false );  // TODO: Use async when wait(POLLIN) is implemented
+         if( result > 0 ) {
+            return static_cast< std::size_t >( result );
+         }
+         switch( result ) {
+            case 0:
+               // TODO: wait( POLLIN );
+               get_notifications();
+               break;
+            case -1:
+               return 0;
+               // LCOV_EXCL_START
+            case -2:
+               throw std::runtime_error( "PQgetCopyData() failed: " + error_message() );
+            default:
+               TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_END
          }
       }
    }

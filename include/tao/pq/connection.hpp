@@ -57,6 +57,7 @@ namespace tao::pq
 
       void put_copy_data( const char* buffer, const std::size_t size );
       void put_copy_end( const char* error_message = nullptr );
+      auto get_copy_data( char*& buffer ) -> std::size_t;
 
       [[nodiscard]] auto get_result() noexcept -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
 
