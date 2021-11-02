@@ -197,6 +197,40 @@ namespace tao::pq
       }
    }
 
+   void connection::put_copy_data( const char* buffer, const std::size_t size )
+   {
+      while( true ) {
+         switch( PQputCopyData( m_pgconn.get(), buffer, static_cast< int >( size ) ) ) {
+            case 0:
+               // TODO: wait( POLLOUT );
+               break;
+            case 1:
+               return;
+            case -1:
+               throw std::runtime_error( "PQputCopyData() failed: " + error_message() );  // LCOV_EXCL_LINE
+            default:
+               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+         }
+      }
+   }
+
+   void connection::put_copy_end( const char* error_message )
+   {
+      while( true ) {
+         switch( PQputCopyEnd( m_pgconn.get(), error_message ) ) {
+            case 0:
+               // TODO: wait( POLLOUT );
+               break;
+            case 1:
+               return;
+            case -1:
+               throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );  // LCOV_EXCL_LINE
+            default:
+               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+         }
+      }
+   }
+
    auto connection::get_result() noexcept -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
       std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );

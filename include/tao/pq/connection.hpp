@@ -55,6 +55,9 @@ namespace tao::pq
                         const int lengths[],
                         const int formats[] );
 
+      void put_copy_data( const char* buffer, const std::size_t size );
+      void put_copy_end( const char* error_message = nullptr );
+
       [[nodiscard]] auto get_result() noexcept -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
 
       // pass-key idiom

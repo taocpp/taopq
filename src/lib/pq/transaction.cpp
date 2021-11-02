@@ -143,9 +143,7 @@ namespace tao::pq
       if( result ) {
          switch( PQresultStatus( result.get() ) ) {
             case PGRES_COPY_IN:
-               if( PQputCopyEnd( m_connection->underlying_raw_ptr(), "unexpected COPY FROM statement" ) < 0 ) {
-                  throw std::runtime_error( "PQputCopyEnd() failed: " + m_connection->error_message() );  // LCOV_EXCL_LINE
-               }
+               m_connection->put_copy_end( "unexpected COPY FROM statement" );
                break;
 
             case PGRES_COPY_OUT:

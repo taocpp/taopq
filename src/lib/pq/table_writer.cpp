@@ -57,18 +57,12 @@ namespace tao::pq
 
    void table_writer::insert_raw( const std::string_view data )
    {
-      const int r = PQputCopyData( m_transaction->connection()->underlying_raw_ptr(), data.data(), static_cast< int >( data.size() ) );
-      if( r != 1 ) {
-         throw std::runtime_error( "PQputCopyData() failed: " + m_transaction->connection()->error_message() );
-      }
+      m_transaction->connection()->put_copy_data( data.data(), data.size() );
    }
 
    auto table_writer::commit() -> std::size_t
    {
-      const int r = PQputCopyEnd( m_transaction->connection()->underlying_raw_ptr(), nullptr );
-      if( r != 1 ) {
-         throw std::runtime_error( "PQputCopyEnd() failed: " + m_transaction->connection()->error_message() );
-      }
+      m_transaction->connection()->put_copy_end();
       const auto rows_affected = m_transaction->get_result().rows_affected();
       m_transaction.reset();
       m_previous.reset();
