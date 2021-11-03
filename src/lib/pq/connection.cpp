@@ -209,7 +209,11 @@ namespace tao::pq
       const auto end = m_timeout ? ( start + *m_timeout ) : start;
       const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       while( true ) {
+#if defined( _WIN32 )
+         pollfd pfd = { static_cast< SOCKET >( socket() ), events, 0 };
+#else
          pollfd pfd = { socket(), events, 0 };
+#endif
          int timeout = -1;
          if( m_timeout ) {
             timeout = std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count();
