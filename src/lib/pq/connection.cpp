@@ -11,7 +11,11 @@
 #include <stdexcept>
 #include <string>
 
+#if defined( _WIN32 )
+#include <winsock2.h>
+#else
 #include <poll.h>
+#endif
 
 #include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
@@ -214,7 +218,11 @@ namespace tao::pq
             }
          }
          errno = 0;
+#if defined( _WIN32 )
+         const auto result = WSAPoll( &pfd, 1, timeout );
+#else
          const auto result = poll( &pfd, 1, timeout );
+#endif
          switch( result ) {
             case 0:
                throw std::runtime_error( "timeout reached" );  // TODO: Use special exception type for timeouts.
@@ -234,7 +242,11 @@ namespace tao::pq
 
          const auto e = errno;
          if( ( e != EINTR ) && ( e != EAGAIN ) ) {
+#if defined( _WIN32 )
+            throw std::runtime_error( "WSAPoll() failed" );  // TODO: add error description
+#else
             throw std::runtime_error( "poll() failed: " + std::string( strerror( e ) ) );  // TODO: is strerror safe?
+#endif
          }
       }
    }
