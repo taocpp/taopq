@@ -120,6 +120,10 @@ void run()
    TEST_THROWS( connection->execute( "SELECT $1", "\\" ).as< tao::pq::binary >() );
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa" ).as< tao::pq::binary >() );
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa." ).as< tao::pq::binary >() );
+
+   using namespace std::chrono_literals;
+   connection->set_timeout( 100ms );
+   TEST_THROWS( connection->execute( "SELECT pg_sleep( .2 )" ) );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
