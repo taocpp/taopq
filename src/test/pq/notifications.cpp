@@ -63,9 +63,9 @@ void run()
    TEST_ASSERT( !connection->notification_handler() );
 
 #if defined( _WIN32 )
-   closesocket( PQsocket( connection->underlying_raw_ptr() ) );
+   closesocket( connection->socket() );
 #else
-   close( PQsocket( connection->underlying_raw_ptr() ) );
+   close( connection->socket() );
 #endif
 
    TEST_THROWS( connection->get_notifications() );

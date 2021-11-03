@@ -55,11 +55,14 @@ namespace tao::pq
                         const int lengths[],
                         const int formats[] );
 
+      // TODO: timeout+start
+      void wait( const short events );
+
+      [[nodiscard]] auto get_result() -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
+      [[nodiscard]] auto get_copy_data( char*& buffer ) -> std::size_t;
+
       void put_copy_data( const char* buffer, const std::size_t size );
       void put_copy_end( const char* error_message = nullptr );
-      auto get_copy_data( char*& buffer ) -> std::size_t;
-
-      [[nodiscard]] auto get_result() noexcept -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
 
       // pass-key idiom
       class private_key final
@@ -118,6 +121,8 @@ namespace tao::pq
 
       void handle_notifications();
       void get_notifications();
+
+      [[nodiscard]] auto socket() const -> int;
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {

@@ -11,6 +11,8 @@
 #include <stdexcept>
 #include <string>
 
+#include <poll.h>
+
 #include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/notification.hpp>
@@ -197,18 +199,104 @@ namespace tao::pq
       }
    }
 
+   // TODO: timeout+start
+   // TODO: make portable
+   void connection::wait( const short events )
+   {
+      while( true ) {
+         pollfd pfd = { socket(), events, 0 };
+         errno = 0;
+         const auto result = poll( &pfd, 1, -1 );  // TODO: timeout
+         switch( result ) {
+            case 0:
+               throw std::runtime_error( "timeout reached" );  // TODO: Use special exception type for timeouts.
+
+            case 1:
+               if( ( pfd.revents & events ) == 0 ) {
+                  throw std::runtime_error( "poll() failed" );  // TODO: Include revents in message?
+               }
+               if( ( pfd.revents & POLLIN ) != 0 ) {
+                  get_notifications();
+               }
+               return;
+
+            default:                // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+         }
+
+         const auto e = errno;
+         if( ( e != EINTR ) && ( e != EAGAIN ) ) {
+            throw std::runtime_error( "poll() failed: " + std::string( strerror( e ) ) );  // TODO: is strerror safe?
+         }
+      }
+   }
+
+   auto connection::get_result() -> std::unique_ptr< PGresult, decltype( &PQclear ) >
+   {
+      short events = POLLIN | POLLOUT;
+      while( PQisBusy( m_pgconn.get() ) ) {
+         if( ( events & POLLOUT ) != 0 ) {
+            switch( PQflush( m_pgconn.get() ) ) {
+               case 0:
+                  events = POLLIN;
+                  break;
+
+               case 1:
+                  break;
+
+               default:
+                  throw std::runtime_error( "PQflush() failed: " + error_message() );
+            }
+         }
+         wait( events );
+      }
+
+      std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );
+      handle_notifications();
+      return result;
+   }
+
+   auto connection::get_copy_data( char*& buffer ) -> std::size_t
+   {
+      while( true ) {
+         const auto result = PQgetCopyData( m_pgconn.get(), &buffer, true );
+         if( result > 0 ) {
+            return static_cast< std::size_t >( result );
+         }
+         switch( result ) {
+            case 0:
+               wait( POLLIN );
+               break;
+
+            case -1:
+               return 0;
+
+               // LCOV_EXCL_START
+            case -2:
+               throw std::runtime_error( "PQgetCopyData() failed: " + error_message() );
+
+            default:
+               TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_END
+         }
+      }
+   }
+
    void connection::put_copy_data( const char* buffer, const std::size_t size )
    {
       while( true ) {
          switch( PQputCopyData( m_pgconn.get(), buffer, static_cast< int >( size ) ) ) {
             case 0:
-               // TODO: wait( POLLOUT );
+               wait( POLLIN | POLLOUT );
                break;
+
             case 1:
                return;
+
                // LCOV_EXCL_START
             case -1:
                throw std::runtime_error( "PQputCopyData() failed: " + error_message() );
+
             default:
                TAO_PQ_UNREACHABLE;
                // LCOV_EXCL_END
@@ -220,51 +308,23 @@ namespace tao::pq
    {
       while( true ) {
          switch( PQputCopyEnd( m_pgconn.get(), error_message ) ) {
-            case 0:
-               // TODO: wait( POLLOUT );
-               // TODO: What about notifications? POLLIN|POLLOUT?
+            case 0: {
+               wait( POLLIN | POLLOUT );
                break;
+            }
+
             case 1:
                return;
+
                // LCOV_EXCL_START
             case -1:
                throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );
+
             default:
                TAO_PQ_UNREACHABLE;
                // LCOV_EXCL_END
          }
       }
-   }
-
-   auto connection::get_copy_data( char*& buffer ) -> std::size_t
-   {
-      while( true ) {
-         const auto result = PQgetCopyData( m_pgconn.get(), &buffer, false );  // TODO: Use async when wait(POLLIN) is implemented
-         if( result > 0 ) {
-            return static_cast< std::size_t >( result );
-         }
-         switch( result ) {
-            case 0:
-               // TODO: wait( POLLIN );
-               get_notifications();
-               break;
-            case -1:
-               return 0;
-               // LCOV_EXCL_START
-            case -2:
-               throw std::runtime_error( "PQgetCopyData() failed: " + error_message() );
-            default:
-               TAO_PQ_UNREACHABLE;
-               // LCOV_EXCL_END
-         }
-      }
-   }
-
-   auto connection::get_result() noexcept -> std::unique_ptr< PGresult, decltype( &PQclear ) >
-   {
-      std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );
-      handle_notifications();
-      return result;
    }
 
    connection::connection( const private_key /*unused*/, const std::string& connection_info )
@@ -356,6 +416,8 @@ namespace tao::pq
       auto result = get_result();
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COMMAND_OK:
+            while( get_result() ) {
+            }
             break;
 
          case PGRES_TUPLES_OK:
@@ -428,6 +490,15 @@ namespace tao::pq
          throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
       }
       handle_notifications();
+   }
+
+   auto connection::socket() const -> int
+   {
+      const auto fd = PQsocket( m_pgconn.get() );
+      if( fd < 0 ) {
+         throw std::runtime_error( "PQsocket(): unable to retrieve file descriptor" );
+      }
+      return fd;
    }
 
 }  // namespace tao::pq
