@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_CONNECTION_HPP
 #define TAO_PQ_CONNECTION_HPP
 
+#include <chrono>
 #include <functional>
 #include <map>
 #include <memory>
@@ -39,6 +40,7 @@ namespace tao::pq
 
       const std::unique_ptr< PGconn, decltype( &PQfinish ) > m_pgconn;
       pq::transaction* m_current_transaction;
+      std::optional< std::chrono::milliseconds > m_timeout;
       std::set< std::string, std::less<> > m_prepared_statements;
       std::function< void( const notification& ) > m_notification_handler;
       std::map< std::string, std::function< void( const char* ) >, std::less<> > m_notification_handlers;
@@ -55,10 +57,9 @@ namespace tao::pq
                         const int lengths[],
                         const int formats[] );
 
-      // TODO: timeout+start
-      void wait( const bool wait_for_write );
+      void wait( const bool wait_for_write, const std::chrono::steady_clock::time_point start );
 
-      [[nodiscard]] auto get_result() -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
+      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
       [[nodiscard]] auto get_copy_data( char*& buffer ) -> std::size_t;
 
       void put_copy_data( const char* buffer, const std::size_t size );
@@ -123,6 +124,21 @@ namespace tao::pq
       void get_notifications();
 
       [[nodiscard]] auto socket() const -> int;
+
+      [[nodiscard]] decltype( auto ) timeout() const noexcept
+      {
+         return m_timeout;
+      }
+
+      void set_timeout( std::chrono::milliseconds timeout ) noexcept
+      {
+         m_timeout = timeout;
+      }
+
+      void reset_timeout() noexcept
+      {
+         m_timeout = std::nullopt;
+      }
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {

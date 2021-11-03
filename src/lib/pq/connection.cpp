@@ -199,15 +199,22 @@ namespace tao::pq
       }
    }
 
-   // TODO: timeout+start
    // TODO: make portable
-   void connection::wait( const bool wait_for_write )
+   void connection::wait( const bool wait_for_write, const std::chrono::steady_clock::time_point start )
    {
+      const auto end = m_timeout ? ( start + *m_timeout ) : start;
       const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       while( true ) {
          pollfd pfd = { socket(), events, 0 };
+         int timeout = -1;
+         if( m_timeout ) {
+            timeout = std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count();
+            if( timeout < 0 ) {
+               timeout = 0;
+            }
+         }
          errno = 0;
-         const auto result = poll( &pfd, 1, -1 );  // TODO: timeout
+         const auto result = poll( &pfd, 1, timeout );
          switch( result ) {
             case 0:
                throw std::runtime_error( "timeout reached" );  // TODO: Use special exception type for timeouts.
@@ -232,7 +239,7 @@ namespace tao::pq
       }
    }
 
-   auto connection::get_result() -> std::unique_ptr< PGresult, decltype( &PQclear ) >
+   auto connection::get_result( const std::chrono::steady_clock::time_point start ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
       bool wait_for_write = true;
       while( PQisBusy( m_pgconn.get() ) ) {
@@ -249,7 +256,7 @@ namespace tao::pq
                   throw std::runtime_error( "PQflush() failed: " + error_message() );
             }
          }
-         wait( wait_for_write );
+         wait( wait_for_write, start );
       }
 
       std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );
@@ -259,6 +266,7 @@ namespace tao::pq
 
    auto connection::get_copy_data( char*& buffer ) -> std::size_t
    {
+      const auto start = std::chrono::steady_clock::now();
       while( true ) {
          const auto result = PQgetCopyData( m_pgconn.get(), &buffer, true );
          if( result > 0 ) {
@@ -266,7 +274,7 @@ namespace tao::pq
          }
          switch( result ) {
             case 0:
-               wait( false );
+               wait( false, start );
                break;
 
             case -1:
@@ -285,10 +293,11 @@ namespace tao::pq
 
    void connection::put_copy_data( const char* buffer, const std::size_t size )
    {
+      const auto start = std::chrono::steady_clock::now();
       while( true ) {
          switch( PQputCopyData( m_pgconn.get(), buffer, static_cast< int >( size ) ) ) {
             case 0:
-               wait( true );
+               wait( true, start );
                break;
 
             case 1:
@@ -307,10 +316,11 @@ namespace tao::pq
 
    void connection::put_copy_end( const char* error_message )
    {
+      const auto start = std::chrono::steady_clock::now();
       while( true ) {
          switch( PQputCopyEnd( m_pgconn.get(), error_message ) ) {
             case 0: {
-               wait( true );
+               wait( true, start );
                break;
             }
 
