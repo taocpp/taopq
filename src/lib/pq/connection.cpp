@@ -257,7 +257,7 @@ namespace tao::pq
    auto connection::get_result( const std::chrono::steady_clock::time_point start ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
       bool wait_for_write = true;
-      while( PQisBusy( m_pgconn.get() ) ) {
+      while( PQisBusy( m_pgconn.get() ) != 0 ) {
          if( wait_for_write ) {
             switch( PQflush( m_pgconn.get() ) ) {
                case 0:
@@ -283,7 +283,7 @@ namespace tao::pq
    {
       const auto start = std::chrono::steady_clock::now();
       while( true ) {
-         const auto result = PQgetCopyData( m_pgconn.get(), &buffer, true );
+         const auto result = PQgetCopyData( m_pgconn.get(), &buffer, 1 );
          if( result > 0 ) {
             return static_cast< std::size_t >( result );
          }

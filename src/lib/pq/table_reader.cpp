@@ -58,7 +58,7 @@ namespace tao::pq
          return { static_cast< const char* >( buffer ), size };
       }
 
-      pq::result( m_transaction->connection()->get_result( std::chrono::steady_clock::now() ).release() );
+      (void)pq::result( m_transaction->connection()->get_result( std::chrono::steady_clock::now() ).release() );
       m_transaction.reset();
       m_previous.reset();
       return {};
