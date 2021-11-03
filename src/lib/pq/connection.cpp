@@ -203,14 +203,13 @@ namespace tao::pq
       }
    }
 
-   // TODO: make portable
    void connection::wait( const bool wait_for_write, const std::chrono::steady_clock::time_point start )
    {
       const auto end = m_timeout ? ( start + *m_timeout ) : start;
       const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       while( true ) {
 #if defined( _WIN32 )
-         pollfd pfd = { static_cast< SOCKET >( socket() ), events, 0 };
+         WSAPOLLFD pfd = { static_cast< SOCKET >( socket() ), events, 0 };
 #else
          pollfd pfd = { socket(), events, 0 };
 #endif
