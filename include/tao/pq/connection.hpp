@@ -56,7 +56,7 @@ namespace tao::pq
                         const int formats[] );
 
       // TODO: timeout+start
-      void wait( const short events );
+      void wait( const bool wait_for_write );
 
       [[nodiscard]] auto get_result() -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
       [[nodiscard]] auto get_copy_data( char*& buffer ) -> std::size_t;

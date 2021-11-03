@@ -201,8 +201,9 @@ namespace tao::pq
 
    // TODO: timeout+start
    // TODO: make portable
-   void connection::wait( const short events )
+   void connection::wait( const bool wait_for_write )
    {
+      const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       while( true ) {
          pollfd pfd = { socket(), events, 0 };
          errno = 0;
@@ -233,12 +234,12 @@ namespace tao::pq
 
    auto connection::get_result() -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
-      short events = POLLIN | POLLOUT;
+      bool wait_for_write = true;
       while( PQisBusy( m_pgconn.get() ) ) {
-         if( ( events & POLLOUT ) != 0 ) {
+         if( wait_for_write ) {
             switch( PQflush( m_pgconn.get() ) ) {
                case 0:
-                  events = POLLIN;
+                  wait_for_write = false;
                   break;
 
                case 1:
@@ -248,7 +249,7 @@ namespace tao::pq
                   throw std::runtime_error( "PQflush() failed: " + error_message() );
             }
          }
-         wait( events );
+         wait( wait_for_write );
       }
 
       std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );
@@ -265,7 +266,7 @@ namespace tao::pq
          }
          switch( result ) {
             case 0:
-               wait( POLLIN );
+               wait( false );
                break;
 
             case -1:
@@ -287,7 +288,7 @@ namespace tao::pq
       while( true ) {
          switch( PQputCopyData( m_pgconn.get(), buffer, static_cast< int >( size ) ) ) {
             case 0:
-               wait( POLLIN | POLLOUT );
+               wait( true );
                break;
 
             case 1:
@@ -309,7 +310,7 @@ namespace tao::pq
       while( true ) {
          switch( PQputCopyEnd( m_pgconn.get(), error_message ) ) {
             case 0: {
-               wait( POLLIN | POLLOUT );
+               wait( true );
                break;
             }
 
@@ -334,6 +335,10 @@ namespace tao::pq
       if( !is_open() ) {
          // note that we can not access the sqlstate after PQconnectdb(),
          // see https://stackoverflow.com/q/23349086/2073257
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
+      }
+
+      if( PQsetnonblocking( m_pgconn.get(), 1 ) != 0 ) {
          throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
       }
    }
