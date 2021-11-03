@@ -13,6 +13,21 @@
 
 namespace tao::pq
 {
+   struct timeout_reached
+      : std::runtime_error
+   {
+      using std::runtime_error::runtime_error;
+   };
+
+   // https://www.postgresql.org/docs/current/errcodes-appendix.html
+   struct sql_error
+      : std::runtime_error
+   {
+      std::string sqlstate;
+
+      sql_error( const char* what, const std::string_view in_sqlstate );
+   };
+
    // when a condition name from PostgreSQL is ambiguous,
    // we qualify the error class via a template parameter
    template< typename >
@@ -26,15 +41,6 @@ namespace tao::pq
 
    template< typename >
    struct reading_sql_data_not_permitted;
-
-   // https://www.postgresql.org/docs/current/errcodes-appendix.html
-   struct sql_error
-      : std::runtime_error
-   {
-      std::string sqlstate;
-
-      sql_error( const char* what, const std::string_view in_sqlstate );
-   };
 
    struct success  // 00xxx
       : sql_error

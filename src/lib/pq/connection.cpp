@@ -228,7 +228,7 @@ namespace tao::pq
 #endif
          switch( result ) {
             case 0:
-               throw std::runtime_error( "timeout reached" );  // TODO: Use special exception type for timeouts.
+               throw timeout_reached( "timeout reached" );
 
             case 1:
                if( ( pfd.revents & events ) == 0 ) {
