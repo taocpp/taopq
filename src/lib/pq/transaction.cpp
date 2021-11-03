@@ -135,11 +135,11 @@ namespace tao::pq
       m_connection->send_params( statement, n_params, types, values, lengths, formats );
    }
 
-   auto transaction::get_result() -> result
+   auto transaction::get_result( const std::chrono::steady_clock::time_point start ) -> result
    {
       check_current_transaction();
 
-      auto result = m_connection->get_result();
+      auto result = m_connection->get_result( start );
       if( result ) {
          switch( PQresultStatus( result.get() ) ) {
             case PGRES_COPY_IN:
@@ -152,7 +152,7 @@ namespace tao::pq
 
             default:;
          }
-         while( auto next = m_connection->get_result() ) {
+         while( auto next = m_connection->get_result( start ) ) {
             result = std::move( next );
          }
       }

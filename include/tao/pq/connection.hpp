@@ -59,7 +59,7 @@ namespace tao::pq
 
       void wait( const bool wait_for_write, const std::chrono::steady_clock::time_point start );
 
-      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
+      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
       [[nodiscard]] auto get_copy_data( char*& buffer ) -> std::size_t;
 
       void put_copy_data( const char* buffer, const std::size_t size );

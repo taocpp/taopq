@@ -424,14 +424,15 @@ namespace tao::pq
 
    void connection::prepare( const std::string& name, const std::string& statement )
    {
+      const auto start = std::chrono::steady_clock::now();
       connection::check_prepared_name( name );
       if( PQsendPrepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) == 0 ) {
          throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
       }
-      auto result = get_result();
+      auto result = get_result( start );
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COMMAND_OK:
-            while( get_result() ) {
+            while( get_result( start ) ) {
             }
             break;
 
@@ -442,7 +443,7 @@ namespace tao::pq
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
 
          default:
-            while( get_result() ) {
+            while( get_result( start ) ) {
             }
             internal::throw_sqlstate( result.get() );
       }

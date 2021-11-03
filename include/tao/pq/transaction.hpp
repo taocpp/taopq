@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_TRANSACTION_HPP
 #define TAO_PQ_TRANSACTION_HPP
 
+#include <chrono>
 #include <cstddef>
 #include <cstdio>
 #include <memory>
@@ -104,13 +105,14 @@ namespace tao::pq
          }
       }
 
-      [[nodiscard]] auto get_result() -> result;
+      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
 
       template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )
       {
+         const auto start = std::chrono::steady_clock::now();
          transaction::send( statement, std::forward< As >( as )... );
-         return get_result();
+         return get_result( start );
       }
 
       void commit();
