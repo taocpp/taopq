@@ -30,7 +30,7 @@ namespace tao::pq
 {
    namespace
    {
-      std::string errno_to_string( const int e )
+      [[nodiscard]] auto errno_to_string( const int e ) -> std::string
       {
          char buffer[ 256 ];
 
@@ -44,7 +44,7 @@ namespace tao::pq
 #else
 
          if constexpr( std::is_same_v< decltype( strerror_r( e, buffer, sizeof( buffer ) ) ), int > ) {
-            if( strerror_r( e, buffer, sizeof( buffer ) ) == 0 ) {
+            if( strerror_r( e, buffer, sizeof( buffer ) ) == 0 ) {  // NOLINT(modernize-use-nullptr)
                return buffer;
             }
             return internal::printf( "unknown error code %d", e );
