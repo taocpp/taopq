@@ -4,16 +4,12 @@
 
 #include <tao/pq/table_reader.hpp>
 
-#include <libpq-fe.h>
-
-#include <cassert>
 #include <chrono>
 #include <cstring>
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
-#include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {

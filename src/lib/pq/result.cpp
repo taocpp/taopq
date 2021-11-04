@@ -4,10 +4,6 @@
 
 #include <cassert>
 #include <charconv>
-#include <cstring>
-#include <stdexcept>
-
-#include <libpq-fe.h>
 
 #include <tao/pq/exception.hpp>
 #include <tao/pq/result.hpp>

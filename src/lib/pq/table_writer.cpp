@@ -11,7 +11,6 @@
 #include <tao/pq/connection.hpp>
 #include <tao/pq/exception.hpp>
 #include <tao/pq/result.hpp>
-#include <tao/pq/transaction.hpp>
 
 namespace tao::pq
 {
