@@ -23,6 +23,7 @@ void run()
 
    // open a connection
    const auto connection = tao::pq::connection::create( connection_string );
+   connection->set_timeout( std::chrono::seconds( 1 ) );
 
    // open a second, independent connection (and discard it immediately)
    (void)tao::pq::connection::create( connection_string );

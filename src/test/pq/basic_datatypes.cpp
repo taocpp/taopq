@@ -114,6 +114,7 @@ void check_bytea( T&& t )
 void run()
 {
    my_connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
+   my_connection->set_timeout( std::chrono::seconds( 1 ) );
 
    check_null( "BOOLEAN" );
    check< bool >( "BOOLEAN", true );
