@@ -6,10 +6,12 @@
 
 #include <cassert>
 #include <cctype>
+#include <cerrno>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 
 #if defined( _WIN32 )
 #include <winsock2.h>
@@ -18,6 +20,7 @@
 #endif
 
 #include <tao/pq/exception.hpp>
+#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
@@ -27,6 +30,32 @@ namespace tao::pq
 {
    namespace
    {
+      std::string errno_to_string( const int e )
+      {
+         char buffer[ 256 ];
+
+#if defined( _WIN32 )
+
+         if( strerror_s( buffer, e ) == 0 ) {
+            return buffer;
+         }
+         return internal::printf( "unknown error code %d", e );
+
+#else
+
+         if constexpr( std::is_same_v< decltype( strerror_r( e, buffer, sizeof( buffer ) ) ), int > ) {
+            if( strerror_r( e, buffer, sizeof( buffer ) ) == 0 ) {
+               return buffer;
+            }
+            return internal::printf( "unknown error code %d", e );
+         }
+         else {
+            return strerror_r( e, buffer, sizeof( buffer ) );
+         }
+
+#endif
+      }
+
       class transaction_base
          : public transaction
       {
@@ -208,11 +237,6 @@ namespace tao::pq
       const auto end = m_timeout ? ( start + *m_timeout ) : start;
       const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       while( true ) {
-#if defined( _WIN32 )
-         WSAPOLLFD pfd = { static_cast< SOCKET >( socket() ), events, 0 };
-#else
-         pollfd pfd = { socket(), events, 0 };
-#endif
          int timeout = -1;
          if( m_timeout ) {
             timeout = std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count();
@@ -220,37 +244,65 @@ namespace tao::pq
                timeout = 0;
             }
          }
-         errno = 0;
+
 #if defined( _WIN32 )
+
+         WSAPOLLFD pfd = { static_cast< SOCKET >( socket() ), events, 0 };
          const auto result = WSAPoll( &pfd, 1, timeout );
-#else
-         const auto result = poll( &pfd, 1, timeout );
-#endif
          switch( result ) {
             case 0:
                throw timeout_reached( "timeout reached" );
 
             case 1:
                if( ( pfd.revents & events ) == 0 ) {
-                  throw std::runtime_error( "poll() failed" );  // TODO: Include revents in message?
+                  throw std::runtime_error( internal::printf( "WSAPoll() failed, events %hd, revents %hd", events, pfd.revents ) );
                }
                if( ( pfd.revents & POLLIN ) != 0 ) {
                   get_notifications();
                }
                return;
 
+            case SOCKET_ERROR:
+               break;
+
             default:                // LCOV_EXCL_LINE
                TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
 
-         const auto e = errno;
-         if( ( e != EINTR ) && ( e != EAGAIN ) ) {
-#if defined( _WIN32 )
-            throw std::runtime_error( "WSAPoll() failed" );  // TODO: add error description
+         const int e = WSAGetLastError();
+         throw std::runtime_error( "WSAPoll() failed: " + errno_to_string( e ) );
+
 #else
-            throw std::runtime_error( "poll() failed: " + std::string( strerror( e ) ) );  // TODO: is strerror safe?
-#endif
+
+         pollfd pfd = { socket(), events, 0 };
+         errno = 0;
+         const auto result = poll( &pfd, 1, timeout );
+         switch( result ) {
+            case 0:
+               throw timeout_reached( "timeout reached" );
+
+            case 1:
+               if( ( pfd.revents & events ) == 0 ) {
+                  throw std::runtime_error( internal::printf( "poll() failed, events %hd, revents %hd", events, pfd.revents ) );
+               }
+               if( ( pfd.revents & POLLIN ) != 0 ) {
+                  get_notifications();
+               }
+               return;
+
+            case -1:
+               break;
+
+            default:                // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
+
+         const int e = errno;
+         if( ( e != EINTR ) && ( e != EAGAIN ) ) {
+            throw std::runtime_error( "poll() failed: " + errno_to_string( e ) );
+         }
+
+#endif
       }
    }
 
