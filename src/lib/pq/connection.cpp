@@ -30,28 +30,26 @@ namespace tao::pq
 {
    namespace
    {
+      [[nodiscard, maybe_unused]] auto errno_result_to_string( const int e, char* buffer, int result ) -> std::string
+      {
+         if( result == 0 ) {
+            return buffer;
+         }
+         return internal::printf( "unknown error code %d", e );
+      }
+
+      [[nodiscard, maybe_unused]] auto errno_result_to_string( const int /*unused*/, char* /*unused*/, char* result ) -> std::string
+      {
+         return result;
+      }
+
       [[nodiscard]] auto errno_to_string( const int e ) -> std::string
       {
          char buffer[ 256 ];
-
 #if defined( _WIN32 )
-
-         if( strerror_s( buffer, e ) == 0 ) {
-            return buffer;
-         }
-         return internal::printf( "unknown error code %d", e );
-
-#elif( _POSIX_C_SOURCE >= 200112L ) && !defined( _GNU_SOURCE )
-
-         if( strerror_r( e, buffer, sizeof( buffer ) ) == 0 ) {
-            return buffer;
-         }
-         return internal::printf( "unknown error code %d", e );
-
+         return errno_result_to_string( e, buffer, strerror_s( buffer, e ) );
 #else
-
-         return strerror_r( e, buffer, sizeof( buffer ) );
-
+         return errno_result_to_string( e, buffer, strerror_r( e, buffer, sizeof( buffer ) ) );
 #endif
       }
 
