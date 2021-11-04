@@ -4,14 +4,12 @@
 
 #include <tao/pq/connection.hpp>
 
-#include <cassert>
 #include <cctype>
 #include <cerrno>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
 #include <string>
-#include <type_traits>
 
 #if defined( _WIN32 )
 #include <winsock2.h>
