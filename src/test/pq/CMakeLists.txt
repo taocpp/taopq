@@ -2,6 +2,7 @@ file(GLOB testsources *.cpp)
 foreach(testsourcefile ${testsources})
   get_filename_component(exename taopq-test-${testsourcefile} NAME_WE)
   add_executable(${exename} ${testsourcefile})
+  target_include_directories(taopq PRIVATE ${PostgreSQL_INCLUDE_DIRS})
   target_link_libraries(${exename} PRIVATE taocpp::taopq)
   set_target_properties(${exename} PROPERTIES
     CXX_STANDARD 17
