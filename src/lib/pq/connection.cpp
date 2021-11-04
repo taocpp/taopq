@@ -41,18 +41,16 @@ namespace tao::pq
          }
          return internal::printf( "unknown error code %d", e );
 
+#elif( _POSIX_C_SOURCE >= 200112L ) && !defined( _GNU_SOURCE )
+
+         if( strerror_r( e, buffer, sizeof( buffer ) ) == 0 ) {
+            return buffer;
+         }
+         return internal::printf( "unknown error code %d", e );
+
 #else
 
-         auto result = strerror_r( e, buffer, sizeof( buffer ) );
-         if constexpr( std::is_same_v< decltype( result ), char* > ) {
-            return result;
-         }
-         else {
-            if( result == 0 ) {
-               return buffer;
-            }
-            return internal::printf( "unknown error code %d", e );
-         }
+         return strerror_r( e, buffer, sizeof( buffer ) );
 
 #endif
       }
