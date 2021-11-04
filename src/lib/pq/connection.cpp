@@ -49,9 +49,10 @@ namespace tao::pq
             }
             return internal::printf( "unknown error code %d", e );
          }
-         else {
+         else if constexpr( std::is_same_v< decltype( strerror_r( e, buffer, sizeof( buffer ) ) ), char* > ) {
             return strerror_r( e, buffer, sizeof( buffer ) );
          }
+         TAO_PQ_UNREACHABLE;
 
 #endif
       }
