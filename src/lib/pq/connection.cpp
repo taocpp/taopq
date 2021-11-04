@@ -43,16 +43,16 @@ namespace tao::pq
 
 #else
 
-         if constexpr( std::is_same_v< decltype( strerror_r( e, buffer, sizeof( buffer ) ) ), int > ) {
-            if( strerror_r( e, buffer, sizeof( buffer ) ) == 0 ) {  // NOLINT(modernize-use-nullptr)
+         auto result = strerror_r( e, buffer, sizeof( buffer ) );
+         if constexpr( std::is_same_v< decltype( result ), char* > ) {
+            return result;
+         }
+         else {
+            if( result == 0 ) {
                return buffer;
             }
             return internal::printf( "unknown error code %d", e );
          }
-         else if constexpr( std::is_same_v< decltype( strerror_r( e, buffer, sizeof( buffer ) ) ), char* > ) {
-            return strerror_r( e, buffer, sizeof( buffer ) );
-         }
-         TAO_PQ_UNREACHABLE;
 
 #endif
       }
