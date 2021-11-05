@@ -27,7 +27,7 @@ namespace tao::pq
 
       [[nodiscard]] auto v_is_valid( connection& c ) const noexcept -> bool override
       {
-         return c.is_open();
+         return c.is_idle();
       }
 
       // pass-key idiom

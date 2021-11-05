@@ -99,6 +99,7 @@ namespace tao::pq
       void reset_notification_handler( const std::string_view channel ) noexcept;
 
       [[nodiscard]] auto is_open() const noexcept -> bool;
+      [[nodiscard]] auto is_idle() const noexcept -> bool;
 
       [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
 
