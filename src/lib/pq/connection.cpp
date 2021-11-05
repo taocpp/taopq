@@ -579,4 +579,14 @@ namespace tao::pq
       return fd;
    }
 
+   void connection::set_timeout( const std::chrono::milliseconds timeout )
+   {
+      m_timeout = timeout;
+   }
+
+   void connection::reset_timeout() noexcept
+   {
+      m_timeout = std::nullopt;
+   }
+
 }  // namespace tao::pq

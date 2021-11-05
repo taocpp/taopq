@@ -130,15 +130,8 @@ namespace tao::pq
          return m_timeout;
       }
 
-      void set_timeout( std::chrono::milliseconds timeout ) noexcept
-      {
-         m_timeout = timeout;
-      }
-
-      void reset_timeout() noexcept
-      {
-         m_timeout = std::nullopt;
-      }
+      void set_timeout( const std::chrono::milliseconds timeout );
+      void reset_timeout() noexcept;
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {
