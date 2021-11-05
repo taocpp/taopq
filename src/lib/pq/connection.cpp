@@ -223,7 +223,7 @@ namespace tao::pq
                              PQsendQueryPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) :
                              PQsendQueryParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 );
       if( result == 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
       }
    }
 
@@ -410,11 +410,11 @@ namespace tao::pq
       if( !is_open() ) {
          // note that we can not access the sqlstate after PQconnectdb(),
          // see https://stackoverflow.com/q/23349086/2073257
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
       }
 
       if( PQsetnonblocking( m_pgconn.get(), 1 ) != 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
       }
    }
 
@@ -492,7 +492,7 @@ namespace tao::pq
       connection::check_prepared_name( name );
       const auto end = timeout_end();
       if( PQsendPrepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) == 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
       }
       auto result = get_result( end );
       switch( PQresultStatus( result.get() ) ) {
@@ -568,7 +568,7 @@ namespace tao::pq
    void connection::get_notifications()
    {
       if( PQconsumeInput( m_pgconn.get() ) == 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ), "08000" );
+         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
       }
       handle_notifications();
    }

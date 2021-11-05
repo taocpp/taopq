@@ -11,6 +11,10 @@ namespace tao::pq
         sqlstate( in_sqlstate )
    {}
 
+   connection_error::connection_error( const char* what )
+      : connection_error( what, "08000" )
+   {}
+
    namespace internal
    {
       void throw_sqlstate( PGresult* pgresult )

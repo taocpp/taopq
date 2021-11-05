@@ -119,6 +119,8 @@ namespace tao::pq
       : sql_error
    {
       using sql_error::sql_error;
+
+      explicit connection_error( const char* what );
    };
 
    struct sqlclient_unable_to_establish_sqlconnection  // 08001
