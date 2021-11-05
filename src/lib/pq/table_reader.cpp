@@ -16,7 +16,8 @@ namespace tao::pq
    void table_reader::check_result()
    {
       const auto start = std::chrono::steady_clock::now();
-      auto result = m_transaction->connection()->get_result( start );
+      const auto end = m_transaction->connection()->timeout_end( start );
+      auto result = m_transaction->connection()->get_result( end );
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COPY_OUT:
             m_columns = PQnfields( result.get() );
@@ -28,17 +29,17 @@ namespace tao::pq
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
-            while( m_transaction->connection()->get_result( start ) ) {
+            while( m_transaction->connection()->get_result( end ) ) {
             }
             throw std::runtime_error( "expected COPY TO statement" );
 
          case PGRES_EMPTY_QUERY:
-            while( m_transaction->connection()->get_result( start ) ) {
+            while( m_transaction->connection()->get_result( end ) ) {
             }
             throw std::runtime_error( "unexpected empty query" );
 
          default:
-            while( m_transaction->connection()->get_result( start ) ) {
+            while( m_transaction->connection()->get_result( end ) ) {
             }
             internal::throw_sqlstate( result.get() );
       }
@@ -54,7 +55,10 @@ namespace tao::pq
          return { static_cast< const char* >( buffer ), size };
       }
 
-      (void)pq::result( m_transaction->connection()->get_result( std::chrono::steady_clock::now() ).release() );
+      const auto start = std::chrono::steady_clock::now();
+      const auto end = m_transaction->connection()->timeout() ? ( start + *m_transaction->connection()->timeout() ) : start;
+
+      (void)pq::result( m_transaction->connection()->get_result( end ).release() );
       m_transaction.reset();
       m_previous.reset();
       return {};

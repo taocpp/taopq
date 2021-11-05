@@ -138,8 +138,9 @@ namespace tao::pq
    auto transaction::get_result( const std::chrono::steady_clock::time_point start ) -> result
    {
       check_current_transaction();
+      const auto end = m_connection->timeout() ? ( start + *m_connection->timeout() ) : start;
 
-      auto result = m_connection->get_result( start );
+      auto result = m_connection->get_result( end );
       if( result ) {
          switch( PQresultStatus( result.get() ) ) {
             case PGRES_COPY_IN:
@@ -152,7 +153,7 @@ namespace tao::pq
 
             default:;
          }
-         while( auto next = m_connection->get_result( start ) ) {
+         while( auto next = m_connection->get_result( end ) ) {
             result = std::move( next );
          }
       }

@@ -57,9 +57,11 @@ namespace tao::pq
                         const int lengths[],
                         const int formats[] );
 
-      void wait( const bool wait_for_write, const std::chrono::steady_clock::time_point start );
+      [[nodiscard]] auto timeout_end( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) const noexcept -> std::chrono::steady_clock::time_point;
 
-      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
+      void wait( const bool wait_for_write, const std::chrono::steady_clock::time_point end );
+
+      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point end ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
       [[nodiscard]] auto get_copy_data( char*& buffer ) -> std::size_t;
 
       void put_copy_data( const char* buffer, const std::size_t size );

@@ -27,31 +27,31 @@ namespace tao::pq
 
    void table_writer::check_result()
    {
-      const auto start = std::chrono::steady_clock::now();
-      auto result = m_transaction->connection()->get_result( start );
+      const auto end = m_transaction->connection()->timeout_end();
+      auto result = m_transaction->connection()->get_result( end );
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COPY_IN:
             break;
 
          case PGRES_COPY_OUT:
             // TODO: How to cancel an unexpected PGRES_COPY_OUT?
-            while( m_transaction->connection()->get_result( start ) ) {
+            while( m_transaction->connection()->get_result( end ) ) {
             }
             throw std::runtime_error( "unexpected COPY TO statement" );
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
-            while( m_transaction->connection()->get_result( start ) ) {
+            while( m_transaction->connection()->get_result( end ) ) {
             }
             throw std::runtime_error( "expected COPY FROM statement" );
 
          case PGRES_EMPTY_QUERY:
-            while( m_transaction->connection()->get_result( start ) ) {
+            while( m_transaction->connection()->get_result( end ) ) {
             }
             throw std::runtime_error( "unexpected empty query" );
 
          default:
-            while( m_transaction->connection()->get_result( start ) ) {
+            while( m_transaction->connection()->get_result( end ) ) {
             }
             internal::throw_sqlstate( result.get() );
       }
