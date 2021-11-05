@@ -256,11 +256,10 @@ namespace tao::pq
                   if( PQcancel( cancel.get(), buffer, sizeof( buffer ) ) == 0 ) {
                      throw timeout_reached( buffer );
                   }
+                  // TODO: may this lead to an infinite loop?
                   return;
                }
-               else {
-                  throw timeout_reached( "timeout reached" );
-               }
+               throw timeout_reached( "timeout reached" );
             }
 
             case 1:
@@ -295,11 +294,10 @@ namespace tao::pq
                   if( PQcancel( cancel.get(), buffer, sizeof( buffer ) ) == 0 ) {
                      throw timeout_reached( buffer );
                   }
+                  // TODO: may this lead to an infinite loop?
                   return;
                }
-               else {
-                  throw timeout_reached( "timeout reached" );
-               }
+               throw timeout_reached( "timeout reached" );
             }
 
             case 1:
