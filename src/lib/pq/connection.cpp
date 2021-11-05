@@ -249,8 +249,19 @@ namespace tao::pq
          WSAPOLLFD pfd = { static_cast< SOCKET >( socket() ), events, 0 };
          const auto result = WSAPoll( &pfd, 1, timeout );
          switch( result ) {
-            case 0:
-               throw timeout_reached( "timeout reached" );
+            case 0: {
+               const std::unique_ptr< PGcancel, decltype( &PQfreeCancel ) > cancel( PQgetCancel( m_pgconn.get() ), &PQfreeCancel );
+               if( cancel ) {
+                  char buffer[ 256 ];
+                  if( PQcancel( cancel.get(), buffer, sizeof( buffer ) ) == 0 ) {
+                     throw timeout_reached( buffer );
+                  }
+                  return;
+               }
+               else {
+                  throw timeout_reached( "timeout reached" );
+               }
+            }
 
             case 1:
                if( ( pfd.revents & events ) == 0 ) {
@@ -277,8 +288,19 @@ namespace tao::pq
          errno = 0;
          const auto result = poll( &pfd, 1, timeout );
          switch( result ) {
-            case 0:
-               throw timeout_reached( "timeout reached" );
+            case 0: {
+               const std::unique_ptr< PGcancel, decltype( &PQfreeCancel ) > cancel( PQgetCancel( m_pgconn.get() ), &PQfreeCancel );
+               if( cancel ) {
+                  char buffer[ 256 ];
+                  if( PQcancel( cancel.get(), buffer, sizeof( buffer ) ) == 0 ) {
+                     throw timeout_reached( buffer );
+                  }
+                  return;
+               }
+               else {
+                  throw timeout_reached( "timeout reached" );
+               }
+            }
 
             case 1:
                if( ( pfd.revents & events ) == 0 ) {
