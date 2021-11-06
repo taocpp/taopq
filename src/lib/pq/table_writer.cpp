@@ -5,6 +5,7 @@
 #include <tao/pq/table_writer.hpp>
 
 #include <chrono>
+#include <tuple>
 
 #include <libpq-fe.h>
 
@@ -18,7 +19,7 @@ namespace tao::pq
    {
       if( m_transaction ) {
          try {
-            (void)m_transaction->get_result();
+            std::ignore = m_transaction->get_result();
          }
          catch( ... ) {
          }

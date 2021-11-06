@@ -5,6 +5,8 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <tuple>
+
 #include <tao/pq/connection.hpp>
 
 template< typename Connection, typename Transaction >
@@ -29,7 +31,7 @@ void check_nested( const std::shared_ptr< Connection >& connection, const std::s
       TEST_EXECUTE( tr2->commit() );
       TEST_THROWS( tr2->execute( "SELECT 42" ) );
       TEST_THROWS( tr2->subtransaction() );
-      TEST_EXECUTE( (void)tr->subtransaction() );
+      TEST_EXECUTE( std::ignore = tr->subtransaction() );
    }
    tr->execute( "SELECT 42" );
    {
@@ -42,8 +44,8 @@ void check_nested( const std::shared_ptr< Connection >& connection, const std::s
    TEST_EXECUTE( tr->execute( "SELECT 42" ) );
    TEST_EXECUTE( tr->commit() );
    TEST_THROWS( tr->execute( "SELECT 42" ) );
-   TEST_EXECUTE( (void)connection->direct() );
-   TEST_EXECUTE( (void)connection->transaction() );
+   TEST_EXECUTE( std::ignore = connection->direct() );
+   TEST_EXECUTE( std::ignore = connection->transaction() );
 }
 
 void run()
@@ -73,45 +75,45 @@ void run()
    TEST_THROWS( connection->transaction( tao::pq::access_mode::read_only )->execute( "INSERT INTO tao_transaction_test VALUES ( 3 )" ) );
    TEST_ASSERT( connection->transaction( tao::pq::access_mode::read_only )->execute( "SELECT * FROM tao_transaction_test" ).size() == 2 );
 
-   TEST_THROWS_MESSAGE( "THROWS (void)connection->transaction()", const auto tr = connection->transaction(); (void)connection->transaction() );
-   TEST_THROWS_MESSAGE( "THROWS (void)connection->direct()", const auto tr = connection->transaction(); (void)connection->direct() );
-   TEST_THROWS_MESSAGE( "THROWS (void)connection->transaction()", const auto tr = connection->direct(); (void)connection->transaction() );
-   TEST_THROWS_MESSAGE( "THROWS (void)connection->direct()", const auto tr = connection->direct(); (void)connection->direct() );
+   TEST_THROWS_MESSAGE( "THROWS connection->transaction()", const auto tr = connection->transaction(); std::ignore = connection->transaction() );
+   TEST_THROWS_MESSAGE( "THROWS connection->direct()", const auto tr = connection->transaction(); std::ignore = connection->direct() );
+   TEST_THROWS_MESSAGE( "THROWS connection->transaction()", const auto tr = connection->direct(); std::ignore = connection->transaction() );
+   TEST_THROWS_MESSAGE( "THROWS connection->direct()", const auto tr = connection->direct(); std::ignore = connection->direct() );
 
-   TEST_THROWS_MESSAGE( "THROWS (void)tr->subtransaction()", const auto tr = connection->transaction(); const auto st = tr->subtransaction(); (void)tr->subtransaction() );
-   TEST_THROWS_MESSAGE( "THROWS (void)tr->subtransaction()", const auto tr = connection->direct(); const auto st = tr->subtransaction(); (void)tr->subtransaction() );
+   TEST_THROWS_MESSAGE( "THROWS tr->subtransaction()", const auto tr = connection->transaction(); const auto st = tr->subtransaction(); std::ignore = tr->subtransaction() );
+   TEST_THROWS_MESSAGE( "THROWS tr->subtransaction()", const auto tr = connection->direct(); const auto st = tr->subtransaction(); std::ignore = tr->subtransaction() );
 
-   TEST_EXECUTE( (void)connection->direct() );
+   TEST_EXECUTE( std::ignore = connection->direct() );
    TEST_EXECUTE( connection->direct()->commit() );
    TEST_EXECUTE( connection->direct()->rollback() );
 
-   TEST_EXECUTE( (void)connection->direct()->subtransaction() );
+   TEST_EXECUTE( std::ignore = connection->direct()->subtransaction() );
    TEST_EXECUTE( connection->direct()->subtransaction()->commit() );
    TEST_EXECUTE( connection->direct()->subtransaction()->rollback() );
 
-   TEST_EXECUTE( (void)connection->direct()->subtransaction()->subtransaction() );
+   TEST_EXECUTE( std::ignore = connection->direct()->subtransaction()->subtransaction() );
    TEST_EXECUTE( connection->direct()->subtransaction()->subtransaction()->commit() );
    TEST_EXECUTE( connection->direct()->subtransaction()->subtransaction()->rollback() );
 
-   TEST_EXECUTE( (void)connection->transaction() );
+   TEST_EXECUTE( std::ignore = connection->transaction() );
    TEST_EXECUTE( connection->transaction()->commit() );
    TEST_EXECUTE( connection->transaction()->rollback() );
 
-   TEST_EXECUTE( (void)connection->transaction()->subtransaction() );
+   TEST_EXECUTE( std::ignore = connection->transaction()->subtransaction() );
    TEST_EXECUTE( connection->transaction()->subtransaction()->commit() );
    TEST_EXECUTE( connection->transaction()->subtransaction()->rollback() );
 
-   TEST_EXECUTE( (void)connection->transaction()->subtransaction()->subtransaction() );
+   TEST_EXECUTE( std::ignore = connection->transaction()->subtransaction()->subtransaction() );
    TEST_EXECUTE( connection->transaction()->subtransaction()->subtransaction()->commit() );
    TEST_EXECUTE( connection->transaction()->subtransaction()->subtransaction()->rollback() );
 
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::serializable ) );
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::repeatable_read ) );
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::read_committed ) );
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::isolation_level::read_uncommitted ) );
+   TEST_EXECUTE( std::ignore = connection->transaction( tao::pq::isolation_level::serializable ) );
+   TEST_EXECUTE( std::ignore = connection->transaction( tao::pq::isolation_level::repeatable_read ) );
+   TEST_EXECUTE( std::ignore = connection->transaction( tao::pq::isolation_level::read_committed ) );
+   TEST_EXECUTE( std::ignore = connection->transaction( tao::pq::isolation_level::read_uncommitted ) );
 
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::access_mode::read_write ) );
-   TEST_EXECUTE( (void)connection->transaction( tao::pq::access_mode::read_only ) );
+   TEST_EXECUTE( std::ignore = connection->transaction( tao::pq::access_mode::read_write ) );
+   TEST_EXECUTE( std::ignore = connection->transaction( tao::pq::access_mode::read_only ) );
 
    TEST_EXECUTE( check_nested( connection, connection->direct() ) );
    TEST_EXECUTE( check_nested( connection, connection->transaction() ) );

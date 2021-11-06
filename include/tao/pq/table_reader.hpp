@@ -12,6 +12,7 @@
 #include <set>
 #include <string>
 #include <string_view>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -67,7 +68,7 @@ namespace tao::pq
 
       [[nodiscard]] auto get_row() -> bool
       {
-         (void)get_raw_data();
+         std::ignore = get_raw_data();
          return parse_data();
       }
 

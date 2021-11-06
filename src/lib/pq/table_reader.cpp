@@ -6,6 +6,7 @@
 
 #include <chrono>
 #include <cstring>
+#include <tuple>
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/exception.hpp>
@@ -24,7 +25,7 @@ namespace tao::pq
             break;
 
          case PGRES_COPY_IN:
-            (void)m_transaction->get_result( start );
+            std::ignore = m_transaction->get_result( start );
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
 
          case PGRES_COMMAND_OK:
@@ -58,7 +59,7 @@ namespace tao::pq
       const auto start = std::chrono::steady_clock::now();
       const auto end = m_transaction->connection()->timeout() ? ( start + *m_transaction->connection()->timeout() ) : start;
 
-      (void)pq::result( m_transaction->connection()->get_result( end ).release() );
+      std::ignore = pq::result( m_transaction->connection()->get_result( end ).release() );
       m_transaction.reset();
       m_previous.reset();
       return {};
@@ -152,7 +153,7 @@ namespace tao::pq
 
    auto table_reader::begin() -> table_reader::const_iterator
    {
-      (void)get_row();
+      std::ignore = get_row();
       return table_row( *this, 0, columns() );
    }
 

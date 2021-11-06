@@ -10,6 +10,7 @@ auto main() -> int {}
 
 #include <cmath>
 #include <stdexcept>
+#include <tuple>
 #include <typeinfo>
 
 #include <tao/pq/internal/printf.hpp>
@@ -19,7 +20,7 @@ template< typename T >
 void reject_floating_point( const char* input )
 {
    try {
-      (void)tao::pq::internal::strtof( input );
+      std::ignore = tao::pq::internal::strtof( input );
       throw std::runtime_error( tao::pq::internal::printf( "strtof(): %s", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
@@ -28,7 +29,7 @@ void reject_floating_point( const char* input )
       }
    }
    try {
-      (void)tao::pq::internal::strtod( input );
+      std::ignore = tao::pq::internal::strtod( input );
       throw std::runtime_error( tao::pq::internal::printf( "strtod(): %s", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
@@ -37,7 +38,7 @@ void reject_floating_point( const char* input )
       }
    }
    try {
-      (void)tao::pq::internal::strtold( input );
+      std::ignore = tao::pq::internal::strtold( input );
       throw std::runtime_error( tao::pq::internal::printf( "strtold(): %s", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
