@@ -112,7 +112,7 @@ namespace tao::pq
       {
          const auto start = std::chrono::steady_clock::now();
          transaction::send( statement, std::forward< As >( as )... );
-         return get_result( start );
+         return transaction::get_result( start );
       }
 
       void commit();

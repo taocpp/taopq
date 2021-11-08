@@ -147,15 +147,11 @@ namespace tao::pq
                m_connection->put_copy_end( "unexpected COPY FROM statement" );
                break;
 
-            case PGRES_COPY_OUT: {
+            case PGRES_COPY_OUT:
                m_connection->cancel();
-               char* ptr;
-               while( m_connection->get_copy_data( ptr, end ) > 0 ) {
-                  PQfreemem( ptr );
-               }
+               m_connection->clear_copy_data( end );
                m_connection->clear_results( end );
                throw std::runtime_error( "unexpected COPY TO statement" );
-            }
 
             default:;
          }

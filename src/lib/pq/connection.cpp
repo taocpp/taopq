@@ -335,7 +335,7 @@ namespace tao::pq
                   throw std::runtime_error( "PQflush() failed: " + error_message() );
             }
          }
-         wait( wait_for_write, end );
+         connection::wait( wait_for_write, end );
       }
 
       std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );
@@ -352,7 +352,7 @@ namespace tao::pq
          }
          switch( result ) {
             case 0:
-               wait( false, end );
+               connection::wait( false, end );
                break;
 
             case -1:
@@ -371,7 +371,7 @@ namespace tao::pq
 
    auto connection::get_copy_data( char*& buffer ) -> std::size_t
    {
-      return get_copy_data( buffer, timeout_end() );
+      return connection::get_copy_data( buffer, timeout_end() );
    }
 
    void connection::put_copy_data( const char* buffer, const std::size_t size )
@@ -380,7 +380,7 @@ namespace tao::pq
       while( true ) {
          switch( PQputCopyData( m_pgconn.get(), buffer, static_cast< int >( size ) ) ) {
             case 0:
-               wait( true, end );
+               connection::wait( true, end );
                break;
 
             case 1:
@@ -403,7 +403,7 @@ namespace tao::pq
       while( true ) {
          switch( PQputCopyEnd( m_pgconn.get(), error_message ) ) {
             case 0:
-               wait( true, end );
+               connection::wait( true, end );
                break;
 
             case 1:
@@ -422,7 +422,15 @@ namespace tao::pq
 
    void connection::clear_results( const std::chrono::steady_clock::time_point end )
    {
-      while( get_result( end ) ) {
+      while( connection::get_result( end ) ) {
+      }
+   }
+
+   void connection::clear_copy_data( const std::chrono::steady_clock::time_point end )
+   {
+      char* ptr;
+      while( connection::get_copy_data( ptr, end ) > 0 ) {
+         PQfreemem( ptr );
       }
    }
 
@@ -522,10 +530,10 @@ namespace tao::pq
       if( PQsendPrepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) == 0 ) {
          throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
       }
-      auto result = get_result( end );
+      auto result = connection::get_result( end );
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COMMAND_OK:
-            clear_results( end );
+            connection::clear_results( end );
             break;
 
          case PGRES_TUPLES_OK:
@@ -535,7 +543,7 @@ namespace tao::pq
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
 
          default:
-            clear_results( end );
+            connection::clear_results( end );
             internal::throw_sqlstate( result.get() );
       }
       m_prepared_statements.insert( name );
@@ -547,7 +555,7 @@ namespace tao::pq
       if( !connection::is_prepared( name ) ) {
          throw std::runtime_error( "prepared statement not found: " + name );
       }
-      connection::execute( "DEALLOCATE " + escape_identifier( name ) );
+      connection::execute( "DEALLOCATE " + connection::escape_identifier( name ) );
       m_prepared_statements.erase( name );
    }
 

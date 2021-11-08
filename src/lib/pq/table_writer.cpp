@@ -34,15 +34,11 @@ namespace tao::pq
          case PGRES_COPY_IN:
             break;
 
-         case PGRES_COPY_OUT: {
+         case PGRES_COPY_OUT:
             m_transaction->connection()->cancel();
-            char* ptr;
-            while( m_transaction->connection()->get_copy_data( ptr, end ) > 0 ) {
-               PQfreemem( ptr );
-            }
+            m_transaction->connection()->clear_copy_data( end );
             m_transaction->connection()->clear_results( end );
             throw std::runtime_error( "unexpected COPY TO statement" );
-         }
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:

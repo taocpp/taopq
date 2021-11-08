@@ -70,6 +70,7 @@ namespace tao::pq
       void put_copy_end( const char* error_message = nullptr );
 
       void clear_results( const std::chrono::steady_clock::time_point end );
+      void clear_copy_data( const std::chrono::steady_clock::time_point end );
 
       // pass-key idiom
       class private_key final
