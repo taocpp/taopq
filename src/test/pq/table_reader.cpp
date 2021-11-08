@@ -43,8 +43,7 @@ void run()
    TEST_THROWS( tao::pq::table_reader( connection->direct(), "COPY tao_table_reader_test ( a, b, c, d ) TO STDOUT" ) );
    TEST_THROWS( tao::pq::table_reader( connection->direct(), "COPY tao_table_reader_test ( a, b, c ) FROM STDIN" ) );
 
-   // TODO: Once we know how to cancel COPY TO statements, activate this:
-   // TEST_THROWS( connection->execute( "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" ) );
+   TEST_THROWS( connection->execute( "COPY tao_table_reader_test ( a, b, c ) TO STDOUT" ) );
 
    connection->execute( "DROP TABLE IF EXISTS tao_table_reader_test" );
    connection->execute( "CREATE TABLE tao_table_reader_test ( a BYTEA )" );

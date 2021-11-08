@@ -104,8 +104,7 @@ void run()
    // insert some data
    connection->execute( "INSERT INTO tao_connection_test VALUES ( 1, 42 )" );
 
-   // TODO: Once we know how to cancel COPY TO statements, activate this:
-   // TEST_THROWS( connection->execute( "COPY tao_connection_test ( a, b ) TO STDOUT" ) );
+   TEST_THROWS( connection->execute( "COPY tao_connection_test ( a, b ) TO STDOUT" ) );
    TEST_THROWS( connection->execute( "COPY tao_connection_test ( a, b ) FROM STDIN" ) );
 
    // read data

@@ -34,11 +34,16 @@ namespace tao::pq
          case PGRES_COPY_IN:
             break;
 
-         case PGRES_COPY_OUT:
-            // TODO: How to cancel an unexpected PGRES_COPY_OUT?
-            while( m_transaction->connection()->get_result( end ) ) {
+         case PGRES_COPY_OUT: {
+            m_transaction->m_connection->cancel();
+            char* ptr;
+            while( m_transaction->m_connection->get_copy_data( ptr, end ) > 0 ) {
+               PQfreemem( ptr );
+            }
+            while( m_transaction->m_connection->get_result( end ) ) {
             }
             throw std::runtime_error( "unexpected COPY TO statement" );
+         }
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:

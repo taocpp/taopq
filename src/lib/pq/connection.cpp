@@ -307,6 +307,17 @@ namespace tao::pq
       }
    }
 
+   void connection::cancel()
+   {
+      const std::unique_ptr< PGcancel, decltype( &PQfreeCancel ) > p( PQgetCancel( m_pgconn.get() ), &PQfreeCancel );
+      if( p ) {
+         char buffer[ 256 ];
+         if( PQcancel( p.get(), buffer, sizeof( buffer ) ) == 0 ) {
+            throw std::runtime_error( buffer );
+         }
+      }
+   }
+
    auto connection::get_result( const std::chrono::steady_clock::time_point end ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
       bool wait_for_write = true;
@@ -332,9 +343,8 @@ namespace tao::pq
       return result;
    }
 
-   auto connection::get_copy_data( char*& buffer ) -> std::size_t
+   auto connection::get_copy_data( char*& buffer, const std::chrono::steady_clock::time_point end ) -> std::size_t
    {
-      const auto end = timeout_end();
       while( true ) {
          const auto result = PQgetCopyData( m_pgconn.get(), &buffer, 1 );
          if( result > 0 ) {
@@ -357,6 +367,11 @@ namespace tao::pq
                // LCOV_EXCL_END
          }
       }
+   }
+
+   auto connection::get_copy_data( char*& buffer ) -> std::size_t
+   {
+      return get_copy_data( buffer, timeout_end() );
    }
 
    void connection::put_copy_data( const char* buffer, const std::size_t size )
