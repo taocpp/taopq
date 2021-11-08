@@ -35,30 +35,26 @@ namespace tao::pq
             break;
 
          case PGRES_COPY_OUT: {
-            m_transaction->m_connection->cancel();
+            m_transaction->connection()->cancel();
             char* ptr;
-            while( m_transaction->m_connection->get_copy_data( ptr, end ) > 0 ) {
+            while( m_transaction->connection()->get_copy_data( ptr, end ) > 0 ) {
                PQfreemem( ptr );
             }
-            while( m_transaction->m_connection->get_result( end ) ) {
-            }
+            m_transaction->connection()->clear_results( end );
             throw std::runtime_error( "unexpected COPY TO statement" );
          }
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
-            while( m_transaction->connection()->get_result( end ) ) {
-            }
+            m_transaction->connection()->clear_results( end );
             throw std::runtime_error( "expected COPY FROM statement" );
 
          case PGRES_EMPTY_QUERY:
-            while( m_transaction->connection()->get_result( end ) ) {
-            }
+            m_transaction->connection()->clear_results( end );
             throw std::runtime_error( "unexpected empty query" );
 
          default:
-            while( m_transaction->connection()->get_result( end ) ) {
-            }
+            m_transaction->connection()->clear_results( end );
             internal::throw_sqlstate( result.get() );
       }
    }

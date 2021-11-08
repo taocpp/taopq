@@ -153,8 +153,7 @@ namespace tao::pq
                while( m_connection->get_copy_data( ptr, end ) > 0 ) {
                   PQfreemem( ptr );
                }
-               while( m_connection->get_result( end ) ) {
-               }
+               m_connection->clear_results( end );
                throw std::runtime_error( "unexpected COPY TO statement" );
             }
 

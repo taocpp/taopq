@@ -420,6 +420,12 @@ namespace tao::pq
       }
    }
 
+   void connection::clear_results( const std::chrono::steady_clock::time_point end )
+   {
+      while( get_result( end ) ) {
+      }
+   }
+
    connection::connection( const private_key /*unused*/, const std::string& connection_info )
       : m_pgconn( PQconnectdb( connection_info.c_str() ), &PQfinish ),
         m_current_transaction( nullptr )
@@ -519,8 +525,7 @@ namespace tao::pq
       auto result = get_result( end );
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COMMAND_OK:
-            while( get_result( end ) ) {
-            }
+            clear_results( end );
             break;
 
          case PGRES_TUPLES_OK:
@@ -530,8 +535,7 @@ namespace tao::pq
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
 
          default:
-            while( get_result( end ) ) {
-            }
+            clear_results( end );
             internal::throw_sqlstate( result.get() );
       }
       m_prepared_statements.insert( name );
