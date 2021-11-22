@@ -45,6 +45,7 @@ namespace tao::pq::internal::aggregate
    constexpr auto tie( const T& value ) noexcept
    {
       static_assert( std::is_aggregate_v< T > );
+      static_assert( !std::is_union_v< T > );
       constexpr auto cnt = count< T >;
       if constexpr( cnt == 1 ) {
          const auto& [ a ] = value;
