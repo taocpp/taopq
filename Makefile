@@ -47,8 +47,6 @@ SOURCES := $(shell find src -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=$(BUILDDIR)/%.d)
 BINARIES := $(SOURCES:%.cpp=$(BUILDDIR)/%)
 
-CLANG_TIDY_HEADERS := $(filter-out include/tao/pq/internal/endian_win.hpp,$(HEADERS))
-
 UNIT_TESTS := $(filter $(BUILDDIR)/src/test/%,$(BINARIES))
 
 LIBSOURCES := $(filter src/lib/%,$(SOURCES))
@@ -70,8 +68,8 @@ $(BUILDDIR)/%.clang-tidy: % .clang-tidy
 	@touch $@
 
 .PHONY: clang-tidy
-clang-tidy: $(CLANG_TIDY_HEADERS:%=$(BUILDDIR)/%.clang-tidy) $(SOURCES:%=$(BUILDDIR)/%.clang-tidy)
-	@echo "All $(words $(CLANG_TIDY_HEADERS) $(SOURCES)) clang-tidy tests passed."
+clang-tidy: $(HEADERS:%=$(BUILDDIR)/%.clang-tidy) $(SOURCES:%=$(BUILDDIR)/%.clang-tidy)
+	@echo "All $(words $(HEADERS) $(SOURCES)) clang-tidy tests passed."
 
 .PHONY: clean
 clean:
