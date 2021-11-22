@@ -33,8 +33,7 @@ void run()
       TEST_EXECUTE( connection->execute( "INSERT INTO tao_aggregate_test VALUES ( $1, $2, $3 )", u ) );
    }
 
-   {
-      const auto u = connection->execute( "SELECT name, age, planet FROM tao_aggregate_test" ).as< example::user >();
+   for( const example::user u : connection->execute( "SELECT name, age, planet FROM tao_aggregate_test" ) ) {
       TEST_ASSERT( u.name == "R. Giskard Reventlov" );
       TEST_ASSERT( u.age == 42 );
       TEST_ASSERT( u.planet == "Aurora" );

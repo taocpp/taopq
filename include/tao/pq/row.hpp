@@ -248,6 +248,12 @@ namespace tao::pq
       }
 
       template< typename T >
+      [[nodiscard]] operator T() const
+      {
+         return as< T >();
+      }
+
+      template< typename T >
       [[nodiscard]] auto optional() const
       {
          return as< std::optional< T > >();
