@@ -21,21 +21,21 @@ namespace tao::pq::internal::aggregate
    using indexed_any = any;
 
    template< typename, typename, typename = void >
-   inline constexpr bool check = false;
+   inline constexpr bool check_impl = false;
 
    template< typename T, std::size_t... Is >
-   inline constexpr bool check< T, std::index_sequence< Is... >, decltype( (void)T{ std::declval< indexed_any< Is > >()... } ) > = true;
+   inline constexpr bool check_impl< T, std::index_sequence< Is... >, decltype( (void)T{ std::declval< indexed_any< Is > >()... } ) > = true;
 
    template< typename T, std::size_t N >
-   inline constexpr bool checkN = check< T, std::make_index_sequence< N > >;
+   inline constexpr bool check = check_impl< T, std::make_index_sequence< N > >;
 
-   template< typename T, std::size_t N = 1, bool = checkN< T, N > >
+   template< typename T, std::size_t N = 1, bool = check< T, N > >
    inline constexpr std::size_t minimum = N;
 
    template< typename T, std::size_t N >
    inline constexpr std::size_t minimum< T, N, false > = minimum< T, N + 1 >;
 
-   template< typename T, std::size_t N = minimum< T >, bool = checkN< T, N > >
+   template< typename T, std::size_t N = minimum< T >, bool = check< T, N > >
    inline constexpr std::size_t count = count< T, N + 1 >;
 
    template< typename T, std::size_t N >
@@ -45,108 +45,108 @@ namespace tao::pq::internal::aggregate
    constexpr auto tie( const T& value ) noexcept
    {
       static_assert( std::is_aggregate_v< T > );
-      constexpr auto N = count< T >;
-      if constexpr( N == 1 ) {
+      constexpr auto cnt = count< T >;
+      if constexpr( cnt == 1 ) {
          const auto& [ a ] = value;
          return std::tie( a );
       }
-      else if constexpr( N == 2 ) {
+      else if constexpr( cnt == 2 ) {
          const auto& [ a, b ] = value;
          return std::tie( a, b );
       }
-      else if constexpr( N == 3 ) {
+      else if constexpr( cnt == 3 ) {
          const auto& [ a, b, c ] = value;
          return std::tie( a, b, c );
       }
-      else if constexpr( N == 4 ) {
+      else if constexpr( cnt == 4 ) {
          const auto& [ a, b, c, d ] = value;
          return std::tie( a, b, c, d );
       }
-      else if constexpr( N == 5 ) {
+      else if constexpr( cnt == 5 ) {
          const auto& [ a, b, c, d, e ] = value;
          return std::tie( a, b, c, d, e );
       }
-      else if constexpr( N == 6 ) {
+      else if constexpr( cnt == 6 ) {
          const auto& [ a, b, c, d, e, f ] = value;
          return std::tie( a, b, c, d, e, f );
       }
-      else if constexpr( N == 7 ) {
+      else if constexpr( cnt == 7 ) {
          const auto& [ a, b, c, d, e, f, g ] = value;
          return std::tie( a, b, c, d, e, f, g );
       }
-      else if constexpr( N == 8 ) {
+      else if constexpr( cnt == 8 ) {
          const auto& [ a, b, c, d, e, f, g, h ] = value;
          return std::tie( a, b, c, d, e, f, g, h );
       }
-      else if constexpr( N == 9 ) {
+      else if constexpr( cnt == 9 ) {
          const auto& [ a, b, c, d, e, f, g, h, i ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i );
       }
-      else if constexpr( N == 10 ) {
+      else if constexpr( cnt == 10 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j );
       }
-      else if constexpr( N == 11 ) {
+      else if constexpr( cnt == 11 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k );
       }
-      else if constexpr( N == 12 ) {
+      else if constexpr( cnt == 12 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l );
       }
-      else if constexpr( N == 13 ) {
+      else if constexpr( cnt == 13 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m );
       }
-      else if constexpr( N == 14 ) {
+      else if constexpr( cnt == 14 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n );
       }
-      else if constexpr( N == 15 ) {
+      else if constexpr( cnt == 15 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o );
       }
-      else if constexpr( N == 16 ) {
+      else if constexpr( cnt == 16 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p );
       }
-      else if constexpr( N == 17 ) {
+      else if constexpr( cnt == 17 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q );
       }
-      else if constexpr( N == 18 ) {
+      else if constexpr( cnt == 18 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r );
       }
-      else if constexpr( N == 19 ) {
+      else if constexpr( cnt == 19 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s );
       }
-      else if constexpr( N == 20 ) {
+      else if constexpr( cnt == 20 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t );
       }
-      else if constexpr( N == 21 ) {
+      else if constexpr( cnt == 21 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u );
       }
-      else if constexpr( N == 22 ) {
+      else if constexpr( cnt == 22 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v );
       }
-      else if constexpr( N == 23 ) {
+      else if constexpr( cnt == 23 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w );
       }
-      else if constexpr( N == 24 ) {
+      else if constexpr( cnt == 24 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x );
       }
-      else if constexpr( N == 25 ) {
+      else if constexpr( cnt == 25 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y );
       }
-      else if constexpr( N == 26 ) {
+      else if constexpr( cnt == 26 ) {
          const auto& [ a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z ] = value;
          return std::tie( a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z );
       }
