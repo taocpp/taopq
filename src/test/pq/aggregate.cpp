@@ -26,7 +26,7 @@ void run()
    const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
 
    connection->execute( "DROP TABLE IF EXISTS tao_aggregate_test" );
-   connection->execute( "CREATE TABLE tao_aggregate_test ( a TEXT PRIMARY KEY, b INTEGER, c TEXT )" );
+   connection->execute( "CREATE TABLE tao_aggregate_test ( name TEXT PRIMARY KEY, age INTEGER, planet TEXT )" );
 
    {
       const example::user u{ "R. Giskard Reventlov", 42, "Aurora" };
@@ -34,7 +34,7 @@ void run()
    }
 
    {
-      const auto u = connection->execute( "SELECT a, b, c FROM tao_aggregate_test" ).as< example::user >();
+      const auto u = connection->execute( "SELECT name, age, planet FROM tao_aggregate_test" ).as< example::user >();
       TEST_ASSERT( u.name == "R. Giskard Reventlov" );
       TEST_ASSERT( u.age == 42 );
       TEST_ASSERT( u.planet == "Aurora" );
