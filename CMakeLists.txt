@@ -25,6 +25,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/exception.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/field.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/internal/aggregate.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/dependent_false.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/exclusive_scan.hpp
@@ -37,18 +38,21 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/zsv.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/is_aggregate.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/large_object.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/notification.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/null.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/oid.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_aggregate.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_array.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_optional.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_pair.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_tuple.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_aggregate.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_array.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_optional.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_pair.hpp

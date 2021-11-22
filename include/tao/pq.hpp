@@ -16,6 +16,7 @@
 #include <tao/pq/transaction.hpp>
 
 #include <tao/pq/parameter_traits.hpp>
+#include <tao/pq/parameter_traits_aggregate.hpp>
 #include <tao/pq/parameter_traits_array.hpp>
 #include <tao/pq/parameter_traits_optional.hpp>
 #include <tao/pq/parameter_traits_pair.hpp>
@@ -25,6 +26,7 @@
 #include <tao/pq/result.hpp>
 
 #include <tao/pq/result_traits.hpp>
+#include <tao/pq/result_traits_aggregate.hpp>
 #include <tao/pq/result_traits_array.hpp>
 #include <tao/pq/result_traits_optional.hpp>
 #include <tao/pq/result_traits_pair.hpp>
