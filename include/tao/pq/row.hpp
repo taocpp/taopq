@@ -20,6 +20,7 @@
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/internal/zsv.hpp>
+#include <tao/pq/is_aggregate.hpp>
 #include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
@@ -247,7 +248,7 @@ namespace tao::pq
          return get< T >( 0 );
       }
 
-      template< typename T >
+      template< typename T, typename = std::enable_if_t< is_aggregate_result< T > > >
       [[nodiscard]] operator T() const
       {
          return as< T >();

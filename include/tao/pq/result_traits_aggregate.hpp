@@ -11,9 +11,6 @@
 
 namespace tao::pq
 {
-   template< typename T >
-   inline constexpr bool is_aggregate_result = is_aggregate< T >;
-
    namespace internal
    {
       template< typename... Ts >

@@ -9,8 +9,14 @@
 
 namespace tao::pq
 {
-   template< typename T >
+   template< typename >
    inline constexpr bool is_aggregate = false;
+
+   template< typename T >
+   inline constexpr bool is_aggregate_result = is_aggregate< T >;
+
+   template< typename T >
+   inline constexpr bool is_aggregate_parameter = is_aggregate< T >;
 
 }  // namespace tao::pq
 
