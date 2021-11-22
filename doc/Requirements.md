@@ -11,7 +11,7 @@
 ## Compiler Support
 
 * We support:
-  * [Visual Studio➚](https://en.wikipedia.org/wiki/Microsoft_Visual_Studio) version 2017 or newer.
+  * [Visual Studio➚](https://en.wikipedia.org/wiki/Microsoft_Visual_Studio) version 2019 or newer.
   * [Xcode➚](https://en.wikipedia.org/wiki/Xcode) version 11 or newer.
   * [GCC➚](https://gcc.gnu.org/) version 8 or newer.
   * [Clang➚](https://clang.llvm.org/) version 8 or newer.
