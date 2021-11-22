@@ -248,7 +248,7 @@ namespace tao::pq
          return get< T >( 0 );
       }
 
-      template< typename T, typename = std::enable_if_t< is_aggregate_result< T > > >
+      template< typename T, typename = std::enable_if_t< ( is_aggregate_result< T > ) > >
       [[nodiscard]] operator T() const
       {
          return as< T >();
