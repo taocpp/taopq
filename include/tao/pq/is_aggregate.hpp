@@ -5,8 +5,6 @@
 #ifndef TAO_PQ_IS_AGGREGATE_HPP
 #define TAO_PQ_IS_AGGREGATE_HPP
 
-#include <type_traits>
-
 namespace tao::pq
 {
    template< typename >

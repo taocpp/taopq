@@ -22,7 +22,7 @@ namespace tao::pq
          using type = std::tuple< std::decay_t< Ts >... >;
       };
 
-      template< typename T, typename = typename decay_tuple< decltype( aggregate::tie( std::declval< T >() ) ) >::type >
+      template< typename T, typename = typename decay_tuple< decltype( internal::tie_aggregate( std::declval< T >() ) ) >::type >
       struct result_traits_aggregate;
 
       template< typename T, typename... Ts >

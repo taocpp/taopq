@@ -9,40 +9,37 @@
 #include <type_traits>
 #include <utility>
 
-namespace tao::pq::internal::aggregate
+namespace tao::pq::internal
 {
-   struct any
+   struct convert_to_any
    {
       template< typename T >
       constexpr operator T() const noexcept;
    };
 
    template< std::size_t >
-   using indexed_any = any;
+   using indexed_convert_to_any = convert_to_any;
 
    template< typename, typename, typename = void >
-   inline constexpr bool check_impl = false;
+   inline constexpr bool check_aggregate_args = false;
 
    template< typename T, std::size_t... Is >
-   inline constexpr bool check_impl< T, std::index_sequence< Is... >, decltype( (void)T{ std::declval< indexed_any< Is > >()... } ) > = true;
+   inline constexpr bool check_aggregate_args< T, std::index_sequence< Is... >, decltype( (void)T{ std::declval< indexed_convert_to_any< Is > >()... } ) > = true;
+
+   template< typename T, std::size_t N = 1, bool = check_aggregate_args< T, std::make_index_sequence< N > > >
+   inline constexpr std::size_t minimum_aggregate_args = N;
 
    template< typename T, std::size_t N >
-   inline constexpr bool check = check_impl< T, std::make_index_sequence< N > >;
+   inline constexpr std::size_t minimum_aggregate_args< T, N, false > = minimum_aggregate_args< T, N + 1 >;
 
-   template< typename T, std::size_t N = 1, bool = check< T, N > >
-   inline constexpr std::size_t minimum = N;
-
-   template< typename T, std::size_t N >
-   inline constexpr std::size_t minimum< T, N, false > = minimum< T, N + 1 >;
-
-   template< typename T, std::size_t N = minimum< T >, bool = check< T, N > >
-   inline constexpr std::size_t count = count< T, N + 1 >;
+   template< typename T, std::size_t N = minimum_aggregate_args< T >, bool = check_aggregate_args< T, std::make_index_sequence< N > > >
+   inline constexpr std::size_t count_aggregate_args = count_aggregate_args< T, N + 1 >;
 
    template< typename T, std::size_t N >
-   inline constexpr std::size_t count< T, N, false > = N - 1;
+   inline constexpr std::size_t count_aggregate_args< T, N, false > = N - 1;
 
    template< typename T >
-   constexpr auto tie( const T& value ) noexcept
+   constexpr auto tie_aggregate( const T& value ) noexcept
    {
       static_assert( std::is_aggregate_v< T > );
       static_assert( !std::is_empty_v< T > );
@@ -51,7 +48,7 @@ namespace tao::pq::internal::aggregate
          return std::tuple<>();
       }
       else {
-         constexpr auto cnt = count< T >;
+         constexpr auto cnt = count_aggregate_args< T >;
          if constexpr( cnt == 1 ) {
             const auto& [ a ] = value;
             return std::tie( a );
@@ -160,6 +157,6 @@ namespace tao::pq::internal::aggregate
       }
    }
 
-}  // namespace tao::pq::internal::aggregate
+}  // namespace tao::pq::internal
 
 #endif

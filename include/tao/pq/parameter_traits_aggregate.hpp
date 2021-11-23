@@ -16,11 +16,11 @@ namespace tao::pq
       template< typename T >
       struct parameter_aggregate_tie
       {
-         using result_t = decltype( aggregate::tie( std::declval< const T& >() ) );
+         using result_t = decltype( internal::tie_aggregate( std::declval< const T& >() ) );
          const result_t result;
 
          explicit parameter_aggregate_tie( const T& t ) noexcept
-            : result( aggregate::tie( t ) )
+            : result( internal::tie_aggregate( t ) )
          {}
       };
 
