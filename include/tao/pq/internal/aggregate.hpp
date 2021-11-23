@@ -21,18 +21,21 @@ namespace tao::pq::internal
    using indexed_convert_to_any = convert_to_any;
 
    template< typename, typename, typename = void >
-   inline constexpr bool check_aggregate_args = false;
+   inline constexpr bool check_aggregate_args_impl = false;
 
    template< typename T, std::size_t... Is >
-   inline constexpr bool check_aggregate_args< T, std::index_sequence< Is... >, decltype( (void)T{ std::declval< indexed_convert_to_any< Is > >()... } ) > = true;
+   inline constexpr bool check_aggregate_args_impl< T, std::index_sequence< Is... >, decltype( (void)T{ std::declval< indexed_convert_to_any< Is > >()... } ) > = true;
 
-   template< typename T, std::size_t N = 1, bool = check_aggregate_args< T, std::make_index_sequence< N > > >
+   template< typename T, std::size_t N >
+   inline constexpr bool check_aggregate_args = check_aggregate_args_impl< T, std::make_index_sequence< N > >;
+
+   template< typename T, std::size_t N = 1, bool = check_aggregate_args< T, N > >
    inline constexpr std::size_t minimum_aggregate_args = N;
 
    template< typename T, std::size_t N >
    inline constexpr std::size_t minimum_aggregate_args< T, N, false > = minimum_aggregate_args< T, N + 1 >;
 
-   template< typename T, std::size_t N = minimum_aggregate_args< T >, bool = check_aggregate_args< T, std::make_index_sequence< N > > >
+   template< typename T, std::size_t N = minimum_aggregate_args< T >, bool = check_aggregate_args< T, N > >
    inline constexpr std::size_t count_aggregate_args = count_aggregate_args< T, N + 1 >;
 
    template< typename T, std::size_t N >
