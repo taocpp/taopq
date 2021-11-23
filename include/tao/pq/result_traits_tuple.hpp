@@ -35,7 +35,7 @@ struct tao::pq::result_traits< std::tuple< Ts... > >
 {
    static_assert( sizeof...( Ts ) != 0, "conversion to empty std::tuple<> not support" );
 
-   static constexpr std::size_t size{ (0 + ... + result_traits_size< Ts >)};
+   static constexpr std::size_t size = ( 0 + ... + result_traits_size< Ts > );
 
    template< typename Row, std::size_t... Ns >
    [[nodiscard]] static auto from( const Row& row, std::index_sequence< Ns... > /*unused*/ )

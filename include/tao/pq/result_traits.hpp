@@ -175,7 +175,7 @@ namespace tao::pq
       template< typename T, typename R, typename... As >
       struct from_taopq< T, R, R( As... ) >
       {
-         static constexpr std::size_t size{ (0 + ... + result_traits_size< std::decay_t< As > >)};
+         static constexpr std::size_t size = ( 0 + ... + result_traits_size< std::decay_t< As > > );
 
          template< typename Row, std::size_t... Ns >
          [[nodiscard]] static auto from( const Row& row, std::index_sequence< Ns... > /*unused*/ ) -> R

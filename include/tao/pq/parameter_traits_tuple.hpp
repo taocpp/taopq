@@ -30,7 +30,7 @@ public:
       : m_tuple( std::move( tuple ) )
    {}
 
-   static constexpr std::size_t columns{ ( 0 + ... + parameter_traits< std::decay_t< Ts > >::columns ) };
+   static constexpr std::size_t columns = ( 0 + ... + parameter_traits< std::decay_t< Ts > >::columns );
 
    template< std::size_t I >
    [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template type< gen::template inner< I > >() ) ) -> oid
