@@ -56,6 +56,25 @@ It can read more than two fields when `T` or `U` themselves read more than one f
 
 As a generalisation of pairs, tuples read all fields for their individual elements, in order.
 
+## Aggregates
+
+Any suitable aggregate data type can be used as a result type when registered with taoPQ.
+
+```c++
+struct my_aggregate
+{
+   std::string name;
+   unsigned age;
+   std::string address;
+   bool is_pet_owner;
+};
+
+template<>
+inline constexpr bool tao::pq::is_aggregate< my_aggregate > = true;
+```
+
+See [Aggregate Support](Aggregate-Support.md) for more information.
+
 ## Custom Data Types
 
 Custom data types can be registered in two different ways, by using a `from_taopq()` function or method, or by specializing the `tao::pq::result_traits` class template.

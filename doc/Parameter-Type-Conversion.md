@@ -63,6 +63,25 @@ Pairs can be nested, e.g. `std::pair<std::pair<int,int>,int>` would generate thr
 
 As a generalisation of pairs, tuples generate all parameters for their individual elements, in order.
 
+## Aggregates
+
+Any suitable aggregate data type can be used as a parameter when registered with taoPQ.
+
+```c++
+struct my_aggregate
+{
+   std::string name;
+   unsigned age;
+   std::string address;
+   bool is_pet_owner;
+};
+
+template<>
+inline constexpr bool tao::pq::is_aggregate< my_aggregate > = true;
+```
+
+See [Aggregate Support](Aggregate.md) for more information.
+
 ## Custom Data Types
 
 Custom data types can be registered in two different ways, by using a `to_taopq()` function or method, or by specializing the `tao::pq::parameter_traits` class template.

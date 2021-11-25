@@ -86,6 +86,7 @@
       * [Intrusive Placement](Result-Type-Conversion.md#intrusive-placement)
       * [Non-Intrusive Placement](Result-Type-Conversion.md#non-intrusive-placement)
     * [`tao::pq::result_traits< T >`](Result-Type-Conversion.md#taopqresult_traits-t-)
+* [Aggregate Support](Aggregate-Support.md)
 * [Error Handling](Error-Handling.md)
   * [SQLSTATE](Error-Handling.md#sqlstate)
     * [Class of Error](Error-Handling.md#class-of-error)
