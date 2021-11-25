@@ -13,6 +13,7 @@
 #include <utility>
 
 #include <tao/pq/binary.hpp>
+#include <tao/pq/bind.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/exclusive_scan.hpp>
 
@@ -201,9 +202,6 @@ namespace tao::pq
    struct result_traits< T, decltype( (void)T::from_taopq ) >
       : internal::from_taopq< T, T, decltype( T::from_taopq ) >
    {};
-
-   template< typename >
-   struct bind;
 
    template< typename T >
    struct result_traits< T, decltype( (void)bind< T >::from_taopq ) >

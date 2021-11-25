@@ -21,6 +21,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/access_mode.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/binary.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/bind.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/connection.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/exception.hpp

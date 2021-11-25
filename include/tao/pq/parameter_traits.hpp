@@ -16,6 +16,7 @@
 #include <utility>
 
 #include <tao/pq/binary.hpp>
+#include <tao/pq/bind.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/resize_uninitialized.hpp>
@@ -474,9 +475,6 @@ namespace tao::pq
    {
       return t.to_taopq();
    }
-
-   template< typename >
-   struct bind;
 
    // default free function to detect bind<T>::to_taopq()
    template< typename T >
