@@ -68,6 +68,9 @@ struct user
    std::string planet;
 };
 
+template<>
+inline constexpr bool tao::pq::is_aggregate< user > = true;
+
 int main()
 {
    // open a connection to the database
