@@ -59,6 +59,7 @@ namespace tao::pq
 
       // query status
       bool is_open() const noexcept;
+      bool is_idle() const noexcept;
 
       // create transactions
       auto direct()
@@ -120,7 +121,7 @@ namespace tao::pq
 }
 ```
 
-Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
+:point_up: Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
 
 ## Creating a Connection
 
@@ -156,7 +157,7 @@ auto tao::pq::connection::direct()
     -> std::shared_ptr< tao::pq::transaction >;
 ```
 
-This is not a real transaction from the database's point of view, therefore calling the `commit()`- or `rollback()`-method on the transaction has no immediate effect on the database.
+:point_up: This is not a real transaction from the database's point of view, therefore calling the `commit()`- or `rollback()`-method on the transaction has no immediate effect on the database.
 However, calling either the `commit()`- or `rollback()`-method will end the transaction's logical lifetime and it will unregister itself from the connection.
 
 ### Creating a Database Transaction
@@ -215,18 +216,22 @@ You can manually prepare statements by executing [`PREPARE`➚](https://www.post
 While those prepared statements live on the same connection, there are some important differences.
 You can only execute those prepared statements by executing [`EXECUTE`➚](https://www.postgresql.org/docs/current/sql-execute.html) statements directly via an `execute()`-method, and you can only deallocate them by executing [`DEALLOCATE`➚](https://www.postgresql.org/docs/current/sql-deallocate.html) statements directly via an `execute()`-method.
 
-We advise to use the methods offered by taoPQ's connection type.
+:point_up: We advise to use the methods offered by taoPQ's connection type.
 
 ## Checking Status
 
-You can check a connection's status by calling the `is_open()`-method.
+You can check a connection's status by calling the `is_open()`- or `is_idle()`-methods.
 
 ```c++
 bool tao::pq::connection::is_open() const noexcept;
+bool tao::pq::connection::is_idle() const noexcept;
 ```
 
-It return `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
+The first method returns `true` when the connection is still open and usable, and `false` otherwise, i.e. if the connection is in a failed state.
 For further details, check the documentation for the underlying [`PQstatus()`➚](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
+
+The second method returns `true` when the connection is open and is in the idle state, and `false` otherwise.
+For further details, check the documentation for the underlying [`PQtransactionStatus()`➚](https://www.postgresql.org/docs/current/libpq-status.html)-function provided by `libpq`.
 
 ## Notification Framework
 
@@ -241,7 +246,7 @@ void tao::pq::connection::notify( const std::string_view channel );
 void tao::pq::connection::notify( const std::string_view channel, const std::string_view payload );
 ```
 
-The channel name is case sensitive when using taoPQ's methods.
+:point_up: The channel name is case sensitive when using taoPQ's methods.
 
 ### Receiving Messages
 

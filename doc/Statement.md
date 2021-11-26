@@ -1,6 +1,6 @@
 # Statement
 
-Before showing you how to execute statements with taoPQ, we'd like to take a moment to talk about [SQL injection➚](https://en.wikipedia.org/wiki/SQL_injection).
+:warning: Before showing you how to execute statements with taoPQ, we'd like to take a moment to talk about [SQL injection➚](https://en.wikipedia.org/wiki/SQL_injection).
 SQL injection is a large family of security issues that has plagued the internet for decades.
 We designed taoPQ to allow you to *safely* and *conveniently* write code that does not allow SQL injection.
 With that said, let's start executing statements with taoPQ.
@@ -43,7 +43,7 @@ Our library now knows what is the actual SQL statement you want to send and what
 This protects you from SQL injections and it is also quiet convenient.
 The way the data is now transferred between the client and the server is also more efficient.
 
-The only thing you have to remember is to **never** concatenate strings together to create the SQL statement including the data manually.
+:warning: The only thing you have to remember is to **never** concatenate strings together to create the SQL statement including the data manually.
 As this is such an important point, we will illustrate how it should **not** be done:
 
 ```c++
@@ -54,7 +54,7 @@ auto find_user( const std::string& name )
 }
 ```
 
-Never concatenate SQL statements manually!
+:no_entry: Never concatenate SQL statements manually!
 Consider `name` to be an input field coming from untrusted user input.
 What happens, if a user enters the following "name":
 

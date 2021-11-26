@@ -73,7 +73,7 @@ namespace tao::pq
 }
 ```
 
-All large object manipulation using these functions must take place within an SQL transaction block, since large object file descriptors are only valid for the duration of a transaction.
+:point_up: All large object manipulation using these functions must take place within an SQL transaction block, since large object file descriptors are only valid for the duration of a transaction.
 
 ## Creating a Large Object
 
@@ -182,7 +182,7 @@ The fourth method will create a new object of type `T` and read up to `size` byt
 * `std::basic_string<unsigned char>`
 * [`tao::pq::binary`](Binary-Data.md) aka `std::basic_string<std::byte>`
 
-Although the `size` parameter of the above methods is declared as `std::size_t`, the methods will reject values larger than `INT_MAX`.
+:point_up: Although the `size` parameter of the above methods is declared as `std::size_t`, the methods will reject values larger than `INT_MAX`.
 In practice, it's best to transfer data in chunks of at most a few megabytes anyway.
 
 If an error occurs an exception will be thrown.

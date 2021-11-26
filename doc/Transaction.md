@@ -58,7 +58,7 @@ namespace tao::pq
 }
 ```
 
-Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
+:point_up: Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
 
 ## Creating Transactions
 
@@ -113,7 +113,7 @@ Any transactions created via taoPQ is registered in the connection object as the
 At any given time, a connection can only have a single active transaction.
 If you attempt to use a transaction object in the wrong order, taoPQ will notice and throw an appropriate `std::logic_error` exception.
 
-Note that the correct order depends on the *logical* lifetime of transactions.
+:point_up: Note that the correct order depends on the *logical* lifetime of transactions.
 The logical lifetime of a transactions ends when you explicitly call either the `commit()`- or the `rollback()`-method, or if the object's lifetime ends.
 The destructor will automatically perform a call to the `rollback()`-method if the lifetime was not ended explicitly.
 This comes in handy when exceptions are thrown and the destructor call happens due to the associated stack unwinding.
@@ -135,14 +135,14 @@ In case you need to know whether a given transaction object is a direct transact
 bool tao::pq::transaction::is_direct() const noexcept;
 ```
 
-Note that opening a subtransaction from a direct connection is possible and simply starts a normal transaction on the connection object.
+Opening a subtransaction from a direct connection is possible and simply starts a normal transaction on the connection object.
 
 ## Manual Transaction Handling
 
 You can manually begin, commit, or rollback transactions by executing [`BEGIN`➚](https://www.postgresql.org/docs/current/sql-begin.html), [`COMMIT`➚](https://www.postgresql.org/docs/current/sql-commit.html), or [`ROLLBACK`➚](https://www.postgresql.org/docs/current/sql-rollback.html) statements directly via the `execute()`-method.
 Likewise, you can manually create, commit, or rollback subtransactions by executing [`SAVEPOINT`➚](https://www.postgresql.org/docs/current/sql-savepoint.html), [`RELEASE SAVEPOINT`➚](https://www.postgresql.org/docs/current/sql-release-savepoint.html), or [`ROLLBACK TO SAVEPOINT`➚](https://www.postgresql.org/docs/current/sql-rollback-to.html) statements directly via the `execute()`-method.
 
-We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our library's transaction ordering framework.
+:point_up: We strongly advise against manual transaction handling, as it will not be tracked by taoPQ and might confuse our library's transaction ordering framework.
 We advise to use the methods offered by taoPQ instead of manually handling transactions.
 
 ## Accessing the Connection
@@ -154,7 +154,7 @@ auto tao::pq::transaction::connection() const noexcept
    -> const std::shared_ptr< tao::pq::connection >&;
 ```
 
-Note that the shared pointer will be empty if the logical lifetime of the transaction ended.
+:point_up: Note that the shared pointer will be empty if the logical lifetime of the transaction ended.
 
 ---
 

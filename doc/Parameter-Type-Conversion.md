@@ -174,7 +174,7 @@ auto to_taopq( const some_coordinates& v ) noexcept
 
 The free function is found either by [ADL➚](https://en.cppreference.com/w/cpp/language/adl) or in namespace `tao::pq`.
 
-Note that any returned value in the above examples can itself be a registered custom type.
+:point_up: Note that any returned value in the above examples can itself be a registered custom type.
 taoPQ will simply expand parameters recursively.
 
 ### `tao::pq::parameter_traits< T >`

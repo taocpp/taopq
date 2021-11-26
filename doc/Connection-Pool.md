@@ -56,7 +56,7 @@ namespace tao::pq
 }
 ```
 
-Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
+:point_up: Note that `tao::pq::internal::zsv` is explained in the [Statement](Statement.md) chapter.
 
 ## Creating Connection Pools
 

@@ -4,7 +4,7 @@ taoPQ allows the direct use of "simple" aggregates as parameters and result type
 
 ## Status
 
-This feature is currently considered **experimental**.
+:warning: This feature is currently considered **experimental**.
 
 ## Requirements
 
@@ -21,14 +21,14 @@ A "simple" aggregate data type `T` suitable for taoPQ support must meet the foll
 We currently require explicit registration of aggregate data types.
 This is done as a precaution, and to avoid conflicts with other data types.
 
-A data type `T` can be registered as both a parameter and a result type by specializing the following variable:
+A data type `T` can be registered as both a parameter and a result type by specializing `tao::pq::is_aggregate` as follows:
 
 ```c++
 template<>
 inline constexpr bool tao::pq::is_aggregate< T > = true;
 ```
 
-If necessary, you can control independently whether a data type is suitable as a parameter or a result type by specializing
+If necessary, you can control independently whether a data type is suitable as a parameter or a result type by specializing `tao::pq::is_aggregate_parameter` and `tao::pq::is_aggregate_result` as follows:
 
 ```c++
 template<>
@@ -50,7 +50,7 @@ for( const T t : result ) {
 }
 ```
 
-Compilers might complain about extra copies and that you should use `const T&`, but that would not work and there are no extra copies.
+:interrobang: Compilers might complain about extra copies and that you should use `const T&`, but that would not work and there are no extra copies.
 
 ## Example
 

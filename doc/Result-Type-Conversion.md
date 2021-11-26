@@ -131,7 +131,7 @@ struct tao::pq::bind< some_coordinates >
 };
 ```
 
-Note that unlike [`to_taopq()`](Parameter-Type-Conversion.md), there is no free function version for `from_taopq()` available.
+:point_up: Note that unlike [`to_taopq()`](Parameter-Type-Conversion.md), there is no free function version for `from_taopq()` available.
 This is due to the fact that the custom data type is not a parameter, but rather the returned value.
 The parameter list can therefore be identical for multiple custom data types and this could leads to conflicting overloads.
 Also, [ADL➚](https://en.cppreference.com/w/cpp/language/adl) would be unavailable as only the parameters' types are considered for ADL.
