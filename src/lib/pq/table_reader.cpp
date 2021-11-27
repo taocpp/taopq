@@ -11,6 +11,7 @@
 #include <tao/pq/connection.hpp>
 #include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/result.hpp>
 
 namespace tao::pq
 {

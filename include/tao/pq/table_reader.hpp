@@ -20,7 +20,6 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/internal/zsv.hpp>
-#include <tao/pq/result.hpp>
 #include <tao/pq/table_row.hpp>
 #include <tao/pq/transaction.hpp>
 

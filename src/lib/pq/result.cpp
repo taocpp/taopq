@@ -10,6 +10,7 @@
 
 #include <tao/pq/internal/from_chars.hpp>
 #include <tao/pq/internal/printf.hpp>
+#include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq
 {
@@ -41,14 +42,12 @@ namespace tao::pq
          case PGRES_TUPLES_OK:
             return;
 
-         case PGRES_COPY_IN:
-            throw std::runtime_error( "unexpected COPY FROM statement" );
-
-         case PGRES_COPY_OUT:
-            throw std::runtime_error( "unexpected COPY TO statement" );
-
          case PGRES_EMPTY_QUERY:
             throw std::runtime_error( "unexpected empty query" );
+
+         case PGRES_COPY_IN:
+         case PGRES_COPY_OUT:
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
 
          default:
             internal::throw_sqlstate( pgresult );
