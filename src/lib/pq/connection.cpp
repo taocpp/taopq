@@ -293,14 +293,14 @@ namespace tao::pq
                }
                return;
 
+               // LCOV_EXCL_START
             case -1:
-               break;  // LCOV_EXCL_LINE
+               break;
 
             default:
-               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;
          }
 
-         // LCOV_EXCL_START
          const int e = errno;
          if( ( e != EINTR ) && ( e != EAGAIN ) ) {
             throw std::runtime_error( "poll() failed: " + errno_to_string( e ) );
@@ -332,11 +332,13 @@ namespace tao::pq
                   wait_for_write = false;
                   break;
 
+                  // LCOV_EXCL_START
                case 1:
-                  break;  // LCOV_EXCL_LINE
+                  break;
 
                default:
-                  throw std::runtime_error( "PQflush() failed: " + error_message() );  // LCOV_EXCL_LINE
+                  throw std::runtime_error( "PQflush() failed: " + error_message() );
+                  // LCOV_EXCL_STOP
             }
          }
          connection::wait( wait_for_write, end );
@@ -362,11 +364,13 @@ namespace tao::pq
             case -1:
                return 0;
 
+               // LCOV_EXCL_START
             case -2:
-               throw std::runtime_error( "PQgetCopyData() failed: " + error_message() );  // LCOV_EXCL_LINE
+               throw std::runtime_error( "PQgetCopyData() failed: " + error_message() );
 
             default:
-               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_STOP
          }
       }
    }
@@ -381,20 +385,20 @@ namespace tao::pq
       const auto end = timeout_end();
       while( true ) {
          switch( PQputCopyData( m_pgconn.get(), buffer, static_cast< int >( size ) ) ) {
-            case 0:
-               // LCOV_EXCL_START
-               connection::wait( true, end );
-               break;
-               // LCOV_EXCL_STOP
-
             case 1:
                return;
 
+               // LCOV_EXCL_START
+            case 0:
+               connection::wait( true, end );
+               break;
+
             case -1:
-               throw std::runtime_error( "PQputCopyData() failed: " + error_message() );  // LCOV_EXCL_LINE
+               throw std::runtime_error( "PQputCopyData() failed: " + error_message() );
 
             default:
-               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_STOP
          }
       }
    }
@@ -407,17 +411,17 @@ namespace tao::pq
             case 1:
                return;
 
-            case 0:
                // LCOV_EXCL_START
+            case 0:
                connection::wait( true, end );
                break;
-               // LCOV_EXCL_STOP
 
             case -1:
-               throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );  // LCOV_EXCL_LINE
+               throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );
 
             default:
-               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+               TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_STOP
          }
       }
    }
