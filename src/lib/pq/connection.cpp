@@ -252,7 +252,7 @@ namespace tao::pq
          const auto result = WSAPoll( &pfd, 1, timeout );
          switch( result ) {
             case 0:
-               // TODO: Should we try and cancel the statement?
+               m_pgconn.reset();
                throw timeout_reached( "timeout reached" );
 
             case 1:
@@ -281,7 +281,7 @@ namespace tao::pq
          const auto result = poll( &pfd, 1, timeout );
          switch( result ) {
             case 0:
-               // TODO: Should we try and cancel the statement?
+               m_pgconn.reset();
                throw timeout_reached( "timeout reached" );
 
             case 1:
