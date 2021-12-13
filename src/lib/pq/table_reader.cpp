@@ -54,9 +54,7 @@ namespace tao::pq
          return { static_cast< const char* >( buffer ), size };
       }
 
-      const auto start = std::chrono::steady_clock::now();
-      const auto end = m_transaction->connection()->timeout() ? ( start + *m_transaction->connection()->timeout() ) : start;
-
+      const auto end = m_transaction->connection()->timeout_end();
       std::ignore = pq::result( m_transaction->connection()->get_result( end ).release() );
       m_transaction.reset();
       m_previous.reset();

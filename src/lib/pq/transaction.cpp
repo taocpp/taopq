@@ -138,7 +138,7 @@ namespace tao::pq
    auto transaction::get_result( const std::chrono::steady_clock::time_point start ) -> result
    {
       check_current_transaction();
-      const auto end = m_connection->timeout() ? ( start + *m_connection->timeout() ) : start;
+      const auto end = m_connection->timeout_end( start );
 
       auto result = m_connection->get_result( end );
       if( result ) {
