@@ -39,6 +39,13 @@ namespace tao::pq
 
       virtual ~connection_pool() = default;
 
+      // timeout handling
+      auto timeout() const noexcept
+         -> const std::optional< std::chrono::milliseconds >&;
+
+      void set_timeout( const std::chrono::milliseconds timeout );
+      void reset_timeout() noexcept;
+
       // borrow a connection
       auto connection() const noexcept
          -> std::shared_ptr< pq::connection >;

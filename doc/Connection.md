@@ -76,6 +76,13 @@ namespace tao::pq
                         const access_mode am = access_mode::default_access_mode )
          -> std::shared_ptr< pq::transaction >;
 
+      // timeout handling
+      auto timeout() const noexcept
+         -> const std::optional< std::chrono::milliseconds >&;
+
+      void set_timeout( const std::chrono::milliseconds timeout );
+      void reset_timeout() noexcept;
+
       // prepared statements
       void prepare( const std::string& name, const std::string& statement );
       void deallocate( const std::string& name );
@@ -114,6 +121,9 @@ namespace tao::pq
       // access underlying connection pointer from libpq
       auto underlying_raw_ptr() noexcept -> PGconn*;
       auto underlying_raw_ptr() const noexcept -> const PGconn*;
+
+      // access the socket used by libpq
+      auto socket() const -> int;
 
       // error message
       auto error_message() const -> std::string;
