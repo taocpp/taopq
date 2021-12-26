@@ -20,9 +20,26 @@ namespace tao::pq
       return std::make_shared< connection_pool >( private_key(), connection_info );
    }
 
+   void connection_pool::set_timeout( const std::chrono::milliseconds timeout )
+   {
+      m_timeout = timeout;
+   }
+
+   void connection_pool::reset_timeout() noexcept
+   {
+      m_timeout = std::nullopt;
+   }
+
    auto connection_pool::connection() -> std::shared_ptr< pq::connection >
    {
-      return get();
+      auto result = get();
+      if( m_timeout ) {
+         result->set_timeout( *m_timeout );
+      }
+      else {
+         result->reset_timeout();
+      }
+      return result;
    }
 
 }  // namespace tao::pq

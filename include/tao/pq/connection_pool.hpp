@@ -5,7 +5,9 @@
 #ifndef TAO_PQ_CONNECTION_POOL_HPP
 #define TAO_PQ_CONNECTION_POOL_HPP
 
+#include <chrono>
 #include <memory>
+#include <optional>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -22,6 +24,7 @@ namespace tao::pq
    {
    private:
       const std::string m_connection_info;
+      std::optional< std::chrono::milliseconds > m_timeout;
 
       [[nodiscard]] auto v_create() const -> std::unique_ptr< pq::connection > override;
 
@@ -41,6 +44,14 @@ namespace tao::pq
       connection_pool( const private_key /*unused*/, const std::string_view connection_info );
 
       [[nodiscard]] static auto create( const std::string_view connection_info ) -> std::shared_ptr< connection_pool >;
+
+      [[nodiscard]] decltype( auto ) timeout() const noexcept
+      {
+         return m_timeout;
+      }
+
+      void set_timeout( const std::chrono::milliseconds timeout );
+      void reset_timeout() noexcept;
 
       [[nodiscard]] auto connection() -> std::shared_ptr< connection >;
 
