@@ -59,32 +59,27 @@ namespace tao::pq::internal
 
       template< typename T,
                 typename R,
-                R* ( T::*G )() const,
-                void ( R::*F )( std::size_t ) >
+                R* ( T::*F )() const >
       struct proxy
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n )
          {
             // v._M_rep()->_M_set_length_and_sharable( n );
-            auto* rep = ( v.*G )();
-            ( rep->*F )( n );
+            ( v.*F )()->_M_set_length_and_sharable( n );
          }
       };
 
       template struct proxy< std::string,
                              std::string::_Rep,
-                             &std::string::_M_rep,
-                             &std::string::_Rep::_M_set_length_and_sharable >;
+                             &std::string::_M_rep >;
 
       template struct proxy< std::basic_string< unsigned char >,
                              std::basic_string< unsigned char >::_Rep,
-                             &std::basic_string< unsigned char >::_M_rep,
-                             &std::basic_string< unsigned char >::_Rep::_M_set_length_and_sharable >;
+                             &std::basic_string< unsigned char >::_M_rep >;
 
       template struct proxy< std::basic_string< std::byte >,
                              std::basic_string< std::byte >::_Rep,
-                             &std::basic_string< std::byte >::_M_rep,
-                             &std::basic_string< std::byte >::_Rep::_M_set_length_and_sharable >;
+                             &std::basic_string< std::byte >::_M_rep >;
 
 #elif defined( _MSC_VER )
 
