@@ -11,7 +11,7 @@ on:
       - 'doc/**'
 
 jobs:
-  vs2019:
+  vs2022:
     strategy:
       fail-fast: false
       matrix:
@@ -42,7 +42,86 @@ jobs:
 
     - shell: bash
       working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -DPostgreSQL_ADDITIONAL_VERSIONS=14
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 17 2022"
+      #-DPostgreSQL_ADDITIONAL_VERSIONS=14
+
+    - working-directory: build/
+      run: cmake --build . --config ${{ matrix.build_type }}
+
+    - working-directory: build/
+      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+
+  vs2022-clang:
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+
+    runs-on: windows-latest
+
+    env:
+      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: |
+        $pgService = Get-Service -Name postgresql*
+        Set-Service -InputObject $pgService -Status running -StartupType automatic
+        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
+
+    - run: |
+        & $env:PGBIN\psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du"
+
+    - run: |
+        & $env:PGBIN\createdb --owner=myuser mydatabase
+        $env:PGPASSWORD = 'mypassword'
+        & $env:PGBIN\psql --username=myuser --host=localhost --list mydatabase
+
+    - run: cmake -E make_directory build
+
+    - shell: bash
+      working-directory: build/
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 17 2022" -T ClangCL
+
+    - working-directory: build/
+      run: cmake --build . --config ${{ matrix.build_type }}
+
+    - working-directory: build/
+      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+
+  vs2019:
+    strategy:
+      fail-fast: false
+      matrix:
+        build_type: [Debug, Release]
+
+    runs-on: windows-2019
+
+    env:
+      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - run: |
+        $pgService = Get-Service -Name postgresql*
+        Set-Service -InputObject $pgService -Status running -StartupType automatic
+        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
+
+    - run: |
+        & $env:PGBIN\psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du"
+
+    - run: |
+        & $env:PGBIN\createdb --owner=myuser mydatabase
+        $env:PGPASSWORD = 'mypassword'
+        & $env:PGBIN\psql --username=myuser --host=localhost --list mydatabase
+
+    - run: cmake -E make_directory build
+
+    - shell: bash
+      working-directory: build/
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019"
 
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
@@ -56,7 +135,7 @@ jobs:
       matrix:
         build_type: [Debug, Release]
 
-    runs-on: windows-latest
+    runs-on: windows-2019
 
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
@@ -81,7 +160,7 @@ jobs:
 
     - shell: bash
       working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -T ClangCL -DPostgreSQL_ADDITIONAL_VERSIONS=14
+      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 16 2019" -T ClangCL
 
     - working-directory: build/
       run: cmake --build . --config ${{ matrix.build_type }}
