@@ -17,11 +17,13 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/access_mode.hpp>
+#include <tao/pq/connection_status.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
 #include <tao/pq/transaction.hpp>
+#include <tao/pq/transaction_status.hpp>
 
 namespace tao::pq
 {
@@ -103,8 +105,18 @@ namespace tao::pq
       void reset_notification_handler() noexcept;
       void reset_notification_handler( const std::string_view channel ) noexcept;
 
-      [[nodiscard]] auto is_open() const noexcept -> bool;
-      [[nodiscard]] auto is_idle() const noexcept -> bool;
+      [[nodiscard]] auto status() const noexcept -> connection_status;
+      [[nodiscard]] auto transaction_status() const noexcept -> pq::transaction_status;
+
+      [[nodiscard]] auto is_open() const noexcept -> bool
+      {
+         return status() == connection_status::ok;
+      }
+
+      [[nodiscard]] auto is_idle() const noexcept -> bool
+      {
+         return transaction_status() == transaction_status::idle;
+      }
 
       [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
 
@@ -150,6 +162,9 @@ namespace tao::pq
       {
          return m_pgconn.get();
       }
+
+      // this is an internal function, do not use it!
+      [[nodiscard]] auto internal_attempt_rollback() const noexcept -> bool;
    };
 
 }  // namespace tao::pq

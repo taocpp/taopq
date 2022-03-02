@@ -24,7 +24,7 @@ namespace tao::pq
 
          ~top_level_subtransaction() override
          {
-            if( m_connection && m_connection->is_open() ) {
+            if( m_connection && m_connection->internal_attempt_rollback() ) {
                try {
                   rollback();
                }
@@ -70,7 +70,7 @@ namespace tao::pq
 
          ~nested_subtransaction() override
          {
-            if( m_connection && m_connection->is_open() ) {
+            if( m_connection && m_connection->internal_attempt_rollback() ) {
                try {
                   rollback();
                }

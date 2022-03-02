@@ -149,7 +149,7 @@ namespace tao::pq
 
          ~top_level_transaction() override
          {
-            if( m_connection && m_connection->is_open() ) {
+            if( m_connection && m_connection->internal_attempt_rollback() ) {
                try {
                   rollback();
                }
@@ -499,14 +499,14 @@ namespace tao::pq
       m_notification_handlers.erase( std::string( channel ) );
    }
 
-   auto connection::is_open() const noexcept -> bool
+   auto connection::status() const noexcept -> connection_status
    {
-      return PQstatus( m_pgconn.get() ) == CONNECTION_OK;
+      return static_cast< connection_status >( PQstatus( m_pgconn.get() ) );
    }
 
-   auto connection::is_idle() const noexcept -> bool
+   auto connection::transaction_status() const noexcept -> pq::transaction_status
    {
-      return PQtransactionStatus( m_pgconn.get() ) == PQTRANS_IDLE;
+      return static_cast< pq::transaction_status >( PQtransactionStatus( m_pgconn.get() ) );
    }
 
    auto connection::direct() -> std::shared_ptr< pq::transaction >
@@ -630,6 +630,21 @@ namespace tao::pq
    void connection::reset_timeout() noexcept
    {
       m_timeout = std::nullopt;
+   }
+
+   auto connection::internal_attempt_rollback() const noexcept -> bool
+   {
+      switch( transaction_status() ) {
+         case transaction_status::idle:
+         case transaction_status::active:
+            return false;
+
+         case transaction_status::in_transaction:
+         case transaction_status::error:
+         case transaction_status::unknown:
+            return true;
+      }
+      return false;
    }
 
 }  // namespace tao::pq
