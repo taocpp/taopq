@@ -644,7 +644,7 @@ namespace tao::pq
          case transaction_status::unknown:
             return true;
       }
-      return false;
+      TAO_PQ_UNREACHABLE;
    }
 
 }  // namespace tao::pq
