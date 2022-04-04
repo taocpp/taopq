@@ -26,7 +26,7 @@
 
 namespace tao::pq
 {
-   namespace
+   namespace internal
    {
       // LCOV_EXCL_START
       [[nodiscard, maybe_unused]] auto errno_result_to_string( const int e, char* buffer, int result ) -> std::string
@@ -149,7 +149,7 @@ namespace tao::pq
 
          ~top_level_transaction() override
          {
-            if( m_connection && m_connection->internal_attempt_rollback() ) {
+            if( m_connection && m_connection->attempt_rollback() ) {
                try {
                   rollback();
                }
@@ -191,7 +191,7 @@ namespace tao::pq
          return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( value[ 0 ] ) == 0 );
       }
 
-   }  // namespace
+   }  // namespace internal
 
    auto connection::escape_identifier( const std::string_view identifier ) const -> std::string
    {
@@ -202,9 +202,24 @@ namespace tao::pq
       return buffer.get();
    }
 
+   auto connection::attempt_rollback() const noexcept -> bool
+   {
+      switch( transaction_status() ) {
+         case transaction_status::idle:
+         case transaction_status::active:
+            return false;
+
+         case transaction_status::in_transaction:
+         case transaction_status::error:
+         case transaction_status::unknown:
+            return true;
+      }
+      TAO_PQ_UNREACHABLE;
+   }
+
    void connection::check_prepared_name( const std::string_view name )
    {
-      if( !pq::is_identifier( name ) ) {
+      if( !internal::is_identifier( name ) ) {
          throw std::invalid_argument( "invalid prepared statement name" );
       }
    }
@@ -303,7 +318,7 @@ namespace tao::pq
 
          const int e = errno;
          if( ( e != EINTR ) && ( e != EAGAIN ) ) {
-            throw std::runtime_error( "poll() failed: " + errno_to_string( e ) );
+            throw std::runtime_error( "poll() failed: " + internal::errno_to_string( e ) );
          }
          // LCOV_EXCL_STOP
 
@@ -511,22 +526,22 @@ namespace tao::pq
 
    auto connection::direct() -> std::shared_ptr< pq::transaction >
    {
-      return std::make_shared< autocommit_transaction >( shared_from_this() );
+      return std::make_shared< internal::autocommit_transaction >( shared_from_this() );
    }
 
    auto connection::transaction() -> std::shared_ptr< pq::transaction >
    {
-      return std::make_shared< top_level_transaction >( shared_from_this(), isolation_level::default_isolation_level, access_mode::default_access_mode );
+      return std::make_shared< internal::top_level_transaction >( shared_from_this(), isolation_level::default_isolation_level, access_mode::default_access_mode );
    }
 
    auto connection::transaction( const access_mode am, const isolation_level il ) -> std::shared_ptr< pq::transaction >
    {
-      return std::make_shared< top_level_transaction >( shared_from_this(), il, am );
+      return std::make_shared< internal::top_level_transaction >( shared_from_this(), il, am );
    }
 
    auto connection::transaction( const isolation_level il, const access_mode am ) -> std::shared_ptr< pq::transaction >
    {
-      return std::make_shared< top_level_transaction >( shared_from_this(), il, am );
+      return std::make_shared< internal::top_level_transaction >( shared_from_this(), il, am );
    }
 
    void connection::prepare( const std::string& name, const std::string& statement )
@@ -630,21 +645,6 @@ namespace tao::pq
    void connection::reset_timeout() noexcept
    {
       m_timeout = std::nullopt;
-   }
-
-   auto connection::internal_attempt_rollback() const noexcept -> bool
-   {
-      switch( transaction_status() ) {
-         case transaction_status::idle:
-         case transaction_status::active:
-            return false;
-
-         case transaction_status::in_transaction:
-         case transaction_status::error:
-         case transaction_status::unknown:
-            return true;
-      }
-      TAO_PQ_UNREACHABLE;
    }
 
 }  // namespace tao::pq

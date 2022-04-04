@@ -31,6 +31,14 @@ namespace tao::pq
    class table_reader;
    class table_writer;
 
+   namespace internal
+   {
+      class top_level_transaction;
+      class top_level_subtransaction;
+      class nested_subtransaction;
+
+   }  // namespace internal
+
    class connection final
       : public std::enable_shared_from_this< connection >
    {
@@ -40,6 +48,10 @@ namespace tao::pq
       friend class table_writer;
       friend class transaction;
 
+      friend class internal::top_level_transaction;
+      friend class internal::top_level_subtransaction;
+      friend class internal::nested_subtransaction;
+
       std::unique_ptr< PGconn, decltype( &PQfinish ) > m_pgconn;
       pq::transaction* m_current_transaction;
       std::optional< std::chrono::milliseconds > m_timeout;
@@ -48,6 +60,8 @@ namespace tao::pq
       std::map< std::string, std::function< void( const char* ) >, std::less<> > m_notification_handlers;
 
       [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::string;
+
+      [[nodiscard]] auto attempt_rollback() const noexcept -> bool;
 
       static void check_prepared_name( const std::string_view name );
       [[nodiscard]] auto is_prepared( const std::string_view name ) const noexcept -> bool;
@@ -162,9 +176,6 @@ namespace tao::pq
       {
          return m_pgconn.get();
       }
-
-      // this is an internal function, do not use it!
-      [[nodiscard]] auto internal_attempt_rollback() const noexcept -> bool;
    };
 
 }  // namespace tao::pq
