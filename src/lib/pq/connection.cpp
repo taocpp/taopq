@@ -255,7 +255,7 @@ namespace tao::pq
       while( true ) {
          int timeout = -1;
          if( m_timeout ) {
-            timeout = std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count();
+            timeout = static_cast< int >( std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count() );
             if( timeout < 0 ) {
                timeout = 0;  // LCOV_EXCL_LINE
             }
@@ -287,7 +287,7 @@ namespace tao::pq
          }
 
          const int e = WSAGetLastError();
-         throw std::runtime_error( "WSAPoll() failed: " + errno_to_string( e ) );
+         throw std::runtime_error( "WSAPoll() failed: " + internal::errno_to_string( e ) );
 
 #else
 
