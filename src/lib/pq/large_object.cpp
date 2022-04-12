@@ -77,7 +77,7 @@ namespace tao::pq
       }
       // LCOV_EXCL_START
       catch( ... ) {
-         // TODO: We just swallowed an exception...
+         // TODO: How to handle this case properly?
       }
       // LCOV_EXCL_STOP
    }
