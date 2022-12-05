@@ -103,6 +103,9 @@ target_include_directories(taopq
 )
 
 target_link_libraries(taopq PUBLIC ${PostgreSQL_LIBRARIES})
+if(WIN32)
+  target_link_libraries(taopq PUBLIC ws2_32)
+endif()
 
 target_compile_features(taopq PUBLIC cxx_std_17)
 
