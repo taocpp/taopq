@@ -46,11 +46,11 @@ namespace tao::pq
       {
          char buffer[ 256 ];
 #if defined( _WIN32 )
-	#ifdef _MSC_VER
-		  return errno_result_to_string( e, buffer, strerror_s( buffer, e ) );
-	#else
-		  return errno_result_to_string( e, buffer, strerror_s(buffer, sizeof (buffer), e));
-	#endif
+#ifdef _MSC_VER
+         return errno_result_to_string( e, buffer, strerror_s( buffer, e ) );
+#else
+         return errno_result_to_string( e, buffer, strerror_s( buffer, sizeof( buffer ), e ) );
+#endif
 #else
          return errno_result_to_string( e, buffer, strerror_r( e, buffer, sizeof( buffer ) ) );
 #endif

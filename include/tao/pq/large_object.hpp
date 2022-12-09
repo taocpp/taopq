@@ -67,7 +67,8 @@ namespace tao::pq
       }
 
       template< typename T = binary >
-      [[nodiscard]] auto read( const std::size_t size ) -> T = delete;
+      [[nodiscard]] auto read( const std::size_t size ) -> T
+         = delete;
 
       void write( const char* data )
       {
