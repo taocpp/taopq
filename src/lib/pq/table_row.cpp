@@ -22,7 +22,7 @@ namespace tao::pq
       if( offset + in_columns > m_columns ) {
          throw std::out_of_range( internal::printf( "slice (%zu-%zu) out of range (0-%zu)", offset, offset + in_columns - 1, m_columns - 1 ) );
       }
-      return table_row( *m_reader, m_offset + offset, in_columns );
+      return { *m_reader, m_offset + offset, in_columns };
    }
 
    auto table_row::begin() const -> table_row::const_iterator
@@ -49,7 +49,7 @@ namespace tao::pq
    auto table_row::at( const std::size_t column ) const -> table_field
    {
       ensure_column( column );
-      return table_field( *this, m_offset + column );
+      return { *this, m_offset + column };
    }
 
 }  // namespace tao::pq
