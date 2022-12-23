@@ -19,7 +19,7 @@ jobs:
 
     - run: sudo apt-get update -yq
 
-    - run: sudo apt-get install -yq clang-tools libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get install -yq clang-tools libpq-dev
 
     - run: scan-build cmake -E make_directory build
 

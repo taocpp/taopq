@@ -45,7 +45,7 @@ jobs:
 
     - run: sudo apt-get update -yq
 
-    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get install -yq libpq-dev
 
     - run: cmake -E make_directory build
 

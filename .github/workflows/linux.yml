@@ -18,62 +18,17 @@ jobs:
         compiler:
           - g++-9
           - g++-10
+          - g++-11
+          - g++-12
           - clang++-10
           - clang++-11
           - clang++-12
+          - clang++-13
+          - clang++-14
+          - clang++-15
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
-
-    services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_DB: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_USER: postgres
-        ports:
-          - 5432:5432
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      CXX: ${{ matrix.compiler }}
-      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: sudo apt-get update -yq
-
-    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
-
-    - run: cmake -E make_directory build
-
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-
-    - working-directory: build/
-      run: cmake --build .
-
-    - working-directory: build/
-      run: ctest --output-on-failure
-
-  linux-new:
-    strategy:
-      fail-fast: false
-      matrix:
-        compiler:
-          - g++-11
-          - clang++-13
-          - clang++-14
-        build_type: [Debug, Release]
-
-    runs-on: ubuntu-22.04
 
     services:
       postgres:
@@ -123,7 +78,7 @@ jobs:
           - clang++-9
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     services:
       postgres:
@@ -168,7 +123,8 @@ jobs:
       fail-fast: false
       matrix:
         compiler:
-          - g++-10
+          - g++-11
+          - g++-12
         flags: [ "-D_GLIBCXX_USE_CXX11_ABI=0" ]
         build_type: [Debug, Release]
 
@@ -199,7 +155,7 @@ jobs:
 
     - run: sudo apt-get update -yq
 
-    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get install -yq libpq-dev
 
     - run: cmake -E make_directory build
 
@@ -248,7 +204,7 @@ jobs:
 
     - run: sudo apt-get update -yq
 
-    - run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+    - run: sudo apt-get install -yq libpq-dev
 
     - run: cmake -E make_directory build
 

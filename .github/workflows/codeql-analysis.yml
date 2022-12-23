@@ -47,7 +47,7 @@ jobs:
       run: sudo apt-get update -yq
 
     - name: Install libpq-dev
-      run: sudo apt-get install -yq libpq-dev postgresql-server-dev-all
+      run: sudo apt-get install -yq libpq-dev
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
