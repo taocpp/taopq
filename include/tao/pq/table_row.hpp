@@ -264,7 +264,7 @@ namespace tao::pq
 
       [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> table_field
       {
-         return table_field( *this, m_offset + column );
+         return { *this, m_offset + column };
       }
 
       friend void swap( table_row& lhs, table_row& rhs ) noexcept
