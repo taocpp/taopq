@@ -45,7 +45,7 @@ namespace tao::pq
 
       [[nodiscard]] static auto create( const std::string_view connection_info ) -> std::shared_ptr< connection_pool >;
 
-      [[nodiscard]] decltype( auto ) timeout() const noexcept
+      [[nodiscard]] auto timeout() const noexcept -> decltype( auto )
       {
          return m_timeout;
       }
