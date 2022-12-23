@@ -206,7 +206,7 @@ void run()
    check< double >( "DOUBLE PRECISION", 1e308 );
    check< double >( "DOUBLE PRECISION", std::numeric_limits< double >::max() );
    check< double >( "DOUBLE PRECISION", INFINITY );
-   check< double >( "DOUBLE PRECISION", -INFINITY );
+   check< double >( "DOUBLE PRECISION", -INFINITY );  // NOLINT(bugprone-narrowing-conversions)
    check< double >( "DOUBLE PRECISION", NAN );
 
    check_null( "NUMERIC" );
@@ -334,7 +334,7 @@ void run()
    check< double >( "TEXT", 1e308 );
    check< double >( "TEXT", std::numeric_limits< double >::max() );
    check< double >( "TEXT", INFINITY );
-   check< double >( "TEXT", -INFINITY );
+   check< double >( "TEXT", -INFINITY );  // NOLINT(bugprone-narrowing-conversions)
    check< double >( "TEXT", NAN );
 
    // there is no data type to store 'long double' to PostgreSQL - but TEXT should do just fine...
@@ -362,7 +362,7 @@ void run()
    check< long double >( "TEXT", 1e308 );
    check< long double >( "TEXT", std::numeric_limits< long double >::max() );
    check< long double >( "TEXT", INFINITY );
-   check< long double >( "TEXT", -INFINITY );
+   check< long double >( "TEXT", -INFINITY );  // NOLINT(bugprone-narrowing-conversions)
    check< long double >( "TEXT", NAN );
 
    check< std::string >( "TEXT", "" );
