@@ -40,7 +40,7 @@ namespace tao::pq::internal
       [[nodiscard]] auto vnprintf( std::string& s, const std::size_t size, const char* format, va_list ap ) -> std::size_t
       {
          s.resize( size );
-         const auto result = vnprintf( &s[ 0 ], size, format, ap );
+         const auto result = vnprintf( s.data(), size, format, ap );
          if( result < size ) {
             s.resize( result );
          }
