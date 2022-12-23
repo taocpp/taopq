@@ -41,7 +41,7 @@ namespace tao::pq
       void parse_elements( T& container, const char*& value );
 
       template< typename T >
-      void parse_element( T& container, const char*& value )  // NOLINT(readability-function-cognitive-complexity)
+      void parse_element( T& container, const char*& value )
       {
          using value_type = typename T::value_type;
          if constexpr( is_array_result< value_type > ) {

@@ -27,7 +27,7 @@ namespace tao::pq
          internal::throw_sqlstate( error_message, sql_state );
       }
 
-      void throw_sqlstate( const char* error_message, const std::string_view sql_state )  // NOLINT(readability-function-cognitive-complexity)
+      void throw_sqlstate( const char* error_message, const std::string_view sql_state )
       {
          // LCOV_EXCL_START
          switch( sql_state[ 0 ] ) {

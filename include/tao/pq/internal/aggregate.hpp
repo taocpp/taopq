@@ -42,7 +42,7 @@ namespace tao::pq::internal
    inline constexpr std::size_t count_aggregate_args< T, N, false > = N - 1;
 
    template< typename T >
-   constexpr auto tie_aggregate( const T& value ) noexcept  // NOLINT(readability-function-cognitive-complexity)
+   constexpr auto tie_aggregate( const T& value ) noexcept
    {
       static_assert( std::is_aggregate_v< T > );
       static_assert( !std::is_empty_v< T > );
