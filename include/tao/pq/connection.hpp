@@ -159,7 +159,7 @@ namespace tao::pq
 
       [[nodiscard]] auto socket() const -> int;
 
-      [[nodiscard]] decltype( auto ) timeout() const noexcept
+      [[nodiscard]] auto timeout() const noexcept -> decltype( auto )
       {
          return m_timeout;
       }
