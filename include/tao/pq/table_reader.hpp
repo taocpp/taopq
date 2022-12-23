@@ -30,7 +30,7 @@ namespace tao::pq
    protected:
       std::shared_ptr< transaction > m_previous;
       std::shared_ptr< transaction > m_transaction;
-      std::size_t m_columns;
+      std::size_t m_columns;  // NOLINT(readability-function-cognitive-complexity)
       std::unique_ptr< char, decltype( &PQfreemem ) > m_buffer;
       std::vector< const char* > m_data;
 
@@ -84,7 +84,7 @@ namespace tao::pq
       [[nodiscard]] auto row() noexcept -> table_row
       {
          assert( has_data() );
-         return table_row( *this, 0, columns() );
+         return { *this, 0, columns() };
       }
 
    private:

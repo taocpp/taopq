@@ -276,7 +276,7 @@ namespace tao::pq
 
       [[nodiscard]] auto operator[]( const std::size_t column ) const noexcept -> field
       {
-         return field( *this, m_offset + column );
+         return { *this, m_offset + column };
       }
 
       [[nodiscard]] auto at( const internal::zsv in_name ) const -> field
