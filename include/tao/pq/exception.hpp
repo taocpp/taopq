@@ -19,6 +19,12 @@ namespace tao::pq
       using std::runtime_error::runtime_error;
    };
 
+   struct network_error
+      : std::runtime_error
+   {
+      using std::runtime_error::runtime_error;
+   };
+
    // https://www.postgresql.org/docs/current/errcodes-appendix.html
    struct sql_error
       : std::runtime_error

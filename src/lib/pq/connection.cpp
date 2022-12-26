@@ -276,7 +276,7 @@ namespace tao::pq
 
             case 1:
                if( ( pfd.revents & events ) == 0 ) {
-                  throw std::runtime_error( internal::printf( "WSAPoll() failed, events %hd, revents %hd", events, pfd.revents ) );
+                  throw network_error( internal::printf( "WSAPoll() failed, events %hd, revents %hd", events, pfd.revents ) );
                }
                if( ( pfd.revents & POLLIN ) != 0 ) {
                   get_notifications();
@@ -305,7 +305,7 @@ namespace tao::pq
 
             case 1:
                if( ( pfd.revents & events ) == 0 ) {
-                  throw std::runtime_error( internal::printf( "poll() failed, events %hd, revents %hd", events, pfd.revents ) );  // LCOV_EXCL_LINE
+                  throw network_error( internal::printf( "poll() failed, events %hd, revents %hd", events, pfd.revents ) );  // LCOV_EXCL_LINE
                }
                if( ( pfd.revents & POLLIN ) != 0 ) {
                   get_notifications();
