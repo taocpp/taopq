@@ -15,10 +15,59 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        xcode: ['12', '13']
         build_type: [Debug, Release]
 
     runs-on: macos-latest
+
+    env:
+      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - run: |
+        brew services start postgresql
+        echo "Check PostgreSQL service is running"
+        i=10
+        COMMAND='pg_isready'
+        while [ $i -gt 0 ]; do
+          echo "Check PostgreSQL service status"
+          eval $COMMAND && break
+          ((i--))
+          if [ $i == 0 ]; then
+            echo "PostgreSQL service not ready, all attempts exhausted"
+            exit 1
+          fi
+          echo "PostgreSQL service not ready, wait 10 more sec, attempts left: $i"
+          sleep 10
+        done
+
+    - run: |
+        psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du" postgres
+
+    - run: |
+        createdb --owner=myuser mydatabase
+        PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
+
+    - run: cmake -E make_directory build
+
+    - working-directory: build/
+      run: cmake $GITHUB_WORKSPACE
+
+    - working-directory: build/
+      run: cmake --build . --config ${{ matrix.build_type }}
+
+    - working-directory: build/
+      run: ctest --config ${{ matrix.build_type }} --output-on-failure
+
+  xcode-old:
+    strategy:
+      fail-fast: false
+      matrix:
+        xcode: ['11', '12', '13']
+        build_type: [Debug, Release]
+
+    runs-on: macos-11
 
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
