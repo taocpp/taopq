@@ -121,9 +121,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler:
-          - g++
-        flags: [ "-D_GLIBCXX_USE_CXX11_ABI=0" ]
+        flags: ["-D_GLIBCXX_USE_CXX11_ABI=0"]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
@@ -145,7 +143,7 @@ jobs:
           --health-retries 5
 
     env:
-      CXX: ${{ matrix.compiler }}
+      CXX: g++
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
@@ -170,9 +168,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        compiler:
-          - clang++
-        flags: [ "-fms-extensions" ]
+        flags: ["-fms-extensions"]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
@@ -194,7 +190,7 @@ jobs:
           --health-retries 5
 
     env:
-      CXX: ${{ matrix.compiler }}
+      CXX: clang++
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
