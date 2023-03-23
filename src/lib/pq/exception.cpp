@@ -7,7 +7,7 @@
 namespace tao::pq
 {
    sql_error::sql_error( const char* what, const std::string_view in_sqlstate )
-      : std::runtime_error( what ),
+      : base_error( what ),
         sqlstate( in_sqlstate )
    {}
 
