@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_RESULT_HPP
 #define TAO_PQ_RESULT_HPP
 
+#include <cstdint>
 #include <iterator>
 #include <list>
 #include <map>

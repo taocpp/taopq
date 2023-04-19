@@ -6,6 +6,7 @@
 #define TAO_PQ_TABLE_READER_HPP
 
 #include <cassert>
+#include <cstdint>
 #include <list>
 #include <map>
 #include <memory>

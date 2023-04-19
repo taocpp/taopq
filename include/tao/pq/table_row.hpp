@@ -6,6 +6,7 @@
 #define TAO_PQ_TABLE_ROW_HPP
 
 #include <cstddef>
+#include <cstdint>
 #include <iterator>
 #include <optional>
 #include <stdexcept>
