@@ -39,6 +39,25 @@ namespace tao::pq
 
    }  // namespace internal
 
+   class custom_io_poller {
+   public:
+      enum class status
+      {
+         timeout,
+         writable,
+         readable,
+      };
+
+      custom_io_poller( const custom_io_poller& ) = delete;
+      custom_io_poller( custom_io_poller&& ) = delete;
+      void operator=( const custom_io_poller& ) = delete;
+      void operator=( custom_io_poller&& ) = delete;
+
+      virtual ~custom_io_poller() noexcept = default;
+
+      virtual auto poll(int socket, bool wait_for_write, int timeout) -> status = 0;
+   };
+
    class connection final
       : public std::enable_shared_from_this< connection >
    {
@@ -54,6 +73,7 @@ namespace tao::pq
 
       std::unique_ptr< PGconn, decltype( &PQfinish ) > m_pgconn;
       pq::transaction* m_current_transaction;
+      pq::custom_io_poller* m_external_poller;
       std::optional< std::chrono::milliseconds > m_timeout;
       std::set< std::string, std::less<> > m_prepared_statements;
       std::function< void( const notification& ) > m_notification_handler;
@@ -166,6 +186,9 @@ namespace tao::pq
 
       void set_timeout( const std::chrono::milliseconds timeout );
       void reset_timeout() noexcept;
+
+      auto io_poller() const noexcept -> custom_io_poller *;
+      void io_poller(custom_io_poller * poller) noexcept;
 
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {

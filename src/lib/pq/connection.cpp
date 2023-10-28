@@ -265,6 +265,20 @@ namespace tao::pq
             }
          }
 
+         if (m_external_poller != nullptr) {
+            switch ( m_external_poller->poll(socket(), wait_for_write, timeout) ) {
+               case custom_io_poller::status::timeout:
+                  m_pgconn.reset();
+                  throw timeout_reached( "timeout reached" );
+
+               case custom_io_poller::status::readable:
+                  get_notifications();
+                  [[fallthrough]];
+               case custom_io_poller::status::writable:
+                  return;
+            }
+         }
+
 #if defined( _WIN32 )
 
          WSAPOLLFD pfd = { static_cast< SOCKET >( socket() ), events, 0 };
@@ -461,7 +475,8 @@ namespace tao::pq
 
    connection::connection( const private_key /*unused*/, const std::string& connection_info )
       : m_pgconn( PQconnectdb( connection_info.c_str() ), &PQfinish ),
-        m_current_transaction( nullptr )
+        m_current_transaction( nullptr ),
+        m_external_poller( nullptr )
    {
       if( !is_open() ) {
          // note that we can not access the sqlstate after PQconnectdb(),
@@ -649,6 +664,16 @@ namespace tao::pq
    void connection::reset_timeout() noexcept
    {
       m_timeout = std::nullopt;
+   }
+
+   auto connection::io_poller() const noexcept -> custom_io_poller *
+   {
+      return m_external_poller;
+   }
+
+   void connection::io_poller(custom_io_poller * poller) noexcept
+   {
+      m_external_poller = poller;
    }
 
 }  // namespace tao::pq
