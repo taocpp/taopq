@@ -51,6 +51,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_optional.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_pair.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_tuple.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/poll.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_aggregate.hpp
@@ -77,6 +78,7 @@ set(taopq_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/large_object.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/parameter_traits.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/poll.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
