@@ -19,8 +19,7 @@ namespace tao::pq::poll
 
    namespace internal
    {
-      callback default_poll;
-      // status default_poll( const int socket, const bool wait_for_write, const int timeout );
+      auto default_poll( const int socket, const bool wait_for_write, const int timeout ) -> status;
 
    }  // namespace internal
 
