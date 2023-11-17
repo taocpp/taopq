@@ -67,9 +67,10 @@ namespace tao::pq::poll::internal
             }
             return ( ( pfd.revents & POLLIN ) != 0 ) ? status::readable : status::writable;
 
-         case SOCKET_ERROR:
+         case SOCKET_ERROR: {
             const int e = WSAGetLastError();
             throw network_error( "WSAPoll() failed: " + internal::errno_to_string( e ) );
+         }
 
          default:
             TAO_PQ_UNREACHABLE;
