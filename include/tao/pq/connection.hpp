@@ -22,6 +22,7 @@
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
+#include <tao/pq/poll.hpp>
 #include <tao/pq/transaction.hpp>
 #include <tao/pq/transaction_status.hpp>
 
@@ -56,6 +57,7 @@ namespace tao::pq
       pq::transaction* m_current_transaction;
       std::optional< std::chrono::milliseconds > m_timeout;
       std::set< std::string, std::less<> > m_prepared_statements;
+      std::function< poll::callback > m_poll;
       std::function< void( const notification& ) > m_notification_handler;
       std::map< std::string, std::function< void( const char* ) >, std::less<> > m_notification_handlers;
 
@@ -97,7 +99,7 @@ namespace tao::pq
       };
 
    public:
-      explicit connection( const private_key /*unused*/, const std::string& connection_info );
+      connection( const private_key /*unused*/, const std::string& connection_info, const std::function< poll::callback > poll_cb );
 
       connection( const connection& ) = delete;
       connection( connection&& ) = delete;
@@ -106,9 +108,13 @@ namespace tao::pq
 
       ~connection() = default;
 
-      [[nodiscard]] static auto create( const std::string& connection_info ) -> std::shared_ptr< connection >;
+      [[nodiscard]] static auto create( const std::string& connection_info, const std::function< poll::callback > poll_cb = poll::internal::default_poll ) -> std::shared_ptr< connection >;
 
       [[nodiscard]] auto error_message() const -> std::string;
+
+      [[nodiscard]] auto poll_callback() const -> std::function< poll::callback >;
+      void set_poll_callback( const std::function< poll::callback >& poll_cb );
+      void reset_poll_callback();
 
       [[nodiscard]] auto notification_handler() const -> std::function< void( const notification& ) >;
       [[nodiscard]] auto notification_handler( const std::string_view channel ) const -> std::function< void( const char* payload ) >;

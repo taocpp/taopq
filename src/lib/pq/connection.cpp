@@ -5,20 +5,13 @@
 #include <tao/pq/connection.hpp>
 
 #include <cctype>
-#include <cerrno>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
 #include <string>
-
-#if defined( _WIN32 )
-#include <winsock2.h>
-#else
-#include <poll.h>
-#endif
+#include <string_view>
 
 #include <tao/pq/exception.hpp>
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
@@ -28,35 +21,6 @@ namespace tao::pq
 {
    namespace internal
    {
-      // LCOV_EXCL_START
-      [[nodiscard, maybe_unused]] auto errno_result_to_string( const int e, char* buffer, int result ) -> std::string
-      {
-         if( result == 0 ) {
-            return buffer;
-         }
-         return internal::printf( "unknown error code %d", e );
-      }
-
-      [[nodiscard, maybe_unused]] auto errno_result_to_string( const int /*unused*/, char* /*unused*/, char* result ) -> std::string
-      {
-         return result;
-      }
-
-      [[nodiscard]] auto errno_to_string( const int e ) -> std::string
-      {
-         char buffer[ 256 ];
-#if defined( _WIN32 )
-#ifdef _MSC_VER
-         return errno_result_to_string( e, buffer, strerror_s( buffer, e ) );
-#else
-         return errno_result_to_string( e, buffer, strerror_s( buffer, sizeof( buffer ), e ) );
-#endif
-#else
-         return errno_result_to_string( e, buffer, strerror_r( e, buffer, sizeof( buffer ) ) );
-#endif
-      }
-      // LCOV_EXCL_STOP
-
       class transaction_base
          : public transaction
       {
@@ -145,7 +109,7 @@ namespace tao::pq
          : public transaction_base
       {
       public:
-         explicit top_level_transaction( const std::shared_ptr< pq::connection >& connection, const isolation_level il, const access_mode am )
+         top_level_transaction( const std::shared_ptr< pq::connection >& connection, const isolation_level il, const access_mode am )
             : transaction_base( connection )
          {
             this->execute( std::string( "START TRANSACTION" ) + isolation_level_extension( il ) + access_mode_extension( am ) );
@@ -255,7 +219,6 @@ namespace tao::pq
 
    void connection::wait( const bool wait_for_write, const std::chrono::steady_clock::time_point end )
    {
-      const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       while( true ) {
          int timeout = -1;
          if( m_timeout ) {
@@ -265,68 +228,24 @@ namespace tao::pq
             }
          }
 
-#if defined( _WIN32 )
-
-         WSAPOLLFD pfd = { static_cast< SOCKET >( socket() ), events, 0 };
-         const auto result = WSAPoll( &pfd, 1, timeout );
-         switch( result ) {
-            case 0:
+         switch( m_poll( socket(), wait_for_write, timeout ) ) {
+            case poll::status::timeout:
                m_pgconn.reset();
                throw timeout_reached( "timeout reached" );
 
-            case 1:
-               if( ( pfd.revents & events ) == 0 ) {
-                  throw network_error( internal::printf( "WSAPoll() failed, events %hd, revents %hd", events, pfd.revents ) );
-               }
-               if( ( pfd.revents & POLLIN ) != 0 ) {
-                  get_notifications();
-               }
+            case poll::status::readable:
+               get_notifications();
                return;
 
-            case SOCKET_ERROR:
+            case poll::status::writable:
+               return;
+
+            case poll::status::again:
                break;
 
             default:
                TAO_PQ_UNREACHABLE;
          }
-
-         const int e = WSAGetLastError();
-         throw std::runtime_error( "WSAPoll() failed: " + internal::errno_to_string( e ) );
-
-#else
-
-         pollfd pfd = { socket(), events, 0 };
-         errno = 0;
-         const auto result = poll( &pfd, 1, timeout );
-         switch( result ) {
-            case 0:
-               m_pgconn.reset();
-               throw timeout_reached( "timeout reached" );
-
-            case 1:
-               if( ( pfd.revents & events ) == 0 ) {
-                  throw network_error( internal::printf( "poll() failed, events %hd, revents %hd", events, pfd.revents ) );  // LCOV_EXCL_LINE
-               }
-               if( ( pfd.revents & POLLIN ) != 0 ) {
-                  get_notifications();
-               }
-               return;
-
-               // LCOV_EXCL_START
-            case -1:
-               break;
-
-            default:
-               TAO_PQ_UNREACHABLE;
-         }
-
-         const int e = errno;
-         if( ( e != EINTR ) && ( e != EAGAIN ) ) {
-            throw std::runtime_error( "poll() failed: " + internal::errno_to_string( e ) );
-         }
-         // LCOV_EXCL_STOP
-
-#endif
       }
    }
 
@@ -459,9 +378,10 @@ namespace tao::pq
       }
    }
 
-   connection::connection( const private_key /*unused*/, const std::string& connection_info )
+   connection::connection( const private_key /*unused*/, const std::string& connection_info, const std::function< poll::callback > poll_cb )
       : m_pgconn( PQconnectdb( connection_info.c_str() ), &PQfinish ),
-        m_current_transaction( nullptr )
+        m_current_transaction( nullptr ),
+        m_poll( poll_cb )
    {
       if( !is_open() ) {
          // note that we can not access the sqlstate after PQconnectdb(),
@@ -474,14 +394,29 @@ namespace tao::pq
       }
    }
 
-   auto connection::create( const std::string& connection_info ) -> std::shared_ptr< connection >
+   auto connection::create( const std::string& connection_info, const std::function< poll::callback > poll_cb ) -> std::shared_ptr< connection >
    {
-      return std::make_shared< connection >( private_key(), connection_info );
+      return std::make_shared< connection >( private_key(), connection_info, poll_cb );
    }
 
    auto connection::error_message() const -> std::string
    {
       return PQerrorMessage( m_pgconn.get() );
+   }
+
+   auto connection::poll_callback() const -> std::function< poll::callback >
+   {
+      return m_poll;
+   }
+
+   void connection::set_poll_callback( const std::function< poll::callback >& poll_cb )
+   {
+      m_poll = poll_cb;
+   }
+
+   void connection::reset_poll_callback()
+   {
+      m_poll = poll::internal::default_poll;
    }
 
    auto connection::notification_handler() const -> std::function< void( const notification& ) >
