@@ -16,10 +16,11 @@ It is therefore crucial to represent binary data with the dedicated [`BYTEA`➚]
 
 ## C++ Binary Data
 
+The individual bytes are represented by [`std::byte`➚](https://en.cppreference.com/w/cpp/types/byte).
 As there is no one-size-fits-all data type to handle binary data in C++, we allow several options.
 
 We mostly represent binary data with `tao::pq::binary` and `tao::pq::binary_view`.
-These are type aliases for `std::basic_string<std::byte>` and `std::basic_string_view<std::byte>`, respectively.
+These are type aliases for [`std::basic_string<std::byte>`➚](https://en.cppreference.com/w/cpp/string/basic_string) and [`std::basic_string_view<std::byte>`➚](https://en.cppreference.com/w/cpp/string/basic_string_view), respectively.
 Other types are supported as well, specifically `std::basic_string<unsigned char>` and `std::basic_string_view<unsigned char>`.
 
 ## Passing Binary Data
@@ -27,7 +28,7 @@ Other types are supported as well, specifically `std::basic_string<unsigned char
 When you pass binary data to taoPQ, we only require a view to be passed.
 As a view is a non-owning data type, constructing an instance of it is cheap.
 
-If you have other data types like `std::vector<std::byte>` or `std::span<std::byte>` (C++20), you can create a binary data view by using
+If you have other data types like [`std::vector<std::byte>`➚](https://en.cppreference.com/w/cpp/container/vector) or [`std::span<std::byte>`➚](https://en.cppreference.com/w/cpp/container/span) (C++20), you can create a binary data view by using
 
 ```c++
 template< typename T >

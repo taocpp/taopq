@@ -13,27 +13,27 @@
 
 namespace tao::pq
 {
-   struct base_error
+   struct error
       : std::runtime_error
    {
       using std::runtime_error::runtime_error;
    };
 
    struct timeout_reached
-      : base_error
+      : error
    {
-      using base_error::base_error;
+      using error::error;
    };
 
    struct network_error
-      : base_error
+      : error
    {
-      using base_error::base_error;
+      using error::error;
    };
 
    // https://www.postgresql.org/docs/current/errcodes-appendix.html
    struct sql_error
-      : base_error
+      : error
    {
       std::string sqlstate;
 

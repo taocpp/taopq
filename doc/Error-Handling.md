@@ -1,15 +1,25 @@
 # Error Handling
 
+## SQL errors
+
 When an SQL statement is [executed](Statement.md) and the execution fails, an exception is thrown.
-The base class for the exceptions thrown in this case is `tao::pq::sql_error`, which is derived from `std::runtime_error`.
+The base class for the exceptions thrown in this case is `tao::pq::sql_error`, which is derived from `tao::pq::error`, which in turn is derived from [`std::runtime_error`➚](https://en.cppreference.com/w/cpp/error/runtime_error).
 
 ```c++
 namespace tao::pq
 {
-   struct sql_error
+   struct error
       : std::runtime_error
    {
+      using std::runtime_error::runtime_error;
+   };
+
+   struct sql_error
+      : error
+   {
       std::string sqlstate;
+
+      // ctor...
    };
 }
 ```
