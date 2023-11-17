@@ -24,7 +24,6 @@ jobs:
           - clang++-13
           - clang++-14
           - clang++-15
-          - clang++-16
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
