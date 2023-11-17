@@ -11,14 +11,14 @@ namespace tao::pq
       return std::make_unique< pq::connection >( pq::connection::private_key(), m_connection_info, m_poll );
    }
 
-   connection_pool::connection_pool( const private_key /*unused*/, const std::string_view connection_info, const std::function< poll::callback >& poll_cb )
+   connection_pool::connection_pool( const private_key /*unused*/, const std::string_view connection_info, std::function< poll::callback > poll_cb )
       : m_connection_info( connection_info ),
-        m_poll( poll_cb )
+        m_poll( std::move( poll_cb ) )
    {}
 
-   auto connection_pool::create( const std::string_view connection_info, const std::function< poll::callback >& poll_cb ) -> std::shared_ptr< connection_pool >
+   auto connection_pool::create( const std::string_view connection_info, std::function< poll::callback > poll_cb ) -> std::shared_ptr< connection_pool >
    {
-      return std::make_shared< connection_pool >( private_key(), connection_info, poll_cb );
+      return std::make_shared< connection_pool >( private_key(), connection_info, std::move( poll_cb ) );
    }
 
    void connection_pool::set_timeout( const std::chrono::milliseconds timeout ) noexcept
@@ -31,14 +31,14 @@ namespace tao::pq
       m_timeout = std::nullopt;
    }
 
-   auto connection_pool::poll_callback() const -> std::function< poll::callback >
+   auto connection_pool::poll_callback() const noexcept -> const std::function< poll::callback >&
    {
       return m_poll;
    }
 
-   void connection_pool::set_poll_callback( const std::function< poll::callback >& poll_cb )
+   void connection_pool::set_poll_callback( std::function< poll::callback > poll_cb ) noexcept
    {
-      m_poll = poll_cb;
+      m_poll = std::move( poll_cb );
    }
 
    void connection_pool::reset_poll_callback()

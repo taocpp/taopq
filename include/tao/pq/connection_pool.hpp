@@ -43,9 +43,9 @@ namespace tao::pq
       };
 
    public:
-      connection_pool( const private_key /*unused*/, const std::string_view connection_info, const std::function< poll::callback >& poll_cb );
+      connection_pool( const private_key /*unused*/, const std::string_view connection_info, std::function< poll::callback > poll_cb );
 
-      [[nodiscard]] static auto create( const std::string_view connection_info, const std::function< poll::callback >& poll_cb = poll::internal::default_poll ) -> std::shared_ptr< connection_pool >;
+      [[nodiscard]] static auto create( const std::string_view connection_info, std::function< poll::callback > poll_cb = poll::internal::default_poll ) -> std::shared_ptr< connection_pool >;
 
       [[nodiscard]] auto timeout() const noexcept -> decltype( auto )
       {
@@ -55,8 +55,8 @@ namespace tao::pq
       void set_timeout( const std::chrono::milliseconds timeout ) noexcept;
       void reset_timeout() noexcept;
 
-      [[nodiscard]] auto poll_callback() const -> std::function< poll::callback >;
-      void set_poll_callback( const std::function< poll::callback >& poll_cb );
+      [[nodiscard]] auto poll_callback() const noexcept -> const std::function< poll::callback >&;
+      void set_poll_callback( std::function< poll::callback > poll_cb ) noexcept;
       void reset_poll_callback();
 
       [[nodiscard]] auto connection() -> std::shared_ptr< connection >;
