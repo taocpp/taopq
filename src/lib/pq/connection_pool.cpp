@@ -11,12 +11,12 @@ namespace tao::pq
       return std::make_unique< pq::connection >( pq::connection::private_key(), m_connection_info, m_poll );
    }
 
-   connection_pool::connection_pool( const private_key /*unused*/, const std::string_view connection_info, const std::function< poll::callback > poll_cb )
+   connection_pool::connection_pool( const private_key /*unused*/, const std::string_view connection_info, const std::function< poll::callback >& poll_cb )
       : m_connection_info( connection_info ),
         m_poll( poll_cb )
    {}
 
-   auto connection_pool::create( const std::string_view connection_info, const std::function< poll::callback > poll_cb ) -> std::shared_ptr< connection_pool >
+   auto connection_pool::create( const std::string_view connection_info, const std::function< poll::callback >& poll_cb ) -> std::shared_ptr< connection_pool >
    {
       return std::make_shared< connection_pool >( private_key(), connection_info, poll_cb );
    }
