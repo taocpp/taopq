@@ -43,7 +43,7 @@ namespace tao::pq
 
    void connection_pool::reset_poll_callback()
    {
-      m_poll = poll::internal::default_poll;
+      m_poll = internal::poll;
    }
 
    auto connection_pool::connection() -> std::shared_ptr< pq::connection >

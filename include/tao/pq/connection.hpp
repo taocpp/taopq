@@ -108,7 +108,7 @@ namespace tao::pq
 
       ~connection() = default;
 
-      [[nodiscard]] static auto create( const std::string& connection_info, std::function< poll::callback > poll_cb = poll::internal::default_poll ) -> std::shared_ptr< connection >;
+      [[nodiscard]] static auto create( const std::string& connection_info, std::function< poll::callback > poll_cb = internal::poll ) -> std::shared_ptr< connection >;
 
       [[nodiscard]] auto error_message() const -> std::string;
 

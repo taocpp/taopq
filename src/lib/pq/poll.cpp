@@ -19,38 +19,42 @@
 #include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 
-namespace tao::pq::poll::internal
+namespace tao::pq::internal
 {
-   // LCOV_EXCL_START
-   [[nodiscard, maybe_unused]] auto errno_result_to_string( const int e, char* buffer, int result ) -> std::string
+   namespace
    {
-      if( result == 0 ) {
-         return buffer;
+      // LCOV_EXCL_START
+      [[nodiscard, maybe_unused]] auto errno_result_to_string( const int e, char* buffer, int result ) -> std::string
+      {
+         if( result == 0 ) {
+            return buffer;
+         }
+         return printf( "unknown error code %d", e );
       }
-      return pq::internal::printf( "unknown error code %d", e );
-   }
 
-   [[nodiscard, maybe_unused]] auto errno_result_to_string( const int /*unused*/, char* /*unused*/, char* result ) -> std::string
-   {
-      return result;
-   }
+      [[nodiscard, maybe_unused]] auto errno_result_to_string( const int /*unused*/, char* /*unused*/, char* result ) -> std::string
+      {
+         return result;
+      }
 
-   [[nodiscard]] auto errno_to_string( const int e ) -> std::string
-   {
-      char buffer[ 256 ];
+      [[nodiscard]] auto errno_to_string( const int e ) -> std::string
+      {
+         char buffer[ 256 ];
 #if defined( _WIN32 )
 #ifdef _MSC_VER
-      return errno_result_to_string( e, buffer, strerror_s( buffer, e ) );
+         return errno_result_to_string( e, buffer, strerror_s( buffer, e ) );
 #else
-      return errno_result_to_string( e, buffer, strerror_s( buffer, sizeof( buffer ), e ) );
+         return errno_result_to_string( e, buffer, strerror_s( buffer, sizeof( buffer ), e ) );
 #endif
 #else
-      return errno_result_to_string( e, buffer, strerror_r( e, buffer, sizeof( buffer ) ) );
+         return errno_result_to_string( e, buffer, strerror_r( e, buffer, sizeof( buffer ) ) );
 #endif
-   }
-   // LCOV_EXCL_STOP
+      }
+      // LCOV_EXCL_STOP
 
-   auto default_poll( const int socket, const bool wait_for_write, const int timeout ) -> status
+   }  // namespace
+
+   auto poll( const int socket, const bool wait_for_write, const int timeout ) -> pq::poll::status
    {
 #if defined( _WIN32 )
 
@@ -59,17 +63,17 @@ namespace tao::pq::poll::internal
       const auto result = WSAPoll( &pfd, 1, timeout );
       switch( result ) {
          case 0:
-            return status::timeout;
+            return pq::poll::status::timeout;
 
          case 1:
             if( ( pfd.revents & events ) == 0 ) {
-               throw network_error( pq::internal::printf( "WSAPoll() failed, events %hd, revents %hd", events, pfd.revents ) );
+               throw network_error( printf( "WSAPoll() failed, events %hd, revents %hd", events, pfd.revents ) );
             }
-            return ( ( pfd.revents & POLLIN ) != 0 ) ? status::readable : status::writable;
+            return ( ( pfd.revents & POLLIN ) != 0 ) ? pq::poll::status::readable : pq::poll::status::writable;
 
          case SOCKET_ERROR: {
             const int e = WSAGetLastError();
-            throw network_error( "WSAPoll() failed: " + internal::errno_to_string( e ) );
+            throw network_error( "WSAPoll() failed: " + errno_to_string( e ) );
          }
 
          default:
@@ -84,21 +88,21 @@ namespace tao::pq::poll::internal
       const auto result = ::poll( &pfd, 1, timeout );
       switch( result ) {
          case 0:
-            return status::timeout;
+            return pq::poll::status::timeout;
 
          case 1:
             if( ( pfd.revents & events ) == 0 ) {
-               throw network_error( pq::internal::printf( "poll() failed, events %hd, revents %hd", events, pfd.revents ) );  // LCOV_EXCL_LINE
+               throw network_error( printf( "poll() failed, events %hd, revents %hd", events, pfd.revents ) );  // LCOV_EXCL_LINE
             }
-            return ( ( pfd.revents & POLLIN ) != 0 ) ? status::readable : status::writable;
+            return ( ( pfd.revents & POLLIN ) != 0 ) ? pq::poll::status::readable : pq::poll::status::writable;
 
             // LCOV_EXCL_START
          case -1: {
             const int e = errno;
             if( ( e != EINTR ) && ( e != EAGAIN ) ) {
-               throw network_error( "poll() failed: " + internal::errno_to_string( e ) );
+               throw network_error( "poll() failed: " + errno_to_string( e ) );
             }
-            return status::again;
+            return pq::poll::status::again;
          }
 
          default:
@@ -108,4 +112,4 @@ namespace tao::pq::poll::internal
 #endif
    }
 
-}  // namespace tao::pq::poll::internal
+}  // namespace tao::pq::internal

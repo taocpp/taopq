@@ -416,7 +416,7 @@ namespace tao::pq
 
    void connection::reset_poll_callback()
    {
-      m_poll = poll::internal::default_poll;
+      m_poll = internal::poll;
    }
 
    auto connection::notification_handler() const -> std::function< void( const notification& ) >
