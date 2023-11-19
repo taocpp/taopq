@@ -5,28 +5,18 @@
 #ifndef TAO_PQ_POLL_HPP
 #define TAO_PQ_POLL_HPP
 
-namespace tao::pq
+namespace tao::pq::poll
 {
-   namespace poll
+   enum class status
    {
-      enum class status
-      {
-         timeout,
-         readable,
-         writable,
-         again
-      };
+      timeout,
+      readable,
+      writable,
+      again
+   };
 
-      using callback = status( const int socket, const bool wait_for_write, const int timeout );
+   using callback = status( const int socket, const bool wait_for_write, const int timeout );
 
-   }  // namespace poll
-
-   namespace internal
-   {
-      [[nodiscard]] auto poll( const int socket, const bool wait_for_write, const int timeout ) -> pq::poll::status;
-
-   }  // namespace internal
-
-}  // namespace tao::pq
+}  // namespace tao::pq::poll
 
 #endif

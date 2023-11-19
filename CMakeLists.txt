@@ -33,6 +33,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/from_chars.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/gen.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/parameter_traits_helper.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/internal/poll.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/pool.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/printf.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/resize_uninitialized.hpp
@@ -74,11 +75,11 @@ set(taopq_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/exception.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/field.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/poll.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/printf.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/large_object.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/parameter_traits.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/poll.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp

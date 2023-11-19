@@ -13,6 +13,7 @@
 #include <utility>
 
 #include <tao/pq/connection.hpp>
+#include <tao/pq/internal/poll.hpp>
 #include <tao/pq/internal/pool.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/poll.hpp>

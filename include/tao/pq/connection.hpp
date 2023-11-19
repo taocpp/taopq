@@ -18,6 +18,7 @@
 
 #include <tao/pq/access_mode.hpp>
 #include <tao/pq/connection_status.hpp>
+#include <tao/pq/internal/poll.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
