@@ -9,7 +9,7 @@
 
 namespace tao::pq::internal
 {
-   [[nodiscard]] auto poll( const int socket, const bool wait_for_write, const int timeout ) -> pq::poll::status;
+   [[nodiscard]] auto poll( const int socket, const bool wait_for_write, const int timeout_ms ) -> pq::poll::status;
 
 }  // namespace tao::pq::internal
 

@@ -15,7 +15,7 @@ namespace tao::pq::poll
       again
    };
 
-   using callback = status( const int socket, const bool wait_for_write, const int timeout );
+   using callback = status( const int socket, const bool wait_for_write, const int timeout_ms );
 
 }  // namespace tao::pq::poll
 

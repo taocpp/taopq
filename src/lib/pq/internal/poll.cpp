@@ -54,13 +54,13 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   auto poll( const int socket, const bool wait_for_write, const int timeout ) -> pq::poll::status
+   auto poll( const int socket, const bool wait_for_write, const int timeout_ms ) -> pq::poll::status
    {
 #if defined( _WIN32 )
 
       const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       WSAPOLLFD pfd = { static_cast< SOCKET >( socket ), events, 0 };
-      const auto result = WSAPoll( &pfd, 1, timeout );
+      const auto result = WSAPoll( &pfd, 1, timeout_ms );
       switch( result ) {
          case 0:
             return pq::poll::status::timeout;
@@ -85,7 +85,7 @@ namespace tao::pq::internal
       const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
       pollfd pfd = { socket, events, 0 };
       errno = 0;
-      const auto result = ::poll( &pfd, 1, timeout );
+      const auto result = ::poll( &pfd, 1, timeout_ms );
       switch( result ) {
          case 0:
             return pq::poll::status::timeout;

@@ -220,15 +220,15 @@ namespace tao::pq
    void connection::wait( const bool wait_for_write, const std::chrono::steady_clock::time_point end )
    {
       while( true ) {
-         int timeout = -1;
+         int timeout_ms = -1;
          if( m_timeout ) {
-            timeout = static_cast< int >( std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count() );
-            if( timeout < 0 ) {
-               timeout = 0;  // LCOV_EXCL_LINE
+            timeout_ms = static_cast< int >( std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count() );
+            if( timeout_ms < 0 ) {
+               timeout_ms = 0;  // LCOV_EXCL_LINE
             }
          }
 
-         switch( m_poll( socket(), wait_for_write, timeout ) ) {
+         switch( m_poll( socket(), wait_for_write, timeout_ms ) ) {
             case poll::status::timeout:
                m_pgconn.reset();
                throw timeout_reached( "timeout reached" );
