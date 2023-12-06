@@ -21,6 +21,21 @@ namespace tao::pq
       class zsv;  // zero-terminated string view
    }
 
+   namespace poll
+   {
+      enum class status
+      {
+         timeout,
+         readable,
+         writable,
+         again
+      };
+
+      using callback = status( const int socket,
+                               const bool wait_for_write,
+                               const int timeout_ms );
+   }
+
    class connection;
 
    class connection_pool final
@@ -28,7 +43,8 @@ namespace tao::pq
    {
    public:
       // create a new connection pool
-      static auto create( const std::string& connection_info )
+      static auto create( const std::string& connection_info,
+                          std::function< tao::pq::poll::callback > poll_cb = /*unspecified*/ )
          -> std::shared_ptr< connection_pool >;
 
       // non-copyable, non-movable
@@ -45,6 +61,13 @@ namespace tao::pq
 
       void set_timeout( const std::chrono::milliseconds timeout );
       void reset_timeout() noexcept;
+
+      // customizable poll()-callback
+      auto poll_callback() const noexcept
+         -> const std::function< tao::pq::poll::callback >&;
+
+      void set_poll_callback( std::function< tao::pq::poll::callback > poll_cb ) noexcept;
+      void reset_poll_callback();
 
       // borrow a connection
       auto connection() const noexcept
@@ -74,7 +97,9 @@ auto tao::pq::connection_pool::create( const std::string& connection_info )
     -> std::shared_ptr< tao::pq::connection_pool >;
 ```
 
-It takes a single parameter, the [connection string➚](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is used when new connections are opened by the pool.
+It takes a mandatory parameter, the [connection string➚](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is used when new connections are opened by the pool.
+
+The second, optional parameter can be used to specify the default `poll()`-callback for connections, see [Customizable `poll()`-callback](Connection.md#customizable-poll-callback).
 
 ## Borrowing Connections
 
@@ -103,6 +128,30 @@ In order to do so, just call the `erase_invalid()`-method, which will check the 
 
 ```c++
 void tao::pq::connection_pool::erase_invalid();
+```
+
+## Customizable `poll()`-callback
+
+The default implementation for polling uses `poll()` or `WSAPoll()`, depending on your system.
+This callback can be customized to support other I/O frameworks, e.g. Boost.Asio.
+
+To access the current default callback for borrowed connections you can call the `poll_callback()`-method.
+
+```c++
+auto poll_callback() const noexcept
+   -> const std::function< tao::pq::poll::callback >&;
+```
+
+Setting the default `poll()`-callback for borrowed connections is done by calling the `set_poll_callback()`-method.
+
+```c++
+void set_poll_callback( std::function< tao::pq::poll::callback > poll_cb ) noexcept;
+```
+
+You can revert the current default `poll()`-callback for borrowed connections to the default by calling the `reset_poll_callback()`-method.
+
+```c++
+void reset_poll_callback();
 ```
 
 ## Thread Safety
