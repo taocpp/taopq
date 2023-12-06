@@ -55,6 +55,7 @@ namespace tao::pq
       else {
          result->reset_timeout();
       }
+      result->set_poll_callback( m_poll );
       return result;
    }
 
