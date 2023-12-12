@@ -128,6 +128,7 @@ namespace tao::pq
                                   const int lengths[],
                                   const int formats[] )
    {
+      check_current_transaction();
       m_connection->send_params( statement, n_params, types, values, lengths, formats );
    }
 

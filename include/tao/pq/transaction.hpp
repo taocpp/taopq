@@ -96,7 +96,6 @@ namespace tao::pq
       template< typename... As >
       void send( const internal::zsv statement, As&&... as )
       {
-         check_current_transaction();
          if constexpr( sizeof...( As ) == 0 ) {
             send_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
          }
