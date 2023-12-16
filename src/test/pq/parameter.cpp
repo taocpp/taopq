@@ -59,7 +59,7 @@ void run()
    }
 }
 
-auto main() -> int
+auto main() -> int  // NOLINT(bugprone-exception-escape)
 {
    try {
       run();
