@@ -27,6 +27,14 @@ namespace tao::pq
    private:
       struct binder
       {
+         binder() noexcept = default;
+
+         binder( const binder& ) = delete;
+         binder( binder&& ) = delete;
+
+         void operator=( const binder& ) = delete;
+         void operator=( binder&& ) = delete;
+
          virtual ~binder() = default;
       };
 
@@ -54,7 +62,7 @@ namespace tao::pq
       std::size_t m_pos = 0;
       std::unique_ptr< binder > m_binder[ Max ];
 
-      std::size_t m_size = 0;
+      int m_size = 0;
       Oid m_types[ Max ];
       const char* m_values[ Max ];
       int m_lengths[ Max ];
@@ -66,7 +74,7 @@ namespace tao::pq
       void bind_impl( const A& a )  // TODO: protect against binding temporaries!
       {
          constexpr auto columns = parameter_traits< std::decay_t< const A& > >::columns;
-         if( m_size + columns > Max ) {
+         if( ( static_cast< std::size_t >( m_size ) + columns ) > Max ) {
             throw std::length_error( "too many parameters!" );
          }
 
