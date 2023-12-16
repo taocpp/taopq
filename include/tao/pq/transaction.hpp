@@ -19,6 +19,7 @@
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/oid.hpp>
+#include <tao/pq/parameter.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/result.hpp>
 
@@ -102,6 +103,18 @@ namespace tao::pq
          else {
             send_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
          }
+      }
+
+      template< std::size_t Max >
+      void send( const internal::zsv statement, const parameter< Max >& as )
+      {
+         send_params( statement, as.m_size, as.m_types, as.m_values, as.m_lengths, as.m_formats );
+      }
+
+      template< std::size_t Max >
+      void send( const internal::zsv statement, parameter< Max >& as )
+      {
+         send( statement, const_cast< const parameter< Max >& >( as ) );
       }
 
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
