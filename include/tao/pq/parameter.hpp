@@ -88,7 +88,7 @@ namespace tao::pq
             throw std::length_error( "too many parameters!" );
          }
 
-         auto* bptr = new holder< D >( std::move( a ) );
+         auto* bptr = new holder< D >( std::forward< A >( a ) );
          m_params[ m_pos++ ].reset( bptr );
 
          fill( *bptr, std::make_index_sequence< columns >() );
