@@ -72,10 +72,10 @@ namespace tao::pq
       template< typename T, std::size_t... Is >
       void fill( const T& t, std::index_sequence< Is... > /*unused*/ )  // TODO: noexcept( ... )?
       {
-         ( ( m_types[ m_size + Is ] = static_cast< Oid >( t.m_traits.template type< Is >() ) ), ... );
-         ( ( m_values[ m_size + Is ] = t.m_traits.template value< Is >() ), ... );
-         ( ( m_lengths[ m_size + Is ] = t.m_traits.template length< Is >() ), ... );
-         ( ( m_formats[ m_size + Is ] = t.m_traits.template format< Is >() ), ... );
+         ( ( m_types[ m_size + Is ] = static_cast< Oid >( t.template type< Is >() ) ), ... );
+         ( ( m_values[ m_size + Is ] = t.template value< Is >() ), ... );
+         ( ( m_lengths[ m_size + Is ] = t.template length< Is >() ), ... );
+         ( ( m_formats[ m_size + Is ] = t.template format< Is >() ), ... );
       }
 
       template< typename A >
@@ -89,7 +89,7 @@ namespace tao::pq
          }
 
          auto bptr = std::make_unique< holder< D > >( std::forward< A >( a ) );
-         fill( *bptr, std::make_index_sequence< columns >() );
+         parameter::fill( bptr->m_traits, std::make_index_sequence< columns >() );
 
          m_params[ m_pos++ ] = bptr.release();
          m_size += columns;
@@ -106,7 +106,7 @@ namespace tao::pq
          }
 
          auto bptr = std::make_unique< binder< D > >( a );
-         fill( *bptr, std::make_index_sequence< columns >() );
+         parameter::fill( bptr->m_traits, std::make_index_sequence< columns >() );
 
          m_params[ m_pos++ ] = bptr.release();
          m_size += columns;
@@ -117,14 +117,23 @@ namespace tao::pq
       {
          using D = std::decay_t< A&& >;
          if constexpr( std::is_rvalue_reference_v< A&& > || parameter_traits< D >::self_contained ) {
-            bind_rvalue_reference( std::forward< A >( a ) );
+            parameter::bind_rvalue_reference( std::forward< A >( a ) );
          }
          else {
-            bind_const_lvalue_reference( std::forward< A >( a ) );
+            parameter::bind_const_lvalue_reference( std::forward< A >( a ) );
          }
       }
 
    public:
+      parameter() noexcept
+      {}
+
+      template< typename... As >
+      explicit parameter( As&&... as )
+      {
+         parameter::bind( std::forward< As >( as )... );
+      }
+
       ~parameter()
       {
          for( std::size_t i = 0; i != m_pos; ++i ) {
@@ -132,11 +141,17 @@ namespace tao::pq
          }
       }
 
+      parameter( const parameter& ) = delete;
+      parameter( parameter&& ) = delete;
+
+      void operator=( const parameter& ) = delete;
+      void operator=( parameter&& ) = delete;
+
       // NOTE: arguments must remain VALID and UNMODIFIED until this object is destroyed or reset.
       template< typename... As >
       void bind( As&&... as )
       {
-         ( bind_impl( std::forward< As >( as ) ), ... );
+         ( parameter::bind_impl( std::forward< As >( as ) ), ... );
       }
 
       void reset() noexcept

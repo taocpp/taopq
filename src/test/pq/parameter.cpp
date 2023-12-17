@@ -29,8 +29,7 @@ void run()
 
       // execute previously prepared statements
       {
-         tao::pq::parameter p;
-         p.bind( "Daniel", 42 );
+         tao::pq::parameter p( "Daniel", 42 );
          tr->execute( "insert_user", p );
          p.reset();
          p.bind( "Tom" );
