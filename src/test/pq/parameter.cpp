@@ -41,7 +41,9 @@ void run()
       {
          tao::pq::parameter< 2 > p;
          p.bind( "Jerry" );
-         p.bind( 29 );
+         p.reset();
+         p.bind( "Jerry", 49 );
+         p.bind();
          tr->execute( "insert_user", p );
       }
 

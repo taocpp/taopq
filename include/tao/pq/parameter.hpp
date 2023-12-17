@@ -27,15 +27,14 @@ namespace tao::pq
    private:
       struct binder
       {
-         binder() noexcept = default;
+         explicit binder() noexcept = default;
+         virtual ~binder() = default;
 
          binder( const binder& ) = delete;
          binder( binder&& ) = delete;
 
          void operator=( const binder& ) = delete;
          void operator=( binder&& ) = delete;
-
-         virtual ~binder() = default;
       };
 
       template< typename T >
@@ -73,12 +72,14 @@ namespace tao::pq
       template< typename A >
       void bind_impl( const A& a )  // TODO: protect against binding temporaries!
       {
-         constexpr auto columns = parameter_traits< std::decay_t< const A& > >::columns;
+         using D = std::decay_t< const A& >;
+
+         constexpr auto columns = parameter_traits< D >::columns;
          if( ( static_cast< std::size_t >( m_size ) + columns ) > Max ) {
             throw std::length_error( "too many parameters!" );
          }
 
-         auto* bptr = new traits_binder< std::decay_t< const A& > >( a );
+         auto* bptr = new traits_binder< D >( a );
          m_binder[ m_pos++ ].reset( bptr );
 
          bptr->fill( &m_types[ m_size ], &m_values[ m_size ], &m_lengths[ m_size ], &m_formats[ m_size ], std::make_index_sequence< columns >() );
