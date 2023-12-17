@@ -59,7 +59,7 @@ namespace tao::pq
       };
 
       std::size_t m_pos = 0;
-      std::unique_ptr< vbase > m_params[ Max ];
+      vbase* m_params[ Max ];
 
       int m_size = 0;
       Oid m_types[ Max ];
@@ -88,10 +88,10 @@ namespace tao::pq
             throw std::length_error( "too many parameters!" );
          }
 
-         auto* bptr = new holder< D >( std::forward< A >( a ) );
-         m_params[ m_pos++ ].reset( bptr );
-
+         auto bptr = std::make_unique< holder< D > >( std::forward< A >( a ) );
          fill( *bptr, std::make_index_sequence< columns >() );
+
+         m_params[ m_pos++ ] = bptr.release();
          m_size += columns;
       }
 
@@ -105,10 +105,10 @@ namespace tao::pq
             throw std::length_error( "too many parameters!" );
          }
 
-         auto* bptr = new binder< D >( a );
-         m_params[ m_pos++ ].reset( bptr );
-
+         auto bptr = std::make_unique< binder< D > >( a );
          fill( *bptr, std::make_index_sequence< columns >() );
+
+         m_params[ m_pos++ ] = bptr.release();
          m_size += columns;
       }
 
@@ -124,6 +124,13 @@ namespace tao::pq
       }
 
    public:
+      ~parameter()
+      {
+         for( std::size_t i = 0; i != m_pos; ++i ) {
+            delete m_params[ i ];
+         }
+      }
+
       // NOTE: arguments must remain VALID and UNMODIFIED until this object is destroyed or reset.
       template< typename... As >
       void bind( As&&... as )
@@ -133,8 +140,8 @@ namespace tao::pq
 
       void reset() noexcept
       {
-         for( std::size_t i = 0; i < m_pos; ++i ) {
-            m_params[ i ].reset();
+         for( std::size_t i = 0; i != m_pos; ++i ) {
+            delete m_params[ i ];
          }
          m_pos = 0;
          m_size = 0;
