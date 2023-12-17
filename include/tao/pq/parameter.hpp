@@ -52,7 +52,7 @@ namespace tao::pq
          const T m_value;
          const parameter_traits< T > m_traits;
 
-         explicit holder( T&& t ) noexcept( noexcept( T( std::move( t ) ), parameter_traits< T >( t ) ) )
+         explicit holder( T&& t ) noexcept( noexcept( parameter_traits< T >( t ) ) && std::is_nothrow_move_constructible_v< T > )
             : m_value( std::move( t ) ),
               m_traits( m_value )
          {}
