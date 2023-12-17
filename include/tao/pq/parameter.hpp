@@ -18,15 +18,13 @@ namespace tao::pq
 {
    class transaction;
 
-   // NOTE: for now, this is experimental and might change or vanish at any time!
-   // TODO: naming?
    template< std::size_t Max = 16 >
    class parameter
    {
    private:
       struct vbase
       {
-         explicit vbase() noexcept = default;
+         vbase() noexcept = default;
          virtual ~vbase() = default;
 
          vbase( const vbase& ) = delete;
@@ -70,7 +68,7 @@ namespace tao::pq
       friend class transaction;
 
       template< typename T, std::size_t... Is >
-      void fill( const T& t, std::index_sequence< Is... > /*unused*/ )  // TODO: noexcept( ... )?
+      void fill( const T& t, std::index_sequence< Is... > /*unused*/ )
       {
          ( ( m_types[ m_size + Is ] = static_cast< Oid >( t.template type< Is >() ) ), ... );
          ( ( m_values[ m_size + Is ] = t.template value< Is >() ), ... );
