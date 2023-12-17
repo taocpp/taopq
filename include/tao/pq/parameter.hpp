@@ -5,7 +5,6 @@
 #ifndef TAO_PQ_PARAMETER_HPP
 #define TAO_PQ_PARAMETER_HPP
 
-#include <cassert>
 #include <cstddef>
 #include <memory>
 #include <stdexcept>
@@ -25,41 +24,42 @@ namespace tao::pq
    class parameter
    {
    private:
-      struct binder
+      struct vbase
       {
-         explicit binder() noexcept = default;
-         virtual ~binder() = default;
+         explicit vbase() noexcept = default;
+         virtual ~vbase() = default;
 
-         binder( const binder& ) = delete;
-         binder( binder&& ) = delete;
+         vbase( const vbase& ) = delete;
+         vbase( vbase&& ) = delete;
 
-         void operator=( const binder& ) = delete;
-         void operator=( binder&& ) = delete;
+         void operator=( const vbase& ) = delete;
+         void operator=( vbase&& ) = delete;
       };
 
       template< typename T >
-      class traits_binder : public binder
+      struct binder : vbase
       {
-      private:
          const parameter_traits< T > m_traits;
 
-      public:
-         explicit traits_binder( const T& t ) noexcept( noexcept( parameter_traits< T >( t ) ) )
+         explicit binder( const T& t ) noexcept( noexcept( parameter_traits< T >( t ) ) )
             : m_traits( t )
          {}
+      };
 
-         template< std::size_t... Is >
-         void fill( Oid* types, const char** values, int* lengths, int* formats, std::index_sequence< Is... > /*unused*/ ) const  // TODO: noexcept( ... )?
-         {
-            ( ( types[ Is ] = static_cast< Oid >( m_traits.template type< Is >() ) ), ... );
-            ( ( values[ Is ] = m_traits.template value< Is >() ), ... );
-            ( ( lengths[ Is ] = m_traits.template length< Is >() ), ... );
-            ( ( formats[ Is ] = m_traits.template format< Is >() ), ... );
-         }
+      template< typename T >
+      struct holder : vbase
+      {
+         const T m_value;
+         const parameter_traits< T > m_traits;
+
+         explicit holder( T&& t ) noexcept( noexcept( T( std::move( t ) ), parameter_traits< T >( t ) ) )
+            : m_value( std::move( t ) ),
+              m_traits( m_value )
+         {}
       };
 
       std::size_t m_pos = 0;
-      std::unique_ptr< binder > m_binder[ Max ];
+      std::unique_ptr< vbase > m_params[ Max ];
 
       int m_size = 0;
       Oid m_types[ Max ];
@@ -69,8 +69,34 @@ namespace tao::pq
 
       friend class transaction;
 
+      template< typename T, std::size_t... Is >
+      void fill( const T& t, std::index_sequence< Is... > /*unused*/ )  // TODO: noexcept( ... )?
+      {
+         ( ( m_types[ m_size + Is ] = static_cast< Oid >( t.m_traits.template type< Is >() ) ), ... );
+         ( ( m_values[ m_size + Is ] = t.m_traits.template value< Is >() ), ... );
+         ( ( m_lengths[ m_size + Is ] = t.m_traits.template length< Is >() ), ... );
+         ( ( m_formats[ m_size + Is ] = t.m_traits.template format< Is >() ), ... );
+      }
+
       template< typename A >
-      void bind_impl( const A& a )  // TODO: protect against binding temporaries!
+      void bind_rvalue_reference( A&& a )
+      {
+         using D = std::decay_t< A&& >;
+
+         constexpr auto columns = parameter_traits< D >::columns;
+         if( ( static_cast< std::size_t >( m_size ) + columns ) > Max ) {
+            throw std::length_error( "too many parameters!" );
+         }
+
+         auto* bptr = new holder< D >( std::move( a ) );
+         m_params[ m_pos++ ].reset( bptr );
+
+         fill( *bptr, std::make_index_sequence< columns >() );
+         m_size += columns;
+      }
+
+      template< typename A >
+      void bind_const_lvalue_reference( const A& a )
       {
          using D = std::decay_t< const A& >;
 
@@ -79,11 +105,22 @@ namespace tao::pq
             throw std::length_error( "too many parameters!" );
          }
 
-         auto* bptr = new traits_binder< D >( a );
-         m_binder[ m_pos++ ].reset( bptr );
+         auto* bptr = new binder< D >( a );
+         m_params[ m_pos++ ].reset( bptr );
 
-         bptr->fill( &m_types[ m_size ], &m_values[ m_size ], &m_lengths[ m_size ], &m_formats[ m_size ], std::make_index_sequence< columns >() );
+         fill( *bptr, std::make_index_sequence< columns >() );
          m_size += columns;
+      }
+
+      template< typename A >
+      void bind_impl( A&& a )
+      {
+         if constexpr( std::is_rvalue_reference_v< A&& > ) {
+            bind_rvalue_reference( std::forward< A >( a ) );
+         }
+         else {
+            bind_const_lvalue_reference( std::forward< A >( a ) );
+         }
       }
 
    public:
@@ -97,7 +134,7 @@ namespace tao::pq
       void reset() noexcept
       {
          for( std::size_t i = 0; i < m_pos; ++i ) {
-            m_binder[ i ].reset();
+            m_params[ i ].reset();
          }
          m_pos = 0;
          m_size = 0;
