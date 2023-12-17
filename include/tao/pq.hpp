@@ -15,6 +15,7 @@
 #include <tao/pq/connection_pool.hpp>
 #include <tao/pq/transaction.hpp>
 
+#include <tao/pq/parameter.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/parameter_traits_aggregate.hpp>
 #include <tao/pq/parameter_traits_array.hpp>
