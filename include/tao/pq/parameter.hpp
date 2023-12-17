@@ -154,13 +154,15 @@ namespace tao::pq
          ( parameter::bind_impl( std::forward< As >( as ) ), ... );
       }
 
-      void reset() noexcept
+      template< typename... As >
+      void reset( As&&... as ) noexcept( sizeof...( As ) == 0 )
       {
          for( std::size_t i = 0; i != m_pos; ++i ) {
             delete m_params[ i ];
          }
          m_pos = 0;
          m_size = 0;
+         parameter::bind( std::forward< As >( as )... );
       }
    };
 

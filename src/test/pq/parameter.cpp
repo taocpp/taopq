@@ -41,8 +41,7 @@ void run()
          tao::pq::parameter< 2 > p;
          std::string s = "Jerry";
          p.bind( s );
-         p.reset();
-         p.bind( std::string( "Jerry" ), 42 + 7 );
+         p.reset( std::string( "Jerry" ), 42 + 7 );
          p.bind();
          tr->execute( "insert_user", p );
       }
