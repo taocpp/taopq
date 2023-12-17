@@ -100,7 +100,7 @@ namespace tao::pq
 
    public:
       template< typename... As >
-      explicit parameter( As&&... as ) noexcept( noexcept( parameter::bind( std::forward< As >( as )... ) ) )
+      explicit parameter( As&&... as ) noexcept( noexcept( std::declval< parameter >().bind( std::forward< As >( as )... ) ) )
       {
          parameter::bind( std::forward< As >( as )... );
       }
@@ -125,7 +125,7 @@ namespace tao::pq
       }
 
       template< typename... As >
-      void reset( As&&... as ) noexcept( noexcept( parameter::bind( std::forward< As >( as )... ) ) )
+      void reset( As&&... as ) noexcept( noexcept( std::declval< parameter >().bind( std::forward< As >( as )... ) ) )
       {
          for( std::size_t i = 0; i != m_pos; ++i ) {
             delete m_params[ i ];
