@@ -506,10 +506,6 @@ namespace tao::pq
          explicit parameter_holder( const T& t ) noexcept( noexcept( result_t( to_taopq( t ) ) ) )
             : result( to_taopq( t ) )
          {}
-
-         explicit parameter_holder( T&& t ) noexcept( noexcept( result_t( to_taopq( std::move( t ) ) ) ) )
-            : result( to_taopq( std::move( t ) ) )
-         {}
       };
 
    }  // namespace internal
