@@ -33,6 +33,7 @@ public:
    {}
 
    static constexpr std::size_t columns = first_t::columns + second_t::columns;
+   static constexpr bool self_contained = first_t::self_contained && second_t::self_contained;
 
    template< std::size_t I >
    [[nodiscard]] constexpr auto type() const noexcept( noexcept( std::get< gen::template outer< I > >( m_pair ).template type< gen::template inner< I > >() ) ) -> oid

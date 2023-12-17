@@ -25,6 +25,7 @@ namespace tao::pq::internal
       {}
 
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = false;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
@@ -59,6 +60,7 @@ namespace tao::pq::internal
 
    public:
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = true;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid

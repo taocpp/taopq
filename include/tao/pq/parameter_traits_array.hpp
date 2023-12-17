@@ -76,6 +76,7 @@ namespace tao::pq
       }
 
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = true;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid

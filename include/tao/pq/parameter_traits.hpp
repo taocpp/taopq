@@ -47,7 +47,7 @@ namespace tao::pq
             [[maybe_unused]] const auto result = strncpy_s( buffer, "NAN", N );
             assert( result == 0 );
 #else
-            std::strcpy( buffer, "NAN" );                       // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
+            std::strcpy( buffer, "NAN" );  // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
 #endif
          }
          else {
@@ -70,6 +70,7 @@ namespace tao::pq
       explicit parameter_traits( const T& /*unused*/ ) noexcept;
 
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = true;
 
       template< std::size_t I >
       [[nodiscard]] static auto type() noexcept -> oid;
@@ -99,6 +100,7 @@ namespace tao::pq
       {}
 
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = true;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
@@ -141,6 +143,8 @@ namespace tao::pq
    struct parameter_traits< bool >
       : internal::char_pointer_helper
    {
+      static constexpr bool self_contained = true;
+
       explicit parameter_traits( const bool v ) noexcept
          : internal::char_pointer_helper( v ? "TRUE" : "FALSE" )
       {}
@@ -168,6 +172,7 @@ namespace tao::pq
       {}
 
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = true;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
@@ -340,6 +345,7 @@ namespace tao::pq
       {}
 
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = false;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
@@ -397,6 +403,7 @@ namespace tao::pq
       {}
 
       static constexpr std::size_t columns = 1;
+      static constexpr bool self_contained = false;
 
       template< std::size_t I >
       [[nodiscard]] static constexpr auto type() noexcept -> oid
@@ -510,6 +517,8 @@ namespace tao::pq
       : private internal::parameter_holder< T >,
         public parameter_traits< typename internal::parameter_holder< T >::result_t >
    {
+      static constexpr bool self_contained = true;
+
       using typename internal::parameter_holder< T >::result_t;
 
       explicit parameter_traits( const T& t ) noexcept( noexcept( internal::parameter_holder< T >( t ),

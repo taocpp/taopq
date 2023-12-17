@@ -34,6 +34,7 @@ public:
    }
 
    static constexpr std::size_t columns = U::columns;
+   static constexpr bool self_contained = U::self_contained;
 
    template< std::size_t I >
    [[nodiscard]] static constexpr auto type() noexcept -> oid

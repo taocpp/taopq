@@ -115,7 +115,8 @@ namespace tao::pq
       template< typename A >
       void bind_impl( A&& a )
       {
-         if constexpr( std::is_rvalue_reference_v< A&& > ) {
+         using D = std::decay_t< A&& >;
+         if constexpr( std::is_rvalue_reference_v< A&& > || parameter_traits< D >::self_contained ) {
             bind_rvalue_reference( std::forward< A >( a ) );
          }
          else {
