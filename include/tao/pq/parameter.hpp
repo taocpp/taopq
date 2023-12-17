@@ -79,56 +79,28 @@ namespace tao::pq
       }
 
       template< typename A >
-      void bind_rvalue_reference( A&& a )
-      {
-         using D = std::decay_t< A&& >;
-
-         constexpr auto columns = parameter_traits< D >::columns;
-         if( ( static_cast< std::size_t >( m_size ) + columns ) > Max ) {
-            throw std::length_error( "too many parameters!" );
-         }
-
-         auto bptr = std::make_unique< holder< D > >( std::forward< A >( a ) );
-         parameter::fill( bptr->m_traits, std::make_index_sequence< columns >() );
-
-         m_params[ m_pos++ ] = bptr.release();
-         m_size += columns;
-      }
-
-      template< typename A >
-      void bind_const_lvalue_reference( const A& a )
-      {
-         using D = std::decay_t< const A& >;
-
-         constexpr auto columns = parameter_traits< D >::columns;
-         if( ( static_cast< std::size_t >( m_size ) + columns ) > Max ) {
-            throw std::length_error( "too many parameters!" );
-         }
-
-         auto bptr = std::make_unique< binder< D > >( a );
-         parameter::fill( bptr->m_traits, std::make_index_sequence< columns >() );
-
-         m_params[ m_pos++ ] = bptr.release();
-         m_size += columns;
-      }
-
-      template< typename A >
       void bind_impl( A&& a )
       {
          using D = std::decay_t< A&& >;
-         if constexpr( std::is_rvalue_reference_v< A&& > || parameter_traits< D >::self_contained ) {
-            parameter::bind_rvalue_reference( std::forward< A >( a ) );
+
+         constexpr auto columns = parameter_traits< D >::columns;
+         if( ( static_cast< std::size_t >( m_size ) + columns ) > Max ) {
+            throw std::length_error( "too many parameters!" );
          }
-         else {
-            parameter::bind_const_lvalue_reference( std::forward< A >( a ) );
-         }
+
+         constexpr auto hold = std::is_rvalue_reference_v< A&& > && !parameter_traits< D >::self_contained;
+         using container_t = std::conditional_t< hold, holder< D >, binder< D > >;
+
+         auto bptr = std::make_unique< container_t >( std::forward< A >( a ) );
+         parameter::fill( bptr->m_traits, std::make_index_sequence< columns >() );
+
+         m_params[ m_pos++ ] = bptr.release();
+         m_size += columns;
       }
 
    public:
-      parameter() noexcept = default;
-
       template< typename... As >
-      explicit parameter( As&&... as )
+      explicit parameter( As&&... as ) noexcept( noexcept( parameter::bind( std::forward< As >( as )... ) ) )
       {
          parameter::bind( std::forward< As >( as )... );
       }
@@ -146,15 +118,14 @@ namespace tao::pq
       void operator=( const parameter& ) = delete;
       void operator=( parameter&& ) = delete;
 
-      // NOTE: arguments must remain VALID and UNMODIFIED until this object is destroyed or reset.
       template< typename... As >
-      void bind( As&&... as )
+      void bind( As&&... as ) noexcept( sizeof...( As ) == 0 )
       {
          ( parameter::bind_impl( std::forward< As >( as ) ), ... );
       }
 
       template< typename... As >
-      void reset( As&&... as ) noexcept( sizeof...( As ) == 0 )
+      void reset( As&&... as ) noexcept( noexcept( parameter::bind( std::forward< As >( as )... ) ) )
       {
          for( std::size_t i = 0; i != m_pos; ++i ) {
             delete m_params[ i ];
