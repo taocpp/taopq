@@ -125,8 +125,7 @@ namespace tao::pq
       }
 
    public:
-      parameter() noexcept
-      {}
+      parameter() noexcept = default;
 
       template< typename... As >
       explicit parameter( As&&... as )
