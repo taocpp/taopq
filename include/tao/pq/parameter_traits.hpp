@@ -42,6 +42,7 @@ namespace tao::pq
             assert( result > 0 );
             assert( static_cast< std::size_t >( result ) < N );
          }
+         // clang-format off
          else if( std::isnan( v ) ) {
 #if defined( _MSC_VER )
             [[maybe_unused]] const auto result = strncpy_s( buffer, "NAN", N );
@@ -58,6 +59,7 @@ namespace tao::pq
             std::strcpy( buffer, ( v < 0 ) ? "-INF" : "INF" );  // NOLINT(clang-analyzer-security.insecureAPI.strcpy)
 #endif
          }
+         // clang-format on
       }
 
    }  // namespace internal
