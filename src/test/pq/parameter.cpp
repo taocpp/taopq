@@ -33,8 +33,8 @@ void run()
          tr->execute( "insert_user", p );
          p.reset();
          p.bind( "Tom" );
-         p.bind( 41 );
-         tr->execute( "insert_user", p );
+         tao::pq::parameter p2( 41 );
+         tr->execute( "insert_user", tao::pq::parameter( p, p2 ) );
       }
 
       {
@@ -44,7 +44,8 @@ void run()
          p.bind( std::move( s ) );
          p.reset( std::string( "Jerry" ), 42 + 7 );
          p.bind();
-         tr->execute( "insert_user", p );
+         tao::pq::parameter p2( p );
+         tr->execute( "insert_user", p2 );
       }
 
       // commit transaction

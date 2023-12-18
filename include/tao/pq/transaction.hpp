@@ -117,6 +117,12 @@ namespace tao::pq
          send( statement, const_cast< const parameter< Max >& >( as ) );
       }
 
+      template< std::size_t Max >
+      void send( const internal::zsv statement, parameter< Max >&& as )
+      {
+         send( statement, const_cast< const parameter< Max >& >( as ) );
+      }
+
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
 
       template< typename... As >

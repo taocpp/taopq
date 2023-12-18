@@ -96,6 +96,33 @@ namespace tao::pq
          m_size += columns;
       }
 
+      template< std::size_t N >
+      void bind_impl( const parameter< N >& p )
+      {
+         const std::size_t columns = p.m_size;
+         if( m_size + columns > Max ) {
+            throw std::length_error( "too many parameters!" );
+         }
+
+         for( std::size_t n = 0; n < columns; ++n ) {
+            m_types[ m_size + n ] = p.m_types[ n ];
+            m_values[ m_size + n ] = p.m_values[ n ];
+            m_lengths[ m_size + n ] = p.m_lengths[ n ];
+            m_formats[ m_size + n ] = p.m_formats[ n ];
+         }
+
+         m_size += columns;
+      }
+
+      template< std::size_t N >
+      void bind_impl( parameter< N >& p )
+      {
+         bind_impl( const_cast< const parameter< N >& >( p ) );
+      }
+
+      template< std::size_t N >
+      void bind_impl( parameter< N >&& p ) = delete;
+
    public:
       template< typename... As >
       explicit parameter( As&&... as ) noexcept( noexcept( std::declval< parameter >().bind( std::forward< As >( as )... ) ) )
