@@ -178,22 +178,22 @@ namespace tao::pq
    namespace internal
    {
       template< typename A >
-      inline constexpr bool contains_parameter_impl = false;
+      inline constexpr bool is_parameter = false;
 
       template< std::size_t Max >
-      inline constexpr bool contains_parameter_impl< parameter< Max > > = true;
+      inline constexpr bool is_parameter< parameter< Max > > = true;
 
       template< typename... As >
-      inline constexpr bool contains_parameter = ( contains_parameter_impl< std::decay_t< As > > || ... );
+      inline constexpr bool contains_parameter = ( is_parameter< std::decay_t< As > > || ... );
+
+      template< typename... As >
+      inline constexpr std::size_t parameter_size = ( parameter_size< std::decay_t< As > > + ... + 0 );
 
       template< typename A >
-      inline constexpr std::size_t parameter_size_impl = parameter_traits< A >::columns;
+      inline constexpr std::size_t parameter_size< A > = parameter_traits< A >::columns;
 
       template< std::size_t Max >
-      inline constexpr std::size_t parameter_size_impl< parameter< Max > > = Max;
-
-      template< typename... As >
-      inline constexpr std::size_t parameter_size = ( parameter_size_impl< std::decay_t< As > > + ... + 0 );
+      inline constexpr std::size_t parameter_size< parameter< Max > > = Max;
 
    }  // namespace internal
 
