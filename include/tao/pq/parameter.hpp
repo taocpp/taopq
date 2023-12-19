@@ -137,12 +137,12 @@ namespace tao::pq
          }
       }
 
-      parameter( const parameter& p )
+      explicit parameter( const parameter& p )
       {
          parameter::bind( p );
       }
 
-      parameter( parameter&& p ) = delete;
+      explicit parameter( parameter&& p ) = delete;
 
       void operator=( const parameter& ) = delete;
       void operator=( parameter&& ) = delete;
