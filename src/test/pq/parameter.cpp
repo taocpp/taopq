@@ -48,6 +48,13 @@ void run()
          tr->execute( "insert_user", p2 );
       }
 
+      {
+         tao::pq::parameter< 1 > p;
+         std::string s = "Alice";
+         p.bind( std::move( s ) );
+         tr->execute( "insert_user", p, 44 );
+      }
+
       // commit transaction
       tr->commit();
    }

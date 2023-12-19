@@ -65,6 +65,9 @@ namespace tao::pq
       int m_lengths[ Max ];
       int m_formats[ Max ];
 
+      template< std::size_t >
+      friend class parameter;
+
       friend class transaction;
 
       template< typename T, std::size_t... Is >
@@ -132,9 +135,16 @@ namespace tao::pq
 
       ~parameter()
       {
+#if defined( __GNUC__ ) && !defined( __clang__ )
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
          for( std::size_t i = 0; i != m_pos; ++i ) {
             delete m_params[ i ];
          }
+#if defined( __GNUC__ ) && !defined( __clang__ )
+#pragma GCC diagnostic pop
+#endif
       }
 
       explicit parameter( const parameter& p )
@@ -164,6 +174,28 @@ namespace tao::pq
          parameter::bind( std::forward< As >( as )... );
       }
    };
+
+   namespace internal
+   {
+      template< typename A >
+      inline constexpr bool contains_parameter_impl = false;
+
+      template< std::size_t Max >
+      inline constexpr bool contains_parameter_impl< parameter< Max > > = true;
+
+      template< typename... As >
+      inline constexpr bool contains_parameter = ( contains_parameter_impl< std::decay_t< As > > || ... );
+
+      template< typename A >
+      inline constexpr std::size_t parameter_size_impl = parameter_traits< A >::columns;
+
+      template< std::size_t Max >
+      inline constexpr std::size_t parameter_size_impl< parameter< Max > > = Max;
+
+      template< typename... As >
+      inline constexpr std::size_t parameter_size = ( parameter_size_impl< std::decay_t< As > > + ... + 0 );
+
+   }  // namespace internal
 
 }  // namespace tao::pq
 
