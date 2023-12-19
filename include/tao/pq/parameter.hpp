@@ -197,6 +197,9 @@ namespace tao::pq
 
    }  // namespace internal
 
+   template< typename... As >
+   parameter( As&&... ) -> parameter<>;
+
 }  // namespace tao::pq
 
 #endif
