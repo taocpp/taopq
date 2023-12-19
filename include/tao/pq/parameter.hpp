@@ -111,7 +111,7 @@ namespace tao::pq
             m_formats[ m_size + n ] = p.m_formats[ n ];
          }
 
-         m_size += columns;
+         m_size += static_cast< int >( columns );
       }
 
       template< std::size_t N >
@@ -137,8 +137,12 @@ namespace tao::pq
          }
       }
 
-      parameter( const parameter& ) = delete;
-      parameter( parameter&& ) = delete;
+      parameter( const parameter& p )
+      {
+         parameter::bind( p );
+      }
+
+      parameter( parameter&& p ) = delete;
 
       void operator=( const parameter& ) = delete;
       void operator=( parameter&& ) = delete;
