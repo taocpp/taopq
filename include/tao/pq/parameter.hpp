@@ -120,6 +120,7 @@ namespace tao::pq
          bind_impl( const_cast< const parameter< N >& >( p ) );
       }
 
+   public:  // clang-tidy wants deleted member functions to be public
       template< std::size_t N >
       void bind_impl( parameter< N >&& p ) = delete;
 
