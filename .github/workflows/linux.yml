@@ -49,7 +49,7 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - run: sudo apt-get update -yq
 
@@ -102,7 +102,7 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - run: sudo apt-get update -yq
 
@@ -149,7 +149,7 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - run: sudo apt-get update -yq
 
@@ -196,7 +196,7 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - run: sudo apt-get update -yq
 

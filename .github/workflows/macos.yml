@@ -24,7 +24,7 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - run: |
         brew services start postgresql
@@ -74,7 +74,7 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - run: |
         brew services start postgresql
