@@ -100,10 +100,6 @@ jobs:
         createdb --owner=myuser mydatabase
         PGPASSWORD=mypassword psql --username=myuser --host=localhost --list mydatabase
 
-#    - uses: maxim-lobanov/setup-xcode@v1
-#      with:
-#        xcode-version: ${{ matrix.xcode }}
-
     - run: cmake -E make_directory build
 
     - working-directory: build/
