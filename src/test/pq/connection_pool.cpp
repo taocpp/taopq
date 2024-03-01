@@ -29,7 +29,6 @@ void run()
    const auto pool = tao::pq::connection_pool::create< limited_connection_pool >( connection_string );
 
    TEST_ASSERT( pool->empty() );
-   TEST_ASSERT( pool->size() == 0 );
    TEST_ASSERT( pool->attached() == 0 );
 
    TEST_ASSERT( pool->connection() );
@@ -61,19 +60,19 @@ void run()
    TEST_ASSERT( pool->size() == 2 );
    TEST_ASSERT( pool->attached() == 0 );
    {
-      const auto c0 = pool->connection();
-      const auto c1 = pool->connection();
-      TEST_ASSERT( pool->size() == 0 );
+      [[maybe_unused]] const auto c0 = pool->connection();
+      [[maybe_unused]] const auto c1 = pool->connection();
+      TEST_ASSERT( pool->empty() );
       TEST_ASSERT( pool->attached() == 2 );
       {
-         const auto c2 = pool->connection();
-         const auto c3 = pool->connection();
-         TEST_ASSERT( pool->size() == 0 );
+         [[maybe_unused]] const auto c2 = pool->connection();
+         [[maybe_unused]] const auto c3 = pool->connection();
+         TEST_ASSERT( pool->empty() );
          TEST_ASSERT( pool->attached() == 4 );
 
          TEST_THROWS( pool->connection() );
 
-         TEST_ASSERT( pool->size() == 0 );
+         TEST_ASSERT( pool->empty() );
          TEST_ASSERT( pool->attached() == 4 );
       }
       TEST_ASSERT( pool->size() == 2 );
