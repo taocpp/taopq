@@ -16,11 +16,6 @@ namespace tao::pq
         m_poll( std::move( poll_cb ) )
    {}
 
-   auto connection_pool::create( const std::string_view connection_info, std::function< poll::callback > poll_cb ) -> std::shared_ptr< connection_pool >
-   {
-      return std::make_shared< connection_pool >( private_key(), connection_info, std::move( poll_cb ) );
-   }
-
    void connection_pool::set_timeout( const std::chrono::milliseconds timeout ) noexcept
    {
       m_timeout = timeout;
