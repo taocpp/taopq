@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_INTERNAL_POOL_HPP
 #define TAO_PQ_INTERNAL_POOL_HPP
 
+#include <atomic>
 #include <cassert>
 #include <list>
 #include <memory>
@@ -19,7 +20,8 @@ namespace tao::pq::internal
    {
    private:
       std::list< std::shared_ptr< T > > m_items;
-      std::mutex m_mutex;
+      mutable std::mutex m_mutex;
+      std::atomic< std::size_t > m_attached = 0;
 
       struct deleter final
       {
@@ -35,6 +37,7 @@ namespace tao::pq::internal
          {
             std::unique_ptr< T > up( item );
             if( const auto p = m_pool.lock() ) {
+               --( p->m_attached );
                p->push( up );
             }
          }
@@ -77,22 +80,33 @@ namespace tao::pq::internal
 
       static void attach( const std::shared_ptr< T >& sp, std::weak_ptr< pool >&& p ) noexcept
       {
-         deleter* d = std::get_deleter< deleter >( sp );
+         const auto d = std::get_deleter< deleter >( sp );
          assert( d );
+         if( const auto o = d->m_pool.lock() ) {
+            --( o->m_attached );
+         }
          d->m_pool = std::move( p );
+         if( const auto n = d->m_pool.lock() ) {
+            ++( n->m_attached );
+         }
       }
 
       static void detach( const std::shared_ptr< T >& sp ) noexcept
       {
-         deleter* d = std::get_deleter< deleter >( sp );
+         const auto d = std::get_deleter< deleter >( sp );
          assert( d );
+         if( const auto o = d->m_pool.lock() ) {
+            --( o->m_attached );
+         }
          d->m_pool.reset();
       }
 
       // create a new T which is put into the pool when no longer used
       [[nodiscard]] auto create() -> std::shared_ptr< T >
       {
-         return { v_create().release(), pool::deleter( this->weak_from_this() ) };
+         const std::shared_ptr< T > c{ v_create().release(), pool::deleter( this->weak_from_this() ) };
+         ++m_attached;
+         return c;
       }
 
       // get an instance from the pool or create a new one if necessary
@@ -100,11 +114,31 @@ namespace tao::pq::internal
       {
          while( const auto sp = pull() ) {
             if( this->v_is_valid( *sp ) ) {
-               pool::attach( sp, this->weak_from_this() );
+               const auto d = std::get_deleter< deleter >( sp );
+               assert( d );
+               d->m_pool = this->weak_from_this();
+               ++m_attached;
                return sp;
             }
          }
          return create();
+      }
+
+      [[nodiscard]] auto empty() const noexcept -> bool
+      {
+         const std::lock_guard lock( m_mutex );
+         return m_items.empty();
+      }
+
+      [[nodiscard]] auto size() const noexcept -> std::size_t
+      {
+         const std::lock_guard lock( m_mutex );
+         return m_items.size();
+      }
+
+      [[nodiscard]] auto attached() const noexcept -> std::size_t
+      {
+         return m_attached;
       }
 
       void erase_invalid()

@@ -80,6 +80,18 @@ namespace tao::pq
          return connection()->execute( statement, std::forward< As >( as )... );
       }
 
+      // checks whether the pool contains idle connections
+      auto empty() const noexcept
+        -> bool;
+
+      // number of idle connections
+      auto size() const noexcept
+        -> std::size_t;
+
+      // number of borrowed connections
+      auto attached() const noexcept
+        -> std::size_t;
+
       // cleanup
       void erase_invalid();
    };
