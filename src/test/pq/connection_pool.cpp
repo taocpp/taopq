@@ -20,6 +20,11 @@ class limited_connection_pool
          ++m_counter;
       }
 
+      guard( const guard& ) = delete;
+      guard( guard&& ) = delete;
+      void operator=( const guard& ) = delete;
+      void operator=( guard&& ) = delete;
+
       ~guard()
       {
          --m_counter;
