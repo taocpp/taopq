@@ -10,6 +10,22 @@
 class limited_connection_pool
    : public tao::pq::connection_pool
 {
+   struct guard
+   {
+      std::atomic< std::size_t >& m_counter;
+
+      explicit guard( std::atomic< std::size_t >& counter ) noexcept
+         : m_counter( counter )
+      {
+         ++m_counter;
+      }
+
+      ~guard()
+      {
+         --m_counter;
+      }
+   };
+
    mutable std::atomic< std::size_t > m_creating = 0;
 
    using tao::pq::connection_pool::connection_pool;
@@ -19,10 +35,8 @@ class limited_connection_pool
       if( attached() >= 4 || ( m_creating.load() > 2 ) ) {
          throw std::runtime_error( "connection limit reached" );
       }
-      ++m_creating;
-      auto c = connection_pool::v_create();
-      --m_creating;
-      return c;
+      const guard g( m_creating );
+      return connection_pool::v_create();
    }
 };
 
