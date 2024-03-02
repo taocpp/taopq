@@ -10,14 +10,19 @@
 class limited_connection_pool
    : public tao::pq::connection_pool
 {
+   mutable std::atomic< std::size_t > m_creating = 0;
+
    using tao::pq::connection_pool::connection_pool;
 
    [[nodiscard]] auto v_create() const -> std::unique_ptr< tao::pq::connection > override
    {
-      if( attached() >= 4 ) {
+      if( attached() >= 4 || ( m_creating.load() > 2 ) ) {
          throw std::runtime_error( "connection limit reached" );
       }
-      return connection_pool::v_create();
+      ++m_creating;
+      auto c = connection_pool::v_create();
+      --m_creating;
+      return c;
    }
 };
 
