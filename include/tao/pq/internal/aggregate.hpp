@@ -53,7 +53,8 @@ namespace tao::pq::internal
       else {
          constexpr auto cnt = count_aggregate_args< T >;
          if constexpr( cnt == 1 ) {
-            return std::tie( value );
+            const auto& [ a ] = value;
+            return std::tie( a );
          }
          else if constexpr( cnt == 2 ) {
             const auto& [ a, b ] = value;
