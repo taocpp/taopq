@@ -24,6 +24,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/bind.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/connection.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/connection_status.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/exception.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/field.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/aggregate.hpp
@@ -67,6 +68,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/table_row.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/table_writer.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/transaction.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/transaction_status.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/version.hpp
 )
 
