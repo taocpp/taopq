@@ -27,7 +27,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - run: |
-        brew services start postgresql
+        brew services start postgresql@15
         echo "Check PostgreSQL service is running"
         i=10
         COMMAND='pg_isready'
