@@ -38,14 +38,14 @@ jobs:
     - working-directory: build/
       run: ctest --config ${{ matrix.build_type }} --output-on-failure
 
-  xcode-macos-11:
+  xcode-macos-12:
     strategy:
       fail-fast: false
       matrix:
         xcode: ['11', '12']
         build_type: [Debug, Release]
 
-    runs-on: macos-11
+    runs-on: macos-12
 
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
