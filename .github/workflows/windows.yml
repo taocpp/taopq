@@ -20,23 +20,11 @@ jobs:
     runs-on: windows-latest
 
     env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v4
-
-    - run: |
-        $pgService = Get-Service -Name postgresql*
-        Set-Service -InputObject $pgService -Status running -StartupType automatic
-        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
-
-    - run: |
-        & $env:PGBIN\psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du"
-
-    - run: |
-        & $env:PGBIN\createdb --owner=myuser mydatabase
-        $env:PGPASSWORD = 'mypassword'
-        & $env:PGBIN\psql --username=myuser --host=localhost --list mydatabase
+    - uses: ikalnytskyi/action-setup-postgres@v5
 
     - run: cmake -E make_directory build
 
@@ -59,23 +47,11 @@ jobs:
     runs-on: windows-latest
 
     env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v4
-
-    - run: |
-        $pgService = Get-Service -Name postgresql*
-        Set-Service -InputObject $pgService -Status running -StartupType automatic
-        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
-
-    - run: |
-        & $env:PGBIN\psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du"
-
-    - run: |
-        & $env:PGBIN\createdb --owner=myuser mydatabase
-        $env:PGPASSWORD = 'mypassword'
-        & $env:PGBIN\psql --username=myuser --host=localhost --list mydatabase
+    - uses: ikalnytskyi/action-setup-postgres@v5
 
     - run: cmake -E make_directory build
 
@@ -98,23 +74,11 @@ jobs:
     runs-on: windows-2019
 
     env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v4
-
-    - run: |
-        $pgService = Get-Service -Name postgresql*
-        Set-Service -InputObject $pgService -Status running -StartupType automatic
-        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
-
-    - run: |
-        & $env:PGBIN\psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du"
-
-    - run: |
-        & $env:PGBIN\createdb --owner=myuser mydatabase
-        $env:PGPASSWORD = 'mypassword'
-        & $env:PGBIN\psql --username=myuser --host=localhost --list mydatabase
+    - uses: ikalnytskyi/action-setup-postgres@v5
 
     - run: cmake -E make_directory build
 
@@ -137,23 +101,11 @@ jobs:
     runs-on: windows-2019
 
     env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=mydatabase user=myuser password=mypassword
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
     - uses: actions/checkout@v4
-
-    - run: |
-        $pgService = Get-Service -Name postgresql*
-        Set-Service -InputObject $pgService -Status running -StartupType automatic
-        Start-Process -FilePath "$env:PGBIN\pg_isready" -Wait -PassThru
-
-    - run: |
-        & $env:PGBIN\psql --command="CREATE USER myuser PASSWORD 'mypassword'" --command="\du"
-
-    - run: |
-        & $env:PGBIN\createdb --owner=myuser mydatabase
-        $env:PGPASSWORD = 'mypassword'
-        & $env:PGBIN\psql --username=myuser --host=localhost --list mydatabase
+    - uses: ikalnytskyi/action-setup-postgres@v5
 
     - run: cmake -E make_directory build
 
