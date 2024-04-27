@@ -83,7 +83,7 @@ namespace tao::pq
       if( column < 0 ) {
          assert( column == -1 );
          check_has_result_set();
-         throw std::out_of_range( "column not found: " + std::string( in_name ) );
+         throw std::out_of_range( "column '" + std::string( in_name ) + "' not found" );
       }
       return column;
    }
@@ -122,7 +122,7 @@ namespace tao::pq
    auto result::get( const std::size_t row, const std::size_t column ) const -> const char*
    {
       if( is_null( row, column ) ) {
-         throw std::runtime_error( internal::printf( "unexpected NULL value in row %zu column %zu = %s", row, column, name( column ).c_str() ) );
+         throw std::runtime_error( internal::printf( "unexpected NULL value in row %zu column %zu/'%s'", row, column, name( column ).c_str() ) );
       }
       return PQgetvalue( m_pgresult.get(), static_cast< int >( row ), static_cast< int >( column ) );
    }
