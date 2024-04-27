@@ -2,19 +2,15 @@
 
 taoPQ allows the direct use of "simple" aggregates as parameters and result types.
 
-## Status
-
-:warning: This feature is currently considered **experimental**.
-
 ## Requirements
 
-A "simple" aggregate data type `T` suitable for taoPQ support must meet the following requirements:
+An aggregate data type `T` suitable for taoPQ support must meet the following requirements:
 
 * [`std::is_aggregate_v< T >`➚](https://en.cppreference.com/w/cpp/types/is_aggregate) must yield `true`.
 * [`std::is_empty_v< T >`➚](https://en.cppreference.com/w/cpp/types/is_empty) must yield `false`.
 * [`std::is_union_v< T >`➚](https://en.cppreference.com/w/cpp/types/is_union) must yield `false`.
 * `T` must not have any base classes.
-* `T` must not have more than 26 member variables. (this limit can be raised, open an [issue](https://github.com/taocpp/taopq/issues) if necessary)
+* `T` must not have more than 99 member variables. (this limit can be raised, open an [issue](https://github.com/taocpp/taopq/issues) if necessary)
 
 ## Registration
 
