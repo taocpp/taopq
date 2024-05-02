@@ -67,6 +67,20 @@ void run()
       std::cout << row[ "name" ].as< std::string >() << " is "
                 << row[ "age" ].as< unsigned >() << " years old.\n";
    }
+
+   {
+      tao::pq::parameter< 1 > p;
+      p.bind( 1 );
+      TEST_THROWS( p.bind( 2 ) );
+   }
+
+   {
+      tao::pq::parameter< 1 > p;
+      tao::pq::parameter< 1 > p2;
+      p.bind( 1 );
+      p2.bind( 1 );
+      TEST_THROWS( p.bind( p2 ) );
+   }
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)

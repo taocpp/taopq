@@ -9,8 +9,15 @@
 
 #include <tao/pq/connection.hpp>
 
+tao::pq::poll::status my_poll( const int /*unused*/, const bool /*unused*/, const int /*unused*/ )
+{
+   TAO_PQ_UNREACHABLE;
+}
+
 void run()
 {
+   using namespace std::chrono_literals;
+
    // overwrite the default with an environment variable if needed
    const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );  // NOLINT(clang-analyzer-deadcode.DeadStores)
 
@@ -22,7 +29,7 @@ void run()
 
    // open a connection
    const auto connection = tao::pq::connection::create( connection_string );
-   connection->set_timeout( std::chrono::seconds( 1 ) );
+   connection->set_timeout( 1s );
 
    // open a second, independent connection (and discard it immediately)
    std::ignore = tao::pq::connection::create( connection_string );
@@ -120,12 +127,23 @@ void run()
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa" ).as< tao::pq::binary >() );
    TEST_THROWS( connection->execute( "SELECT $1", "\\xa." ).as< tao::pq::binary >() );
 
-   connection->reset_timeout();
-   TEST_EXECUTE( connection->execute( "SELECT pg_sleep( .5 )" ) );
+   {
+      using callback_t = tao::pq::poll::status ( * )( int, bool, int );
 
-   using namespace std::chrono_literals;
+      const auto old_cb = *connection->poll_callback().target< callback_t >();
+      TEST_ASSERT( old_cb != nullptr );
+      TEST_ASSERT( *connection->poll_callback().target< callback_t >() != &my_poll );
+      connection->set_poll_callback( my_poll );
+      TEST_ASSERT( *connection->poll_callback().target< callback_t >() == &my_poll );
+      connection->reset_poll_callback();
+      TEST_ASSERT( *connection->poll_callback().target< callback_t >() == old_cb );
+   }
+
+   connection->reset_timeout();
+   TEST_EXECUTE( connection->execute( "SELECT pg_sleep( 0.2 )" ) );
+
    connection->set_timeout( 100ms );
-   TEST_THROWS( connection->execute( "SELECT pg_sleep( .5 )" ) );
+   TEST_THROWS( connection->execute( "SELECT pg_sleep( .2 )" ) );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)

@@ -45,6 +45,11 @@ class limited_connection_pool
    }
 };
 
+tao::pq::poll::status my_poll( const int /*unused*/, const bool /*unused*/, const int /*unused*/ )
+{
+   TAO_PQ_UNREACHABLE;
+}
+
 void run()
 {
    // overwrite the default with an environment variable if needed
@@ -104,6 +109,28 @@ void run()
    }
    TEST_ASSERT( pool->size() == 4 );
    TEST_ASSERT( pool->attached() == 0 );
+
+   {
+      using callback_t = tao::pq::poll::status ( * )( int, bool, int );
+
+      const auto old_cb = *pool->poll_callback().target< callback_t >();
+      TEST_ASSERT( old_cb != nullptr );
+      TEST_ASSERT( *pool->poll_callback().target< callback_t >() != &my_poll );
+      TEST_ASSERT( *pool->connection()->poll_callback().target< callback_t >() != &my_poll );
+      pool->set_poll_callback( my_poll );
+      TEST_ASSERT( *pool->poll_callback().target< callback_t >() == &my_poll );
+      TEST_ASSERT( *pool->connection()->poll_callback().target< callback_t >() == &my_poll );
+      pool->reset_poll_callback();
+      TEST_ASSERT( *pool->poll_callback().target< callback_t >() == old_cb );
+      TEST_ASSERT( *pool->connection()->poll_callback().target< callback_t >() == old_cb );
+   }
+
+   using namespace std::chrono_literals;
+   pool->set_timeout( 100ms );
+   TEST_THROWS( pool->execute( "SELECT pg_sleep( .5 )" ) );
+
+   pool->reset_timeout();
+   TEST_EXECUTE( pool->execute( "SELECT pg_sleep( .5 )" ) );
 }
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)

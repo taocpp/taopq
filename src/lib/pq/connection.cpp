@@ -173,16 +173,18 @@ namespace tao::pq
    auto connection::attempt_rollback() const noexcept -> bool
    {
       switch( transaction_status() ) {
+         // LCOV_EXCL_START
          case transaction_status::idle:
          case transaction_status::active:
             return false;
+            // LCOV_EXCL_STOP
 
          case transaction_status::in_transaction:
          case transaction_status::error:
          case transaction_status::unknown:
             return true;
       }
-      TAO_PQ_UNREACHABLE;
+      TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
    void connection::check_prepared_name( const std::string_view name )
@@ -237,6 +239,7 @@ namespace tao::pq
                get_notifications();
                return;
 
+               // LCOV_EXCL_START
             case poll::status::writable:
                return;
 
@@ -245,6 +248,7 @@ namespace tao::pq
 
             default:
                TAO_PQ_UNREACHABLE;
+               // LCOV_EXCL_STOP
          }
       }
    }
