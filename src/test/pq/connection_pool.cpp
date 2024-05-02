@@ -45,7 +45,7 @@ class limited_connection_pool
    }
 };
 
-tao::pq::poll::status my_poll( const int /*unused*/, const bool /*unused*/, const int /*unused*/ )
+auto my_poll( const int /*unused*/, const bool /*unused*/, const int /*unused*/ ) -> tao::pq::poll::status
 {
    TAO_PQ_UNREACHABLE;
 }
