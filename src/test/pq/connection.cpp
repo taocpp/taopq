@@ -9,10 +9,12 @@
 
 #include <tao/pq/connection.hpp>
 
+// LCOV_EXCL_START
 auto my_poll( const int /*unused*/, const bool /*unused*/, const int /*unused*/ ) -> tao::pq::poll::status
 {
    TAO_PQ_UNREACHABLE;
 }
+// LCOV_EXCL_STOP
 
 void run()
 {
