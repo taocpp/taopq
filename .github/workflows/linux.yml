@@ -11,6 +11,58 @@ on:
       - 'doc/**'
 
 jobs:
+  linux-next:
+    strategy:
+      fail-fast: false
+      matrix:
+        compiler:
+          - g++-13
+          - g++-14
+          - clang++-16
+          - clang++-17
+          - clang++-18
+        build_type: [Debug, Release]
+
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      CXX: ${{ matrix.compiler }}
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - run: sudo apt-get update -yq
+
+    - run: sudo apt-get install -yq libpq-dev
+
+    - run: cmake -E make_directory build
+
+    - working-directory: build/
+      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+
+    - working-directory: build/
+      run: cmake --build .
+
+    - working-directory: build/
+      run: ctest --output-on-failure
+
   linux:
     strategy:
       fail-fast: false
@@ -20,13 +72,12 @@ jobs:
           - g++-10
           - g++-11
           - g++-12
-          - g++-13
           - clang++-13
           - clang++-14
           - clang++-15
         build_type: [Debug, Release]
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     services:
       postgres:
