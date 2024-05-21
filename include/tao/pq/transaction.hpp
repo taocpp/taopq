@@ -10,7 +10,9 @@
 #include <cstdio>
 #include <memory>
 #include <string>
+#if !defined( __cpp_pack_indexing )
 #include <tuple>
+#endif
 #include <type_traits>
 #include <utility>
 
@@ -66,6 +68,30 @@ namespace tao::pq
                         const int lengths[],
                         const int formats[] );
 
+#if defined( __cpp_pack_indexing )
+
+      template< std::size_t... Os, std::size_t... Is, typename... Ts >
+      void send_indexed( const char* statement,
+                         std::index_sequence< Os... > /*unused*/,
+                         std::index_sequence< Is... > /*unused*/,
+                         const Ts...& ts )
+      {
+         const Oid types[] = { static_cast< Oid >( ts...[ Os ].template type< Is >() )... };
+         const char* const values[] = { ts...[ Os ].template value< Is >()... };
+         const int lengths[] = { ts...[ Os ].template length< Is >()... };
+         const int formats[] = { ts...[ Os ].template format< Is >()... };
+         send_params( statement, sizeof...( Os ), types, values, lengths, formats );
+      }
+
+      template< typename... Ts >
+      void send_traits( const char* statement, const Ts&... ts )
+      {
+         using gen = internal::gen< Ts::columns... >;
+         transaction::send_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), ts... );
+      }
+
+#else
+
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
       void send_indexed( const char* statement,
                          std::index_sequence< Os... > /*unused*/,
@@ -85,6 +111,8 @@ namespace tao::pq
          using gen = internal::gen< Ts::columns... >;
          transaction::send_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
+
+#endif
 
    public:
       [[nodiscard]] auto connection() const noexcept -> const std::shared_ptr< pq::connection >&

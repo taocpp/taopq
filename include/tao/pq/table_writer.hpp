@@ -8,7 +8,9 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#if !defined( __cpp_pack_indexing )
 #include <tuple>
+#endif
 #include <type_traits>
 #include <utility>
 
@@ -24,6 +26,28 @@ namespace tao::pq
    protected:
       std::shared_ptr< transaction > m_previous;
       std::shared_ptr< transaction > m_transaction;
+
+#if defined( __cpp_pack_indexing )
+
+      template< std::size_t... Os, std::size_t... Is, typename... Ts >
+      void insert_indexed( std::index_sequence< Os... > /*unused*/,
+                           std::index_sequence< Is... > /*unused*/,
+                           const Ts...& ts )
+      {
+         std::string buffer;
+         ( ( ts...[ Os ].template copy_to< Is >( buffer ), buffer += '\t' ), ... );
+         *buffer.rbegin() = '\n';
+         table_writer::insert_raw( buffer );
+      }
+
+      template< typename... Ts >
+      void insert_traits( const Ts&... ts )
+      {
+         using gen = internal::gen< Ts::columns... >;
+         table_writer::insert_indexed( typename gen::outer_sequence(), typename gen::inner_sequence(), ts... );
+      }
+
+#else
 
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
       void insert_indexed( std::index_sequence< Os... > /*unused*/,
@@ -42,6 +66,8 @@ namespace tao::pq
          using gen = internal::gen< Ts::columns... >;
          table_writer::insert_indexed( typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
+
+#endif
 
       void check_result();
 
