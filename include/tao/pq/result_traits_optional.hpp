@@ -22,7 +22,7 @@ struct tao::pq::result_traits< std::optional< T > >
 
    [[nodiscard]] static auto from( const char* value ) -> std::optional< T >
    {
-      return result_traits< T >::from( value );
+      return std::optional< T >( result_traits< T >::from( value ) );
    }
 
    template< typename Row >
@@ -30,7 +30,7 @@ struct tao::pq::result_traits< std::optional< T > >
    {
       for( std::size_t column = 0; column < row.columns(); ++column ) {
          if( !row.is_null( column ) ) {
-            return result_traits< T >::from( row );
+            return std::optional< T >( result_traits< T >::from( row ) );
          }
       }
       return null();

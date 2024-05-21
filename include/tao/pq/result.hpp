@@ -249,7 +249,7 @@ namespace tao::pq
          if( empty() ) {
             return std::nullopt;
          }
-         return as< T >();
+         return std::optional< T >( as< T >() );
       }
 
       template< typename T, typename U >
