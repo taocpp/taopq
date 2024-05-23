@@ -17,11 +17,11 @@ void run()
    const auto conn = tao::pq::connection::create( connection_string );
 
    // execute statements
-   conn->execute( "DROP TABLE IF EXISTS tao_parameter" );
-   conn->execute( "CREATE TABLE tao_parameter ( name TEXT PRIMARY KEY, age INTEGER NOT NULL )" );
+   conn->execute( "DROP TABLE IF EXISTS tao_parameter_test" );
+   conn->execute( "CREATE TABLE tao_parameter_test ( name TEXT PRIMARY KEY, age INTEGER NOT NULL )" );
 
    // prepare statements
-   conn->prepare( "insert_user", "INSERT INTO tao_parameter ( name, age ) VALUES ( $1, $2 )" );
+   conn->prepare( "insert_user", "INSERT INTO tao_parameter_test ( name, age ) VALUES ( $1, $2 )" );
 
    {
       // begin transaction
@@ -60,7 +60,7 @@ void run()
    }
 
    // query data
-   const auto users = conn->execute( "SELECT name, age FROM tao_parameter WHERE age >= $1", 40 );
+   const auto users = conn->execute( "SELECT name, age FROM tao_parameter_test WHERE age >= $1", 40 );
 
    // iterate and convert results
    for( const auto& row : users ) {
