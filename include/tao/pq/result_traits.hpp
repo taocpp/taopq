@@ -157,12 +157,6 @@ namespace tao::pq
    };
 
    template<>
-   struct result_traits< std::basic_string< unsigned char > >
-   {
-      [[nodiscard]] static auto from( const char* value ) -> std::basic_string< unsigned char >;
-   };
-
-   template<>
    struct result_traits< binary >
    {
       [[nodiscard]] static auto from( const char* value ) -> binary;

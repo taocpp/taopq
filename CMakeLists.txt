@@ -113,7 +113,7 @@ if(WIN32)
   target_link_libraries(taopq PUBLIC ws2_32)
 endif()
 
-target_compile_features(taopq PUBLIC cxx_std_17)
+target_compile_features(taopq PUBLIC cxx_std_20)
 
 include(GNUInstallDirs)
 set(taopq_INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME} CACHE STRING "The installation cmake directory")

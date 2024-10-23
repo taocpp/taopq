@@ -160,19 +160,11 @@ namespace tao::pq
    }
 
    template<>
-   auto large_object::read< std::basic_string< unsigned char > >( const std::size_t size ) -> std::basic_string< unsigned char >
-   {
-      std::basic_string< unsigned char > nrv;
-      internal::resize_uninitialized( nrv, size );
-      nrv.resize( read( nrv.data(), size ) );
-      return nrv;
-   }
-
-   template<>
    auto large_object::read< binary >( const std::size_t size ) -> binary
    {
       binary nrv;
-      internal::resize_uninitialized( nrv, size );
+      nrv.resize( size );
+      // TODO: internal::resize_uninitialized( nrv, size );
       nrv.resize( read( nrv.data(), size ) );
       return nrv;
    }

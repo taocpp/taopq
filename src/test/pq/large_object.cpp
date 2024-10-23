@@ -7,33 +7,28 @@
 
 #include <limits>
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/connection.hpp>
 #include <tao/pq/large_object.hpp>
 
-template< typename T >
-auto basic_test( const std::shared_ptr< tao::pq::connection >& connection, const T& data )
+template< typename R, typename T >
+void test( const std::shared_ptr< tao::pq::connection >& connection, const T& data )
 {
    const auto transaction = connection->transaction();
+
    const auto oid = tao::pq::large_object::create( transaction );
    tao::pq::large_object lo( transaction, oid, std::ios_base::in | std::ios_base::out );
    lo.write( data );
-   lo.seek( 0, std::ios_base::beg );
-   return lo.read< std::basic_string< typename T::value_type > >( 10 );  // by default returns 'binary'
-}
 
-template< typename T >
-void test( const std::shared_ptr< tao::pq::connection >& connection, const std::basic_string< T >& data )
-{
-   {
-      const auto result = basic_test( connection, data );
-      TEST_ASSERT( result.size() == 5 );
-      TEST_ASSERT( result == data );
-   }
-   {
-      const auto result = basic_test( connection, static_cast< const std::basic_string_view< T > >( data ) );
-      TEST_ASSERT( result.size() == 5 );
-      TEST_ASSERT( result == data );
-   }
+   lo.seek( 0, std::ios_base::beg );
+
+   const auto result = lo.read< R >( 10 );
+   TEST_ASSERT( result.size() == 5 );
+   TEST_ASSERT( result[ 0 ] == data[ 0 ] );
+   TEST_ASSERT( result[ 1 ] == data[ 1 ] );
+   TEST_ASSERT( result[ 2 ] == data[ 2 ] );
+   TEST_ASSERT( result[ 3 ] == data[ 3 ] );
+   TEST_ASSERT( result[ 4 ] == data[ 4 ] );
 }
 
 void run()
@@ -59,9 +54,11 @@ void run()
       TEST_THROWS( lo.seek( -60, std::ios_base::end ) );
    }
 
-   test< char >( connection, "hello" );
-   test< unsigned char >( connection, reinterpret_cast< const unsigned char* >( "world" ) );
-   test< std::byte >( connection, reinterpret_cast< const std::byte* >( "nice!" ) );
+   test< std::string >( connection, std::string( "hello" ) );
+   test< std::string >( connection, std::string_view( "hello" ) );
+
+   test< tao::pq::binary >( connection, tao::pq::to_binary( "nice!" ) );
+   test< tao::pq::binary >( connection, tao::pq::to_binary_view( "nice!" ) );
 
    {
       const auto transaction = connection->transaction();

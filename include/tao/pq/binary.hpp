@@ -6,19 +6,19 @@
 #define TAO_PQ_BINARY_HPP
 
 #include <cstddef>
-#include <string>
-#include <string_view>
+#include <span>
+#include <vector>
 
 namespace tao::pq
 {
-   using binary = std::basic_string< std::byte >;
-   using binary_view = std::basic_string_view< std::byte >;
+   using binary = std::vector< std::byte >;
+   using binary_view = std::span< const std::byte >;
 
    template< typename T >
    [[nodiscard]] auto to_binary_view( const T* data, const std::size_t size ) noexcept -> binary_view
    {
       static_assert( sizeof( T ) == 1 );
-      return { reinterpret_cast< const std::byte* >( data ), size };
+      return binary_view( reinterpret_cast< const std::byte* >( data ), size );
    }
 
    template< typename T >
@@ -31,7 +31,8 @@ namespace tao::pq
    [[nodiscard]] auto to_binary( const T* data, const std::size_t size ) -> binary
    {
       static_assert( sizeof( T ) == 1 );
-      return { reinterpret_cast< const std::byte* >( data ), size };
+      auto* ptr = reinterpret_cast< const std::byte* >( data );
+      return binary( ptr, ptr + size );
    }
 
    template< typename T >

@@ -46,19 +46,9 @@ namespace tao::pq
       [[nodiscard]] auto read( char* data, const std::size_t size ) -> std::size_t;
       void write( const char* data, const std::size_t size );
 
-      [[nodiscard]] auto read( unsigned char* data, const std::size_t size ) -> std::size_t
-      {
-         return read( reinterpret_cast< char* >( data ), size );
-      }
-
       [[nodiscard]] auto read( std::byte* data, const std::size_t size ) -> std::size_t
       {
          return read( reinterpret_cast< char* >( data ), size );
-      }
-
-      void write( const unsigned char* data, const std::size_t size )
-      {
-         write( reinterpret_cast< const char* >( data ), size );
       }
 
       void write( const std::byte* data, const std::size_t size )
@@ -67,8 +57,7 @@ namespace tao::pq
       }
 
       template< typename T = binary >
-      [[nodiscard]] auto read( const std::size_t size ) -> T
-         = delete;
+      [[nodiscard]] auto read( const std::size_t size ) -> T = delete;
 
       void write( const char* data )
       {
@@ -90,9 +79,6 @@ namespace tao::pq
 
    template<>
    [[nodiscard]] auto large_object::read< std::string >( const std::size_t size ) -> std::string;
-
-   template<>
-   [[nodiscard]] auto large_object::read< std::basic_string< unsigned char > >( const std::size_t size ) -> std::basic_string< unsigned char >;
 
    template<>
    [[nodiscard]] auto large_object::read< binary >( const std::size_t size ) -> binary;

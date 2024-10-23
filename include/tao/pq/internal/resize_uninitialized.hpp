@@ -15,10 +15,7 @@ namespace tao::pq::internal
 
    namespace  // NOLINT(google-build-namespaces)
    {
-      // declare some functions...
       void resize_uninitialized_proxy( std::string& v, const std::size_t n );
-      void resize_uninitialized_proxy( std::basic_string< unsigned char >& v, const std::size_t n );
-      void resize_uninitialized_proxy( std::basic_string< std::byte >& v, const std::size_t n );
 
 #if defined( _LIBCPP_STRING )
 
@@ -37,8 +34,6 @@ namespace tao::pq::internal
       // ...and here's the actual "trick": an explicit template instantiation skips the access checks,
       // so you can reference private members and forward them to the above proxy!
       template struct proxy< std::string, &std::string::__set_size >;
-      template struct proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::__set_size >;
-      template struct proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::__set_size >;
 
 #elif defined( _GLIBCXX_STRING ) && _GLIBCXX_USE_CXX11_ABI
 
@@ -52,8 +47,6 @@ namespace tao::pq::internal
       };
 
       template struct proxy< std::string, &std::string::_M_set_length >;
-      template struct proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::_M_set_length >;
-      template struct proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::_M_set_length >;
 
 #elif defined( _GLIBCXX_STRING )
 
@@ -73,14 +66,6 @@ namespace tao::pq::internal
                              std::string::_Rep,
                              &std::string::_M_rep >;
 
-      template struct proxy< std::basic_string< unsigned char >,
-                             std::basic_string< unsigned char >::_Rep,
-                             &std::basic_string< unsigned char >::_M_rep >;
-
-      template struct proxy< std::basic_string< std::byte >,
-                             std::basic_string< std::byte >::_Rep,
-                             &std::basic_string< std::byte >::_M_rep >;
-
 #elif defined( _MSC_VER )
 
       template< typename T, void ( T::*F )( std::size_t ) >
@@ -93,8 +78,6 @@ namespace tao::pq::internal
       };
 
       template struct proxy< std::string, &std::string::_Eos >;
-      template struct proxy< std::basic_string< unsigned char >, &std::basic_string< unsigned char >::_Eos >;
-      template struct proxy< std::basic_string< std::byte >, &std::basic_string< std::byte >::_Eos >;
 
 #else
 #error "No implementation for resize_uninitialized available."
@@ -102,14 +85,12 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   template< typename T >
-   void resize_uninitialized( std::basic_string< T >& v, const std::size_t n )
+   inline void resize_uninitialized( std::string& v, const std::size_t n )
    {
       if( n <= v.size() ) {
          v.resize( n );
       }
       else {
-         // careful not to call reserve() unless necessary, as it causes shrink_to_fit() on many platforms
          if( n > v.capacity() ) {
             v.reserve( n );
          }

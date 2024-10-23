@@ -11,6 +11,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstring>
+#include <span>
 #include <string>
 #include <string_view>
 #include <utility>
@@ -393,14 +394,14 @@ namespace tao::pq
       using parameter_traits< std::string_view >::parameter_traits;
    };
 
-   template<>
-   struct parameter_traits< std::basic_string_view< unsigned char > >
+   template< std::size_t Extent >
+   struct parameter_traits< std::span< const std::byte, Extent > >
    {
    private:
-      const std::basic_string_view< unsigned char > m_v;
+      const std::span< const std::byte, Extent > m_v;
 
    public:
-      explicit parameter_traits( const std::basic_string_view< unsigned char > v ) noexcept
+      explicit parameter_traits( const std::span< const std::byte, Extent > v ) noexcept
          : m_v( v )
       {}
 
@@ -442,8 +443,8 @@ namespace tao::pq
          data[ pos++ ] = '\\';
          data[ pos++ ] = 'x';
          for( auto c : m_v ) {
-            data[ pos++ ] = hex[ c >> 4 ];
-            data[ pos++ ] = hex[ c & 15 ];
+            data[ pos++ ] = hex[ static_cast< unsigned char >( c ) >> 4 ];
+            data[ pos++ ] = hex[ static_cast< unsigned char >( c ) & 15 ];
          }
       }
 
@@ -454,20 +455,11 @@ namespace tao::pq
       }
    };
 
-   template<>
-   struct parameter_traits< std::basic_string< unsigned char > >
-      : parameter_traits< std::basic_string_view< unsigned char > >
+   template< std::size_t Extent >
+   struct parameter_traits< std::span< std::byte, Extent > >
+      : parameter_traits< std::span< const std::byte, Extent > >
    {
-      using parameter_traits< std::basic_string_view< unsigned char > >::parameter_traits;
-   };
-
-   template<>
-   struct parameter_traits< binary_view >
-      : parameter_traits< std::basic_string_view< unsigned char > >
-   {
-      explicit parameter_traits( const binary_view v ) noexcept
-         : parameter_traits< std::basic_string_view< unsigned char > >( std::basic_string_view< unsigned char >( reinterpret_cast< const unsigned char* >( v.data() ), v.size() ) )
-      {}
+      using parameter_traits< std::span< const std::byte, Extent > >::parameter_traits;
    };
 
    template<>

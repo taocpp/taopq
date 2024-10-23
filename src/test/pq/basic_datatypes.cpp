@@ -96,11 +96,11 @@ auto check( const std::string& datatype )
 }
 
 template< typename T >
-void check_bytea( T&& t )
+void check_bytea( const T& t )
 {
-   TEST_ASSERT( my_connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", std::forward< T >( t ) ).rows_affected() == 1 );
+   TEST_ASSERT( my_connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", t ).rows_affected() == 1 );
 
-   const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< std::basic_string< typename T::value_type > >();
+   const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::binary >();
    TEST_ASSERT( result.size() == 7 );
    TEST_ASSERT( result[ 0 ] == t[ 0 ] );
    TEST_ASSERT( result[ 1 ] == t[ 1 ] );
@@ -383,9 +383,6 @@ void run()
    check_null( "BYTEA" );
 
    const unsigned char bdata[] = { 'v', 255, 0, 'a', 1, 'b', 0 };
-
-   check_bytea( std::basic_string< unsigned char >( bdata, 7 ) );
-   check_bytea( std::basic_string_view< unsigned char >( bdata, 7 ) );
 
    check_bytea( tao::pq::to_binary( bdata ) );
    check_bytea( tao::pq::to_binary_view( bdata ) );

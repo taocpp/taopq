@@ -39,9 +39,14 @@ namespace tao::pq
             throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
          }
 
-         T nrv;
          const auto size = input / 2 - 1;
-         internal::resize_uninitialized( nrv, size );
+
+         T nrv( size );
+
+         // TODO: Avoid default-initialization
+         // T nrv;
+         // internal::resize_uninitialized( nrv, size );
+
          for( std::size_t pos = 0; pos < size; ++pos ) {
             const auto high = unhex( value[ 2 + 2 * pos ] );
             const auto low = unhex( value[ 2 + 2 * pos + 1 ] );
@@ -136,11 +141,6 @@ namespace tao::pq
    auto result_traits< long double >::from( const char* value ) -> long double
    {
       return internal::strtold( value );
-   }
-
-   auto result_traits< std::basic_string< unsigned char > >::from( const char* value ) -> std::basic_string< unsigned char >
-   {
-      return unescape_bytea< std::basic_string< unsigned char > >( value );
    }
 
    auto result_traits< binary >::from( const char* value ) -> binary
