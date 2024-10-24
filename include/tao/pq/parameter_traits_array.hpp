@@ -36,6 +36,9 @@ namespace tao::pq
    template< typename... Ts >
    inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
 
+   template<>
+   inline constexpr bool is_array_parameter< std::vector< std::byte > > = false;
+
    namespace internal
    {
       template< typename T >
