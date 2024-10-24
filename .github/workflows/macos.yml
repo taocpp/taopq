@@ -36,7 +36,7 @@ jobs:
       run: cmake --build . --config ${{ matrix.build_type }}
 
     - working-directory: build/
-      run: ctest --config ${{ matrix.build_type }} --output-on-failure
+      run: ctest --output-on-failure
 
   xcode-macos-13:
     strategy:
