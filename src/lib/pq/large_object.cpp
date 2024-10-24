@@ -163,8 +163,7 @@ namespace tao::pq
    auto large_object::read< binary >( const std::size_t size ) -> binary
    {
       binary nrv;
-      nrv.resize( size );
-      // TODO: internal::resize_uninitialized( nrv, size );
+      internal::resize_uninitialized( nrv, size );
       nrv.resize( read( nrv.data(), size ) );
       return nrv;
    }

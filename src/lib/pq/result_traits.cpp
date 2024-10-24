@@ -27,8 +27,7 @@ namespace tao::pq
          throw std::invalid_argument( "unhex failed" );
       }
 
-      template< typename T >
-      [[nodiscard]] auto unescape_bytea( const char* value ) -> T
+      [[nodiscard]] auto unescape_bytea( const char* value ) -> binary
       {
          if( ( value[ 0 ] != '\\' ) || ( value[ 1 ] != 'x' ) ) {
             throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
@@ -41,16 +40,13 @@ namespace tao::pq
 
          const auto size = input / 2 - 1;
 
-         T nrv( size );
-
-         // TODO: Avoid default-initialization
-         // T nrv;
-         // internal::resize_uninitialized( nrv, size );
+         binary nrv;
+         internal::resize_uninitialized( nrv, size );
 
          for( std::size_t pos = 0; pos < size; ++pos ) {
             const auto high = unhex( value[ 2 + 2 * pos ] );
             const auto low = unhex( value[ 2 + 2 * pos + 1 ] );
-            nrv[ pos ] = static_cast< typename T::value_type >( ( high << 4 ) | low );
+            nrv[ pos ] = static_cast< std::byte >( ( high << 4 ) | low );
          }
          return nrv;
       }
@@ -145,7 +141,7 @@ namespace tao::pq
 
    auto result_traits< binary >::from( const char* value ) -> binary
    {
-      return unescape_bytea< binary >( value );
+      return unescape_bytea( value );
    }
 
 }  // namespace tao::pq

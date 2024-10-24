@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <string>
+#include <vector>
 
 namespace tao::pq::internal
 {
@@ -62,9 +63,7 @@ namespace tao::pq::internal
          }
       };
 
-      template struct proxy< std::string,
-                             std::string::_Rep,
-                             &std::string::_M_rep >;
+      template struct proxy< std::string, std::string::_Rep, &std::string::_M_rep >;
 
 #elif defined( _MSC_VER )
 
@@ -95,6 +94,28 @@ namespace tao::pq::internal
             v.reserve( n );
          }
          internal::resize_uninitialized_proxy( v, n );
+      }
+   }
+
+   inline void resize_uninitialized( std::vector< std::byte >& v, const std::size_t n )
+   {
+      if( n <= v.size() ) {
+         v.resize( n );
+      }
+      else {
+         if( n > v.capacity() ) {
+            v.reserve( n );
+         }
+
+         struct no_init_byte
+         {
+            std::byte b;
+            no_init_byte() noexcept {}
+         };
+         static_assert( sizeof( std::vector< std::byte > ) == sizeof( std::vector< no_init_byte > ) );
+         static_assert( alignof( std::vector< std::byte > ) == alignof( std::vector< no_init_byte > ) );
+
+         reinterpret_cast< std::vector< no_init_byte >& >( v ).resize( n );
       }
    }
 
