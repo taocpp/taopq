@@ -31,7 +31,7 @@ namespace tao::pq
    [[nodiscard]] auto to_binary( const T* data, const std::size_t size ) -> binary
    {
       static_assert( sizeof( T ) == 1 );
-      auto* ptr = reinterpret_cast< const std::byte* >( data );
+      const auto* ptr = reinterpret_cast< const std::byte* >( data );
       return { ptr, ptr + size };
    }
 
