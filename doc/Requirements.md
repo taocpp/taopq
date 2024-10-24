@@ -13,13 +13,13 @@
 * We support:
   * [Visual Studio➚](https://en.wikipedia.org/wiki/Microsoft_Visual_Studio) version 2019 or newer.
   * [Xcode➚](https://en.wikipedia.org/wiki/Xcode) version 11 or newer.
-  * [GCC➚](https://gcc.gnu.org/) version 8 or newer.
-  * [Clang➚](https://clang.llvm.org/) version 8 or newer.
+  * [GCC➚](https://gcc.gnu.org/) version 10 or newer.
+  * [Clang➚](https://clang.llvm.org/) version 10 or newer.
 * Other compilers might work.
 
 ## Language Requirements
 
-* We require [C++17➚](https://en.wikipedia.org/wiki/C%2B%2B17) or newer.
+* We require [C++20➚](https://en.wikipedia.org/wiki/C%2B%2B20) or newer.
 * We require exception support. The `-fno-exceptions` option is not supported.
 * We require RTTI support. The `-fno-rtti` option is not supported.
 * We support Clang's [`-fms-extensions`➚](https://clang.llvm.org/docs/MSVCCompatibility.html) option.

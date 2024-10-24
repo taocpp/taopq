@@ -22,7 +22,7 @@ FetchContent_MakeAvailable(taocpp-taopq)
 
 add_library(example main.cpp)
 target_link_libraries(example taocpp::taopq)
-set_property(TARGET example PROPERTY CXX_STANDARD 17)
+set_property(TARGET example PROPERTY CXX_STANDARD 20)
 ```
 
 Now, we just need to execute CMake as usual:
