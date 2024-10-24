@@ -18,7 +18,7 @@ namespace tao::pq
    [[nodiscard]] auto to_binary_view( const T* data, const std::size_t size ) noexcept -> binary_view
    {
       static_assert( sizeof( T ) == 1 );
-      return binary_view( reinterpret_cast< const std::byte* >( data ), size );
+      return { reinterpret_cast< const std::byte* >( data ), size };
    }
 
    template< typename T >
@@ -32,7 +32,7 @@ namespace tao::pq
    {
       static_assert( sizeof( T ) == 1 );
       auto* ptr = reinterpret_cast< const std::byte* >( data );
-      return binary( ptr, ptr + size );
+      return { ptr, ptr + size };
    }
 
    template< typename T >

@@ -110,7 +110,7 @@ namespace tao::pq::internal
          struct no_init_byte
          {
             std::byte b;
-            no_init_byte() noexcept {}
+            no_init_byte() noexcept {}  // NOLINT(modernize-use-equals-default)
          };
          static_assert( sizeof( std::vector< std::byte > ) == sizeof( std::vector< no_init_byte > ) );
          static_assert( alignof( std::vector< std::byte > ) == alignof( std::vector< no_init_byte > ) );
