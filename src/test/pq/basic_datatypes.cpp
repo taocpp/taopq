@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include "../compare.hpp"
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
@@ -101,14 +102,7 @@ void check_bytea( const T& t )
    TEST_ASSERT( my_connection->execute( "UPDATE tao_basic_datatypes_test SET a=$1", t ).rows_affected() == 1 );
 
    const auto result = my_connection->execute( "SELECT * FROM tao_basic_datatypes_test" )[ 0 ][ 0 ].as< tao::pq::binary >();
-   TEST_ASSERT( result.size() == 7 );
-   TEST_ASSERT( result[ 0 ] == t[ 0 ] );
-   TEST_ASSERT( result[ 1 ] == t[ 1 ] );
-   TEST_ASSERT( result[ 2 ] == t[ 2 ] );
-   TEST_ASSERT( result[ 3 ] == t[ 3 ] );
-   TEST_ASSERT( result[ 4 ] == t[ 4 ] );
-   TEST_ASSERT( result[ 5 ] == t[ 5 ] );
-   TEST_ASSERT( result[ 6 ] == t[ 6 ] );
+   TEST_ASSERT( tao::pq::internal::compare( result, t ) );
 }
 
 void run()

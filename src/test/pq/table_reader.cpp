@@ -2,6 +2,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+#include "../compare.hpp"
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
@@ -59,11 +60,11 @@ void run()
       tao::pq::table_reader tr( connection->direct(), "COPY tao_table_reader_test ( a ) TO STDOUT" );
       const auto result = tr.vector< std::optional< tao::pq::binary > >();
       TEST_ASSERT( result.size() == 5 );
-      // TEST_ASSERT( result[ 0 ] == tao::pq::to_binary_view( "1" ) );
-      // TEST_ASSERT( result[ 1 ] == tao::pq::binary_view() );
+      TEST_ASSERT( tao::pq::internal::compare( result[ 0 ].value(), tao::pq::to_binary_view( "1" ) ) );
+      TEST_ASSERT( tao::pq::internal::compare( result[ 1 ].value(), tao::pq::binary_view() ) );
       TEST_ASSERT( !result[ 2 ] );
-      // TEST_ASSERT( result[ 3 ] == tao::pq::to_binary_view( "F\"O\\O" ) );
-      // TEST_ASSERT( result[ 4 ] == tao::pq::to_binary_view( "NU\0LL" ) );
+      TEST_ASSERT( tao::pq::internal::compare( result[ 3 ].value(), tao::pq::to_binary_view( "F\"O\\O" ) ) );
+      TEST_ASSERT( tao::pq::internal::compare( result[ 4 ].value(), tao::pq::to_binary_view( "NU\0LL" ) ) );
    }
 
    connection->execute( "DROP TABLE IF EXISTS tao_table_reader_test" );

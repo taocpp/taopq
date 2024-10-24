@@ -2,6 +2,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+#include "../compare.hpp"
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
@@ -23,12 +24,7 @@ void test( const std::shared_ptr< tao::pq::connection >& connection, const T& da
    lo.seek( 0, std::ios_base::beg );
 
    const auto result = lo.read< R >( 10 );
-   TEST_ASSERT( result.size() == 5 );
-   TEST_ASSERT( result[ 0 ] == data[ 0 ] );
-   TEST_ASSERT( result[ 1 ] == data[ 1 ] );
-   TEST_ASSERT( result[ 2 ] == data[ 2 ] );
-   TEST_ASSERT( result[ 3 ] == data[ 3 ] );
-   TEST_ASSERT( result[ 4 ] == data[ 4 ] );
+   TEST_ASSERT( tao::pq::internal::compare( result, data ) );
 }
 
 void run()
