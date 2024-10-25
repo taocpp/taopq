@@ -74,7 +74,7 @@ namespace tao::pq
       void send_indexed( const char* statement,
                          std::index_sequence< Os... > /*unused*/,
                          std::index_sequence< Is... > /*unused*/,
-                         const Ts...& ts )
+                         const Ts&... ts )
       {
          const Oid types[] = { static_cast< Oid >( ts...[ Os ].template type< Is >() )... };
          const char* const values[] = { ts...[ Os ].template value< Is >()... };

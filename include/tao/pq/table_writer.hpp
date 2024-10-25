@@ -32,7 +32,7 @@ namespace tao::pq
       template< std::size_t... Os, std::size_t... Is, typename... Ts >
       void insert_indexed( std::index_sequence< Os... > /*unused*/,
                            std::index_sequence< Is... > /*unused*/,
-                           const Ts...& ts )
+                           const Ts&... ts )
       {
          std::string buffer;
          ( ( ts...[ Os ].template copy_to< Is >( buffer ), buffer += '\t' ), ... );
