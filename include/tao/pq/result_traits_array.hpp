@@ -21,23 +21,30 @@
 
 namespace tao::pq
 {
-   template< typename >
-   inline constexpr bool is_array_result = false;
+   namespace internal
+   {
+      template< typename >
+      inline constexpr bool is_array_result = false;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_result< std::list< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_result< std::list< Ts... > > = true;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_result< std::set< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_result< std::set< Ts... > > = true;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_result< std::unordered_set< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_result< std::unordered_set< Ts... > > = true;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_result< std::vector< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_result< std::vector< Ts... > > = true;
 
-   template<>
-   inline constexpr bool is_array_result< std::vector< std::byte > > = false;
+      template<>
+      inline constexpr bool is_array_result< std::vector< std::byte > > = false;
+
+   }  // namespace internal
+
+   template< typename T >
+   inline constexpr bool is_array_result = internal::is_array_result< T >;
 
    namespace internal
    {
@@ -48,7 +55,7 @@ namespace tao::pq
       void parse_element( T& container, const char*& value )
       {
          using value_type = typename T::value_type;
-         if constexpr( is_array_result< value_type > ) {
+         if constexpr( pq::is_array_result< value_type > ) {
             value_type element;
             internal::parse_elements( element, value );
             container.push_back( std::move( element ) );

@@ -18,33 +18,40 @@
 
 namespace tao::pq
 {
-   template< typename >
-   inline constexpr bool is_array_parameter = false;
+   namespace internal
+   {
+      template< typename >
+      inline constexpr bool is_array_parameter = false;
 
-   template< typename T, std::size_t N >
-   inline constexpr bool is_array_parameter< std::array< T, N > > = true;
+      template< typename T, std::size_t N >
+      inline constexpr bool is_array_parameter< std::array< T, N > > = true;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_parameter< std::list< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_parameter< std::list< Ts... > > = true;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_parameter< std::set< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_parameter< std::set< Ts... > > = true;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_parameter< std::unordered_set< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_parameter< std::unordered_set< Ts... > > = true;
 
-   template< typename... Ts >
-   inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
+      template< typename... Ts >
+      inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
 
-   template<>
-   inline constexpr bool is_array_parameter< std::vector< std::byte > > = false;
+      template<>
+      inline constexpr bool is_array_parameter< std::vector< std::byte > > = false;
+
+   }  // namespace internal
+
+   template< typename T >
+   inline constexpr bool is_array_parameter = internal::is_array_parameter< T >;
 
    namespace internal
    {
       template< typename T >
       void to_array( std::string& data, const T& v )
       {
-         if constexpr( is_array_parameter< T > ) {
+         if constexpr( pq::is_array_parameter< T > ) {
             data += '{';
             if( v.empty() ) {
                data += '}';
