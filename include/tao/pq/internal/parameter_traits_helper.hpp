@@ -103,8 +103,7 @@ namespace tao::pq::internal
    struct to_chars_helper
       : buffer_helper
    {
-      template< typename T >
-      explicit to_chars_helper( const T v ) noexcept
+      explicit to_chars_helper( const auto v ) noexcept
       {
          const auto [ ptr, ec ] = std::to_chars( std::begin( m_buffer ), std::end( m_buffer ), v );
          assert( ec == std::errc() );

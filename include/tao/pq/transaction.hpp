@@ -70,11 +70,11 @@ namespace tao::pq
 
 #if defined( __cpp_pack_indexing )
 
-      template< std::size_t... Os, std::size_t... Is, typename... Ts >
+      template< std::size_t... Os, std::size_t... Is >
       void send_indexed( const char* statement,
                          std::index_sequence< Os... > /*unused*/,
                          std::index_sequence< Is... > /*unused*/,
-                         const Ts&... ts )
+                         const auto&... ts )
       {
          const Oid types[] = { static_cast< Oid >( ts...[ Os ].template type< Is >() )... };
          const char* const values[] = { ts...[ Os ].template value< Is >()... };

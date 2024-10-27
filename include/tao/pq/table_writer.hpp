@@ -29,10 +29,10 @@ namespace tao::pq
 
 #if defined( __cpp_pack_indexing )
 
-      template< std::size_t... Os, std::size_t... Is, typename... Ts >
+      template< std::size_t... Os, std::size_t... Is >
       void insert_indexed( std::index_sequence< Os... > /*unused*/,
                            std::index_sequence< Is... > /*unused*/,
-                           const Ts&... ts )
+                           const auto&... ts )
       {
          std::string buffer;
          ( ( ts...[ Os ].template copy_to< Is >( buffer ), buffer += '\t' ), ... );
