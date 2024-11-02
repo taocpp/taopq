@@ -16,7 +16,9 @@ namespace tao::pq::internal
 
    namespace  // NOLINT(google-build-namespaces)
    {
-      void resize_uninitialized_proxy( std::string& v, const std::size_t n );
+      struct odr_helper;
+
+      void resize_uninitialized_proxy( std::string& v, const std::size_t n ) noexcept;
 
 #if defined( _LIBCPP_STRING )
 
@@ -25,7 +27,7 @@ namespace tao::pq::internal
       struct proxy
       {
          // ...define the function declared above...
-         friend void resize_uninitialized_proxy( T& v, const std::size_t n )
+         friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
             ( v.*F )( n );  // v.__set_size( n );
             v[ v.size() ] = typename T::value_type( 0 );
@@ -41,7 +43,7 @@ namespace tao::pq::internal
       template< typename T, void ( T::*F )( std::size_t ) >
       struct proxy
       {
-         friend void resize_uninitialized_proxy( T& v, const std::size_t n )
+         friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
             ( v.*F )( n );  // v._M_set_length( n );
          }
@@ -56,7 +58,7 @@ namespace tao::pq::internal
                 R* ( T::*F )() const >
       struct proxy
       {
-         friend void resize_uninitialized_proxy( T& v, const std::size_t n )
+         friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
             // v._M_rep()->_M_set_length_and_sharable( n );
             ( v.*F )()->_M_set_length_and_sharable( n );
@@ -70,7 +72,7 @@ namespace tao::pq::internal
       template< typename T, void ( T::*F )( std::size_t ) >
       struct proxy
       {
-         friend void resize_uninitialized_proxy( T& v, const std::size_t n )
+         friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
             ( v.*F )( n );  // v._Eos( n );
          }
@@ -84,7 +86,8 @@ namespace tao::pq::internal
 
    }  // namespace
 
-   inline void resize_uninitialized( std::string& v, const std::size_t n )
+   template< typename = odr_helper >
+   void resize_uninitialized( std::string& v, const std::size_t n )
    {
       if( n <= v.size() ) {
          v.resize( n );
@@ -97,7 +100,8 @@ namespace tao::pq::internal
       }
    }
 
-   inline void resize_uninitialized( std::vector< std::byte >& v, const std::size_t n )
+   template< typename = odr_helper >
+   void resize_uninitialized( std::vector< std::byte >& v, const std::size_t n )
    {
       if( n <= v.size() ) {
          v.resize( n );
@@ -112,6 +116,7 @@ namespace tao::pq::internal
             std::byte b;
             no_init_byte() noexcept {}  // NOLINT(modernize-use-equals-default)
          };
+
          static_assert( sizeof( std::vector< std::byte > ) == sizeof( std::vector< no_init_byte > ) );
          static_assert( alignof( std::vector< std::byte > ) == alignof( std::vector< no_init_byte > ) );
 
