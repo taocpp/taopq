@@ -8,7 +8,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
-#if !defined( __cpp_pack_indexing )
+#if !defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L )
 #include <tuple>
 #endif
 #include <type_traits>
@@ -27,7 +27,7 @@ namespace tao::pq
       std::shared_ptr< transaction > m_previous;
       std::shared_ptr< transaction > m_transaction;
 
-#if defined( __cpp_pack_indexing )
+#if defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L )
 
       template< std::size_t... Os, std::size_t... Is >
       void insert_indexed( std::index_sequence< Os... > /*unused*/,

@@ -10,7 +10,7 @@
 #include <cstdio>
 #include <memory>
 #include <string>
-#if !defined( __cpp_pack_indexing )
+#if !defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L )
 #include <tuple>
 #endif
 #include <type_traits>
@@ -68,7 +68,7 @@ namespace tao::pq
                         const int lengths[],
                         const int formats[] );
 
-#if defined( __cpp_pack_indexing )
+#if defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L )
 
       template< std::size_t... Os, std::size_t... Is >
       void send_indexed( const char* statement,
