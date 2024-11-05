@@ -91,7 +91,8 @@ namespace tao::pq::internal
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
-            v.*M = v.data() + n;  // v.__end_ = v.data() + n;
+            // v.__end_ = v.data() + n;
+            v.*M = v.data() + n;
 
 #ifndef _LIBCPP_HAS_NO_ASAN
             __sanitizer_annotate_contiguous_container( v.data(),
@@ -113,8 +114,8 @@ namespace tao::pq::internal
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
-            // v._Mypair._Myval2._Mylast += ( n - v.size() );
-            v.*Mypair.*Myval2.*Mylast += ( n - v.size() );
+            // v._Mypair._Myval2._Mylast = v.data() + n;
+            v.*Mypair.*Myval2.*Mylast = v.data() + n;
          }
       };
 
