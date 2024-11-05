@@ -25,7 +25,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: ikalnytskyi/action-setup-postgres@v7
+    - uses: ikalnytskyi/action-setup-postgres@v6
 
     - run: cmake -E make_directory build
 
@@ -52,7 +52,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: ikalnytskyi/action-setup-postgres@v7
+    - uses: ikalnytskyi/action-setup-postgres@v6
 
     - run: cmake -E make_directory build
 
@@ -79,7 +79,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - uses: ikalnytskyi/action-setup-postgres@v7
+    - uses: ikalnytskyi/action-setup-postgres@v6
 
     - run: cmake -E make_directory build
 
