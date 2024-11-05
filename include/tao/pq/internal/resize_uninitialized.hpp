@@ -121,7 +121,7 @@ namespace tao::pq::internal
       template struct vector_proxy< std::vector< std::byte >,
                                     &std::vector< std::byte >::_Mypair,
                                     &decltype( std::declval< std::vector< std::byte > >()._Mypair )::_Myval2,
-                                    &decltype( std::declval< std::vector< std::byte > >()._Mypair._Myval2 )::_Mypair >;
+                                    &decltype( std::declval< std::vector< std::byte > >()._Mypair._Myval2 )::_Mylast >;
 
 #else
 
