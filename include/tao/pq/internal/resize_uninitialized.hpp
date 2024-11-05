@@ -23,8 +23,8 @@ namespace tao::pq::internal
 #if defined( _LIBCPP_STRING )
 
       // ...create a proxy to generate the actual implementation of the above function...
-      template< typename T, void ( T::*F )( std::size_t ) >
-      struct proxy
+      template< typename T, auto F >
+      struct string_proxy
       {
          // ...define the function declared above...
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
@@ -36,12 +36,12 @@ namespace tao::pq::internal
 
       // ...and here's the actual "trick": an explicit template instantiation skips the access checks,
       // so you can reference private members and forward them to the above proxy!
-      template struct proxy< std::string, &std::string::__set_size >;
+      template struct string_proxy< std::string, &std::string::__set_size >;
 
 #elif defined( _GLIBCXX_STRING ) && _GLIBCXX_USE_CXX11_ABI
 
-      template< typename T, void ( T::*F )( std::size_t ) >
-      struct proxy
+      template< typename T, auto F >
+      struct string_proxy
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
@@ -49,14 +49,12 @@ namespace tao::pq::internal
          }
       };
 
-      template struct proxy< std::string, &std::string::_M_set_length >;
+      template struct string_proxy< std::string, &std::string::_M_set_length >;
 
 #elif defined( _GLIBCXX_STRING )
 
-      template< typename T,
-                typename R,
-                R* ( T::*F )() const >
-      struct proxy
+      template< typename T, auto F >
+      struct string_proxy
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
@@ -65,12 +63,12 @@ namespace tao::pq::internal
          }
       };
 
-      template struct proxy< std::string, std::string::_Rep, &std::string::_M_rep >;
+      template struct string_proxy< std::string, &std::string::_M_rep >;
 
 #elif defined( _MSC_VER )
 
-      template< typename T, void ( T::*F )( std::size_t ) >
-      struct proxy
+      template< typename T, auto F >
+      struct string_proxy
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
@@ -78,10 +76,46 @@ namespace tao::pq::internal
          }
       };
 
-      template struct proxy< std::string, &std::string::_Eos >;
+      template struct string_proxy< std::string, &std::string::_Eos >;
 
 #else
 #error "No implementation for resize_uninitialized available."
+#endif
+
+#if defined( _LIBCPP_VECTOR )
+
+      void resize_uninitialized_proxy( std::vector< std::byte >& v, const std::size_t n ) noexcept;
+
+      template< typename T, auto M >
+      struct vector_proxy
+      {
+         friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
+         {
+            v.*M = v.data() + n;  // v.__end_ = v.data() + n;
+         }
+      };
+
+      template struct vector_proxy< std::vector< std::byte >, &std::vector< std::byte >::__end_ >;
+
+#else
+
+      // generic version
+
+      struct no_init_byte
+      {
+         std::byte b;
+         no_init_byte() noexcept {}  // NOLINT(modernize-use-equals-default)
+      };
+
+      static_assert( sizeof( std::vector< std::byte > ) == sizeof( std::vector< no_init_byte > ) );
+      static_assert( alignof( std::vector< std::byte > ) == alignof( std::vector< no_init_byte > ) );
+
+      void resize_uninitialized_proxy( std::vector< std::byte >& v, const std::size_t n ) noexcept
+      {
+         // undefined behaviour?
+         reinterpret_cast< std::vector< no_init_byte >& >( v ).resize( n );
+      }
+
 #endif
 
    }  // namespace
@@ -110,17 +144,7 @@ namespace tao::pq::internal
          if( n > v.capacity() ) {
             v.reserve( n );
          }
-
-         struct no_init_byte
-         {
-            std::byte b;
-            no_init_byte() noexcept {}  // NOLINT(modernize-use-equals-default)
-         };
-
-         static_assert( sizeof( std::vector< std::byte > ) == sizeof( std::vector< no_init_byte > ) );
-         static_assert( alignof( std::vector< std::byte > ) == alignof( std::vector< no_init_byte > ) );
-
-         reinterpret_cast< std::vector< no_init_byte >& >( v ).resize( n );
+         internal::resize_uninitialized_proxy( v, n );
       }
    }
 
