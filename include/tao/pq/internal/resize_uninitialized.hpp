@@ -110,7 +110,7 @@ namespace tao::pq::internal
       static_assert( sizeof( std::vector< std::byte > ) == sizeof( std::vector< no_init_byte > ) );
       static_assert( alignof( std::vector< std::byte > ) == alignof( std::vector< no_init_byte > ) );
 
-      [[maybe_unused]] void resize_uninitialized_proxy( std::vector< std::byte >& v, const std::size_t n ) noexcept
+      inline void resize_uninitialized_proxy( std::vector< std::byte >& v, const std::size_t n ) noexcept
       {
          // undefined behaviour?
          reinterpret_cast< std::vector< no_init_byte >& >( v ).resize( n );
