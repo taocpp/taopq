@@ -294,7 +294,7 @@ jobs:
 
     - run: sudo apt-get update -yq
 
-    - run: sudo apt-get install -yq libpq-dev
+    - run: sudo apt-get install -yq libc++-dev libpq-dev
 
     - run: cmake -E make_directory build
 
