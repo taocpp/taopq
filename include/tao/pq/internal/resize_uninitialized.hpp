@@ -79,7 +79,7 @@ namespace tao::pq::internal
       template struct string_proxy< std::string, &std::string::_Eos >;
 
 #else
-#error "No implementation for resize_uninitialized available."
+#error "No implementation for resize_uninitialized for std::string available on this platform."
 #endif
 
 #if defined( _LIBCPP_VECTOR )
@@ -92,10 +92,36 @@ namespace tao::pq::internal
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
             v.*M = v.data() + n;  // v.__end_ = v.data() + n;
+
+#ifndef _LIBCPP_HAS_NO_ASAN
+            __sanitizer_annotate_contiguous_container( v.data(),
+                                                       v.data() + v.capacity(),
+                                                       v.data() + v.size(),
+                                                       v.data() + n );
+#endif
          }
       };
 
       template struct vector_proxy< std::vector< std::byte >, &std::vector< std::byte >::__end_ >;
+
+#elif defined( _MSC_VER )
+
+      void resize_uninitialized_proxy( std::vector< std::byte >& v, const std::size_t n ) noexcept;
+
+      template< typename T, auto Mypair, auto Myval2, auto Mylast >
+      struct vector_proxy
+      {
+         friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
+         {
+            // v._Mypair._Myval2._Mylast += ( n - v.size() );
+            v.*Mypair.*Myval2.*Mylast += ( n - v.size() );
+         }
+      };
+
+      template struct vector_proxy< std::vector< std::byte >,
+                                    &std::vector< std::byte >::_Mypair,
+                                    &decltype( std::declval< std::vector< std::byte > >()._Mypair )::_Myval2,
+                                    &decltype( std::declval< std::vector< std::byte > >()._Mypair._Myval2 )::_Mypair >;
 
 #else
 
