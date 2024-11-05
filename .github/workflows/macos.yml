@@ -11,33 +11,6 @@ on:
       - 'doc/**'
 
 jobs:
-  xcode-macos-15:
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode: ['16']
-        build_type: [Debug, Release]
-
-    runs-on: macos-15
-
-    env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
-
-    steps:
-    - uses: actions/checkout@v4
-    - uses: ikalnytskyi/action-setup-postgres@v6
-
-    - run: cmake -E make_directory build
-
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE
-
-    - working-directory: build/
-      run: cmake --build . --config ${{ matrix.build_type }}
-
-    - working-directory: build/
-      run: ctest --output-on-failure
-
   xcode-macos-14:
     strategy:
       fail-fast: false
