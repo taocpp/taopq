@@ -260,7 +260,7 @@ jobs:
     - working-directory: build/
       run: ctest --output-on-failure
 
-  linux-libc++:
+  linux-libcpp:
     strategy:
       fail-fast: false
       matrix:
