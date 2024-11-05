@@ -217,7 +217,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flags: ["-fms-extensions"]
+        flags: ["-fms-extensions","-stdlib=libc++"]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-latest
