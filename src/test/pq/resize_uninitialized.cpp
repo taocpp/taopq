@@ -31,6 +31,21 @@ void run()
    test( s, 1000000000 );
    TEST_ASSERT( s[ 0 ] == 'h' );
    TEST_ASSERT( s[ 1 ] == 'e' );
+
+   std::vector< std::byte > v = { std::byte( 42 ), std::byte( 69 ) };
+   TEST_ASSERT( v.size() == 2 );
+   TEST_ASSERT( v[ 0 ] == std::byte( 42 ) );
+   TEST_ASSERT( v[ 1 ] == std::byte( 69 ) );
+
+   tao::pq::internal::resize_uninitialized( v, 5 );
+   TEST_ASSERT( v.size() == 5 );
+   TEST_ASSERT( v[ 0 ] == std::byte( 42 ) );
+   TEST_ASSERT( v[ 1 ] == std::byte( 69 ) );
+
+   tao::pq::internal::resize_uninitialized( v, 1000000000 );
+   TEST_ASSERT( v.size() == 1000000000 );
+   TEST_ASSERT( v[ 0 ] == std::byte( 42 ) );
+   TEST_ASSERT( v[ 1 ] == std::byte( 69 ) );
 }
 
 auto main() -> int
