@@ -65,7 +65,7 @@ namespace tao::pq
             }
          }
          else {
-            const auto t = parameter_traits< T >{ v };
+            const auto t = parameter_traits< T >( v );
             static_assert( t.columns == 1 );
             t.template element< 0 >( data );
          }
