@@ -32,8 +32,7 @@ By default, the following C++ types are available for use as result types.
   * `std::string`
   * `std::string_view`
 * [Binary](Binary-Data.md) ([`BYTEA`➚](https://www.postgresql.org/docs/current/datatype-binary.html))
-  * `std::basic_string< unsigned char >`
-  * `std::basic_string< std::byte >`
+  * `std::vector< std::byte >`
 * [`ARRAY`➚](https://www.postgresql.org/docs/current/arrays.html)
   * `std::list< T >`
   * `std::set< T >`

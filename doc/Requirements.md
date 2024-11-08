@@ -12,7 +12,7 @@
 
 * We support:
   * [Visual Studio➚](https://en.wikipedia.org/wiki/Microsoft_Visual_Studio) version 2019 or newer.
-  * [Xcode➚](https://en.wikipedia.org/wiki/Xcode) version 11 or newer.
+  * [Xcode➚](https://en.wikipedia.org/wiki/Xcode) version 13 or newer.
   * [GCC➚](https://gcc.gnu.org/) version 10 or newer.
   * [Clang➚](https://clang.llvm.org/) version 10 or newer.
 * Other compilers might work.

@@ -34,10 +34,8 @@ If you want to pass NULL to the database, you pass `tao::pq::null`.
   * `std::string`
   * `std::string_view`
 * [Binary](Binary-Data.md) ([`BYTEA`➚](https://www.postgresql.org/docs/current/datatype-binary.html))
-  * `std::basic_string< unsigned char >`
-  * `std::basic_string< std::byte >`
-  * `std::basic_string_view< unsigned char >`
-  * `std::basic_string_view< std::byte >`
+  * `std::vector< std::byte >`
+  * `std::span< std::byte >`
 * [`ARRAY`➚](https://www.postgresql.org/docs/current/arrays.html)
   * `std::array< T, N >`
   * `std::list< T >`

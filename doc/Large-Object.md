@@ -49,11 +49,9 @@ namespace tao::pq
       void close();
 
       auto read( char* data, const std::size_t size ) -> std::size_t;
-      auto read( unsigned char* data, const std::size_t size ) -> std::size_t;
       auto read( std::byte* data, const std::size_t size ) -> std::size_t;
 
       void write( const char* data, const std::size_t size );
-      void write( const unsigned char* data, const std::size_t size );
       void write( const std::byte* data, const std::size_t size );
 
       void write( const char* data );
@@ -141,7 +139,6 @@ To [write➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-WRIT
 
 ```c++
 void tao::pq::large_object::write( const char* data, const std::size_t size );
-void tao::pq::large_object::write( const unsigned char* data, const std::size_t size );
 void tao::pq::large_object::write( const std::byte* data, const std::size_t size );
 
 void tao::pq::large_object::write( const char* data );
@@ -165,7 +162,6 @@ To [read➚](https://www.postgresql.org/docs/current/lo-interfaces.html#LO-READ)
 
 ```c++
 auto tao::pq::large_object::read( char* data, const std::size_t size ) -> std::size_t;
-auto tao::pq::large_object::read( unsigned char* data, const std::size_t size ) -> std::size_t;
 auto tao::pq::large_object::read( std::byte* data, const std::size_t size ) -> std::size_t;
 
 template< typename T = tao::pq::binary >
@@ -179,8 +175,7 @@ The fourth method will create a new object of type `T` and read up to `size` byt
 `T` must be one of the following types:
 
 * `std::string`
-* `std::basic_string<unsigned char>`
-* [`tao::pq::binary`](Binary-Data.md) aka `std::basic_string<std::byte>`
+* [`tao::pq::binary`](Binary-Data.md) aka `std::vector<std::byte>`
 
 :point_up: Although the `size` parameter of the above methods is declared as `std::size_t`, the methods will reject values larger than `INT_MAX`.
 In practice, it's best to transfer data in chunks of at most a few megabytes anyway.
