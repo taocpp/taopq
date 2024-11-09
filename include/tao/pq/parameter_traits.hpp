@@ -15,6 +15,7 @@
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 #include <tao/pq/binary.hpp>
 #include <tao/pq/bind.hpp>
@@ -462,8 +463,8 @@ namespace tao::pq
       using parameter_traits< std::span< const std::byte, Extent > >::parameter_traits;
    };
 
-   template<>
-   struct parameter_traits< binary >
+   template< typename Allocator >
+   struct parameter_traits< std::vector< std::byte, Allocator > >
       : parameter_traits< binary_view >
    {
       using parameter_traits< binary_view >::parameter_traits;
