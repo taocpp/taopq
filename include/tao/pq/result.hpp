@@ -35,11 +35,8 @@ namespace tao::pq
 
    namespace internal
    {
-      template< typename T, typename = void >
-      inline constexpr bool has_reserve = false;
-
       template< typename T >
-      inline constexpr bool has_reserve< T, decltype( std::declval< T >().reserve( std::declval< typename T::size_type >() ), void() ) > = true;
+      concept has_reserve = requires( T t ) { t.reserve( typename T::size_type{ 0 } ); };
 
    }  // namespace internal
 
