@@ -36,7 +36,7 @@ namespace tao::pq
    namespace internal
    {
       template< typename T >
-      concept has_reserve = requires( T t, T::size_type s ) { t.reserve( s ); };
+      concept has_reserve = requires( T t, typename T::size_type s ) { t.reserve( s ); };
 
    }  // namespace internal
 
