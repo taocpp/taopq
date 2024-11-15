@@ -19,7 +19,7 @@
 
 namespace tao::pq
 {
-   template< typename T, typename = void >
+   template< typename T >
    struct result_traits
    {
       static_assert( internal::dependent_false< T >, "data type T not registered as taopq result type" );
@@ -27,11 +27,12 @@ namespace tao::pq
       static auto from( const char* value ) noexcept -> T;
    };
 
-   template< typename T, typename = const std::size_t >
+   template< typename T >
    inline constexpr std::size_t result_traits_size = 1;
 
    template< typename T >
-   inline constexpr std::size_t result_traits_size< T, decltype( result_traits< T >::size ) > = result_traits< T >::size;
+      requires requires { result_traits< T >::size; }
+   inline constexpr std::size_t result_traits_size< T > = result_traits< T >::size;
 
    template<>
    struct result_traits< const char* >
@@ -187,12 +188,14 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct result_traits< T, decltype( (void)T::from_taopq ) >
+      requires requires { T::from_taopq; }
+   struct result_traits< T >
       : internal::from_taopq< T, T, decltype( T::from_taopq ) >
    {};
 
    template< typename T >
-   struct result_traits< T, decltype( (void)bind< T >::from_taopq ) >
+      requires requires { bind< T >::from_taopq; }
+   struct result_traits< T >
       : internal::from_taopq< bind< T >, T, decltype( bind< T >::from_taopq ) >
    {};
 

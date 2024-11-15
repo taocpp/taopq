@@ -64,7 +64,7 @@ namespace tao::pq
 
    }  // namespace internal
 
-   template< typename T, typename = void >
+   template< typename T >
    struct parameter_traits
    {
       static_assert( internal::dependent_false< T >, "data type T not registered as taopq parameter type" );
