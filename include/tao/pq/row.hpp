@@ -221,7 +221,7 @@ namespace tao::pq
             TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
          else if constexpr( ( result_traits_size< T > == 1 ) && !is_aggregate_result< T > ) {
-            if constexpr( result_traits_has_null< T > ) {
+            if constexpr( requires { result_traits< T >::null(); } ) {
                if( is_null( column ) ) {
                   return result_traits< T >::null();
                }

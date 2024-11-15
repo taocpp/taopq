@@ -33,9 +33,6 @@ namespace tao::pq
    template< typename T >
    inline constexpr std::size_t result_traits_size< T, decltype( result_traits< T >::size ) > = result_traits< T >::size;
 
-   template< typename T >
-   concept result_traits_has_null = requires( T t ) { result_traits< T >::null(); };
-
    template<>
    struct result_traits< const char* >
    {

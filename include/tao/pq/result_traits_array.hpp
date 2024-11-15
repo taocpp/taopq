@@ -82,7 +82,7 @@ namespace tao::pq
                if( const auto* end = std::strpbrk( value, ",;}" ) ) {
                   std::string input( value, end );
                   if( input == "NULL" ) {
-                     if constexpr( result_traits_has_null< value_type > ) {
+                     if constexpr( requires { result_traits< value_type >::null(); } ) {
                         container.push_back( result_traits< value_type >::null() );
                      }
                      else {
@@ -124,7 +124,8 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct result_traits< T, std::enable_if_t< is_array_result< T > > >
+      requires is_array_result< T >
+   struct result_traits< T >
    {
       static auto from( const char* value ) -> T
       {

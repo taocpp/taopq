@@ -213,7 +213,7 @@ namespace tao::pq
          else if constexpr( result_traits_size< T > == 1 ) {
             const char* const value = get( column );
             if( value == nullptr ) {
-               if constexpr( result_traits_has_null< T > ) {
+               if constexpr( requires { result_traits< T >::null(); } ) {
                   return result_traits< T >::null();
                }
                else {

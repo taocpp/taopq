@@ -46,7 +46,8 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct result_traits< T, std::enable_if_t< is_aggregate_result< T > > >
+      requires is_aggregate_result< T >
+   struct result_traits< T >
       : internal::aggregate_result< T >
    {};
 

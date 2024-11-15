@@ -27,7 +27,8 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct parameter_traits< T, std::enable_if_t< is_aggregate_parameter< T > > >
+      requires is_aggregate_parameter< T >
+   struct parameter_traits< T >
       : private internal::parameter_tie_aggregate< T >,
         public parameter_traits< typename internal::parameter_tie_aggregate< T >::result_t >
    {

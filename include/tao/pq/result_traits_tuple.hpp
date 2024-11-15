@@ -18,8 +18,9 @@ struct tao::pq::result_traits< std::tuple< T > >
    static constexpr std::size_t size = result_traits_size< T >;
 
    template< typename U = T >
+      requires std::is_same_v< T, U > && requires { result_traits< T >::null(); }
    [[nodiscard]] static auto null()
-      -> std::enable_if_t< std::is_same_v< T, U > && result_traits_has_null< T >, std::tuple< T > >
+      -> std::tuple< T >
    {
       return std::tuple< T >( result_traits< T >::null() );
    }
