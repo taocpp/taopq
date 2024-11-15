@@ -67,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flags: ["-stdlib=libc++","-D_GLIBCXX_USE_CXX11_ABI=0"]
+        flags: ["-D_GLIBCXX_USE_CXX11_ABI=0"]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-24.04
@@ -97,7 +97,7 @@ jobs:
 
     - run: sudo apt-get update -yq
 
-    - run: sudo apt-get install -yq libpq-dev libc++-dev
+    - run: sudo apt-get install -yq libpq-dev
 
     - run: cmake -E make_directory build
 
@@ -114,7 +114,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        flags: ["-fms-extensions"]
+        flags: ["-stdlib=libc++","-fms-extensions"]
         build_type: [Debug, Release]
 
     runs-on: ubuntu-24.04
@@ -144,7 +144,7 @@ jobs:
 
     - run: sudo apt-get update -yq
 
-    - run: sudo apt-get install -yq libpq-dev
+    - run: sudo apt-get install -yq libpq-dev libc++-dev
 
     - run: cmake -E make_directory build
 
