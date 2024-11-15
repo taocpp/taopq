@@ -24,7 +24,6 @@
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
-#include <tao/pq/oid.hpp>
 #include <tao/pq/poll.hpp>
 #include <tao/pq/transaction.hpp>
 #include <tao/pq/transaction_status.hpp>

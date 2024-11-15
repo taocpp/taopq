@@ -20,7 +20,6 @@
 
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/zsv.hpp>
-#include <tao/pq/oid.hpp>
 #include <tao/pq/parameter.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/result.hpp>

@@ -11,7 +11,8 @@
 #include <type_traits>
 #include <utility>
 
-#include <tao/pq/oid.hpp>
+#include <libpq-fe.h>
+
 #include <tao/pq/parameter_traits.hpp>
 
 namespace tao::pq
