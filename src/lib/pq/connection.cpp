@@ -6,6 +6,7 @@
 
 #include <cctype>
 #include <cstring>
+#include <format>
 #include <memory>
 #include <stdexcept>
 #include <string>
@@ -190,7 +191,7 @@ namespace tao::pq
    void connection::check_prepared_name( const std::string_view name )
    {
       if( !internal::is_identifier( name ) ) {
-         throw std::invalid_argument( "invalid prepared statement name" );
+         throw std::invalid_argument( std::format( "invalid prepared statement name: {}", name ) );
       }
    }
 
