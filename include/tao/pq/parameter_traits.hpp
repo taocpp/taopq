@@ -471,9 +471,8 @@ namespace tao::pq
    };
 
    // default free function to detect member function to_taopq()
-   template< typename T >
-   [[nodiscard]] auto to_taopq( const T& t ) noexcept( noexcept( t.to_taopq() ) )
-      -> decltype( t.to_taopq() )
+   [[nodiscard]] auto to_taopq( const auto& t ) noexcept( noexcept( t.to_taopq() ) )
+      requires requires { t.to_taopq(); }
    {
       return t.to_taopq();
    }
@@ -481,7 +480,7 @@ namespace tao::pq
    // default free function to detect bind<T>::to_taopq()
    template< typename T >
    [[nodiscard]] auto to_taopq( const T& t ) noexcept( noexcept( bind< T >::to_taopq( t ) ) )
-      -> decltype( bind< T >::to_taopq( t ) )
+      requires requires { bind< T >::to_taopq( t ); }
    {
       return bind< T >::to_taopq( t );
    }
@@ -504,7 +503,8 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct parameter_traits< T, decltype( (void)to_taopq( std::declval< const T& >() ) ) >
+      requires requires( const T& t ) { to_taopq( t ); }
+   struct parameter_traits< T >
       : private internal::parameter_holder< T >,
         public parameter_traits< typename internal::parameter_holder< T >::result_t >
    {

@@ -74,7 +74,8 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct parameter_traits< T, std::enable_if_t< is_array_parameter< T > > >
+      requires is_array_parameter< T >
+   struct parameter_traits< T >
    {
    private:
       std::string m_data;
