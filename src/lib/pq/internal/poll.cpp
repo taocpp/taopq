@@ -7,6 +7,7 @@
 #include <cctype>
 #include <cerrno>
 #include <cstring>
+#include <format>
 #include <string>
 
 #if defined( _WIN32 )
@@ -16,7 +17,6 @@
 #endif
 
 #include <tao/pq/exception.hpp>
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq::internal
@@ -29,7 +29,7 @@ namespace tao::pq::internal
          if( result == 0 ) {
             return buffer;
          }
-         return printf( "unknown error code %d", e );
+         return std::format( "unknown error code {}", e );
       }
 
       [[nodiscard, maybe_unused]] auto errno_result_to_string( const int /*unused*/, char* /*unused*/, char* result ) -> std::string
@@ -67,7 +67,7 @@ namespace tao::pq::internal
 
          case 1:
             if( ( pfd.revents & events ) == 0 ) {
-               throw network_error( printf( "WSAPoll() failed, events %hd, revents %hd", events, pfd.revents ) );
+               throw network_error( std::format( "WSAPoll() failed, events {}, revents {}", events, pfd.revents ) );
             }
             return ( ( pfd.revents & POLLIN ) != 0 ) ? pq::poll::status::readable : pq::poll::status::writable;
 
@@ -92,7 +92,7 @@ namespace tao::pq::internal
 
          case 1:
             if( ( pfd.revents & events ) == 0 ) {
-               throw network_error( printf( "poll() failed, events %hd, revents %hd", events, pfd.revents ) );  // LCOV_EXCL_LINE
+               throw network_error( std::format( "poll() failed, events {}, revents {}", events, pfd.revents ) );  // LCOV_EXCL_LINE
             }
             return ( ( pfd.revents & POLLIN ) != 0 ) ? pq::poll::status::readable : pq::poll::status::writable;
 

@@ -9,11 +9,11 @@ auto main() -> int {}
 #include "../macros.hpp"
 
 #include <cmath>
+#include <format>
 #include <stdexcept>
 #include <tuple>
 #include <typeinfo>
 
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/strtox.hpp>
 
 template< typename T >
@@ -21,7 +21,7 @@ void reject_floating_point( const char* input )
 {
    try {
       std::ignore = tao::pq::internal::strtof( input );
-      throw std::runtime_error( tao::pq::internal::printf( "strtof(): %s", input ) );  // LCOV_EXCL_LINE
+      throw std::runtime_error( std::format( "strtof(): {}", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtof() failed for input: " + std::string( input ) ) {
@@ -30,7 +30,7 @@ void reject_floating_point( const char* input )
    }
    try {
       std::ignore = tao::pq::internal::strtod( input );
-      throw std::runtime_error( tao::pq::internal::printf( "strtod(): %s", input ) );  // LCOV_EXCL_LINE
+      throw std::runtime_error( std::format( "strtod(): {}", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtod() failed for input: " + std::string( input ) ) {
@@ -39,7 +39,7 @@ void reject_floating_point( const char* input )
    }
    try {
       std::ignore = tao::pq::internal::strtold( input );
-      throw std::runtime_error( tao::pq::internal::printf( "strtold(): %s", input ) );  // LCOV_EXCL_LINE
+      throw std::runtime_error( std::format( "strtold(): {}", input ) );  // LCOV_EXCL_LINE
    }
    catch( const T& e ) {
       if( e.what() != "tao::pq::internal::strtold() failed for input: " + std::string( input ) ) {

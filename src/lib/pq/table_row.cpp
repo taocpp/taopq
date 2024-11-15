@@ -5,12 +5,14 @@
 #include <tao/pq/table_reader.hpp>
 #include <tao/pq/table_row.hpp>
 
+#include <format>
+
 namespace tao::pq
 {
    void table_row::ensure_column( const std::size_t column ) const
    {
       if( column >= m_columns ) {
-         throw std::out_of_range( internal::printf( "column %zu out of range (0-%zu)", column, m_columns - 1 ) );
+         throw std::out_of_range( std::format( "column {} out of range (0-{})", column, m_columns - 1 ) );
       }
    }
 
@@ -20,7 +22,7 @@ namespace tao::pq
          throw std::invalid_argument( "slice requires at least one column" );
       }
       if( offset + in_columns > m_columns ) {
-         throw std::out_of_range( internal::printf( "slice (%zu-%zu) out of range (0-%zu)", offset, offset + in_columns - 1, m_columns - 1 ) );
+         throw std::out_of_range( std::format( "slice ({}-{}) out of range (0-{})", offset, offset + in_columns - 1, m_columns - 1 ) );
       }
       return { *m_reader, m_offset + offset, in_columns };
    }

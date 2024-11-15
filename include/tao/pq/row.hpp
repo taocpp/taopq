@@ -7,6 +7,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <format>
 #include <iterator>
 #include <optional>
 #include <stdexcept>
@@ -18,7 +19,6 @@
 #include <tao/pq/field.hpp>
 #include <tao/pq/internal/demangle.hpp>
 #include <tao/pq/internal/dependent_false.hpp>
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/is_aggregate.hpp>
@@ -244,7 +244,7 @@ namespace tao::pq
       {
          if( result_traits_size< T > != m_columns ) {
             const auto type = internal::demangle< T >();
-            throw std::out_of_range( internal::printf( "datatype '%.*s' requires %zu columns, but row/slice has %zu columns", static_cast< int >( type.size() ), type.data(), result_traits_size< T >, m_columns ) );
+            throw std::out_of_range( std::format( "datatype '{}' requires {} columns, but row/slice has {} columns", type, result_traits_size< T >, m_columns ) );
          }
          return get< T >( 0 );
       }

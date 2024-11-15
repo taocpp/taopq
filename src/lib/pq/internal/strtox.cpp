@@ -6,10 +6,10 @@
 #include <cctype>
 #include <cerrno>
 #include <cstdlib>
+#include <format>
 #include <stdexcept>
 #include <string>
 
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/strtox.hpp>
 
 namespace tao::pq::internal
@@ -77,7 +77,7 @@ namespace tao::pq::internal
                   throw std::overflow_error( failure_message< T >( input ) );
                }
          }
-         throw std::runtime_error( tao::pq::internal::printf( "code should be unreachable, errno: %d, input: \"%s\"", errno, input ) );  // LCOV_EXCL_LINE
+         throw std::runtime_error( std::format( "code should be unreachable, errno: {}, input: \"{}\"", errno, input ) );  // LCOV_EXCL_LINE
       }
 
    }  // namespace

@@ -4,12 +4,12 @@
 
 #include <cassert>
 #include <charconv>
+#include <format>
 
 #include <tao/pq/exception.hpp>
 #include <tao/pq/result.hpp>
 
 #include <tao/pq/internal/from_chars.hpp>
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq
@@ -26,9 +26,9 @@ namespace tao::pq
       check_has_result_set();
       if( !( row < m_rows ) ) {
          if( m_rows == 0 ) {
-            throw std::out_of_range( internal::printf( "row %zu out of range, result is empty", row ) );
+            throw std::out_of_range( std::format( "row {} out of range, result is empty", row ) );
          }
-         throw std::out_of_range( internal::printf( "row %zu out of range (0-%zu)", row, m_rows - 1 ) );
+         throw std::out_of_range( std::format( "row {} out of range (0-{})", row, m_rows - 1 ) );
       }
    }
 
@@ -72,7 +72,7 @@ namespace tao::pq
    auto result::name( const std::size_t column ) const -> std::string
    {
       if( column >= m_columns ) {
-         throw std::out_of_range( internal::printf( "column %zu out of range (0-%zu)", column, m_columns - 1 ) );
+         throw std::out_of_range( std::format( "column {} out of range (0-{})", column, m_columns - 1 ) );
       }
       return PQfname( m_pgresult.get(), static_cast< int >( column ) );
    }
@@ -114,7 +114,7 @@ namespace tao::pq
    {
       check_row( row );
       if( column >= m_columns ) {
-         throw std::out_of_range( internal::printf( "column %zu out of range (0-%zu)", column, m_columns - 1 ) );
+         throw std::out_of_range( std::format( "column {} out of range (0-{})", column, m_columns - 1 ) );
       }
       return PQgetisnull( m_pgresult.get(), static_cast< int >( row ), static_cast< int >( column ) ) != 0;
    }
@@ -122,7 +122,7 @@ namespace tao::pq
    auto result::get( const std::size_t row, const std::size_t column ) const -> const char*
    {
       if( is_null( row, column ) ) {
-         throw std::runtime_error( internal::printf( "unexpected NULL value in row %zu column %zu/'%s'", row, column, name( column ).c_str() ) );
+         throw std::runtime_error( std::format( "unexpected NULL value in row {} column {}/'{}'", row, column, name( column ).c_str() ) );
       }
       return PQgetvalue( m_pgresult.get(), static_cast< int >( row ), static_cast< int >( column ) );
    }

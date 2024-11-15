@@ -6,6 +6,7 @@
 #define TAO_PQ_RESULT_HPP
 
 #include <cstdint>
+#include <format>
 #include <iterator>
 #include <list>
 #include <map>
@@ -22,7 +23,6 @@
 
 #include <libpq-fe.h>
 
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/row.hpp>
 
@@ -228,7 +228,7 @@ namespace tao::pq
       [[nodiscard]] auto as() const -> T
       {
          if( size() != 1 ) {
-            throw std::runtime_error( internal::printf( "invalid result size: %zu rows, expected 1 row", m_rows ) );
+            throw std::runtime_error( std::format( "invalid result size: {} rows, expected 1 row", m_rows ) );
          }
          return ( *this )[ 0 ].as< T >();
       }

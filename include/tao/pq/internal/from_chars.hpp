@@ -6,12 +6,12 @@
 #define TAO_PQ_INTERNAL_FROM_CHARS_HPP
 
 #include <charconv>
+#include <format>
 #include <stdexcept>
 #include <string>
 #include <string_view>
 
 #include <tao/pq/internal/demangle.hpp>
-#include <tao/pq/internal/printf.hpp>
 #include <tao/pq/internal/unreachable.hpp>
 
 namespace tao::pq::internal
@@ -28,10 +28,10 @@ namespace tao::pq::internal
       }
       const auto type = internal::demangle< T >();
       if( ( ec == std::errc() ) || ( ec == std::errc::invalid_argument ) ) {
-         throw std::invalid_argument( internal::printf( "tao::pq::internal::from_chars<%.*s>(): %.*s", static_cast< int >( type.size() ), type.data(), static_cast< int >( value.size() ), value.data() ) );
+         throw std::invalid_argument( std::format( "tao::pq::internal::from_chars<{}>(): {}", type, value ) );
       }
       if( ec == std::errc::result_out_of_range ) {
-         throw std::out_of_range( internal::printf( "tao::pq::internal::from_chars<%.*s>(): %.*s", static_cast< int >( type.size() ), type.data(), static_cast< int >( value.size() ), value.data() ) );
+         throw std::out_of_range( std::format( "tao::pq::internal::from_chars<{}>(): {}", type, value ) );
       }
       TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
    }
