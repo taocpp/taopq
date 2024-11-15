@@ -33,13 +33,6 @@ namespace tao::pq
    class table_writer;
    class transaction;
 
-   namespace internal
-   {
-      template< typename T >
-      concept has_reserve = requires( T t, typename T::size_type s ) { t.reserve( s ); };
-
-   }  // namespace internal
-
    class result final
    {
    private:
@@ -265,7 +258,7 @@ namespace tao::pq
       [[nodiscard]] auto as_container() const -> T
       {
          T nrv;
-         if constexpr( internal::has_reserve< T > ) {
+         if constexpr( requires { nrv.reserve( size() ); } ) {
             nrv.reserve( size() );
          }
          check_has_result_set();
