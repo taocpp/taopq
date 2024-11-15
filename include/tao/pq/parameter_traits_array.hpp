@@ -13,6 +13,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include <tao/pq/oid.hpp>
 #include <tao/pq/parameter_traits.hpp>
 
 namespace tao::pq

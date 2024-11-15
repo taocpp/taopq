@@ -12,6 +12,7 @@
 #include <utility>
 
 #include <tao/pq/internal/gen.hpp>
+#include <tao/pq/oid.hpp>
 #include <tao/pq/parameter_traits.hpp>
 
 template< typename... Ts >
