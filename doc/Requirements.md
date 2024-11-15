@@ -13,9 +13,9 @@
 * We support:
   * [Visual Studio➚](https://en.wikipedia.org/wiki/Microsoft_Visual_Studio) version 2022 or newer.
   * [Visual Studio➚](https://en.wikipedia.org/wiki/Microsoft_Visual_Studio) version 2019 with Clang or newer.
-  * [Xcode➚](https://en.wikipedia.org/wiki/Xcode) version 13 or newer.
-  * [GCC➚](https://gcc.gnu.org/) version 10 or newer.
-  * [Clang➚](https://clang.llvm.org/) version 10 or newer.
+  * [Xcode➚](https://en.wikipedia.org/wiki/Xcode) version 15 or newer.
+  * [GCC➚](https://gcc.gnu.org/) version 13 or newer.
+  * [Clang➚](https://clang.llvm.org/) version 16 or newer.
 * Other compilers might work.
 
 ## Language Requirements
