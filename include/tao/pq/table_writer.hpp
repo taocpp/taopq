@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_TABLE_WRITER_HPP
 #define TAO_PQ_TABLE_WRITER_HPP
 
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <string_view>

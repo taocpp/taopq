@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_INTERNAL_AGGREGATE_HPP
 #define TAO_PQ_INTERNAL_AGGREGATE_HPP
 
+#include <cstddef>
 #include <tuple>
 #include <type_traits>
 #include <utility>

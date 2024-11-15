@@ -5,10 +5,10 @@
 #ifndef TAO_PQ_RESULT_TRAITS_OPTIONAL_HPP
 #define TAO_PQ_RESULT_TRAITS_OPTIONAL_HPP
 
+#include <cstddef>
 #include <optional>
 
 #include <tao/pq/result_traits.hpp>
-#include <tao/pq/row.hpp>
 
 template< typename T >
 struct tao::pq::result_traits< std::optional< T > >

@@ -7,6 +7,7 @@
 
 #include <atomic>
 #include <cassert>
+#include <cstddef>
 #include <list>
 #include <memory>
 #include <mutex>

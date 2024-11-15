@@ -5,14 +5,11 @@
 #ifndef TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 #define TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 
-#include <array>
-#include <cstddef>
 #include <cstring>
 #include <list>
 #include <set>
 #include <stdexcept>
 #include <string>
-#include <type_traits>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -80,7 +77,7 @@ namespace tao::pq
             }
             else if( *value != '}' ) {
                if( const auto* end = std::strpbrk( value, ",;}" ) ) {
-                  std::string input( value, end );
+                  const std::string input( value, end );
                   if( input == "NULL" ) {
                      if constexpr( requires { result_traits< value_type >::null(); } ) {
                         container.push_back( result_traits< value_type >::null() );

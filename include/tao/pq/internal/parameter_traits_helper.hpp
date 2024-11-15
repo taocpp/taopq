@@ -9,6 +9,7 @@
 #include <charconv>
 #include <cstddef>
 #include <string>
+#include <system_error>
 
 #include <tao/pq/oid.hpp>
 

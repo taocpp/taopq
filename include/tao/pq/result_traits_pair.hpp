@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_RESULT_TRAITS_PAIR_HPP
 #define TAO_PQ_RESULT_TRAITS_PAIR_HPP
 
+#include <cstddef>
 #include <type_traits>
 #include <utility>
 

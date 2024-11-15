@@ -5,7 +5,13 @@
 #ifndef TAO_PQ_RESULT_TRAITS_AGGREGATE_HPP
 #define TAO_PQ_RESULT_TRAITS_AGGREGATE_HPP
 
+#include <cstddef>
+#include <tuple>
+#include <type_traits>
+#include <utility>
+
 #include <tao/pq/internal/aggregate.hpp>
+#include <tao/pq/internal/exclusive_scan.hpp>
 #include <tao/pq/is_aggregate.hpp>
 #include <tao/pq/result_traits.hpp>
 

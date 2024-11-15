@@ -5,6 +5,9 @@
 #ifndef TAO_PQ_INTERNAL_GEN_HPP
 #define TAO_PQ_INTERNAL_GEN_HPP
 
+#include <cstddef>
+#include <utility>
+
 #include <tao/pq/internal/exclusive_scan.hpp>
 
 namespace tao::pq::internal

@@ -6,6 +6,7 @@
 #define TAO_PQ_CONNECTION_HPP
 
 #include <chrono>
+#include <cstddef>
 #include <functional>
 #include <map>
 #include <memory>

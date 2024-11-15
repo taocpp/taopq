@@ -136,7 +136,7 @@ namespace tao::pq
 
          friend void swap( const_iterator& lhs, const_iterator& rhs ) noexcept
          {
-            return swap( static_cast< field& >( lhs ), static_cast< field& >( rhs ) );
+            swap( static_cast< field& >( lhs ), static_cast< field& >( rhs ) );
          }
 
          [[nodiscard]] friend auto operator+( const const_iterator& lhs, const difference_type rhs ) noexcept -> const_iterator
@@ -249,7 +249,8 @@ namespace tao::pq
          return get< T >( 0 );
       }
 
-      template< typename T, typename = std::enable_if_t< is_aggregate_result< T > > >
+      template< typename T >
+         requires is_aggregate_result< T >
       [[nodiscard]] operator T() const
       {
          return as< T >();

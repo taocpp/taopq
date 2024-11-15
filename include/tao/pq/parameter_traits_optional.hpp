@@ -5,7 +5,9 @@
 #ifndef TAO_PQ_PARAMETER_TRAITS_OPTIONAL_HPP
 #define TAO_PQ_PARAMETER_TRAITS_OPTIONAL_HPP
 
+#include <cstddef>
 #include <optional>
+#include <string>
 #include <type_traits>
 #include <utility>
 

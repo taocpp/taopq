@@ -12,7 +12,6 @@
 #include <optional>
 #include <stdexcept>
 #include <tuple>
-#include <type_traits>
 #include <utility>
 
 #include <tao/pq/internal/demangle.hpp>
@@ -126,7 +125,7 @@ namespace tao::pq
 
          friend void swap( const_iterator& lhs, const_iterator& rhs ) noexcept
          {
-            return swap( static_cast< table_field& >( lhs ), static_cast< table_field& >( rhs ) );
+            swap( static_cast< table_field& >( lhs ), static_cast< table_field& >( rhs ) );
          }
 
          [[nodiscard]] friend auto operator+( const const_iterator& lhs, const difference_type rhs ) noexcept -> const_iterator

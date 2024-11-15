@@ -5,10 +5,12 @@
 #ifndef TAO_PQ_LARGE_OBJECT_HPP
 #define TAO_PQ_LARGE_OBJECT_HPP
 
+#include <cstddef>
 #include <cstdint>
 #include <cstring>
 #include <ios>
 #include <memory>
+#include <string>
 
 #include <tao/pq/binary.hpp>
 #include <tao/pq/oid.hpp>

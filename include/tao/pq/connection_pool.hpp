@@ -6,6 +6,7 @@
 #define TAO_PQ_CONNECTION_POOL_HPP
 
 #include <chrono>
+#include <functional>
 #include <memory>
 #include <optional>
 #include <string>

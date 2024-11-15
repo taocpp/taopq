@@ -6,12 +6,12 @@
 #define TAO_PQ_TABLE_READER_HPP
 
 #include <cassert>
+#include <cstddef>
 #include <cstdint>
 #include <list>
 #include <map>
 #include <memory>
 #include <set>
-#include <string>
 #include <string_view>
 #include <tuple>
 #include <unordered_map>
@@ -125,7 +125,7 @@ namespace tao::pq
 
          friend void swap( const_iterator& lhs, const_iterator& rhs ) noexcept
          {
-            return swap( static_cast< table_row& >( lhs ), static_cast< table_row& >( rhs ) );
+            swap( static_cast< table_row& >( lhs ), static_cast< table_row& >( rhs ) );
          }
 
          [[nodiscard]] friend auto operator==( const const_iterator& lhs, const const_iterator& rhs ) noexcept

@@ -10,7 +10,6 @@
 #include <utility>
 
 #include <tao/pq/null.hpp>
-#include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
 {

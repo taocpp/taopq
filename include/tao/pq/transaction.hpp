@@ -9,7 +9,7 @@
 #include <cstddef>
 #include <cstdio>
 #include <memory>
-#include <string>
+#include <string_view>
 #if !defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L )
 #include <tuple>
 #endif
