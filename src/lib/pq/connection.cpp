@@ -196,7 +196,7 @@ namespace tao::pq
 
    auto connection::is_prepared( const std::string_view name ) const noexcept -> bool
    {
-      return m_prepared_statements.find( name ) != m_prepared_statements.end();
+      return m_prepared_statements.contains( name );
    }
 
    void connection::send_params( const char* statement,
