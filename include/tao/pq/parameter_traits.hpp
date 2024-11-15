@@ -166,7 +166,7 @@ namespace tao::pq
    template<>
    struct parameter_traits< char >
    {
-      const char m_value[ 2 ];
+      const char m_value[ 2 ];  // NOLINT(modernize-use-default-member-init)
 
       explicit parameter_traits( const char v ) noexcept
          : m_value{ v, '\0' }

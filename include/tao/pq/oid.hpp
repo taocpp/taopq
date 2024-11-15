@@ -5,7 +5,7 @@
 #ifndef TAO_PQ_OID_HPP
 #define TAO_PQ_OID_HPP
 
-#include <libpq-fe.h>
+#include <libpq-fe.h>  // NOLINT(misc-include-cleaner)
 
 namespace tao::pq
 {

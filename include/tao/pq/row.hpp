@@ -13,7 +13,6 @@
 #include <stdexcept>
 #include <string>
 #include <tuple>
-#include <type_traits>
 #include <utility>
 
 #include <tao/pq/field.hpp>

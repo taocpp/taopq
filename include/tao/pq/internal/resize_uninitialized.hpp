@@ -38,7 +38,7 @@ namespace tao::pq::internal
       // so you can reference private members and forward them to the above proxy!
       template struct string_proxy< std::string, &std::string::__set_size >;
 
-#elif defined( _GLIBCXX_STRING ) && _GLIBCXX_USE_CXX11_ABI
+#elif defined( _GLIBCXX_STRING ) && _GLIBCXX_USE_CXX11_ABI  // NOLINT(misc-include-cleaner)
 
       template< typename T, auto F >
       struct string_proxy

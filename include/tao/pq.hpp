@@ -5,6 +5,8 @@
 #ifndef TAO_PQ_HPP
 #define TAO_PQ_HPP
 
+// NOLINTBEGIN(misc-include-cleaner)
+
 #include <tao/pq/version.hpp>
 
 #include <tao/pq/binary.hpp>
@@ -37,5 +39,7 @@
 #include <tao/pq/table_writer.hpp>
 
 #include <tao/pq/large_object.hpp>
+
+// NOLINTEND(misc-include-cleaner)
 
 #endif
