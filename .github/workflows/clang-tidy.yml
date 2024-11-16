@@ -21,6 +21,4 @@ jobs:
 
     - run: sudo apt-get install -yq clang-tidy libpq-dev
 
-    - run: find include/ -name '*.hpp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++20 -Iinclude -I$(pg_config --includedir)
-
-    - run: find src/ -name '*.cpp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++20 -Iinclude -I$(pg_config --includedir)
+    - run: find include/ src/ -name '*.?pp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++20 -Iinclude -I$(pg_config --includedir)
