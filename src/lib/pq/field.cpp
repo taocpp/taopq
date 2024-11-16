@@ -3,6 +3,10 @@
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
 #include <tao/pq/field.hpp>
+
+#include <cstddef>
+#include <string>
+
 #include <tao/pq/row.hpp>
 
 namespace tao::pq

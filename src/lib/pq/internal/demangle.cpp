@@ -2,13 +2,15 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+#include <tao/pq/internal/demangle.hpp>
+
+#include <string>
+
 #if !defined( _WIN32 )
 #include <cstdlib>
 #include <cxxabi.h>
 #include <memory>
 #endif
-
-#include <tao/pq/internal/demangle.hpp>
 
 namespace tao::pq::internal
 {

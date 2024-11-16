@@ -4,6 +4,17 @@
 
 #include <tao/pq/connection_pool.hpp>
 
+#include <chrono>
+#include <functional>
+#include <memory>
+#include <optional>
+#include <string_view>
+#include <utility>
+
+#include <tao/pq/connection.hpp>
+#include <tao/pq/internal/poll.hpp>
+#include <tao/pq/poll.hpp>
+
 namespace tao::pq
 {
    auto connection_pool::v_create() const -> std::unique_ptr< pq::connection >

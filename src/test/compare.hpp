@@ -12,7 +12,7 @@
 namespace tao::pq::internal
 {
    template< typename T, typename U >
-   [[nodiscard]] bool compare( const T& lhs, const U& rhs ) noexcept
+   [[nodiscard]] auto compare( const T& lhs, const U& rhs ) noexcept -> bool
    {
       if( lhs.size() != rhs.size() ) {
          return false;

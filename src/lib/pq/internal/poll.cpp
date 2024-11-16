@@ -8,6 +8,7 @@
 #include <cerrno>
 #include <cstring>
 #include <format>
+#include <string.h>
 #include <string>
 
 #if defined( _WIN32 )
@@ -18,6 +19,7 @@
 
 #include <tao/pq/exception.hpp>
 #include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/poll.hpp>
 
 namespace tao::pq::internal
 {

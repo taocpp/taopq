@@ -4,10 +4,12 @@
 
 #include <tao/pq/result_traits.hpp>
 
+#include <cstddef>
 #include <cstring>
 #include <stdexcept>
 #include <string>
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/internal/from_chars.hpp>
 #include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/internal/strtox.hpp>

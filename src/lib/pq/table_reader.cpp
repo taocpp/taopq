@@ -4,9 +4,14 @@
 
 #include <tao/pq/table_reader.hpp>
 
+#include <cassert>
 #include <chrono>
 #include <cstring>
+#include <stdexcept>
+#include <string_view>
 #include <tuple>
+
+#include <libpq-fe.h>
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/exception.hpp>

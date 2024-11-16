@@ -2,15 +2,20 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-#include <cassert>
-#include <charconv>
-#include <format>
-
-#include <tao/pq/exception.hpp>
 #include <tao/pq/result.hpp>
 
+#include <cassert>
+#include <cstddef>
+#include <format>
+#include <stdexcept>
+#include <string>
+
+#include <libpq-fe.h>
+
+#include <tao/pq/exception.hpp>
 #include <tao/pq/internal/from_chars.hpp>
 #include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/internal/zsv.hpp>
 
 namespace tao::pq
 {

@@ -5,6 +5,9 @@
 #include <tao/pq/table_writer.hpp>
 
 #include <chrono>
+#include <cstddef>
+#include <memory>
+#include <string_view>
 #include <tuple>
 
 #include <libpq-fe.h>

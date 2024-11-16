@@ -4,6 +4,9 @@
 
 #include <tao/pq/parameter_traits.hpp>
 
+#include <string>
+#include <string_view>
+
 namespace tao::pq::internal
 {
    void array_append( std::string& buffer, std::string_view data )

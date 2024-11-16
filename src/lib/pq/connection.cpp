@@ -6,18 +6,31 @@
 
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 #include <cstring>
+#include <exception>
 #include <format>
+#include <functional>
 #include <memory>
+#include <optional>
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <utility>
 
+#include <libpq-fe.h>
+
+#include <tao/pq/access_mode.hpp>
+#include <tao/pq/connection_status.hpp>
 #include <tao/pq/exception.hpp>
+#include <tao/pq/internal/poll.hpp>
 #include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/oid.hpp>
+#include <tao/pq/poll.hpp>
 #include <tao/pq/result.hpp>
+#include <tao/pq/transaction_status.hpp>
 
 namespace tao::pq
 {

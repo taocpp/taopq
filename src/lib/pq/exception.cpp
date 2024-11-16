@@ -4,6 +4,11 @@
 
 #include <tao/pq/exception.hpp>
 
+#include <stdexcept>
+#include <string_view>
+
+#include <libpq-fe.h>
+
 namespace tao::pq
 {
    sql_error::sql_error( const char* what, const std::string_view in_sqlstate )

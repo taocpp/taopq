@@ -2,11 +2,19 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-#include <stdexcept>
+#include <tao/pq/transaction.hpp>
+
+#include <chrono>
+#include <cstdio>
+#include <exception>
+#include <memory>
+#include <utility>
+
+#include <libpq-fe.h>
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/oid.hpp>
-#include <tao/pq/transaction.hpp>
+#include <tao/pq/result.hpp>
 
 namespace tao::pq
 {

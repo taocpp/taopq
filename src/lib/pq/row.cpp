@@ -2,11 +2,16 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-#include <tao/pq/result.hpp>
 #include <tao/pq/row.hpp>
 
 #include <cassert>
+#include <cstddef>
 #include <format>
+#include <stdexcept>
+#include <string>
+
+#include <tao/pq/internal/zsv.hpp>
+#include <tao/pq/result.hpp>
 
 namespace tao::pq
 {
