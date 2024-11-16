@@ -24,7 +24,6 @@ Checks: >-
   misc-*,
   -misc-non-private-member-variables-in-classes,
   -misc-unused-alias-decls,
-#  -misc-include-cleaner,
   modernize-*,
   -modernize-avoid-c-arrays,
   -modernize-concat-nested-namespaces,
