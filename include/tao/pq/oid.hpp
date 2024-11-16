@@ -11,7 +11,7 @@ namespace tao::pq
 {
    static_assert( InvalidOid == 0 );
 
-   enum class oid : Oid
+   enum class oid : Oid  // NOLINT(performance-enum-size)
    {
       invalid = 0,
       bytea = 17,
