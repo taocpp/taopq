@@ -5,6 +5,11 @@
 # Distributed under the Boost Software License, Version 1.0.
 # (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
+# Note: The misc-include-cleaner is generally useful,
+# but produces false positives with Oid/InvalidOid and libpq-fe.h.
+# For that reason it is disabled, but it should be enabled
+# manually from time to time.
+
 Checks: >-
   bugprone-*,
   -bugprone-easily-swappable-parameters,
@@ -19,6 +24,7 @@ Checks: >-
   misc-*,
   -misc-non-private-member-variables-in-classes,
   -misc-unused-alias-decls,
+  -misc-include-cleaner,
   modernize-*,
   -modernize-avoid-c-arrays,
   -modernize-concat-nested-namespaces,
