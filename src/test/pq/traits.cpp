@@ -60,7 +60,7 @@ namespace example
       {}
    };
 
-   [[nodiscard]] auto to_taopq( const user3& v ) noexcept
+   [[nodiscard]] auto to_taopq( const user3& v ) noexcept  // NOLINT(misc-use-internal-linkage)
    {
       return std::tie( v.a, v.b, v.c, v.d );
    }
@@ -81,81 +81,85 @@ struct tao::pq::bind< example::user2 >
    }
 };
 
-void run()
+namespace
 {
-   const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
-
-   connection->execute( "DROP TABLE IF EXISTS tao_traits_test" );
-   connection->execute( "CREATE TABLE tao_traits_test ( a INTEGER PRIMARY KEY, b INTEGER, c INTEGER, d INTEGER )" );
-
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( 1, 2, 3, 4 )" ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", 2, 3, 4, 5 ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", 3, std::make_pair( 4, 5 ), 6 ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", std::make_tuple( 4, 5 ), std::make_tuple( 6, 7 ) ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", std::make_tuple( 5, std::make_pair( 6, 7 ), 8 ) ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user( 6 ) ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user2( 7 ) ) );
-
-   const auto result = connection->execute( "SELECT * FROM tao_traits_test" );
-   TEST_ASSERT( result.size() == 7 );
-
-   for( const auto& row : result ) {
-      {
-         const auto v = row.tuple< int, int, int, int >();
-         TEST_ASSERT( std::get< 1 >( v ) == std::get< 0 >( v ) + 1 );
-         TEST_ASSERT( std::get< 2 >( v ) == std::get< 1 >( v ) + 1 );
-         TEST_ASSERT( std::get< 3 >( v ) == std::get< 2 >( v ) + 1 );
-      }
-      {
-         const auto v = row.tuple< std::tuple< int, int >, std::tuple< int, int > >();
-         TEST_ASSERT( std::get< 1 >( std::get< 0 >( v ) ) == std::get< 0 >( std::get< 0 >( v ) ) + 1 );
-         TEST_ASSERT( std::get< 0 >( std::get< 1 >( v ) ) == std::get< 1 >( std::get< 0 >( v ) ) + 1 );
-         TEST_ASSERT( std::get< 1 >( std::get< 1 >( v ) ) == std::get< 0 >( std::get< 1 >( v ) ) + 1 );
-      }
-      {
-         const auto v = row.tuple< int, std::tuple< int, int >, int >();
-         TEST_ASSERT( std::get< 0 >( std::get< 1 >( v ) ) == std::get< 0 >( v ) + 1 );
-         TEST_ASSERT( std::get< 1 >( std::get< 1 >( v ) ) == std::get< 0 >( std::get< 1 >( v ) ) + 1 );
-         TEST_ASSERT( std::get< 2 >( v ) == std::get< 1 >( std::get< 1 >( v ) ) + 1 );
-      }
-      {
-         const auto [ a, b, c, d ] = row.tuple< int, int, int, int >();
-         TEST_ASSERT( b == a + 1 );
-         TEST_ASSERT( c == b + 1 );
-         TEST_ASSERT( d == c + 1 );
-      }
-   }
-
-   TEST_EXECUTE( connection->execute( "DELETE FROM tao_traits_test" ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user( 8 ) ) );
+   void run()
    {
-      const auto user = connection->execute( "SELECT * FROM tao_traits_test" ).as< example::user >();
-      TEST_ASSERT( user.a == 8 );
-      TEST_ASSERT( user.b == 9 );
-      TEST_ASSERT( user.c == 10 );
-      TEST_ASSERT( user.d == 11 );
+      const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
+
+      connection->execute( "DROP TABLE IF EXISTS tao_traits_test" );
+      connection->execute( "CREATE TABLE tao_traits_test ( a INTEGER PRIMARY KEY, b INTEGER, c INTEGER, d INTEGER )" );
+
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( 1, 2, 3, 4 )" ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", 2, 3, 4, 5 ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", 3, std::make_pair( 4, 5 ), 6 ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", std::make_tuple( 4, 5 ), std::make_tuple( 6, 7 ) ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", std::make_tuple( 5, std::make_pair( 6, 7 ), 8 ) ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user( 6 ) ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user2( 7 ) ) );
+
+      const auto result = connection->execute( "SELECT * FROM tao_traits_test" );
+      TEST_ASSERT( result.size() == 7 );
+
+      for( const auto& row : result ) {
+         {
+            const auto v = row.tuple< int, int, int, int >();
+            TEST_ASSERT( std::get< 1 >( v ) == std::get< 0 >( v ) + 1 );
+            TEST_ASSERT( std::get< 2 >( v ) == std::get< 1 >( v ) + 1 );
+            TEST_ASSERT( std::get< 3 >( v ) == std::get< 2 >( v ) + 1 );
+         }
+         {
+            const auto v = row.tuple< std::tuple< int, int >, std::tuple< int, int > >();
+            TEST_ASSERT( std::get< 1 >( std::get< 0 >( v ) ) == std::get< 0 >( std::get< 0 >( v ) ) + 1 );
+            TEST_ASSERT( std::get< 0 >( std::get< 1 >( v ) ) == std::get< 1 >( std::get< 0 >( v ) ) + 1 );
+            TEST_ASSERT( std::get< 1 >( std::get< 1 >( v ) ) == std::get< 0 >( std::get< 1 >( v ) ) + 1 );
+         }
+         {
+            const auto v = row.tuple< int, std::tuple< int, int >, int >();
+            TEST_ASSERT( std::get< 0 >( std::get< 1 >( v ) ) == std::get< 0 >( v ) + 1 );
+            TEST_ASSERT( std::get< 1 >( std::get< 1 >( v ) ) == std::get< 0 >( std::get< 1 >( v ) ) + 1 );
+            TEST_ASSERT( std::get< 2 >( v ) == std::get< 1 >( std::get< 1 >( v ) ) + 1 );
+         }
+         {
+            const auto [ a, b, c, d ] = row.tuple< int, int, int, int >();
+            TEST_ASSERT( b == a + 1 );
+            TEST_ASSERT( c == b + 1 );
+            TEST_ASSERT( d == c + 1 );
+         }
+      }
+
+      TEST_EXECUTE( connection->execute( "DELETE FROM tao_traits_test" ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user( 8 ) ) );
+      {
+         const auto user = connection->execute( "SELECT * FROM tao_traits_test" ).as< example::user >();
+         TEST_ASSERT( user.a == 8 );
+         TEST_ASSERT( user.b == 9 );
+         TEST_ASSERT( user.c == 10 );
+         TEST_ASSERT( user.d == 11 );
+      }
+
+      TEST_EXECUTE( connection->execute( "DELETE FROM tao_traits_test" ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user2( 9 ) ) );
+      {
+         const auto user = connection->execute( "SELECT * FROM tao_traits_test" ).as< example::user2 >();
+         TEST_ASSERT( user.a == 9 );
+         TEST_ASSERT( user.b == 10 );
+         TEST_ASSERT( user.c == 11 );
+         TEST_ASSERT( user.d == 12 );
+      }
+
+      TEST_EXECUTE( connection->execute( "DELETE FROM tao_traits_test" ) );
+      TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user3( 10 ) ) );
+      {
+         const auto user = connection->execute( "SELECT * FROM tao_traits_test" ).as< example::user >();
+         TEST_ASSERT( user.a == 10 );
+         TEST_ASSERT( user.b == 11 );
+         TEST_ASSERT( user.c == 12 );
+         TEST_ASSERT( user.d == 13 );
+      }
    }
 
-   TEST_EXECUTE( connection->execute( "DELETE FROM tao_traits_test" ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user2( 9 ) ) );
-   {
-      const auto user = connection->execute( "SELECT * FROM tao_traits_test" ).as< example::user2 >();
-      TEST_ASSERT( user.a == 9 );
-      TEST_ASSERT( user.b == 10 );
-      TEST_ASSERT( user.c == 11 );
-      TEST_ASSERT( user.d == 12 );
-   }
-
-   TEST_EXECUTE( connection->execute( "DELETE FROM tao_traits_test" ) );
-   TEST_EXECUTE( connection->execute( "INSERT INTO tao_traits_test VALUES ( $1, $2, $3, $4 )", example::user3( 10 ) ) );
-   {
-      const auto user = connection->execute( "SELECT * FROM tao_traits_test" ).as< example::user >();
-      TEST_ASSERT( user.a == 10 );
-      TEST_ASSERT( user.b == 11 );
-      TEST_ASSERT( user.c == 12 );
-      TEST_ASSERT( user.d == 13 );
-   }
-}
+}  // namespace
 
 auto main() -> int  //NOLINT(bugprone-exception-escape)
 {
@@ -164,11 +168,11 @@ auto main() -> int  //NOLINT(bugprone-exception-escape)
    }
    // LCOV_EXCL_START
    catch( const std::exception& e ) {
-      std::cerr << "exception: " << e.what() << std::endl;
+      std::cerr << "exception: " << e.what() << '\n';
       throw;
    }
    catch( ... ) {
-      std::cerr << "unknown exception" << std::endl;
+      std::cerr << "unknown exception\n";
       throw;
    }
    // LCOV_EXCL_STOP

@@ -119,8 +119,10 @@ namespace tao::pq
                         throw stacked_diagnostics_accessed_without_active_handler( error_message, sql_state );
                      }
                      throw diagnostics_exception( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case '2':
                switch( sql_state[ 1 ] ) {
@@ -426,8 +428,10 @@ namespace tao::pq
                         throw function_executed_no_return_statement( error_message, sql_state );
                      }
                      throw sql_routine_exception( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case '3':
                switch( sql_state[ 1 ] ) {
@@ -478,8 +482,10 @@ namespace tao::pq
 
                   case 'F':
                      throw invalid_schema_name( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case '4':
                switch( sql_state[ 1 ] ) {
@@ -632,8 +638,10 @@ namespace tao::pq
 
                   case '4':
                      throw with_check_option_violation( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case '5':
                switch( sql_state[ 1 ] ) {
@@ -708,15 +716,19 @@ namespace tao::pq
                         throw duplicate_file( error_message, sql_state );
                      }
                      throw system_error( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case '7':
                switch( sql_state[ 1 ] ) {
                   case '2':
                      throw snapshot_too_old( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case 'F':
                switch( sql_state[ 1 ] ) {
@@ -725,8 +737,10 @@ namespace tao::pq
                         throw lock_file_exists( error_message, sql_state );
                      }
                      throw config_file_error( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case 'H':
                switch( sql_state[ 1 ] ) {
@@ -810,8 +824,10 @@ namespace tao::pq
                         throw fdw_invalid_descriptor_field_identifier( error_message, sql_state );
                      }
                      throw fdw_error( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case 'P':
                switch( sql_state[ 1 ] ) {
@@ -829,8 +845,10 @@ namespace tao::pq
                         throw assert_failure( error_message, sql_state );
                      }
                      throw plpgsql_error( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
 
             case 'X':
                switch( sql_state[ 1 ] ) {
@@ -842,10 +860,14 @@ namespace tao::pq
                         throw index_corrupted( error_message, sql_state );
                      }
                      throw internal_error( error_message, sql_state );
+
+                  default:
+                     throw sql_error( error_message, sql_state );
                }
-               break;
+
+            default:
+               throw sql_error( error_message, sql_state );
          }
-         throw sql_error( error_message, sql_state );
          // LCOV_EXCL_STOP
       }
 

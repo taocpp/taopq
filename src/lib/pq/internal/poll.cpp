@@ -83,7 +83,11 @@ namespace tao::pq::internal
 #else
 
       const short events = POLLIN | ( wait_for_write ? POLLOUT : 0 );
-      pollfd pfd = { socket, events, 0 };
+      pollfd pfd = {
+         .fd = socket,
+         .events = events,
+         .revents = 0
+      };
       errno = 0;
       const auto result = ::poll( &pfd, 1, timeout_ms );
       switch( result ) {

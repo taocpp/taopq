@@ -38,14 +38,14 @@ namespace tao::pq
             throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
          }
 
-         const auto size = input / 2 - 1;
+         const auto size = ( input / 2 ) - 1;
 
          binary nrv;
          internal::resize_uninitialized( nrv, size );
 
          for( std::size_t pos = 0; pos < size; ++pos ) {
-            const auto high = unhex( value[ 2 + 2 * pos ] );
-            const auto low = unhex( value[ 2 + 2 * pos + 1 ] );
+            const auto high = unhex( value[ 2 + ( 2 * pos ) ] );
+            const auto low = unhex( value[ 2 + ( 2 * pos ) + 1 ] );
             nrv[ pos ] = static_cast< std::byte >( ( high << 4 ) | low );
          }
          return nrv;

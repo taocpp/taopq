@@ -6,56 +6,60 @@
 
 #include <tao/pq/internal/resize_uninitialized.hpp>
 
-void test( std::string& s, const std::size_t size )
+namespace
 {
-   tao::pq::internal::resize_uninitialized( s, size );
-   TEST_ASSERT( s.size() == size );
-   TEST_ASSERT( s[ size ] == '\0' );
-}
+   void test( std::string& s, const std::size_t size )
+   {
+      tao::pq::internal::resize_uninitialized( s, size );
+      TEST_ASSERT( s.size() == size );
+      TEST_ASSERT( s[ size ] == '\0' );
+   }
 
-void run()
-{
-   std::string s = "hello";
-   test( s, 2 );
-   TEST_ASSERT( s[ 0 ] == 'h' );
-   TEST_ASSERT( s[ 1 ] == 'e' );
+   void run()
+   {
+      std::string s = "hello";
+      test( s, 2 );
+      TEST_ASSERT( s[ 0 ] == 'h' );
+      TEST_ASSERT( s[ 1 ] == 'e' );
 
-   test( s, 5 );
-   TEST_ASSERT( s[ 0 ] == 'h' );
-   TEST_ASSERT( s[ 1 ] == 'e' );
+      test( s, 5 );
+      TEST_ASSERT( s[ 0 ] == 'h' );
+      TEST_ASSERT( s[ 1 ] == 'e' );
 
-   test( s, 32 );
-   TEST_ASSERT( s[ 0 ] == 'h' );
-   TEST_ASSERT( s[ 1 ] == 'e' );
+      test( s, 32 );
+      TEST_ASSERT( s[ 0 ] == 'h' );
+      TEST_ASSERT( s[ 1 ] == 'e' );
 
-   test( s, 1000000000 );
-   TEST_ASSERT( s[ 0 ] == 'h' );
-   TEST_ASSERT( s[ 1 ] == 'e' );
+      test( s, 1000000000 );
+      TEST_ASSERT( s[ 0 ] == 'h' );
+      TEST_ASSERT( s[ 1 ] == 'e' );
 
-   test( s, 2 );
-   TEST_ASSERT( s[ 0 ] == 'h' );
-   TEST_ASSERT( s[ 1 ] == 'e' );
+      test( s, 2 );
+      TEST_ASSERT( s[ 0 ] == 'h' );
+      TEST_ASSERT( s[ 1 ] == 'e' );
 
-   std::vector< std::byte > v = { static_cast< std::byte >( 42 ), static_cast< std::byte >( 69 ) };
-   TEST_ASSERT( v.size() == 2 );
-   TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
-   TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
+      std::vector< std::byte > v = { static_cast< std::byte >( 42 ), static_cast< std::byte >( 69 ) };
+      TEST_ASSERT( v.size() == 2 );
+      TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
+      TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
 
-   tao::pq::internal::resize_uninitialized( v, 5 );
-   TEST_ASSERT( v.size() == 5 );
-   TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
-   TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
+      tao::pq::internal::resize_uninitialized( v, 5 );
+      TEST_ASSERT( v.size() == 5 );
+      TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
+      TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
 
-   tao::pq::internal::resize_uninitialized( v, 1000000000 );
-   TEST_ASSERT( v.size() == 1000000000 );
-   TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
-   TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
+      tao::pq::internal::resize_uninitialized( v, 1000000000 );
+      TEST_ASSERT( v.size() == 1000000000 );
+      TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
+      TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
 
-   tao::pq::internal::resize_uninitialized( v, 2 );
-   TEST_ASSERT( v.size() == 2 );
-   TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
-   TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
-}
+      tao::pq::internal::resize_uninitialized( v, 2 );
+      TEST_ASSERT( v.size() == 2 );
+      TEST_ASSERT( v[ 0 ] == static_cast< std::byte >( 42 ) );
+      TEST_ASSERT( v[ 1 ] == static_cast< std::byte >( 69 ) );
+   }
+
+}  // namespace
 
 auto main() -> int
 {
@@ -64,11 +68,11 @@ auto main() -> int
    }
    // LCOV_EXCL_START
    catch( const std::exception& e ) {
-      std::cerr << "exception: " << e.what() << std::endl;
+      std::cerr << "exception: " << e.what() << '\n';
       throw;
    }
    catch( ... ) {
-      std::cerr << "unknown exception" << std::endl;
+      std::cerr << "unknown exception\n";
       throw;
    }
    // LCOV_EXCL_STOP

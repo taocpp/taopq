@@ -7,24 +7,28 @@
 
 #include <tao/pq/connection.hpp>
 
-void run()
+namespace
 {
-   // overwrite the default with an environment variable if needed
-   const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );
-   const auto connection = tao::pq::connection::create( connection_string );
-   connection->execute( "DROP TABLE IF EXISTS tao_exception_test" );
+   void run()
+   {
+      // overwrite the default with an environment variable if needed
+      const auto connection_string = tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" );
+      const auto connection = tao::pq::connection::create( connection_string );
+      connection->execute( "DROP TABLE IF EXISTS tao_exception_test" );
 
-   TEST_THROWS( connection->execute( "SELECT a FROM tao_exception_test" ) );
+      TEST_THROWS( connection->execute( "SELECT a FROM tao_exception_test" ) );
 
-   connection->execute( "CREATE TABLE tao_exception_test ( a TEXT PRIMARY KEY, b TEXT NOT NULL )" );
+      connection->execute( "CREATE TABLE tao_exception_test ( a TEXT PRIMARY KEY, b TEXT NOT NULL )" );
 
-   TEST_THROWS( connection->execute( "SELECT c FROM tao_exception_test" ) );
+      TEST_THROWS( connection->execute( "SELECT c FROM tao_exception_test" ) );
 
-   TEST_THROWS( connection->execute( "FOO BAR BAZ" ) );
-   TEST_THROWS( connection->execute( "SELECT 1/0" ) );
-   TEST_THROWS( connection->execute( "SELECT * FROM tao_exception_test WHERE a = 42" ) );
-   TEST_THROWS( connection->execute( "SELECT * FROM tao_exception_test WHERE a[0] = 'FOO'" ) );
-}
+      TEST_THROWS( connection->execute( "FOO BAR BAZ" ) );
+      TEST_THROWS( connection->execute( "SELECT 1/0" ) );
+      TEST_THROWS( connection->execute( "SELECT * FROM tao_exception_test WHERE a = 42" ) );
+      TEST_THROWS( connection->execute( "SELECT * FROM tao_exception_test WHERE a[0] = 'FOO'" ) );
+   }
+
+}  // namespace
 
 auto main() -> int  // NOLINT(bugprone-exception-escape)
 {
@@ -33,11 +37,11 @@ auto main() -> int  // NOLINT(bugprone-exception-escape)
    }
    // LCOV_EXCL_START
    catch( const std::exception& e ) {
-      std::cerr << "exception: " << e.what() << std::endl;
+      std::cerr << "exception: " << e.what() << '\n';
       throw;
    }
    catch( ... ) {
-      std::cerr << "unknown exception" << std::endl;
+      std::cerr << "unknown exception\n";
       throw;
    }
    // LCOV_EXCL_STOP

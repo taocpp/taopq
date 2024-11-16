@@ -122,7 +122,7 @@ namespace tao::pq
    auto result::get( const std::size_t row, const std::size_t column ) const -> const char*
    {
       if( is_null( row, column ) ) {
-         throw std::runtime_error( std::format( "unexpected NULL value in row {} column {}/'{}'", row, column, name( column ).c_str() ) );
+         throw std::runtime_error( std::format( "unexpected NULL value in row {} column {}/'{}'", row, column, name( column ) ) );
       }
       return PQgetvalue( m_pgresult.get(), static_cast< int >( row ), static_cast< int >( column ) );
    }

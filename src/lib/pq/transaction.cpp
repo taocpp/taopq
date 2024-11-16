@@ -29,10 +29,10 @@ namespace tao::pq
                   rollback();
                }
                // LCOV_EXCL_START
-               catch( const std::exception& ) {
+               catch( const std::exception& ) {  // NOLINT(bugprone-empty-catch)
                   // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
                }
-               catch( ... ) {
+               catch( ... ) {  // NOLINT(bugprone-empty-catch)
                   // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
                }
                // LCOV_EXCL_STOP
@@ -75,7 +75,7 @@ namespace tao::pq
                   rollback();
                }
                // LCOV_EXCL_START
-               catch( ... ) {
+               catch( ... ) {  // NOLINT(bugprone-empty-catch)
                   // TODO: How to handle this case properly?
                }
                // LCOV_EXCL_STOP

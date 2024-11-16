@@ -436,7 +436,7 @@ namespace tao::pq
          // generate bytea hex format
          constexpr char hex[] = "0123456789abcdef";
          auto pos = data.size();
-         internal::resize_uninitialized( data, pos + 3 + 2 * m_v.size() );
+         internal::resize_uninitialized( data, pos + 3 + ( 2 * m_v.size() ) );
          data[ pos++ ] = '\\';
          data[ pos++ ] = '\\';
          data[ pos++ ] = 'x';

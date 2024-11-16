@@ -4,6 +4,7 @@
 
 #include <tao/pq/connection.hpp>
 
+#include <algorithm>
 #include <cctype>
 #include <cstring>
 #include <format>
@@ -76,35 +77,39 @@ namespace tao::pq
          {}
       };
 
-      [[nodiscard]] inline auto isolation_level_extension( const isolation_level il ) -> const char*
+      namespace
       {
-         switch( il ) {
-            case isolation_level::default_isolation_level:
-               return "";
-            case isolation_level::serializable:
-               return " ISOLATION LEVEL SERIALIZABLE";
-            case isolation_level::repeatable_read:
-               return " ISOLATION LEVEL REPEATABLE READ";
-            case isolation_level::read_committed:
-               return " ISOLATION LEVEL READ COMMITTED";
-            case isolation_level::read_uncommitted:
-               return " ISOLATION LEVEL READ UNCOMMITTED";
+         [[nodiscard]] inline auto isolation_level_extension( const isolation_level il ) -> const char*
+         {
+            switch( il ) {
+               case isolation_level::default_isolation_level:
+                  return "";
+               case isolation_level::serializable:
+                  return " ISOLATION LEVEL SERIALIZABLE";
+               case isolation_level::repeatable_read:
+                  return " ISOLATION LEVEL REPEATABLE READ";
+               case isolation_level::read_committed:
+                  return " ISOLATION LEVEL READ COMMITTED";
+               case isolation_level::read_uncommitted:
+                  return " ISOLATION LEVEL READ UNCOMMITTED";
+            }
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
-         TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
-      }
 
-      [[nodiscard]] inline auto access_mode_extension( const access_mode am ) -> const char*
-      {
-         switch( am ) {
-            case access_mode::default_access_mode:
-               return "";
-            case access_mode::read_write:
-               return " READ WRITE";
-            case access_mode::read_only:
-               return " READ ONLY";
+         [[nodiscard]] inline auto access_mode_extension( const access_mode am ) -> const char*
+         {
+            switch( am ) {
+               case access_mode::default_access_mode:
+                  return "";
+               case access_mode::read_write:
+                  return " READ WRITE";
+               case access_mode::read_only:
+                  return " READ ONLY";
+            }
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
          }
-         TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
-      }
+
+      }  // namespace
 
       class top_level_transaction final
          : public transaction_base
@@ -113,7 +118,7 @@ namespace tao::pq
          top_level_transaction( const std::shared_ptr< pq::connection >& connection, const isolation_level il, const access_mode am )
             : transaction_base( connection )
          {
-            this->execute( std::string( "START TRANSACTION" ) + isolation_level_extension( il ) + access_mode_extension( am ) );
+            this->execute( std::format( "START TRANSACTION{}{}", isolation_level_extension( il ), access_mode_extension( am ) ) );
          }
 
          ~top_level_transaction() override
@@ -123,10 +128,10 @@ namespace tao::pq
                   rollback();
                }
                // LCOV_EXCL_START
-               catch( const std::exception& ) {
+               catch( const std::exception& ) {  // NOLINT(bugprone-empty-catch)
                   // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
                }
-               catch( ... ) {
+               catch( ... ) {  // NOLINT(bugprone-empty-catch)
                   // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
                }
                // LCOV_EXCL_STOP
@@ -155,10 +160,14 @@ namespace tao::pq
          }
       };
 
-      [[nodiscard]] constexpr auto is_identifier( const std::string_view value ) noexcept -> bool
+      namespace
       {
-         return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( value[ 0 ] ) == 0 );
-      }
+         [[nodiscard]] constexpr auto is_identifier( const std::string_view value ) noexcept -> bool
+         {
+            return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( value[ 0 ] ) == 0 );
+         }
+
+      }  // namespace
 
    }  // namespace internal
 
@@ -225,10 +234,7 @@ namespace tao::pq
       while( true ) {
          int timeout_ms = -1;
          if( m_timeout ) {
-            timeout_ms = static_cast< int >( std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count() );
-            if( timeout_ms < 0 ) {
-               timeout_ms = 0;  // LCOV_EXCL_LINE
-            }
+            timeout_ms = std::max( static_cast< int >( std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count() ), 0 );
          }
 
          switch( m_poll( socket(), wait_for_write, timeout_ms ) ) {

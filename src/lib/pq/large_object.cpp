@@ -76,7 +76,7 @@ namespace tao::pq
          close();
       }
       // LCOV_EXCL_START
-      catch( ... ) {
+      catch( ... ) {  // NOLINT(bugprone-empty-catch)
          // TODO: How to handle this case properly?
       }
       // LCOV_EXCL_STOP

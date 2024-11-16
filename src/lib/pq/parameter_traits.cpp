@@ -22,7 +22,7 @@ namespace tao::pq::internal
                buffer += data;
                break;
             }
-            buffer.append( data.data(), n );
+            buffer.append( data.data(), n );  // NOLINT(bugprone-suspicious-stringview-data-usage)
             buffer += '\\';
             buffer += data[ n ];
             data.remove_prefix( n + 1 );
@@ -42,7 +42,7 @@ namespace tao::pq::internal
             buffer += data;
             return;
          }
-         buffer.append( data.data(), n );
+         buffer.append( data.data(), n );  // NOLINT(bugprone-suspicious-stringview-data-usage)
          buffer += '\\';
          buffer += data[ n ];
          data.remove_prefix( n + 1 );

@@ -21,7 +21,7 @@ namespace tao::pq
          try {
             std::ignore = m_transaction->get_result();
          }
-         catch( ... ) {
+         catch( ... ) {  // NOLINT(bugprone-empty-catch)
          }
       }
    }

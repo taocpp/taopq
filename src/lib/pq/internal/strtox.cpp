@@ -76,8 +76,10 @@ namespace tao::pq::internal
                else {
                   throw std::overflow_error( failure_message< T >( input ) );
                }
+
+            default:
+               throw std::runtime_error( std::format( "code should be unreachable, errno: {}, input: \"{}\"", errno, input ) );  // LCOV_EXCL_LINE
          }
-         throw std::runtime_error( std::format( "code should be unreachable, errno: {}, input: \"{}\"", errno, input ) );  // LCOV_EXCL_LINE
       }
 
    }  // namespace

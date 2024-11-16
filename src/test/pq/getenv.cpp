@@ -5,15 +5,19 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
-void run()
+namespace
 {
-   TEST_ASSERT( !tao::pq::internal::getenv( "PATH" ).empty() );
-   TEST_THROWS( tao::pq::internal::getenv( "TAOPQ_DOESNOTEXIST" ) );
+   void run()
+   {
+      TEST_ASSERT( !tao::pq::internal::getenv( "PATH" ).empty() );
+      TEST_THROWS( tao::pq::internal::getenv( "TAOPQ_DOESNOTEXIST" ) );
 
-   TEST_ASSERT( !tao::pq::internal::getenv( "PATH", "" ).empty() );
-   TEST_ASSERT( tao::pq::internal::getenv( "TAOPQ_DOESNOTEXIST", "" ).empty() );
-   TEST_ASSERT( tao::pq::internal::getenv( "TAOPQ_DOESNOTEXIST", "DEFAULT VALUE" ) == "DEFAULT VALUE" );
-}
+      TEST_ASSERT( !tao::pq::internal::getenv( "PATH", "" ).empty() );
+      TEST_ASSERT( tao::pq::internal::getenv( "TAOPQ_DOESNOTEXIST", "" ).empty() );
+      TEST_ASSERT( tao::pq::internal::getenv( "TAOPQ_DOESNOTEXIST", "DEFAULT VALUE" ) == "DEFAULT VALUE" );
+   }
+
+}  // namespace
 
 auto main() -> int
 {
@@ -22,11 +26,11 @@ auto main() -> int
    }
    // LCOV_EXCL_START
    catch( const std::exception& e ) {
-      std::cerr << "exception: " << e.what() << std::endl;
+      std::cerr << "exception: " << e.what() << '\n';
       throw;
    }
    catch( ... ) {
-      std::cerr << "unknown exception" << std::endl;
+      std::cerr << "unknown exception\n";
       throw;
    }
    // LCOV_EXCL_STOP
