@@ -5,11 +5,13 @@
 #ifndef TAO_PQ_CONNECTION_STATUS_HPP
 #define TAO_PQ_CONNECTION_STATUS_HPP
 
+#include <cstdint>
+
 #include <libpq-fe.h>
 
 namespace tao::pq
 {
-   enum class connection_status
+   enum class connection_status : std::uint8_t
    {
       ok = CONNECTION_OK,
       bad = CONNECTION_BAD

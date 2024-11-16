@@ -5,9 +5,11 @@
 #ifndef TAO_PQ_POLL_HPP
 #define TAO_PQ_POLL_HPP
 
+#include <cstdint>
+
 namespace tao::pq::poll
 {
-   enum class status
+   enum class status : std::uint8_t
    {
       timeout,
       readable,

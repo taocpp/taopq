@@ -5,9 +5,11 @@
 #ifndef TAO_PQ_ACCESS_MODE_HPP
 #define TAO_PQ_ACCESS_MODE_HPP
 
+#include <cstdint>
+
 namespace tao::pq
 {
-   enum class access_mode
+   enum class access_mode : std::uint8_t
    {
       default_access_mode,
       read_write,

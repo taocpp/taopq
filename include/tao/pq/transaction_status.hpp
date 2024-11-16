@@ -5,11 +5,13 @@
 #ifndef TAO_PQ_TRANSACTION_STATUS_HPP
 #define TAO_PQ_TRANSACTION_STATUS_HPP
 
+#include <cstdint>
+
 #include <libpq-fe.h>
 
 namespace tao::pq
 {
-   enum class transaction_status
+   enum class transaction_status : std::uint8_t
    {
       idle = PQTRANS_IDLE,
       in_transaction = PQTRANS_INTRANS,

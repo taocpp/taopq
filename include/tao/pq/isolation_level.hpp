@@ -5,9 +5,11 @@
 #ifndef TAO_PQ_ISOLATION_LEVEL_HPP
 #define TAO_PQ_ISOLATION_LEVEL_HPP
 
+#include <cstdint>
+
 namespace tao::pq
 {
-   enum class isolation_level
+   enum class isolation_level : std::uint8_t
    {
       default_isolation_level,
       serializable,
