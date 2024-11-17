@@ -9,10 +9,11 @@ auto main() -> int {}
 #include "../macros.hpp"
 
 #include <cmath>
+#include <exception>
 #include <format>
+#include <iostream>
 #include <stdexcept>
 #include <tuple>
-#include <typeinfo>
 
 #include <tao/pq/internal/strtox.hpp>
 

@@ -5,7 +5,17 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <atomic>
+#include <chrono>
+#include <cstddef>
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <stdexcept>
+
 #include <tao/pq/connection_pool.hpp>
+#include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/poll.hpp>
 
 namespace
 {

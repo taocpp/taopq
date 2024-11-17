@@ -5,7 +5,8 @@
 #include <cstddef>
 #include <exception>
 #include <iostream>
-#include <memory>
+#include <optional>
+#include <tuple>
 
 #include "../getenv.hpp"
 #include "../macros.hpp"

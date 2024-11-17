@@ -6,6 +6,12 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <cstddef>
+#include <exception>
+#include <iostream>
+#include <optional>
+#include <string_view>
+
 #include <tao/pq.hpp>
 
 namespace

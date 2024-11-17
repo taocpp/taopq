@@ -8,7 +8,6 @@
 #include <cerrno>
 #include <cstring>
 #include <format>
-#include <string.h>
 #include <string>
 
 #if defined( _WIN32 )

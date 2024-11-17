@@ -5,6 +5,9 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <exception>
+#include <iostream>
+
 namespace
 {
    void run()

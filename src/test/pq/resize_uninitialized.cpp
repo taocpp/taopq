@@ -4,6 +4,12 @@
 
 #include "../macros.hpp"
 
+#include <cstddef>
+#include <exception>
+#include <iostream>
+#include <string>
+#include <vector>
+
 #include <tao/pq/internal/resize_uninitialized.hpp>
 
 namespace

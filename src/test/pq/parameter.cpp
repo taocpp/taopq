@@ -5,7 +5,10 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <exception>
 #include <iostream>
+#include <utility>
+
 #include <tao/pq.hpp>
 
 namespace

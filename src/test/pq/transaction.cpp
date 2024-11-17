@@ -5,9 +5,14 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <exception>
+#include <iostream>
+#include <memory>
 #include <tuple>
 
+#include <tao/pq/access_mode.hpp>
 #include <tao/pq/connection.hpp>
+#include <tao/pq/isolation_level.hpp>
 
 namespace
 {

@@ -5,6 +5,11 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <exception>
+#include <iostream>
+#include <tuple>
+#include <utility>
+
 #include <tao/pq.hpp>
 
 namespace example

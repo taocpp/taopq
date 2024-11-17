@@ -5,6 +5,12 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <exception>
+#include <iostream>
+#include <optional>
+#include <tuple>
+#include <utility>
+
 #include <tao/pq/connection.hpp>
 #include <tao/pq/result_traits_optional.hpp>
 #include <tao/pq/result_traits_pair.hpp>

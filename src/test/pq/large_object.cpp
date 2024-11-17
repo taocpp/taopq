@@ -6,7 +6,13 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <exception>
+#include <ios>
+#include <iostream>
 #include <limits>
+#include <memory>
+#include <string_view>
+#include <utility>
 
 #include <tao/pq/binary.hpp>
 #include <tao/pq/connection.hpp>

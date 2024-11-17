@@ -5,6 +5,10 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <cstddef>
+#include <exception>
+#include <iostream>
+
 #include <tao/pq/connection.hpp>
 
 #if defined( _WIN32 )

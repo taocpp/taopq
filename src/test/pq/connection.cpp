@@ -5,9 +5,16 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <chrono>
+#include <exception>
+#include <iostream>
+#include <string>
 #include <tuple>
 
+#include <tao/pq/binary.hpp>
 #include <tao/pq/connection.hpp>
+#include <tao/pq/internal/unreachable.hpp>
+#include <tao/pq/poll.hpp>
 
 namespace
 {

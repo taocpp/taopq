@@ -7,17 +7,20 @@
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <cstdio>
 #include <ios>
 #include <memory>
 #include <stdexcept>
 #include <string>
 #include <utility>
 
+#include <libpq-fe.h>
 #include <libpq/libpq-fs.h>
 
 #include <tao/pq/binary.hpp>
 #include <tao/pq/connection.hpp>
 #include <tao/pq/internal/resize_uninitialized.hpp>
+#include <tao/pq/oid.hpp>
 #include <tao/pq/transaction.hpp>
 
 namespace tao::pq

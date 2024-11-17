@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <exception>
 #include <memory>
+#include <stdexcept>
 #include <utility>
 
 #include <libpq-fe.h>

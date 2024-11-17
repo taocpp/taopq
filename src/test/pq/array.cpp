@@ -5,6 +5,13 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
+#include <array>
+#include <exception>
+#include <iostream>
+#include <optional>
+#include <string>
+#include <vector>
+
 #include <tao/pq.hpp>
 
 namespace
