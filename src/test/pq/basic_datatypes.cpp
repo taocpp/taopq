@@ -14,8 +14,7 @@
 #include "../getenv.hpp"
 #include "../macros.hpp"
 
-#include <tao/pq/binary.hpp>
-#include <tao/pq/connection.hpp>
+#include <tao/pq.hpp>
 
 namespace
 {

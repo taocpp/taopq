@@ -22,6 +22,7 @@ Checks: >-
   google-readability-casting,
   llvm-*,
   misc-*,
+  -misc-include-cleaner,
   -misc-non-private-member-variables-in-classes,
   -misc-unused-alias-decls,
   modernize-*,

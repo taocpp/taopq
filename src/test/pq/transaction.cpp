@@ -10,9 +10,7 @@
 #include <memory>
 #include <tuple>
 
-#include <tao/pq/access_mode.hpp>
-#include <tao/pq/connection.hpp>
-#include <tao/pq/isolation_level.hpp>
+#include <tao/pq.hpp>
 
 namespace
 {

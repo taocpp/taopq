@@ -11,10 +11,7 @@
 #include <string>
 #include <tuple>
 
-#include <tao/pq/binary.hpp>
-#include <tao/pq/connection.hpp>
-#include <tao/pq/internal/unreachable.hpp>
-#include <tao/pq/poll.hpp>
+#include <tao/pq.hpp>
 
 namespace
 {

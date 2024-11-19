@@ -13,6 +13,7 @@ auto main() -> int {}
 #include <format>
 #include <iostream>
 #include <stdexcept>
+#include <string>
 #include <tuple>
 
 #include <tao/pq/internal/strtox.hpp>

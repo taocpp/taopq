@@ -9,7 +9,7 @@
 #include <exception>
 #include <iostream>
 
-#include <tao/pq/connection.hpp>
+#include <tao/pq.hpp>
 
 #if defined( _WIN32 )
 #include <winsock.h>

@@ -13,9 +13,7 @@
 #include <memory>
 #include <stdexcept>
 
-#include <tao/pq/connection_pool.hpp>
-#include <tao/pq/internal/unreachable.hpp>
-#include <tao/pq/poll.hpp>
+#include <tao/pq.hpp>
 
 namespace
 {

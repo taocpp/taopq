@@ -14,9 +14,7 @@
 #include <string_view>
 #include <utility>
 
-#include <tao/pq/binary.hpp>
-#include <tao/pq/connection.hpp>
-#include <tao/pq/large_object.hpp>
+#include <tao/pq.hpp>
 
 namespace
 {
