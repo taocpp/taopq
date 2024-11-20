@@ -12,6 +12,7 @@
 #include <tao/pq/binary.hpp>
 #include <tao/pq/internal/from_chars.hpp>
 #include <tao/pq/internal/resize_uninitialized.hpp>
+#include <tao/pq/internal/strtox.hpp>
 
 namespace tao::pq
 {
@@ -127,17 +128,17 @@ namespace tao::pq
 
    auto result_traits< float >::from( const char* value ) -> float
    {
-      return internal::from_chars< float >( value );
+      return internal::strtof( value );
    }
 
    auto result_traits< double >::from( const char* value ) -> double
    {
-      return internal::from_chars< double >( value );
+      return internal::strtod( value );
    }
 
    auto result_traits< long double >::from( const char* value ) -> long double
    {
-      return internal::from_chars< long double >( value );
+      return internal::strtold( value );
    }
 
    auto result_traits< binary >::from( const char* value ) -> binary
