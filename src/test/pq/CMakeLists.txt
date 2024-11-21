@@ -4,7 +4,7 @@ foreach(testsourcefile ${testsources})
   add_executable(${exename} ${testsourcefile})
   target_link_libraries(${exename} PRIVATE taocpp::taopq)
   set_target_properties(${exename} PROPERTIES
-    CXX_STANDARD 17
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED ON
     CXX_EXTENSIONS OFF
   )
