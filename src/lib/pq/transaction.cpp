@@ -150,7 +150,7 @@ namespace tao::pq
    }
 
 #if defined( LIBPQ_HAS_CHUNK_MODE )
-   void transaction::set_chunk_mode( const std::size_t rows )
+   void transaction::set_chunk_mode( const int rows )
    {
       check_current_transaction();
       if( PQsetChunkedRowsMode( m_connection->underlying_raw_ptr(), rows ) == 0 ) {

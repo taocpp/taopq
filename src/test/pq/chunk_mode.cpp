@@ -11,6 +11,15 @@
 
 #include <tao/pq.hpp>
 
+#if !defined( LIBPQ_HAS_CHUNK_MODE )
+
+auto main() -> int
+{
+   return 0;
+}
+
+#else
+
 namespace
 {
    void run()
@@ -32,6 +41,8 @@ namespace
       conn->execute( "insert_user", "Bob", 19 );
       conn->execute( "insert_user", "Charlie", 45 );
 
+      std::size_t count = 0;
+
       const auto tr = conn->transaction();
       tr->send( "SELECT name, age FROM tao_single_row_mode" );
       tr->set_chunk_mode( 2 );
@@ -43,10 +54,32 @@ namespace
          }
 
          for( const auto& row : result ) {
+            ++count;
             std::cout << row[ "name" ].as< std::string >() << " is "
                       << row[ "age" ].as< unsigned >() << " years old.\n";
          }
       }
+
+      TEST_ASSERT( count == 6 );
+
+      count = 0;
+      tr->send( "SELECT name, age FROM tao_single_row_mode" );
+      tr->set_chunk_mode( 4 );
+
+      while( true ) {
+         const auto result = tr->get_result();
+         if( result.empty() ) {
+            break;
+         }
+
+         for( const auto& row : result ) {
+            ++count;
+            std::cout << row[ "name" ].as< std::string >() << " is "
+                      << row[ "age" ].as< unsigned >() << " years old.\n";
+         }
+      }
+
+      TEST_ASSERT( count == 6 );
 
       TEST_THROWS( tr->set_single_row_mode() );
       TEST_THROWS( tr->set_chunk_mode( 2 ) );
@@ -55,6 +88,7 @@ namespace
       TEST_THROWS( tr->set_chunk_mode( 0 ) );
       TEST_THROWS( tr->set_chunk_mode( -1 ) );
       tr->set_chunk_mode( 2 );
+      TEST_THROWS( tr->set_single_row_mode() );
    }
 
 }  // namespace
@@ -75,3 +109,5 @@ auto main() -> int  // NOLINT(bugprone-exception-escape)
    }
    // LCOV_EXCL_STOP
 }
+
+#endif
