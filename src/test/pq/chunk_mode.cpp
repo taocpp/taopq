@@ -88,7 +88,10 @@ namespace
       TEST_THROWS( tr->set_chunk_mode( 0 ) );
       TEST_THROWS( tr->set_chunk_mode( -1 ) );
       tr->set_chunk_mode( 2 );
-      TEST_THROWS( tr->set_single_row_mode() );
+      tr->set_chunk_mode( 4 );
+      tr->set_single_row_mode();
+      tr->set_chunk_mode( 2 );
+      TEST_THROWS( tr->set_chunk_mode( -1 ) );
    }
 
 }  // namespace
