@@ -54,6 +54,7 @@ namespace tao::pq
    public:
       [[nodiscard]] auto has_rows_affected() const noexcept -> bool;
       [[nodiscard]] auto rows_affected() const -> std::size_t;
+      [[nodiscard]] auto is_final() const -> bool;
 
       [[nodiscard]] auto columns() const noexcept -> std::size_t
       {

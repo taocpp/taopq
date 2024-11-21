@@ -141,6 +141,24 @@ namespace tao::pq
       m_connection->send_params( statement, n_params, types, values, lengths, formats );
    }
 
+   void transaction::set_single_row_mode()
+   {
+      check_current_transaction();
+      if( PQsetSingleRowMode( m_connection->underlying_raw_ptr() ) == 0 ) {
+         throw std::runtime_error( "unable to switch to single row mode" );
+      }
+   }
+
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+   void transaction::set_chunk_mode( const std::size_t rows )
+   {
+      check_current_transaction();
+      if( PQsetChunkedRowsMode( m_connection->underlying_raw_ptr(), rows ) == 0 ) {
+         throw std::runtime_error( "unable to switch to chunk mode" );
+      }
+   }
+#endif
+
    auto transaction::get_result( const std::chrono::steady_clock::time_point start ) -> result
    {
       check_current_transaction();
@@ -158,6 +176,12 @@ namespace tao::pq
                m_connection->clear_copy_data( end );
                m_connection->clear_results( end );
                throw std::runtime_error( "unexpected COPY TO statement" );
+
+            case PGRES_SINGLE_TUPLE:
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+            case PGRES_TUPLES_CHUNK:
+#endif
+               return pq::result( result.release() );
 
             default:;
          }

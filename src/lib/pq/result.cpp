@@ -45,6 +45,10 @@ namespace tao::pq
       switch( PQresultStatus( pgresult ) ) {
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
+         case PGRES_SINGLE_TUPLE:
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+         case PGRES_TUPLES_CHUNK:
+#endif
             return;
 
          case PGRES_EMPTY_QUERY:
@@ -72,6 +76,24 @@ namespace tao::pq
          throw std::logic_error( "statement does not return affected rows" );
       }
       return internal::from_chars< std::size_t >( str );
+   }
+
+   auto result::is_final() const -> bool
+   {
+      switch( PQresultStatus( m_pgresult.get() ) ) {
+         case PGRES_COMMAND_OK:
+         case PGRES_TUPLES_OK:
+            return true;
+
+         case PGRES_SINGLE_TUPLE:
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+         case PGRES_TUPLES_CHUNK:
+#endif
+            return false;
+
+         default:
+            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+      }
    }
 
    auto result::name( const std::size_t column ) const -> std::string

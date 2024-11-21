@@ -141,6 +141,11 @@ namespace tao::pq
          }
       }
 
+      void set_single_row_mode();
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+      void set_chunk_mode( const std::size_t rows );
+#endif
+
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
 
       template< typename... As >
