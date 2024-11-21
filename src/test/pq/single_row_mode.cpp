@@ -7,9 +7,7 @@
 
 #include <exception>
 #include <iostream>
-#include <optional>
-#include <tuple>
-#include <utility>
+#include <string>
 
 #include <tao/pq.hpp>
 
@@ -50,6 +48,8 @@ namespace
                       << row[ "age" ].as< unsigned >() << " years old.\n";
          }
       }
+
+      TEST_THROWS( tr->set_single_row_mode() );
    }
 
 }  // namespace
