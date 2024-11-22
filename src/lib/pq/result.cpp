@@ -56,7 +56,7 @@ namespace tao::pq
 
          case PGRES_COPY_IN:
          case PGRES_COPY_OUT:
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+            TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
 
          default:
             internal::throw_sqlstate( pgresult );

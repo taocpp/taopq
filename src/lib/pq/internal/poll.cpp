@@ -78,7 +78,7 @@ namespace tao::pq::internal
          }
 
          default:
-            TAO_PQ_UNREACHABLE;
+            TAO_PQ_INTERNAL_UNREACHABLE;
       }
 
 #else
@@ -111,7 +111,7 @@ namespace tao::pq::internal
          }
 
          default:
-            TAO_PQ_UNREACHABLE;
+            TAO_PQ_INTERNAL_UNREACHABLE;
       }
          // LCOV_EXCL_STOP
 #endif

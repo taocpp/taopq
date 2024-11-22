@@ -33,7 +33,7 @@ namespace tao::pq::internal
       if( ec == std::errc::result_out_of_range ) {
          throw std::out_of_range( std::format( "tao::pq::internal::from_chars<{}>(): {}", type, value ) );
       }
-      TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+      TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
 }  // namespace tao::pq::internal

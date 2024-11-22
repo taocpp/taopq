@@ -14,6 +14,7 @@
 #include <stdexcept>
 
 #include <tao/pq.hpp>
+#include <tao/pq/internal/unreachable.hpp>
 
 namespace
 {
@@ -58,7 +59,7 @@ namespace
    // LCOV_EXCL_START
    auto my_poll( const int /*unused*/, const bool /*unused*/, const int /*unused*/ ) -> tao::pq::poll::status
    {
-      TAO_PQ_UNREACHABLE;
+      TAO_PQ_INTERNAL_UNREACHABLE;
    }
    // LCOV_EXCL_STOP
 

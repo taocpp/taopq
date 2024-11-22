@@ -32,7 +32,7 @@ namespace tao::pq
 
          case PGRES_COPY_IN:
             std::ignore = m_transaction->get_result( start );
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+            TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
@@ -101,8 +101,8 @@ namespace tao::pq
                         case '\n':
                            return true;
 
-                        default:                // LCOV_EXCL_LINE
-                           TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+                        default:                         // LCOV_EXCL_LINE
+                           TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
                      }
                      break;
 
@@ -134,8 +134,8 @@ namespace tao::pq
                      *write++ = '\\';
                      break;
 
-                  default:                // LCOV_EXCL_LINE
-                     TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+                  default:                         // LCOV_EXCL_LINE
+                     TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
                }
                break;
 
@@ -145,11 +145,11 @@ namespace tao::pq
                assert( m_data.size() == columns() );
                return true;
 
-            default:                // LCOV_EXCL_LINE
-               TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+            default:                         // LCOV_EXCL_LINE
+               TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
          }
       }
-      TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+      TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
    auto table_reader::begin() -> table_reader::const_iterator

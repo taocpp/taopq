@@ -106,7 +106,7 @@ namespace tao::pq
                case isolation_level::read_uncommitted:
                   return " ISOLATION LEVEL READ UNCOMMITTED";
             }
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+            TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
          }
 
          [[nodiscard]] inline auto access_mode_extension( const access_mode am ) -> const char*
@@ -119,7 +119,7 @@ namespace tao::pq
                case access_mode::read_only:
                   return " READ ONLY";
             }
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+            TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
          }
 
       }  // namespace
@@ -207,7 +207,7 @@ namespace tao::pq
          case transaction_status::unknown:
             return true;
       }
-      TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+      TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
    }
 
    void connection::check_prepared_name( const std::string_view name )
@@ -267,7 +267,7 @@ namespace tao::pq
                break;
 
             default:
-               TAO_PQ_UNREACHABLE;
+               TAO_PQ_INTERNAL_UNREACHABLE;
                // LCOV_EXCL_STOP
          }
       }
@@ -331,7 +331,7 @@ namespace tao::pq
                throw std::runtime_error( "PQgetCopyData() failed: " + error_message() );
 
             default:
-               TAO_PQ_UNREACHABLE;
+               TAO_PQ_INTERNAL_UNREACHABLE;
                // LCOV_EXCL_STOP
          }
       }
@@ -359,7 +359,7 @@ namespace tao::pq
                throw std::runtime_error( "PQputCopyData() failed: " + error_message() );
 
             default:
-               TAO_PQ_UNREACHABLE;
+               TAO_PQ_INTERNAL_UNREACHABLE;
                // LCOV_EXCL_STOP
          }
       }
@@ -382,7 +382,7 @@ namespace tao::pq
                throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );
 
             default:
-               TAO_PQ_UNREACHABLE;
+               TAO_PQ_INTERNAL_UNREACHABLE;
                // LCOV_EXCL_STOP
          }
       }
@@ -524,7 +524,7 @@ namespace tao::pq
          case PGRES_EMPTY_QUERY:
          case PGRES_COPY_IN:
          case PGRES_COPY_OUT:
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
+            TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
 
          default:
             connection::clear_results( end );
