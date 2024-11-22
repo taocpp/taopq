@@ -45,8 +45,7 @@ namespace tao::pq
 
    namespace internal
    {
-      template< typename T >
-      void parse_elements( T& container, const char*& value );
+      void parse_elements( auto& container, const char*& value );
 
       template< typename T >
       void parse_element( T& container, const char*& value )
@@ -98,8 +97,7 @@ namespace tao::pq
          }
       }
 
-      template< typename T >
-      void parse_elements( T& container, const char*& value )
+      void parse_elements( auto& container, const char*& value )
       {
          if( *value++ != '{' ) {
             throw std::invalid_argument( "expected '{'" );
