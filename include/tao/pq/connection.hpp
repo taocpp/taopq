@@ -147,7 +147,7 @@ namespace tao::pq
       [[nodiscard]] auto transaction( const isolation_level il, const access_mode am = access_mode::default_access_mode ) -> std::shared_ptr< pq::transaction >;
 
       void prepare( const std::string& name, const std::string& statement );
-      void deallocate( const std::string& name );
+      void deallocate( const std::string_view name );
 
       template< typename... As >
       auto execute( const internal::zsv statement, As&&... as )

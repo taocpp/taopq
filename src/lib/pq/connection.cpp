@@ -533,14 +533,15 @@ namespace tao::pq
       m_prepared_statements.insert( name );
    }
 
-   void connection::deallocate( const std::string& name )
+   void connection::deallocate( const std::string_view name )
    {
       connection::check_prepared_name( name );
-      if( !connection::is_prepared( name ) ) {
-         throw std::runtime_error( "prepared statement not found: " + name );
+      const auto it = m_prepared_statements.find( name );
+      if( it == m_prepared_statements.end() ) {
+         throw std::runtime_error( std::format( "prepared statement not found: {}", name ) );
       }
       connection::execute( "DEALLOCATE " + connection::escape_identifier( name ) );
-      m_prepared_statements.erase( name );
+      m_prepared_statements.erase( it );
    }
 
    void connection::listen( const std::string_view channel )
