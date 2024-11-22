@@ -17,8 +17,6 @@
 
 #include <tao/pq/field.hpp>
 #include <tao/pq/internal/demangle.hpp>
-#include <tao/pq/internal/dependent_false.hpp>
-#include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/is_aggregate.hpp>
 #include <tao/pq/result_traits.hpp>
@@ -212,33 +210,30 @@ namespace tao::pq
       [[nodiscard]] auto is_null( const std::size_t column ) const -> bool;
       [[nodiscard]] auto get( const std::size_t column ) const -> const char*;
 
-      template< typename T >
+      template< result_type_direct T >
       [[nodiscard]] auto get( const std::size_t column ) const -> T
       {
-         if constexpr( result_traits_size< T > == 0 ) {
-            static_assert( internal::dependent_false< T >, "tao::pq::result_traits<T>::size yields zero" );
-            TAO_PQ_UNREACHABLE;  // LCOV_EXCL_LINE
-         }
-         else if constexpr( ( result_traits_size< T > == 1 ) && !is_aggregate_result< T > ) {
-            if constexpr( requires { result_traits< T >::null(); } ) {
-               if( is_null( column ) ) {
-                  return result_traits< T >::null();
-               }
+         if constexpr( requires { result_traits< T >::null(); } ) {
+            if( is_null( column ) ) {
+               return result_traits< T >::null();
             }
-            return result_traits< T >::from( get( column ) );
          }
-         else {
-            return result_traits< T >::from( slice( column, result_traits_size< T > ) );
-         }
+         return result_traits< T >::from( get( column ) );
       }
 
-      template< typename T >
+      template< result_type_composite T >
+      [[nodiscard]] auto get( const std::size_t column ) const -> T
+      {
+         return result_traits< T >::from( slice( column, result_traits_size< T > ) );
+      }
+
+      template< result_type T >
       [[nodiscard]] auto optional( const std::size_t column ) const
       {
          return get< std::optional< T > >( column );
       }
 
-      template< typename T >
+      template< result_type T >
       [[nodiscard]] auto as() const -> T
       {
          if( result_traits_size< T > != m_columns ) {
@@ -255,19 +250,19 @@ namespace tao::pq
          return as< T >();
       }
 
-      template< typename T >
+      template< result_type T >
       [[nodiscard]] auto optional() const
       {
          return as< std::optional< T > >();
       }
 
-      template< typename T, typename U >
+      template< result_type T, result_type U >
       [[nodiscard]] auto pair() const
       {
          return as< std::pair< T, U > >();
       }
 
-      template< typename... Ts >
+      template< result_type... Ts >
       [[nodiscard]] auto tuple() const
       {
          return as< std::tuple< Ts... > >();
@@ -300,7 +295,7 @@ namespace tao::pq
       }
    };
 
-   template< typename T >
+   template< result_type T >
    auto field::as() const -> T
    {
       static_assert( result_traits_size< T > == 1, "tao::pq::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );

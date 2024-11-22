@@ -13,25 +13,35 @@
 
 #include <tao/pq/binary.hpp>
 #include <tao/pq/bind.hpp>
-#include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/exclusive_scan.hpp>
+#include <tao/pq/is_aggregate.hpp>
 
 namespace tao::pq
 {
-   template< typename T >
-   struct result_traits
-   {
-      static_assert( internal::dependent_false< T >, "data type T not registered as taopq result type" );
+   template< typename >
+   struct result_traits;
 
-      static auto from( const char* value ) noexcept -> T;
-   };
-
-   template< typename T >
+   template< typename >
    inline constexpr std::size_t result_traits_size = 1;
 
    template< typename T >
       requires requires { result_traits< T >::size; }
    inline constexpr std::size_t result_traits_size< T > = result_traits< T >::size;
+
+   template< typename T >
+   concept result_type_direct = ( ( result_traits_size< T > == 1 ) && !is_aggregate_result< T > ) && requires( const char* s ) {
+      { result_traits< T >::from( s ) } -> std::same_as< T >;
+   };
+
+   class row;
+
+   template< typename T >
+   concept result_type_composite = ( ( result_traits_size< T > > 1 ) || is_aggregate_result< T > ) && requires( const row& r ) {
+      { result_traits< T >::from( r ) } -> std::same_as< T >;
+   };
+
+   template< typename T >
+   concept result_type = result_type_direct< T > || result_type_composite< T >;
 
    template<>
    struct result_traits< const char* >

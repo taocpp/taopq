@@ -11,6 +11,7 @@
 #include <utility>
 
 #include <tao/pq/null.hpp>
+#include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
 {
@@ -38,10 +39,10 @@ namespace tao::pq
       [[nodiscard]] auto is_null() const -> bool;
       [[nodiscard]] auto get() const -> const char*;
 
-      template< typename T >
+      template< result_type T >
       [[nodiscard]] auto as() const -> T;  // implemented in row.hpp
 
-      template< typename T >
+      template< result_type T >
       [[nodiscard]] auto optional() const
       {
          return as< std::optional< T > >();
