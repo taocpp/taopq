@@ -258,11 +258,11 @@ namespace tao::pq
       template< typename T >
       [[nodiscard]] auto as_container() const -> T
       {
+         check_has_result_set();
          T nrv;
          if constexpr( requires { nrv.reserve( size() ); } ) {
             nrv.reserve( size() );
          }
-         check_has_result_set();
          for( const auto& row : *this ) {
             nrv.insert( nrv.end(), row.as< typename T::value_type >() );
          }
