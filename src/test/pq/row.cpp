@@ -8,6 +8,7 @@
 #include <exception>
 #include <iostream>
 #include <optional>
+#include <ranges>
 #include <tuple>
 #include <utility>
 
@@ -17,6 +18,14 @@ namespace
 {
    void run()
    {
+      static_assert( std::ranges::range< tao::pq::row > );
+      static_assert( std::ranges::bidirectional_range< tao::pq::row > );
+      static_assert( std::ranges::sized_range< tao::pq::row > );
+
+      // Even though we are *almost* a random access range,
+      // we can't fully satisfy the requirements.
+      // static_assert( std::ranges::random_access_range< tao::pq::row > );
+
       const auto connection = tao::pq::connection::create( tao::pq::internal::getenv( "TAOPQ_TEST_DATABASE", "dbname=template1" ) );
 
       TEST_ASSERT( connection->execute( "SELECT 42" )[ 0 ].as< int >() == 42 );
