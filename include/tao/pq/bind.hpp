@@ -7,7 +7,7 @@
 
 namespace tao::pq
 {
-   template< typename, typename = void >
+   template< typename >
    struct bind;
 
 }  // namespace tao::pq

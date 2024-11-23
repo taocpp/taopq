@@ -21,11 +21,12 @@ namespace tao::pq::internal
    template< std::size_t >
    using indexed_convert_to_any = convert_to_any;
 
-   template< typename, typename, typename = void >
+   template< typename, typename >
    inline constexpr bool check_aggregate_args_impl = false;
 
    template< typename T, std::size_t... Is >
-   inline constexpr bool check_aggregate_args_impl< T, std::index_sequence< Is... >, decltype( (void)T{ std::declval< indexed_convert_to_any< Is > >()... } ) > = true;
+      requires requires { T{ std::declval< indexed_convert_to_any< Is > >()... }; }
+   inline constexpr bool check_aggregate_args_impl< T, std::index_sequence< Is... > > = true;
 
    template< typename T, std::size_t N >
    inline constexpr bool check_aggregate_args = check_aggregate_args_impl< T, std::make_index_sequence< N > >;
