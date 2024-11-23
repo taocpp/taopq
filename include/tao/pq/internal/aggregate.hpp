@@ -64,37 +64,30 @@ namespace tao::pq::internal
    TAO_PQ_TIE( N + 9, __VA_ARGS__, a, b, c, d, e, f, g, h, i );
 
    template< typename T >
+      requires( std::is_aggregate_v< T > && !std::is_empty_v< T > && !std::is_union_v< T > )
    constexpr auto tie_aggregate( const T& value ) noexcept
    {
-      static_assert( std::is_aggregate_v< T > );
-      static_assert( !std::is_empty_v< T > );
-      static_assert( !std::is_union_v< T > );
-      if constexpr( !std::is_aggregate_v< T > || std::is_empty_v< T > || std::is_union_v< T > ) {
-         return std::tuple<>();
-      }
-      else {
-         constexpr auto cnt = count_aggregate_args< T >;
+      constexpr auto cnt = count_aggregate_args< T >;
 
-         TAO_PQ_TIE( 1, a );
-         TAO_PQ_TIE( 2, a, b );
-         TAO_PQ_TIE( 3, a, b, c );
-         TAO_PQ_TIE( 4, a, b, c, d );
-         TAO_PQ_TIE( 5, a, b, c, d, e );
-         TAO_PQ_TIE( 6, a, b, c, d, e, f );
-         TAO_PQ_TIE( 7, a, b, c, d, e, f, g );
-         TAO_PQ_TIE( 8, a, b, c, d, e, f, g, h );
-         TAO_PQ_TIE( 9, a, b, c, d, e, f, g, h, i );
+      TAO_PQ_TIE( 1, a );
+      TAO_PQ_TIE( 2, a, b );
+      TAO_PQ_TIE( 3, a, b, c );
+      TAO_PQ_TIE( 4, a, b, c, d );
+      TAO_PQ_TIE( 5, a, b, c, d, e );
+      TAO_PQ_TIE( 6, a, b, c, d, e, f );
+      TAO_PQ_TIE( 7, a, b, c, d, e, f, g );
+      TAO_PQ_TIE( 8, a, b, c, d, e, f, g, h );
+      TAO_PQ_TIE( 9, a, b, c, d, e, f, g, h, i );
 
-         TAO_PQ_TIE10( 10, TAO_PQ_10( a ) );
-         TAO_PQ_TIE10( 20, TAO_PQ_10( a ), TAO_PQ_10( b ) );
-         TAO_PQ_TIE10( 30, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ) );
-         TAO_PQ_TIE10( 40, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ) );
-         TAO_PQ_TIE10( 50, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ) );
-         TAO_PQ_TIE10( 60, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ) );
-         TAO_PQ_TIE10( 70, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ), TAO_PQ_10( g ) );
-         TAO_PQ_TIE10( 80, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ), TAO_PQ_10( g ), TAO_PQ_10( h ) );
-         TAO_PQ_TIE10( 90, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ), TAO_PQ_10( g ), TAO_PQ_10( h ), TAO_PQ_10( i ) );
-      }
+      TAO_PQ_TIE10( 10, TAO_PQ_10( a ) );
+      TAO_PQ_TIE10( 20, TAO_PQ_10( a ), TAO_PQ_10( b ) );
+      TAO_PQ_TIE10( 30, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ) );
+      TAO_PQ_TIE10( 40, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ) );
+      TAO_PQ_TIE10( 50, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ) );
+      TAO_PQ_TIE10( 60, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ) );
+      TAO_PQ_TIE10( 70, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ), TAO_PQ_10( g ) );
+      TAO_PQ_TIE10( 80, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ), TAO_PQ_10( g ), TAO_PQ_10( h ) );
+      TAO_PQ_TIE10( 90, TAO_PQ_10( a ), TAO_PQ_10( b ), TAO_PQ_10( c ), TAO_PQ_10( d ), TAO_PQ_10( e ), TAO_PQ_10( f ), TAO_PQ_10( g ), TAO_PQ_10( h ), TAO_PQ_10( i ) );
    }
 
 #undef TAO_PQ_TIE
