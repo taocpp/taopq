@@ -121,24 +121,41 @@ namespace tao::pq
 
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
-      template< parameter_type... As >
+      void send( const internal::zsv statement )
+      {
+         send_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
+      }
+
+      template< parameter_type_direct... As >
       void send( const internal::zsv statement, As&&... as )
       {
-         if constexpr( sizeof...( As ) == 0 ) {
-            send_params( statement, 0, nullptr, nullptr, nullptr, nullptr );
-         }
-         else if constexpr( internal::contains_parameter< As... > ) {
-            if constexpr( sizeof...( As ) == 1 ) {
-               ( send_params( statement, as.m_size, as.m_types, as.m_values, as.m_lengths, as.m_formats ), ... );
-            }
-            else {
-               const parameter< internal::parameter_size< As... > > p( std::forward< As >( as )... );
-               send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
-            }
-         }
-         else {
-            send_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
-         }
+         send_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
+      }
+
+      template< std::size_t Max >
+      void send( const internal::zsv statement, const parameter< Max >& p )
+      {
+         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
+      }
+
+      template< std::size_t Max >
+      void send( const internal::zsv statement, parameter< Max >& p )
+      {
+         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
+      }
+
+      template< std::size_t Max >
+      void send( const internal::zsv statement, parameter< Max >&& p )
+      {
+         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
+      }
+
+      template< parameter_type... As >
+         requires internal::contains_parameter< As... >
+      void send( const internal::zsv statement, As&&... as )
+      {
+         const parameter< internal::parameter_size< As... > > p( std::forward< As >( as )... );
+         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
       }
 
       void set_single_row_mode();
