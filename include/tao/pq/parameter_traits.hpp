@@ -13,12 +13,12 @@
 #include <span>
 #include <string>
 #include <string_view>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
 #include <tao/pq/binary.hpp>
 #include <tao/pq/bind.hpp>
-#include <tao/pq/internal/dependent_false.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
 #include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/null.hpp>
@@ -64,34 +64,18 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   struct parameter_traits
-   {
-      static_assert( internal::dependent_false< T >, "data type T not registered as taopq parameter type" );
+   struct parameter_traits;
 
-      explicit parameter_traits( const T& /*unused*/ ) noexcept;
-
-      static constexpr std::size_t columns = 1;
-      static constexpr bool self_contained = true;
-
-      template< std::size_t I >
-      [[nodiscard]] static auto type() noexcept -> oid;
-
-      template< std::size_t I >
-      [[nodiscard]] static auto value() noexcept -> const char*;
-
-      template< std::size_t I >
-      [[nodiscard]] static auto length() noexcept -> int;
-
-      template< std::size_t I >
-      [[nodiscard]] static auto format() noexcept -> int;
-
-      // for arrays
-      template< std::size_t I >
-      static void element( std::string& data );
-
-      // for table_writer
-      template< std::size_t I >
-      static void copy_to( std::string& data );
+   template< typename T >
+   concept parameter_type_direct = requires( const parameter_traits< std::decay_t< T > >& t, std::string& s ) {
+      { parameter_traits< std::decay_t< T > >::columns } -> std::same_as< const std::size_t& >;
+      { parameter_traits< std::decay_t< T > >::self_contained } -> std::same_as< const bool& >;
+      { t.template type< 0 >() } -> std::same_as< oid >;
+      { t.template value< 0 >() } -> std::same_as< const char* >;
+      { t.template length< 0 >() } -> std::same_as< int >;
+      { t.template format< 0 >() } -> std::same_as< int >;
+      // TODO: { t.template element< 0 >( s ) } -> std::same_as< void >;
+      { t.template copy_to< 0 >( s ) } -> std::same_as< void >;
    };
 
    template<>

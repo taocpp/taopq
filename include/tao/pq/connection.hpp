@@ -24,6 +24,7 @@
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
+#include <tao/pq/parameter.hpp>
 #include <tao/pq/poll.hpp>
 #include <tao/pq/transaction.hpp>
 #include <tao/pq/transaction_status.hpp>
@@ -149,7 +150,7 @@ namespace tao::pq
       void prepare( const std::string& name, const std::string& statement );
       void deallocate( const std::string_view name );
 
-      template< typename... As >
+      template< parameter_type... As >
       auto execute( const internal::zsv statement, As&&... as )
       {
          return direct()->execute( statement, std::forward< As >( as )... );

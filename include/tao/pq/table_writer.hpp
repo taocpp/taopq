@@ -17,6 +17,7 @@
 
 #include <tao/pq/internal/gen.hpp>
 #include <tao/pq/internal/zsv.hpp>
+#include <tao/pq/parameter.hpp>
 #include <tao/pq/parameter_traits.hpp>
 #include <tao/pq/transaction.hpp>
 
@@ -91,7 +92,7 @@ namespace tao::pq
 
       void insert_raw( const std::string_view data );
 
-      template< typename... As >
+      template< parameter_type... As >
       void insert( As&&... as )
       {
          static_assert( sizeof...( As ) >= 1, "calling tao::pq::table_writer::insert() requires at least one argument" );

@@ -20,6 +20,34 @@ namespace tao::pq
    class transaction;
 
    template< std::size_t Max = 16 >
+   class parameter;
+
+   namespace internal
+   {
+      template< typename A >
+      inline constexpr bool is_parameter = false;
+
+      template< std::size_t Max >
+      inline constexpr bool is_parameter< parameter< Max > > = true;
+
+      template< typename... As >
+      inline constexpr bool contains_parameter = ( is_parameter< std::decay_t< As > > || ... );
+
+      template< typename... As >
+      inline constexpr std::size_t parameter_size = ( parameter_size< std::decay_t< As > > + ... + 0 );
+
+      template< typename A >
+      inline constexpr std::size_t parameter_size< A > = parameter_traits< A >::columns;
+
+      template< std::size_t Max >
+      inline constexpr std::size_t parameter_size< parameter< Max > > = Max;
+
+   }  // namespace internal
+
+   template< typename T >
+   concept parameter_type = parameter_type_direct< T > || internal::is_parameter< std::decay_t< T > >;
+
+   template< std::size_t Max >
    class parameter
    {
    private:
@@ -80,7 +108,7 @@ namespace tao::pq
          ( ( m_formats[ m_size + Is ] = t.template format< Is >() ), ... );
       }
 
-      template< typename A >
+      template< parameter_type_direct A >
       void bind_impl( A&& a )
       {
          using D = std::decay_t< A&& >;
@@ -128,7 +156,7 @@ namespace tao::pq
       void bind_impl( parameter< N >&& p ) = delete;  // NOLINT(modernize-use-equals-delete)
 
    public:
-      template< typename... As >
+      template< parameter_type... As >
       explicit parameter( As&&... as ) noexcept( noexcept( std::declval< parameter >().bind( std::forward< As >( as )... ) ) )
       {
          parameter::bind( std::forward< As >( as )... );
@@ -158,13 +186,13 @@ namespace tao::pq
       void operator=( const parameter& ) = delete;
       void operator=( parameter&& ) = delete;
 
-      template< typename... As >
+      template< parameter_type... As >
       void bind( As&&... as ) noexcept( sizeof...( As ) == 0 )
       {
          ( parameter::bind_impl( std::forward< As >( as ) ), ... );
       }
 
-      template< typename... As >
+      template< parameter_type... As >
       void reset( As&&... as ) noexcept( noexcept( std::declval< parameter >().bind( std::forward< As >( as )... ) ) )
       {
          for( std::size_t i = 0; i != m_pos; ++i ) {
@@ -175,28 +203,6 @@ namespace tao::pq
          parameter::bind( std::forward< As >( as )... );
       }
    };
-
-   namespace internal
-   {
-      template< typename A >
-      inline constexpr bool is_parameter = false;
-
-      template< std::size_t Max >
-      inline constexpr bool is_parameter< parameter< Max > > = true;
-
-      template< typename... As >
-      inline constexpr bool contains_parameter = ( is_parameter< std::decay_t< As > > || ... );
-
-      template< typename... As >
-      inline constexpr std::size_t parameter_size = ( parameter_size< std::decay_t< As > > + ... + 0 );
-
-      template< typename A >
-      inline constexpr std::size_t parameter_size< A > = parameter_traits< A >::columns;
-
-      template< std::size_t Max >
-      inline constexpr std::size_t parameter_size< parameter< Max > > = Max;
-
-   }  // namespace internal
 
 }  // namespace tao::pq
 

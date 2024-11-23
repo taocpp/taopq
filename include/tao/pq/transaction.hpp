@@ -121,7 +121,7 @@ namespace tao::pq
 
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
-      template< typename... As >
+      template< parameter_type... As >
       void send( const internal::zsv statement, As&&... as )
       {
          if constexpr( sizeof...( As ) == 0 ) {
@@ -148,7 +148,7 @@ namespace tao::pq
 
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
 
-      template< typename... As >
+      template< parameter_type... As >
       auto execute( const internal::zsv statement, As&&... as )
       {
          const auto start = std::chrono::steady_clock::now();

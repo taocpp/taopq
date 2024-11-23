@@ -17,6 +17,7 @@
 #include <tao/pq/internal/poll.hpp>
 #include <tao/pq/internal/pool.hpp>
 #include <tao/pq/internal/zsv.hpp>
+#include <tao/pq/parameter.hpp>
 #include <tao/pq/poll.hpp>
 #include <tao/pq/result.hpp>
 
@@ -69,7 +70,7 @@ namespace tao::pq
 
       [[nodiscard]] auto connection() -> std::shared_ptr< connection >;
 
-      template< typename... As >
+      template< parameter_type... As >
       auto execute( const internal::zsv statement, As&&... as )
       {
          return connection()->direct()->execute( statement, std::forward< As >( as )... );

@@ -67,6 +67,9 @@ namespace
       // identifier, so you can always make sure that they can not be confused.
       connection->execute( "drop_table" );
 
+      // statements must consume all parameters
+      TEST_THROWS( connection->execute( "drop_table", 42 ) );
+
       // a statement which is not a query does not return "affected rows"
       TEST_THROWS( connection->execute( "drop_table" ).rows_affected() );
 
@@ -125,6 +128,9 @@ namespace
 
       // read data
       TEST_ASSERT( connection->execute( "SELECT b FROM tao_connection_test WHERE a = 1" )[ 0 ][ 0 ].get() == std::string( "42" ) );
+
+      TEST_THROWS( connection->execute( "SELECT $1" ) );
+      TEST_THROWS( connection->execute( "SELECT $1", "One", "Two" ) );
 
       TEST_THROWS( connection->execute( "SELECT $1", "" ).as< tao::pq::binary >() );
       TEST_THROWS( connection->execute( "SELECT $1", "\\" ).as< tao::pq::binary >() );
