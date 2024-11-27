@@ -1,0 +1,105 @@
+// Copyright (c) 2023-2024 Daniel Frey and Dr. Colin Hirsch
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
+
+#include <array>
+#include <list>
+#include <optional>
+#include <set>
+#include <span>
+#include <string>
+#include <string_view>
+#include <tuple>
+#include <utility>
+#include <vector>
+
+#include <tao/pq.hpp>
+
+static_assert( !tao::pq::parameter_type< void > );
+
+static_assert( tao::pq::parameter_type< decltype( tao::pq::null ) > );
+
+static_assert( tao::pq::parameter_type< bool > );
+
+static_assert( tao::pq::parameter_type< char > );
+static_assert( tao::pq::parameter_type< signed char > );
+static_assert( tao::pq::parameter_type< unsigned char > );
+
+static_assert( tao::pq::parameter_type< short > );
+static_assert( tao::pq::parameter_type< unsigned short > );
+static_assert( tao::pq::parameter_type< int > );
+static_assert( tao::pq::parameter_type< unsigned > );
+static_assert( tao::pq::parameter_type< long > );
+static_assert( tao::pq::parameter_type< unsigned long > );
+static_assert( tao::pq::parameter_type< long long > );
+static_assert( tao::pq::parameter_type< unsigned long long > );
+
+static_assert( tao::pq::parameter_type< float > );
+static_assert( tao::pq::parameter_type< double > );
+static_assert( tao::pq::parameter_type< long double > );
+
+static_assert( tao::pq::parameter_type< const char* > );
+static_assert( tao::pq::parameter_type< std::string > );
+static_assert( tao::pq::parameter_type< std::string_view > );
+
+static_assert( tao::pq::parameter_type< tao::pq::binary > );
+static_assert( tao::pq::parameter_type< tao::pq::binary_view > );
+
+static_assert( tao::pq::parameter_type< std::span< std::byte > > );
+static_assert( tao::pq::parameter_type< std::span< std::byte, 42 > > );
+static_assert( tao::pq::parameter_type< std::span< const std::byte > > );
+static_assert( tao::pq::parameter_type< std::span< const std::byte, 42 > > );
+static_assert( tao::pq::parameter_type< std::vector< std::byte > > );
+
+// optional
+static_assert( tao::pq::parameter_type< std::optional< int > > );
+static_assert( tao::pq::parameter_type< std::optional< std::string > > );
+
+// pair
+static_assert( tao::pq::parameter_type< std::pair< bool, int > > );
+static_assert( tao::pq::parameter_type< std::pair< std::string, tao::pq::binary > > );
+
+// tuple
+static_assert( tao::pq::parameter_type< std::tuple< bool, int, float > > );
+static_assert( tao::pq::parameter_type< std::tuple< std::string, tao::pq::binary, unsigned > > );
+
+// array
+static_assert( tao::pq::parameter_type< std::array< int, 42 > > );
+static_assert( tao::pq::parameter_type< std::array< std::string, 42 > > );
+static_assert( tao::pq::parameter_type< std::list< std::string_view > > );
+static_assert( tao::pq::parameter_type< std::set< double > > );
+static_assert( tao::pq::parameter_type< std::unordered_set< char > > );
+
+// note: vector<T> except for T == std::byte are registered as arrays by default
+static_assert( tao::pq::parameter_type< std::vector< bool > > );
+static_assert( tao::pq::parameter_type< std::vector< unsigned long long > > );
+
+// aggregate
+namespace example
+{
+   struct user
+   {
+      std::string name;
+      int age;
+      std::string planet;
+   };
+
+   struct user2
+   {
+      std::string name;
+      int age;
+      std::string planet;
+   };
+
+}  // namespace example
+
+template<>
+inline constexpr bool tao::pq::is_aggregate< example::user > = true;
+
+static_assert( tao::pq::parameter_type< example::user > );
+static_assert( !tao::pq::parameter_type< example::user2 > );  // not registered
+
+auto main() -> int
+{
+   return 0;
+}
