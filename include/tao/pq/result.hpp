@@ -34,6 +34,16 @@ namespace tao::pq
    class table_writer;
    class transaction;
 
+   namespace internal
+   {
+      template< typename >
+      inline constexpr bool is_optional = false;
+
+      template< typename T >
+      inline constexpr bool is_optional< std::optional< T > > = true;
+
+   }  // namespace internal
+
    class result final
    {
    private:
@@ -226,6 +236,19 @@ namespace tao::pq
       [[nodiscard]] auto at( const std::size_t row ) const -> pq::row;
 
       template< typename T >
+         requires internal::is_optional< T >
+      [[nodiscard]] auto as() const -> T
+      {
+         if( empty() ) {
+            return std::nullopt;
+         }
+         if( size() != 1 ) {
+            throw std::runtime_error( std::format( "invalid result size: {} rows, expected 0 or 1 rows", m_rows ) );
+         }
+         return ( *this )[ 0 ].as< T >();
+      }
+
+      template< typename T >
       [[nodiscard]] auto as() const -> T
       {
          if( size() != 1 ) {
@@ -235,12 +258,9 @@ namespace tao::pq
       }
 
       template< typename T >
-      [[nodiscard]] auto optional() const -> std::optional< T >
+      [[nodiscard]] auto optional() const
       {
-         if( empty() ) {
-            return std::nullopt;
-         }
-         return as< T >();
+         return as< std::optional< T > >();
       }
 
       template< typename T, typename U >
