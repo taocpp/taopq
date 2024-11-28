@@ -167,29 +167,9 @@ namespace tao::pq
             return lhs.index() == rhs.index();
          }
 
-         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         [[nodiscard]] friend auto operator<=>( const const_iterator& lhs, const const_iterator& rhs ) noexcept
          {
-            return lhs.index() != rhs.index();
-         }
-
-         [[nodiscard]] friend auto operator<( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.index() < rhs.index();
-         }
-
-         [[nodiscard]] friend auto operator>( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.index() > rhs.index();
-         }
-
-         [[nodiscard]] friend auto operator<=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.index() <= rhs.index();
-         }
-
-         [[nodiscard]] friend auto operator>=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.index() >= rhs.index();
+            return lhs.index() <=> rhs.index();
          }
       };
 

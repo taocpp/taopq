@@ -132,11 +132,6 @@ namespace tao::pq
          {
             return lhs.m_columns == rhs.m_columns;
          }
-
-         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.m_columns != rhs.m_columns;
-         }
       };
 
    public:

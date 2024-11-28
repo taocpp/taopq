@@ -63,16 +63,6 @@ namespace tao::pq
       return f.is_null();
    }
 
-   [[nodiscard]] inline auto operator!=( const table_field& f, null_t /*unused*/ )
-   {
-      return !f.is_null();
-   }
-
-   [[nodiscard]] inline auto operator!=( null_t /*unused*/, const table_field& f )
-   {
-      return !f.is_null();
-   }
-
 }  // namespace tao::pq
 
 #endif

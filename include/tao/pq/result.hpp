@@ -175,29 +175,9 @@ namespace tao::pq
             return lhs.m_row == rhs.m_row;
          }
 
-         [[nodiscard]] friend auto operator!=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
+         [[nodiscard]] friend auto operator<=>( const const_iterator& lhs, const const_iterator& rhs ) noexcept
          {
-            return lhs.m_row != rhs.m_row;
-         }
-
-         [[nodiscard]] friend auto operator<( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.m_row < rhs.m_row;
-         }
-
-         [[nodiscard]] friend auto operator>( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.m_row > rhs.m_row;
-         }
-
-         [[nodiscard]] friend auto operator<=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.m_row <= rhs.m_row;
-         }
-
-         [[nodiscard]] friend auto operator>=( const const_iterator& lhs, const const_iterator& rhs ) noexcept
-         {
-            return lhs.m_row >= rhs.m_row;
+            return lhs.m_row <=> rhs.m_row;
          }
       };
 
