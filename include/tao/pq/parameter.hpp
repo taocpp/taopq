@@ -24,7 +24,7 @@ namespace tao::pq
 
    namespace internal
    {
-      template< typename A >
+      template< typename >
       inline constexpr bool is_parameter = false;
 
       template< std::size_t Max >

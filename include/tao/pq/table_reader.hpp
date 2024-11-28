@@ -38,7 +38,7 @@ namespace tao::pq
       void check_result();
 
    public:
-      template< typename... As >
+      template< parameter_type... As >
       table_reader( const std::shared_ptr< transaction >& transaction, const internal::zsv statement, As&&... as )
          : m_previous( transaction ),
            m_transaction( std::make_shared< internal::transaction_guard >( transaction->connection() ) ),
@@ -154,6 +154,7 @@ namespace tao::pq
       }
 
       template< typename T >
+         requires result_type< typename T::value_type >
       [[nodiscard]] auto as_container() -> T
       {
          T nrv;
@@ -164,60 +165,70 @@ namespace tao::pq
       }
 
       template< typename... Ts >
+         requires result_type< typename std::vector< Ts... >::value_type >
       [[nodiscard]] auto vector()
       {
          return as_container< std::vector< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::list< Ts... >::value_type >
       [[nodiscard]] auto list()
       {
          return as_container< std::list< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::set< Ts... >::value_type >
       [[nodiscard]] auto set()
       {
          return as_container< std::set< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::multiset< Ts... >::value_type >
       [[nodiscard]] auto multiset()
       {
          return as_container< std::multiset< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_set< Ts... >::value_type >
       [[nodiscard]] auto unordered_set()
       {
          return as_container< std::unordered_set< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_multiset< Ts... >::value_type >
       [[nodiscard]] auto unordered_multiset()
       {
          return as_container< std::unordered_multiset< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::map< Ts... >::value_type >
       [[nodiscard]] auto map()
       {
          return as_container< std::map< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::multimap< Ts... >::value_type >
       [[nodiscard]] auto multimap()
       {
          return as_container< std::multimap< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_map< Ts... >::value_type >
       [[nodiscard]] auto unordered_map()
       {
          return as_container< std::unordered_map< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_multimap< Ts... >::value_type >
       [[nodiscard]] auto unordered_multimap()
       {
          return as_container< std::unordered_multimap< Ts... > >();

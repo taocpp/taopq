@@ -225,7 +225,7 @@ namespace tao::pq
 
       [[nodiscard]] auto at( const std::size_t row ) const -> pq::row;
 
-      template< typename T >
+      template< result_type T >
       [[nodiscard]] auto as() const -> T
       {
          switch( size() ) {
@@ -240,7 +240,7 @@ namespace tao::pq
          }
       }
 
-      template< typename T >
+      template< result_type T >
       [[nodiscard]] auto optional() const -> std::optional< T >
       {
          switch( size() ) {
@@ -255,19 +255,20 @@ namespace tao::pq
          }
       }
 
-      template< typename T, typename U >
+      template< result_type T, result_type U >
       [[nodiscard]] auto pair() const
       {
          return as< std::pair< T, U > >();
       }
 
-      template< typename... Ts >
+      template< result_type... Ts >
       [[nodiscard]] auto tuple() const
       {
          return as< std::tuple< Ts... > >();
       }
 
       template< typename T >
+         requires result_type< typename T::value_type >
       [[nodiscard]] auto as_container() const -> T
       {
          check_has_result_set();
@@ -282,60 +283,70 @@ namespace tao::pq
       }
 
       template< typename... Ts >
+         requires result_type< typename std::vector< Ts... >::value_type >
       [[nodiscard]] auto vector() const
       {
          return as_container< std::vector< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::list< Ts... >::value_type >
       [[nodiscard]] auto list() const
       {
          return as_container< std::list< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::set< Ts... >::value_type >
       [[nodiscard]] auto set() const
       {
          return as_container< std::set< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::multiset< Ts... >::value_type >
       [[nodiscard]] auto multiset() const
       {
          return as_container< std::multiset< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_set< Ts... >::value_type >
       [[nodiscard]] auto unordered_set() const
       {
          return as_container< std::unordered_set< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_multiset< Ts... >::value_type >
       [[nodiscard]] auto unordered_multiset() const
       {
          return as_container< std::unordered_multiset< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::map< Ts... >::value_type >
       [[nodiscard]] auto map() const
       {
          return as_container< std::map< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::multimap< Ts... >::value_type >
       [[nodiscard]] auto multimap() const
       {
          return as_container< std::multimap< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_map< Ts... >::value_type >
       [[nodiscard]] auto unordered_map() const
       {
          return as_container< std::unordered_map< Ts... > >();
       }
 
       template< typename... Ts >
+         requires result_type< typename std::unordered_multimap< Ts... >::value_type >
       [[nodiscard]] auto unordered_multimap() const
       {
          return as_container< std::unordered_multimap< Ts... > >();
