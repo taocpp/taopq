@@ -236,31 +236,40 @@ namespace tao::pq
       [[nodiscard]] auto at( const std::size_t row ) const -> pq::row;
 
       template< typename T >
+      [[nodiscard]] auto as() const -> T
+      {
+         switch( size() ) {
+            case 0:
+               throw std::runtime_error( "invalid empty result, expected 1 row" );
+
+            case 1:
+               return ( *this )[ 0 ].as< T >();
+
+            default:
+               throw std::runtime_error( std::format( "invalid result size: {} rows, expected 1 row", m_rows ) );
+         }
+      }
+
+      template< typename T >
+      [[nodiscard]] auto optional() const -> std::optional< T >
+      {
+         switch( size() ) {
+            case 0:
+               return std::nullopt;
+
+            case 1:
+               return ( *this )[ 0 ].as< T >();
+
+            default:
+               throw std::runtime_error( std::format( "invalid result size: {} rows, expected 0 or 1 rows", m_rows ) );
+         }
+      }
+
+      template< typename T >
          requires internal::is_optional< T >
-      [[nodiscard]] auto as() const -> T
+      [[nodiscard]] auto as() const
       {
-         if( empty() ) {
-            return std::nullopt;
-         }
-         if( size() != 1 ) {
-            throw std::runtime_error( std::format( "invalid result size: {} rows, expected 0 or 1 rows", m_rows ) );
-         }
-         return ( *this )[ 0 ].as< T >();
-      }
-
-      template< typename T >
-      [[nodiscard]] auto as() const -> T
-      {
-         if( size() != 1 ) {
-            throw std::runtime_error( std::format( "invalid result size: {} rows, expected 1 row", m_rows ) );
-         }
-         return ( *this )[ 0 ].as< T >();
-      }
-
-      template< typename T >
-      [[nodiscard]] auto optional() const
-      {
-         return as< std::optional< T > >();
+         return optional< typename T::value_type >();
       }
 
       template< typename T, typename U >
