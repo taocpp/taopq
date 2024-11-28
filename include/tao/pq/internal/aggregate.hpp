@@ -31,17 +31,19 @@ namespace tao::pq::internal
    template< typename T, std::size_t N >
    inline constexpr bool check_aggregate_args = check_aggregate_args_impl< T, std::make_index_sequence< N > >;
 
-   template< typename T, std::size_t N = 1, bool = check_aggregate_args< T, N > >
-   inline constexpr std::size_t minimum_aggregate_args = N;
+   template< typename T, std::size_t N = 1 >
+   inline constexpr std::size_t minimum_aggregate_args = minimum_aggregate_args< T, N + 1 >;
 
    template< typename T, std::size_t N >
-   inline constexpr std::size_t minimum_aggregate_args< T, N, false > = minimum_aggregate_args< T, N + 1 >;
+      requires check_aggregate_args< T, N >
+   inline constexpr std::size_t minimum_aggregate_args< T, N > = N;
 
-   template< typename T, std::size_t N = minimum_aggregate_args< T >, bool = check_aggregate_args< T, N > >
-   inline constexpr std::size_t count_aggregate_args = count_aggregate_args< T, N + 1 >;
+   template< typename T, std::size_t N = minimum_aggregate_args< T > >
+   inline constexpr std::size_t count_aggregate_args = N - 1;
 
    template< typename T, std::size_t N >
-   inline constexpr std::size_t count_aggregate_args< T, N, false > = N - 1;
+      requires check_aggregate_args< T, N >
+   inline constexpr std::size_t count_aggregate_args< T, N > = count_aggregate_args< T, N + 1 >;
 
 #define TAO_PQ_TIE( N, ... )               \
    if constexpr( cnt == N ) {              \
