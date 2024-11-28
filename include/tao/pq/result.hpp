@@ -34,16 +34,6 @@ namespace tao::pq
    class table_writer;
    class transaction;
 
-   namespace internal
-   {
-      template< typename >
-      inline constexpr bool is_optional = false;
-
-      template< typename T >
-      inline constexpr bool is_optional< std::optional< T > > = true;
-
-   }  // namespace internal
-
    class result final
    {
    private:
@@ -263,13 +253,6 @@ namespace tao::pq
             default:
                throw std::runtime_error( std::format( "invalid result size: {} rows, expected 0 or 1 rows", m_rows ) );
          }
-      }
-
-      template< typename T >
-         requires internal::is_optional< T >
-      [[nodiscard]] auto as() const
-      {
-         return optional< typename T::value_type >();
       }
 
       template< typename T, typename U >
