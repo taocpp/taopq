@@ -217,8 +217,7 @@ namespace tao::pq
       [[nodiscard]] auto as() const -> T
       {
          if( result_traits_size< T > != m_columns ) {
-            const auto type = internal::demangle< T >();
-            throw std::out_of_range( std::format( "datatype '{}' requires {} columns, but row/slice has {} columns", type, result_traits_size< T >, m_columns ) );
+            throw std::out_of_range( std::format( "datatype '{}' requires {} columns, but row/slice has {} columns", internal::demangle< T >(), result_traits_size< T >, m_columns ) );
          }
          return get< T >( 0 );
       }
