@@ -7,7 +7,7 @@
 [![clang-analyze](https://github.com/taocpp/taopq/workflows/clang-analyze/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3Aclang-analyze)
 [![clang-tidy](https://github.com/taocpp/taopq/workflows/clang-tidy/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3Aclang-tidy)
 [![Sanitizer](https://github.com/taocpp/taopq/workflows/Sanitizer/badge.svg)](https://github.com/taocpp/taopq/actions?query=workflow%3ASanitizer)
-[![CodeCov](https://codecov.io/gh/taocpp/taopq/graph/badge.svg?token=jrFgbSi3wY)](https://codecov.io/gh/taocpp/taopq)
+[![Codecov](https://codecov.io/gh/taocpp/taopq/graph/badge.svg?token=jrFgbSi3wY)](https://codecov.io/gh/taocpp/taopq)
 
 taoPQ is a lightweight C++ client library for accessing a [PostgreSQL➚](https://www.postgresql.org/) database.
 It has no dependencies beyond [`libpq`➚](https://www.postgresql.org/docs/current/libpq.html), the C application programmer's interface to PostgreSQL.
