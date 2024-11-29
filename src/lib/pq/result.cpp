@@ -19,13 +19,6 @@
 
 namespace tao::pq
 {
-   void result::check_has_result_set() const
-   {
-      if( m_columns == 0 ) {
-         throw std::logic_error( "statement does not yield a result set" );
-      }
-   }
-
    void result::check_row( const std::size_t row ) const
    {
       check_has_result_set();
@@ -92,20 +85,9 @@ namespace tao::pq
       if( column < 0 ) {
          assert( column == -1 );
          check_has_result_set();
-         throw std::out_of_range( "column '" + std::string( in_name ) + "' not found" );
+         throw std::out_of_range( std::format( "column '{}' not found", in_name.value ) );
       }
       return column;
-   }
-
-   auto result::empty() const -> bool
-   {
-      return size() == 0;
-   }
-
-   auto result::size() const -> std::size_t
-   {
-      check_has_result_set();
-      return m_rows;
    }
 
    auto result::begin() const -> result::const_iterator

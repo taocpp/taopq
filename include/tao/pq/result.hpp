@@ -46,7 +46,13 @@ namespace tao::pq
       const std::size_t m_columns;
       const std::size_t m_rows;
 
-      void check_has_result_set() const;
+      void check_has_result_set() const
+      {
+         if( m_columns == 0 ) {
+            throw std::logic_error( "statement does not yield a result set" );
+         }
+      }
+
       void check_row( const std::size_t row ) const;
 
       explicit result( PGresult* pgresult );
@@ -63,8 +69,16 @@ namespace tao::pq
       [[nodiscard]] auto name( const std::size_t column ) const -> std::string;
       [[nodiscard]] auto index( const internal::zsv in_name ) const -> std::size_t;
 
-      [[nodiscard]] auto empty() const -> bool;
-      [[nodiscard]] auto size() const -> std::size_t;
+      [[nodiscard]] auto size() const -> std::size_t
+      {
+         check_has_result_set();
+         return m_rows;
+      }
+
+      [[nodiscard]] auto empty() const -> bool
+      {
+         return size() == 0;
+      }
 
    private:
       class const_iterator
