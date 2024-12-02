@@ -33,6 +33,7 @@ struct tao::pq::result_traits< std::tuple< T > >
 };
 
 template< typename... Ts >
+   requires( sizeof...( Ts ) != 0 )
 struct tao::pq::result_traits< std::tuple< Ts... > >
 {
    static_assert( sizeof...( Ts ) != 0, "conversion to empty std::tuple<> not support" );

@@ -16,6 +16,7 @@
 #include <tao/pq/parameter_traits.hpp>
 
 template< typename... Ts >
+   requires( sizeof...( Ts ) != 0 )
 struct tao::pq::parameter_traits< std::tuple< Ts... > >
 {
 private:
@@ -58,6 +59,12 @@ public:
    [[nodiscard]] constexpr auto format() const noexcept( noexcept( std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >() ) ) -> int
    {
       return std::get< gen::template outer< I > >( m_tuple ).template format< gen::template inner< I > >();
+   }
+
+   template< std::size_t I >
+   void element( std::string& data ) const
+   {
+      std::get< gen::template outer< I > >( m_tuple ).template element< gen::template inner< I > >( data );
    }
 
    template< std::size_t I >

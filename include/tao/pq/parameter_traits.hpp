@@ -74,7 +74,7 @@ namespace tao::pq
       { t.template value< 0 >() } -> std::same_as< const char* >;
       { t.template length< 0 >() } -> std::same_as< int >;
       { t.template format< 0 >() } -> std::same_as< int >;
-      // TODO: { t.template element< 0 >( s ) } -> std::same_as< void >;
+      { t.template element< 0 >( s ) } -> std::same_as< void >;
       { t.template copy_to< 0 >( s ) } -> std::same_as< void >;
    };
 

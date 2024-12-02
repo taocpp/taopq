@@ -52,10 +52,11 @@ namespace
          connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
          connection->execute( "CREATE TABLE tao_array_test ( a TEXT[] )" );
 
-         const std::vector< std::optional< std::string > > v = { "FOO", "", "{BAR\\BAZ\"B,L;A}", "NULL", std::nullopt };
+         using type = std::vector< std::optional< std::string > >;
+         const type v = { "FOO", "", "{BAR\\BAZ\"B,L;A}", "NULL", std::nullopt };
          connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
 
-         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< std::vector< std::optional< std::string > > >();
+         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
          TEST_ASSERT( r.size() == 5 );
          TEST_ASSERT( r[ 0 ] == "FOO" );
          TEST_ASSERT( r[ 1 ]->empty() );  // NOLINT(bugprone-unchecked-optional-access)
@@ -68,10 +69,50 @@ namespace
          connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
          connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
 
-         const std::vector< std::vector< std::string > > v = { { "1", "F\"O\\O", "NULL" }, { "4", " XYZ ", "6" } };
+         using type = std::vector< std::vector< std::string > >;
+         const type v = { { "1", "F\"O\\O", "NULL" }, { "4", " XYZ ", "6" } };
          connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
 
-         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< std::vector< std::vector< std::string > > >();
+         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
+         TEST_ASSERT( r == v );
+      }
+
+      {
+         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
+         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
+
+         using type = std::vector< std::pair< std::string, std::string > >;
+         const type v = { { "1", "F\"O\\O" }, { "4", " XYZ " } };
+         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
+
+         // TODO: Add result_traits...
+         // const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
+         // TEST_ASSERT( r == v );
+      }
+
+      {
+         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
+         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
+
+         using type = std::vector< std::tuple< int, std::string, std::optional< std::string > > >;
+         const type v = { { 1, "F\"O\\O", std::nullopt }, { 4, " XYZ ", "BAR" } };
+         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
+
+         // TODO: Add result_traits...
+         // const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
+         // TEST_ASSERT( r == v );
+      }
+
+      {
+         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
+         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[] NOT NULL )" );
+
+         // note: a tuple with only one element is *not* treated as an array
+         using type = std::vector< std::tuple< std::string > >;
+         const type v = { { "F\"O\\O" }, { " XYZ " } };
+         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
+
+         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
          TEST_ASSERT( r == v );
       }
 
@@ -79,14 +120,15 @@ namespace
          connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
          connection->execute( "CREATE TABLE tao_array_test ( a BYTEA[][] NOT NULL )" );
 
-         const std::vector< tao::pq::binary > v = { tao::pq::to_binary( "1" ),
-                                                    tao::pq::binary(),
-                                                    tao::pq::to_binary( "F\"O\\O" ),
-                                                    tao::pq::to_binary( "NU\0LL" ) };
+         using type = std::vector< tao::pq::binary >;
+         const type v = { tao::pq::to_binary( "1" ),
+                          tao::pq::binary(),
+                          tao::pq::to_binary( "F\"O\\O" ),
+                          tao::pq::to_binary( "NU\0LL" ) };
          connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
 
-         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< std::vector< tao::pq::binary > >();
-         // TEST_ASSERT( r == v );
+         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
+         TEST_ASSERT( r == v );
       }
 
       TEST_THROWS( connection->execute( "SELECT $1", "" ).as< std::vector< std::string > >() );

@@ -49,6 +49,17 @@ namespace tao::pq
    namespace internal
    {
       template< typename T >
+      void to_array( std::string& data, const T& v );
+
+      template< typename T, std::size_t... Is >
+      void to_array_indexed( std::string& data, const T& v, std::index_sequence< Is... > /*unused*/ )
+      {
+         data += '{';
+         ( ( v.template element< Is >( data ), data += ',' ), ... );
+         *data.rbegin() = '}';
+      }
+
+      template< typename T >
       void to_array( std::string& data, const T& v )
       {
          if constexpr( pq::is_array_parameter< T > ) {
@@ -66,8 +77,13 @@ namespace tao::pq
          }
          else {
             const auto t = parameter_traits< T >( v );
-            static_assert( t.columns == 1 );
-            t.template element< 0 >( data );
+            if constexpr( t.columns == 1 ) {
+               t.template element< 0 >( data );
+            }
+            else {
+               static_assert( t.columns > 1 );
+               internal::to_array_indexed( data, t, std::make_index_sequence< t.columns >() );
+            }
          }
       }
 
@@ -111,6 +127,12 @@ namespace tao::pq
       [[nodiscard]] static constexpr auto format() noexcept -> int
       {
          return 0;
+      }
+
+      template< std::size_t I >
+      void element( std::string& data ) const
+      {
+         internal::array_append( data, m_data );
       }
 
       template< std::size_t I >
