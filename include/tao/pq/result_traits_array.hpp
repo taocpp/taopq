@@ -15,6 +15,7 @@
 #include <utility>
 #include <vector>
 
+#include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
@@ -46,20 +47,55 @@ namespace tao::pq
 
    namespace internal
    {
-      void parse_elements( auto& container, const char*& value );
-
       template< typename T >
-         requires pq::is_array_result< T >
-      [[nodiscard]] auto parse_element( const char*& value ) -> T
+         requires( !pq::is_array_result< T > ) && ( result_traits_size< T > == 1 )
+      [[nodiscard]] auto parse( const char*& value ) -> T
       {
-         T element;
-         internal::parse_elements( element, value );
-         return element;
+         if( *value == '"' ) {
+            ++value;
+            std::string input;
+            while( const auto* pos = std::strpbrk( value, "\\\"" ) ) {
+               switch( *pos ) {
+                  case '\\':
+                     input.append( value, pos++ );
+                     input += *pos++;
+                     value = pos;
+                     break;
+
+                  case '"':
+                     input.append( value, pos++ );
+                     value = pos;
+                     return result_traits< T >::from( input.c_str() );
+
+                  default:
+                     TAO_PQ_INTERNAL_UNREACHABLE;
+               }
+            }
+            throw std::invalid_argument( "unterminated quoted string" );
+         }
+         else {
+            if( const auto* end = std::strpbrk( value, ",;}" ) ) {
+               const std::string input( value, end );
+               value = end;
+               if( input == "NULL" ) {
+                  if constexpr( requires { result_traits< T >::null(); } ) {
+                     return result_traits< T >::null();
+                  }
+                  else {
+                     throw std::invalid_argument( "unexpected NULL value" );
+                  }
+               }
+               else {
+                  return result_traits< T >::from( input.c_str() );
+               }
+            }
+            throw std::invalid_argument( "unterminated unquoted string" );
+         }
       }
 
       template< typename T >
          requires( !pq::is_array_result< T > ) && ( result_traits_size< T > >= 2 )
-      [[nodiscard]] auto parse_element( const char*& value ) -> T
+      [[nodiscard]] auto parse( const char*& value ) -> T
       {
          if( *value++ != '{' ) {
             throw std::invalid_argument( "expected '{'" );
@@ -68,64 +104,24 @@ namespace tao::pq
       }
 
       template< typename T >
-      [[nodiscard]] auto parse_element( const char*& value ) -> T
+         requires pq::is_array_result< T >
+      [[nodiscard]] auto parse( const char*& value ) -> T
       {
-         if( *value == '"' ) {
-            ++value;
-            std::string input;
-            while( const auto* pos = std::strpbrk( value, "\\\"" ) ) {
-               if( *pos == '\\' ) {
-                  input.append( value, pos++ );
-                  input += *pos++;
-                  value = pos;
-               }
-               else if( *pos == '"' ) {
-                  input.append( value, pos++ );
-                  value = pos;
-                  break;
-               }
-               else {
-                  throw std::invalid_argument( "unterminated quoted string" );
-               }
-            }
-            return result_traits< T >::from( input.c_str() );
-         }
-         else if( const auto* end = std::strpbrk( value, ",;}" ) ) {
-            const std::string input( value, end );
-            value = end;
-            if( input == "NULL" ) {
-               if constexpr( requires { result_traits< T >::null(); } ) {
-                  return result_traits< T >::null();
-               }
-               else {
-                  throw std::invalid_argument( "unexpected NULL value" );
-               }
-            }
-            else {
-               return result_traits< T >::from( input.c_str() );
-            }
-         }
-         else {
-            throw std::invalid_argument( "unterminated unquoted string" );
-         }
-      }
-
-      void parse_elements( auto& container, const char*& value )
-      {
+         T container;
          if( *value++ != '{' ) {
             throw std::invalid_argument( "expected '{'" );
          }
          if( *value == '}' ) {
             ++value;
-            return;
+            return container;
          }
          while( true ) {
-            using value_type = std::decay_t< decltype( container ) >::value_type;
-            if constexpr( requires { container.push_back( internal::parse_element< value_type >( value ) ); } ) {
-               container.push_back( internal::parse_element< value_type >( value ) );
+            using value_type = typename T::value_type;
+            if constexpr( requires { container.push_back( parse< value_type >( value ) ); } ) {
+               container.push_back( parse< value_type >( value ) );
             }
             else {
-               container.insert( internal::parse_element< value_type >( value ) );
+               container.insert( parse< value_type >( value ) );
             }
             switch( *value++ ) {
                case ',':
@@ -133,7 +129,7 @@ namespace tao::pq
                   break;
 
                case '}':
-                  return;
+                  return container;
 
                default:
                   throw std::invalid_argument( "expected ',', ';', or '}'" );
@@ -149,8 +145,7 @@ namespace tao::pq
    {
       static auto from( const char* value ) -> T
       {
-         T container;
-         internal::parse_elements( container, value );
+         const auto container = internal::parse< T >( value );
          if( *value != '\0' ) {
             throw std::invalid_argument( "unexpected additional data" );
          }
