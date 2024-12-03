@@ -35,4 +35,14 @@ namespace tao::pq::internal
       throw std::invalid_argument( "unterminated quoted string" );
    }
 
+   auto parse_unquoted( const char*& value ) -> std::string
+   {
+      if( const auto* end = std::strpbrk( value, ",;}" ) ) {
+         const std::string result( value, end );
+         value = end;
+         return result;
+      }
+      throw std::invalid_argument( "unterminated unquoted string" );
+   }
+
 }  // namespace tao::pq::internal

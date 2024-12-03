@@ -5,8 +5,6 @@
 #ifndef TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 #define TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 
-#include <cassert>
-#include <cstring>
 #include <list>
 #include <set>
 #include <stdexcept>
@@ -48,6 +46,7 @@ namespace tao::pq
    namespace internal
    {
       [[nodiscard]] auto parse_quoted( const char*& value ) -> std::string;
+      [[nodiscard]] auto parse_unquoted( const char*& value ) -> std::string;
 
       template< typename T >
          requires( !pq::is_array_result< T > ) && ( result_traits_size< T > == 1 )
@@ -57,24 +56,17 @@ namespace tao::pq
             const std::string input = parse_quoted( ++value );
             return result_traits< T >::from( input.c_str() );
          }
-         else {
-            if( const auto* end = std::strpbrk( value, ",;}" ) ) {
-               const std::string input( value, end );
-               value = end;
-               if( input == "NULL" ) {
-                  if constexpr( requires { result_traits< T >::null(); } ) {
-                     return result_traits< T >::null();
-                  }
-                  else {
-                     throw std::invalid_argument( "unexpected NULL value" );
-                  }
-               }
-               else {
-                  return result_traits< T >::from( input.c_str() );
-               }
+
+         const std::string input = parse_unquoted( value );
+         if( input == "NULL" ) {
+            if constexpr( requires { result_traits< T >::null(); } ) {
+               return result_traits< T >::null();
             }
-            throw std::invalid_argument( "unterminated unquoted string" );
+            else {
+               throw std::invalid_argument( "unexpected NULL value" );
+            }
          }
+         return result_traits< T >::from( input.c_str() );
       }
 
       template< typename T >
