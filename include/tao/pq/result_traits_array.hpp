@@ -48,52 +48,51 @@ namespace tao::pq
       void parse_elements( auto& container, const char*& value );
 
       template< typename T >
-      void parse_element( T& container, const char*& value )
+         requires pq::is_array_result< T >
+      [[nodiscard]] auto parse_element( const char*& value ) -> T
       {
-         using value_type = typename T::value_type;
-         if constexpr( pq::is_array_result< value_type > ) {
-            value_type element;
-            internal::parse_elements( element, value );
-            container.push_back( std::move( element ) );
-         }
-         else {
-            if( *value == '"' ) {
-               ++value;
-               std::string input;
-               while( const auto* pos = std::strpbrk( value, "\\\"" ) ) {
-                  if( *pos == '\\' ) {
-                     input.append( value, pos++ );
-                     input += *pos++;
-                     value = pos;
-                  }
-                  else {
-                     input.append( value, pos++ );
-                     value = pos;
-                     break;
-                  }
-               }
-               container.push_back( result_traits< value_type >::from( input.c_str() ) );
-            }
-            else if( *value != '}' ) {
-               if( const auto* end = std::strpbrk( value, ",;}" ) ) {
-                  const std::string input( value, end );
-                  if( input == "NULL" ) {
-                     if constexpr( requires { result_traits< value_type >::null(); } ) {
-                        container.push_back( result_traits< value_type >::null() );
-                     }
-                     else {
-                        throw std::invalid_argument( "unexpected NULL value" );
-                     }
-                  }
-                  else {
-                     container.push_back( result_traits< value_type >::from( input.c_str() ) );
-                  }
-                  value = end;
+         T element;
+         internal::parse_elements( element, value );
+         return element;
+      }
+
+      template< typename T >
+      [[nodiscard]] auto parse_element( const char*& value ) -> T
+      {
+         if( *value == '"' ) {
+            ++value;
+            std::string input;
+            while( const auto* pos = std::strpbrk( value, "\\\"" ) ) {
+               if( *pos == '\\' ) {
+                  input.append( value, pos++ );
+                  input += *pos++;
+                  value = pos;
                }
                else {
-                  throw std::invalid_argument( "unterminated unquoted string" );
+                  input.append( value, pos++ );
+                  value = pos;
+                  break;
                }
             }
+            return result_traits< T >::from( input.c_str() );
+         }
+         else if( const auto* end = std::strpbrk( value, ",;}" ) ) {
+            const std::string input( value, end );
+            value = end;
+            if( input == "NULL" ) {
+               if constexpr( requires { result_traits< T >::null(); } ) {
+                  return result_traits< T >::null();
+               }
+               else {
+                  throw std::invalid_argument( "unexpected NULL value" );
+               }
+            }
+            else {
+               return result_traits< T >::from( input.c_str() );
+            }
+         }
+         else {
+            throw std::invalid_argument( "unterminated unquoted string" );
          }
       }
 
@@ -102,14 +101,21 @@ namespace tao::pq
          if( *value++ != '{' ) {
             throw std::invalid_argument( "expected '{'" );
          }
+         if( *value == '}' ) {
+            ++value;
+            return;
+         }
          while( true ) {
-            internal::parse_element( container, value );
+            using value_type = std::decay_t< decltype( container ) >::value_type;
+            container.push_back( internal::parse_element< value_type >( value ) );
             switch( *value++ ) {
                case ',':
                case ';':
-                  continue;
+                  break;
+
                case '}':
                   return;
+
                default:
                   throw std::invalid_argument( "expected ',', ';', or '}'" );
             }
