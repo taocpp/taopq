@@ -9,6 +9,7 @@
 #include <exception>
 #include <iostream>
 #include <optional>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -69,7 +70,7 @@ namespace
          connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
          connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
 
-         using type = std::vector< std::vector< std::string > >;
+         using type = std::vector< std::set< std::string > >;
          const type v = { { "1", "F\"O\\O", "NULL" }, { "4", " XYZ ", "6" } };
          connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
 

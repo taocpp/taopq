@@ -58,15 +58,19 @@ namespace tao::pq
       }
 
       template< typename T >
+         requires( !pq::is_array_result< T > ) && ( result_traits_size< T > >= 2 )
       [[nodiscard]] auto parse_element( const char*& value ) -> T
       {
-         if constexpr( result_traits_size< T > >= 2 ) {
-            if( *value++ != '{' ) {
-               throw std::invalid_argument( "expected '{'" );
-            }
-            throw std::runtime_error( "NOT YET IMPLEMENTED" );
+         if( *value++ != '{' ) {
+            throw std::invalid_argument( "expected '{'" );
          }
-         else if( *value == '"' ) {
+         throw std::runtime_error( "NOT YET IMPLEMENTED" );
+      }
+
+      template< typename T >
+      [[nodiscard]] auto parse_element( const char*& value ) -> T
+      {
+         if( *value == '"' ) {
             ++value;
             std::string input;
             while( const auto* pos = std::strpbrk( value, "\\\"" ) ) {
@@ -117,7 +121,12 @@ namespace tao::pq
          }
          while( true ) {
             using value_type = std::decay_t< decltype( container ) >::value_type;
-            container.push_back( internal::parse_element< value_type >( value ) );
+            if constexpr( requires { container.push_back( internal::parse_element< value_type >( value ) ); } ) {
+               container.push_back( internal::parse_element< value_type >( value ) );
+            }
+            else {
+               container.insert( internal::parse_element< value_type >( value ) );
+            }
             switch( *value++ ) {
                case ',':
                case ';':
