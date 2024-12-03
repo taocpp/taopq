@@ -82,6 +82,7 @@ set(taopq_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/parameter_traits.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits_array.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_field.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_reader.cpp

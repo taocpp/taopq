@@ -47,31 +47,15 @@ namespace tao::pq
 
    namespace internal
    {
+      [[nodiscard]] auto parse_quoted( const char*& value ) -> std::string;
+
       template< typename T >
          requires( !pq::is_array_result< T > ) && ( result_traits_size< T > == 1 )
       [[nodiscard]] auto parse( const char*& value ) -> T
       {
          if( *value == '"' ) {
-            ++value;
-            std::string input;
-            while( const auto* pos = std::strpbrk( value, "\\\"" ) ) {
-               switch( *pos ) {
-                  case '\\':
-                     input.append( value, pos++ );
-                     input += *pos++;
-                     value = pos;
-                     break;
-
-                  case '"':
-                     input.append( value, pos++ );
-                     value = pos;
-                     return result_traits< T >::from( input.c_str() );
-
-                  default:
-                     TAO_PQ_INTERNAL_UNREACHABLE;
-               }
-            }
-            throw std::invalid_argument( "unterminated quoted string" );
+            const std::string input = parse_quoted( ++value );
+            return result_traits< T >::from( input.c_str() );
          }
          else {
             if( const auto* end = std::strpbrk( value, ",;}" ) ) {
