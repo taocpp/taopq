@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 #define TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 
+#include <cassert>
 #include <cstring>
 #include <list>
 #include <set>
@@ -59,7 +60,13 @@ namespace tao::pq
       template< typename T >
       [[nodiscard]] auto parse_element( const char*& value ) -> T
       {
-         if( *value == '"' ) {
+         if constexpr( result_traits_size< T > >= 2 ) {
+            if( *value++ != '{' ) {
+               throw std::invalid_argument( "expected '{'" );
+            }
+            throw std::runtime_error( "NOT YET IMPLEMENTED" );
+         }
+         else if( *value == '"' ) {
             ++value;
             std::string input;
             while( const auto* pos = std::strpbrk( value, "\\\"" ) ) {
@@ -68,10 +75,13 @@ namespace tao::pq
                   input += *pos++;
                   value = pos;
                }
-               else {
+               else if( *pos == '"' ) {
                   input.append( value, pos++ );
                   value = pos;
                   break;
+               }
+               else {
+                  throw std::invalid_argument( "unterminated quoted string" );
                }
             }
             return result_traits< T >::from( input.c_str() );
