@@ -130,12 +130,12 @@ namespace tao::pq
    {
       static auto from( const char* value ) -> T
       {
-         T nrv;
-         internal::parse_elements( nrv, value );
+         T container;
+         internal::parse_elements( container, value );
          if( *value != '\0' ) {
             throw std::invalid_argument( "unexpected additional data" );
          }
-         return nrv;
+         return container;
       }
    };
 
