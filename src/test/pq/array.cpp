@@ -80,45 +80,6 @@ namespace
 
       {
          connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
-         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
-
-         using type = std::vector< std::pair< std::string, std::string > >;
-         const type v = { { "1", "F\"O\\O" }, { "4", " XYZ " } };
-         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
-
-         // TODO: Add result_traits...
-         // const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
-         // TEST_ASSERT( r == v );
-      }
-
-      {
-         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
-         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
-
-         using type = std::vector< std::tuple< int, std::string, std::optional< std::string > > >;
-         const type v = { { 1, "F\"O\\O", std::nullopt }, { 4, " XYZ ", "BAR" } };
-         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
-
-         // TODO: Add result_traits...
-         // const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
-         // TEST_ASSERT( r == v );
-      }
-
-      {
-         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
-         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[] NOT NULL )" );
-
-         // note: a tuple with only one element is *not* treated as an array
-         using type = std::vector< std::tuple< std::string > >;
-         const type v = { { "F\"O\\O" }, { " XYZ " } };
-         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
-
-         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
-         TEST_ASSERT( r == v );
-      }
-
-      {
-         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
          connection->execute( "CREATE TABLE tao_array_test ( a BYTEA[][] NOT NULL )" );
 
          using type = std::vector< tao::pq::binary >;

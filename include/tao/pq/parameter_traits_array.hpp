@@ -49,41 +49,26 @@ namespace tao::pq
    namespace internal
    {
       template< typename T >
-      void to_array( std::string& data, const T& v );
-
-      template< typename T, std::size_t... Is >
-      void to_array_indexed( std::string& data, const T& v, std::index_sequence< Is... > /*unused*/ )
+         requires( !pq::is_array_parameter< T > ) && ( parameter_traits< T >::columns == 1 )
+      void to_array( std::string& data, const T& v )
       {
-         data += '{';
-         ( ( v.template element< Is >( data ), data += ',' ), ... );
-         *data.rbegin() = '}';
+         parameter_traits< T >( v ).template element< 0 >( data );
       }
 
       template< typename T >
+         requires pq::is_array_parameter< T >
       void to_array( std::string& data, const T& v )
       {
-         if constexpr( pq::is_array_parameter< T > ) {
-            data += '{';
-            if( v.empty() ) {
-               data += '}';
-            }
-            else {
-               for( const auto& e : v ) {
-                  internal::to_array( data, e );
-                  data += ',';
-               }
-               *data.rbegin() = '}';
-            }
+         data += '{';
+         if( v.empty() ) {
+            data += '}';
          }
          else {
-            const auto t = parameter_traits< T >( v );
-            if constexpr( t.columns == 1 ) {
-               t.template element< 0 >( data );
+            for( const auto& e : v ) {
+               internal::to_array( data, e );
+               data += ',';
             }
-            else {
-               static_assert( t.columns > 1 );
-               internal::to_array_indexed( data, t, std::make_index_sequence< t.columns >() );
-            }
+            *data.rbegin() = '}';
          }
       }
 

@@ -13,7 +13,6 @@
 #include <utility>
 #include <vector>
 
-#include <tao/pq/internal/unreachable.hpp>
 #include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
@@ -70,27 +69,19 @@ namespace tao::pq
       }
 
       template< typename T >
-         requires( !pq::is_array_result< T > ) && ( result_traits_size< T > >= 2 )
-      [[nodiscard]] auto parse( const char*& value ) -> T
-      {
-         if( *value++ != '{' ) {
-            throw std::invalid_argument( "expected '{'" );
-         }
-         throw std::runtime_error( "NOT YET IMPLEMENTED" );
-      }
-
-      template< typename T >
          requires pq::is_array_result< T >
       [[nodiscard]] auto parse( const char*& value ) -> T
       {
-         T container;
          if( *value++ != '{' ) {
             throw std::invalid_argument( "expected '{'" );
          }
+
+         T container;
          if( *value == '}' ) {
             ++value;
             return container;
          }
+
          while( true ) {
             using value_type = typename T::value_type;
             if constexpr( requires { container.push_back( parse< value_type >( value ) ); } ) {
