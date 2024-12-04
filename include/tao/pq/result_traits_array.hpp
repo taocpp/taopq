@@ -44,6 +44,9 @@ namespace tao::pq
 
    namespace internal
    {
+      template< typename T >
+      concept array_result_type = ( pq::is_array_result< T > && ( pq::is_array_result< typename T::value_type > || ( result_traits_size< typename T::value_type > == 1 ) ) );
+
       [[nodiscard]] auto parse_quoted( const char*& value ) -> std::string;
       [[nodiscard]] auto parse_unquoted( const char*& value ) -> std::string;
 
@@ -103,9 +106,6 @@ namespace tao::pq
             }
          }
       }
-
-      template< typename T >
-      concept array_result_type = ( pq::is_array_result< T > && ( pq::is_array_result< typename T::value_type > || ( result_traits_size< typename T::value_type > == 1 ) ) );
 
    }  // namespace internal
 
