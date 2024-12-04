@@ -49,7 +49,7 @@ namespace tao::pq
    namespace internal
    {
       template< typename T >
-         requires( !pq::is_array_parameter< T > ) && ( parameter_traits< T >::columns == 1 )
+         requires( !pq::is_array_parameter< T > )
       void to_array( std::string& data, const T& v )
       {
          parameter_traits< T >( v ).template element< 0 >( data );
@@ -72,10 +72,12 @@ namespace tao::pq
          }
       }
 
+      template< typename T >
+      concept array_parameter_type = ( pq::is_array_parameter< T > && ( pq::is_array_parameter< typename T::value_type > || ( parameter_traits< typename T::value_type >::columns == 1 ) ) );
+
    }  // namespace internal
 
-   template< typename T >
-      requires is_array_parameter< T >
+   template< internal::array_parameter_type T >
    struct parameter_traits< T >
    {
    private:
