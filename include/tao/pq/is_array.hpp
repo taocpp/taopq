@@ -19,7 +19,32 @@ namespace tao::pq
    namespace internal
    {
       template< typename >
-      inline constexpr bool is_array_parameter = false;
+      inline constexpr bool is_array = false;
+
+      template< typename... Ts >
+      inline constexpr bool is_array< std::list< Ts... > > = true;
+
+      template< typename... Ts >
+      inline constexpr bool is_array< std::set< Ts... > > = true;
+
+      template< typename... Ts >
+      inline constexpr bool is_array< std::unordered_set< Ts... > > = true;
+
+      template< typename... Ts >
+      inline constexpr bool is_array< std::vector< Ts... > > = true;
+
+      template< typename... Ts >
+      inline constexpr bool is_array< std::vector< std::byte, Ts... > > = false;
+
+   }  // namespace internal
+
+   template< typename T >
+   inline constexpr bool is_array = internal::is_array< T >;
+
+   namespace internal
+   {
+      template< typename T >
+      inline constexpr bool is_array_parameter = pq::is_array< T >;
 
       template< typename T, std::size_t N >
       inline constexpr bool is_array_parameter< std::span< T, N > > = true;
@@ -33,38 +58,8 @@ namespace tao::pq
       template< typename T, std::size_t N >
       inline constexpr bool is_array_parameter< std::array< T, N > > = true;
 
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::list< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::unordered_set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::vector< std::byte, Ts... > > = false;
-
-      template< typename >
-      inline constexpr bool is_array_result = false;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::list< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::unordered_set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::vector< Ts... > > = true;
-
-      template<>
-      inline constexpr bool is_array_result< std::vector< std::byte > > = false;
+      template< typename T >
+      inline constexpr bool is_array_result = pq::is_array< T >;
 
    }  // namespace internal
 
