@@ -10,7 +10,9 @@
 #include <iostream>
 #include <optional>
 #include <set>
+#include <span>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include <tao/pq.hpp>
@@ -68,9 +70,37 @@ namespace
 
       {
          connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
+         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[] )" );
+
+         using type = std::vector< std::string >;
+         const type v = { "FOO", "", "{BAR\\BAZ\"B,L;A}", "NULL" };
+         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", std::span{ v } );
+
+         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
+         TEST_ASSERT( r.size() == 4 );
+         TEST_ASSERT( r[ 0 ] == "FOO" );
+         TEST_ASSERT( r[ 1 ].empty() );  // NOLINT(bugprone-unchecked-optional-access)
+         TEST_ASSERT( r[ 2 ] == "{BAR\\BAZ\"B,L;A}" );
+         TEST_ASSERT( r[ 3 ] == "NULL" );
+      }
+
+      {
+         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
          connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
 
          using type = std::vector< std::set< std::string > >;
+         const type v = { { "1", "F\"O\\O", "NULL" }, { "4", " XYZ ", "6" } };
+         connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
+
+         const auto r = connection->execute( "SELECT * FROM tao_array_test" ).as< type >();
+         TEST_ASSERT( r == v );
+      }
+
+      {
+         connection->execute( "DROP TABLE IF EXISTS tao_array_test" );
+         connection->execute( "CREATE TABLE tao_array_test ( a TEXT[][] NOT NULL )" );
+
+         using type = std::vector< std::set< std::tuple< std::string > > >;
          const type v = { { "1", "F\"O\\O", "NULL" }, { "4", " XYZ ", "6" } };
          connection->execute( "INSERT INTO tao_array_test VALUES ( $1 )", v );
 

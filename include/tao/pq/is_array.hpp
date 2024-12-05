@@ -9,6 +9,7 @@
 #include <cstddef>
 #include <list>
 #include <set>
+#include <span>
 #include <unordered_set>
 #include <utility>
 #include <vector>
@@ -19,6 +20,15 @@ namespace tao::pq
    {
       template< typename >
       inline constexpr bool is_array_parameter = false;
+
+      template< typename T, std::size_t N >
+      inline constexpr bool is_array_parameter< std::span< T, N > > = true;
+
+      template< std::size_t N >
+      inline constexpr bool is_array_parameter< std::span< std::byte, N > > = false;
+
+      template< std::size_t N >
+      inline constexpr bool is_array_parameter< std::span< const std::byte, N > > = false;
 
       template< typename T, std::size_t N >
       inline constexpr bool is_array_parameter< std::array< T, N > > = true;
@@ -35,8 +45,8 @@ namespace tao::pq
       template< typename... Ts >
       inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
 
-      template<>
-      inline constexpr bool is_array_parameter< std::vector< std::byte > > = false;
+      template< typename... Ts >
+      inline constexpr bool is_array_parameter< std::vector< std::byte, Ts... > > = false;
 
       template< typename >
       inline constexpr bool is_array_result = false;
