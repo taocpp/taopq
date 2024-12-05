@@ -70,7 +70,7 @@ static_assert( tao::pq::result_type< std::list< std::string_view > > );
 static_assert( tao::pq::result_type< std::set< double > > );
 static_assert( tao::pq::result_type< std::unordered_set< char > > );
 static_assert( !tao::pq::result_type< std::set< std::pair< int, double > > > );
-static_assert( !tao::pq::result_type_direct< std::set< std::tuple<> > > );
+static_assert( !tao::pq::result_type< std::set< std::tuple<> > > );
 static_assert( tao::pq::result_type< std::set< std::tuple< int > > > );
 static_assert( !tao::pq::result_type< std::set< std::tuple< bool, int, double > > > );
 
