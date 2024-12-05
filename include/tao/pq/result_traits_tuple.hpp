@@ -13,6 +13,12 @@
 #include <tao/pq/internal/exclusive_scan.hpp>
 #include <tao/pq/result_traits.hpp>
 
+template<>
+struct tao::pq::result_traits< std::tuple<> >
+{
+   static constexpr std::size_t size = 0;
+};
+
 template< typename T >
 struct tao::pq::result_traits< std::tuple< T > >
 {
@@ -33,7 +39,7 @@ struct tao::pq::result_traits< std::tuple< T > >
 };
 
 template< typename... Ts >
-   requires( sizeof...( Ts ) != 0 )
+   requires( sizeof...( Ts ) >= 2 )
 struct tao::pq::result_traits< std::tuple< Ts... > >
 {
    static constexpr std::size_t size = ( 0 + ... + result_traits_size< Ts > );

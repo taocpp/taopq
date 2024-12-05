@@ -36,7 +36,7 @@ namespace tao::pq
    class row;
 
    template< typename T >
-   concept result_type_composite = ( ( result_traits_size< T > > 1 ) || is_aggregate_result< T > ) && requires( const row& r ) {
+   concept result_type_composite = ( ( result_traits_size< T > != 1 ) || is_aggregate_result< T > ) && requires( const row& r ) {
       { result_traits< T >::from( r ) } -> std::same_as< T >;
    };
 

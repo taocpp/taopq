@@ -62,6 +62,13 @@ public:
    }
 
    template< std::size_t I >
+      requires( sizeof...( Ts ) == 1 )
+   void element( std::string& data ) const
+   {
+      std::get< gen::template outer< I > >( m_tuple ).template element< gen::template inner< I > >( data );
+   }
+
+   template< std::size_t I >
    void copy_to( std::string& data ) const
    {
       std::get< gen::template outer< I > >( m_tuple ).template copy_to< gen::template inner< I > >( data );

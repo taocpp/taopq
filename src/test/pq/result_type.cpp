@@ -58,6 +58,8 @@ static_assert( tao::pq::result_type< std::pair< bool, int > > );
 static_assert( tao::pq::result_type< std::pair< std::string, tao::pq::binary > > );
 
 // tuple
+static_assert( !tao::pq::result_type< std::tuple<> > );
+static_assert( tao::pq::result_type< std::tuple< int > > );
 static_assert( tao::pq::result_type< std::tuple< bool, int, float > > );
 static_assert( tao::pq::result_type< std::tuple< std::string, tao::pq::binary, unsigned > > );
 
@@ -67,10 +69,18 @@ static_assert( !tao::pq::result_type< std::array< std::string, 42 > > );
 static_assert( tao::pq::result_type< std::list< std::string_view > > );
 static_assert( tao::pq::result_type< std::set< double > > );
 static_assert( tao::pq::result_type< std::unordered_set< char > > );
+static_assert( !tao::pq::result_type< std::set< std::pair< int, double > > > );
+static_assert( !tao::pq::result_type_direct< std::set< std::tuple<> > > );
+static_assert( tao::pq::result_type< std::set< std::tuple< int > > > );
+static_assert( !tao::pq::result_type< std::set< std::tuple< bool, int, double > > > );
 
 // note: vector<T> except for T == std::byte are registered as arrays by default
 static_assert( tao::pq::result_type< std::vector< bool > > );
 static_assert( tao::pq::result_type< std::vector< unsigned long long > > );
+
+static_assert( tao::pq::result_type< std::vector< std::set< double > > > );
+static_assert( tao::pq::result_type< std::set< std::vector< double > > > );
+static_assert( tao::pq::result_type< std::list< std::unordered_set< std::tuple< int > > > > );
 
 // aggregate
 namespace example
