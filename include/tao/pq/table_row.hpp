@@ -250,9 +250,9 @@ namespace tao::pq
    };
 
    template< result_type T >
+      requires( result_traits_size< T > == 1 )
    auto table_field::as() const -> T
    {
-      static_assert( result_traits_size< T > == 1, "tao::pq::result_traits<T>::size does not yield exactly one column for T, which is required for field access" );
       return m_row->get< T >( m_column );
    }
 

@@ -40,9 +40,11 @@ namespace tao::pq
       [[nodiscard]] auto get() const -> const char*;
 
       template< result_type T >
+         requires( result_traits_size< T > == 1 )
       [[nodiscard]] auto as() const -> T;  // implemented in row.hpp
 
       template< result_type T >
+         requires( result_traits_size< T > == 1 )
       [[nodiscard]] auto optional() const
       {
          return as< std::optional< T > >();

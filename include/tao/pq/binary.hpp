@@ -15,8 +15,8 @@ namespace tao::pq
    using binary_view = std::span< const std::byte >;
 
    [[nodiscard]] auto to_binary_view( const auto* data, const std::size_t size ) noexcept -> binary_view
+      requires( sizeof( *data ) == 1 )
    {
-      static_assert( sizeof( *data ) == 1 );
       return { reinterpret_cast< const std::byte* >( data ), size };
    }
 
@@ -26,8 +26,8 @@ namespace tao::pq
    }
 
    [[nodiscard]] auto to_binary( const auto* data, const std::size_t size ) -> binary
+      requires( sizeof( *data ) == 1 )
    {
-      static_assert( sizeof( *data ) == 1 );
       const auto* ptr = reinterpret_cast< const std::byte* >( data );
       return { ptr, ptr + size };
    }
