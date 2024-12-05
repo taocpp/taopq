@@ -5,14 +5,10 @@
 #ifndef TAO_PQ_PARAMETER_TRAITS_ARRAY_HPP
 #define TAO_PQ_PARAMETER_TRAITS_ARRAY_HPP
 
-#include <array>
 #include <cstddef>
-#include <list>
-#include <set>
 #include <string>
-#include <unordered_set>
-#include <vector>
 
+#include <tao/pq/is_array.hpp>
 #include <tao/pq/oid.hpp>
 #include <tao/pq/parameter_traits.hpp>
 
@@ -20,39 +16,10 @@ namespace tao::pq
 {
    namespace internal
    {
-      template< typename >
-      inline constexpr bool is_array_parameter = false;
-
-      template< typename T, std::size_t N >
-      inline constexpr bool is_array_parameter< std::array< T, N > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::list< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::unordered_set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_parameter< std::vector< Ts... > > = true;
-
-      template<>
-      inline constexpr bool is_array_parameter< std::vector< std::byte > > = false;
-
-   }  // namespace internal
-
-   template< typename T >
-   inline constexpr bool is_array_parameter = internal::is_array_parameter< T >;
-
-   namespace internal
-   {
       template< typename T >
-      concept array_parameter_type = ( pq::is_array_parameter< T > && ( pq::is_array_parameter< typename T::value_type > || ( parameter_traits< typename T::value_type >::columns == 1 ) ) );
+      concept array_parameter_type = pq::is_array_parameter< T > && ( pq::is_array_parameter< typename T::value_type > || ( parameter_traits< typename T::value_type >::columns == 1 ) );
 
       template< typename T >
-         requires( !pq::is_array_parameter< T > )
       void to_array( std::string& data, const T& v )
       {
          parameter_traits< T >( v ).template element< 0 >( data );

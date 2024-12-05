@@ -93,9 +93,9 @@ namespace tao::pq
       void insert_raw( const std::string_view data );
 
       template< parameter_type... As >
+         requires( sizeof...( As ) >= 1 )
       void insert( As&&... as )
       {
-         static_assert( sizeof...( As ) >= 1, "calling tao::pq::table_writer::insert() requires at least one argument" );
          return insert_traits( parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
       }
 

@@ -5,53 +5,23 @@
 #ifndef TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 #define TAO_PQ_RESULT_TRAITS_ARRAY_HPP
 
-#include <list>
-#include <set>
 #include <stdexcept>
 #include <string>
-#include <unordered_set>
-#include <utility>
-#include <vector>
 
+#include <tao/pq/is_array.hpp>
 #include <tao/pq/result_traits.hpp>
 
 namespace tao::pq
 {
    namespace internal
    {
-      template< typename >
-      inline constexpr bool is_array_result = false;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::list< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::unordered_set< Ts... > > = true;
-
-      template< typename... Ts >
-      inline constexpr bool is_array_result< std::vector< Ts... > > = true;
-
-      template<>
-      inline constexpr bool is_array_result< std::vector< std::byte > > = false;
-
-   }  // namespace internal
-
-   template< typename T >
-   inline constexpr bool is_array_result = internal::is_array_result< T >;
-
-   namespace internal
-   {
       template< typename T >
-      concept array_result_type = ( pq::is_array_result< T > && ( pq::is_array_result< typename T::value_type > || ( result_traits_size< typename T::value_type > == 1 ) ) );
+      concept array_result_type = pq::is_array_result< T > && ( pq::is_array_result< typename T::value_type > || ( result_traits_size< typename T::value_type > == 1 ) );
 
       [[nodiscard]] auto parse_quoted( const char*& value ) -> std::string;
       [[nodiscard]] auto parse_unquoted( const char*& value ) -> std::string;
 
       template< typename T >
-         requires( !pq::is_array_result< T > )
       [[nodiscard]] auto parse( const char*& value ) -> T
       {
          if( *value == '"' ) {
