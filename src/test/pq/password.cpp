@@ -8,6 +8,7 @@
 #include <exception>
 #include <format>
 #include <iostream>
+#include <string>
 
 #include <tao/pq.hpp>
 
@@ -22,7 +23,7 @@ namespace
       const auto conn = tao::pq::connection::create( connection_string );
 
       // prevent cleartext passwords from showing up in logs, traces, etc.
-      const auto cleartext_password = "secret123";
+      const std::string cleartext_password = "secret123";
       const auto encrypted_password = conn->password( cleartext_password, "tao_test_role" );
 
       // execute commands
