@@ -611,4 +611,13 @@ namespace tao::pq
       m_timeout = std::nullopt;
    }
 
+   auto connection::password( const internal::zsv passwd, const internal::zsv user, const internal::zsv algorithm ) -> std::string
+   {
+      std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQencryptPasswordConn( m_pgconn.get(), passwd, user, algorithm ), &PQfreemem );
+      if( !buffer ) {
+         throw std::invalid_argument( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
+      }
+      return buffer.get();
+   }
+
 }  // namespace tao::pq

@@ -176,6 +176,8 @@ namespace tao::pq
       void set_timeout( const std::chrono::milliseconds timeout );
       void reset_timeout() noexcept;
 
+      [[nodiscard]] auto password( const internal::zsv passwd, const internal::zsv user, const internal::zsv algorithm = "scram-sha-256" ) -> std::string;
+
       [[nodiscard]] auto underlying_raw_ptr() noexcept -> PGconn*
       {
          return m_pgconn.get();
