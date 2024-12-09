@@ -177,7 +177,7 @@ namespace tao::pq
       {
          [[nodiscard]] constexpr auto is_identifier( const std::string_view value ) noexcept -> bool
          {
-            return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( value[ 0 ] ) == 0 );
+            return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( static_cast< unsigned char >( value[ 0 ] ) ) == 0 );
          }
 
       }  // namespace
