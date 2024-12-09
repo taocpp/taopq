@@ -217,11 +217,6 @@ namespace tao::pq
       }
    }
 
-   auto connection::is_prepared( const std::string_view name ) const noexcept -> bool
-   {
-      return m_prepared_statements.contains( name );
-   }
-
    void connection::send_params( const char* statement,
                                  const int n_params,
                                  const Oid types[],
@@ -229,7 +224,7 @@ namespace tao::pq
                                  const int lengths[],
                                  const int formats[] )
    {
-      const auto result = is_prepared( statement ) ?
+      const auto result = m_prepared_statements.contains( statement ) ?
                              PQsendQueryPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) :
                              PQsendQueryParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 );
       if( result == 0 ) {
@@ -507,11 +502,11 @@ namespace tao::pq
       return std::make_shared< internal::top_level_transaction >( shared_from_this(), il, am );
    }
 
-   void connection::prepare( const std::string& name, const std::string& statement )
+   void connection::prepare( std::string name, const internal::zsv statement )
    {
       connection::check_prepared_name( name );
       const auto end = timeout_end();
-      if( PQsendPrepare( m_pgconn.get(), name.c_str(), statement.c_str(), 0, nullptr ) == 0 ) {
+      if( PQsendPrepare( m_pgconn.get(), name.c_str(), statement, 0, nullptr ) == 0 ) {
          throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
       }
       auto result = connection::get_result( end );
@@ -530,7 +525,7 @@ namespace tao::pq
             connection::clear_results( end );
             internal::throw_sqlstate( result.get() );
       }
-      m_prepared_statements.insert( name );
+      m_prepared_statements.insert( std::move( name ) );
    }
 
    void connection::deallocate( const std::string_view name )

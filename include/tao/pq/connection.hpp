@@ -69,7 +69,6 @@ namespace tao::pq
       [[nodiscard]] auto attempt_rollback() const noexcept -> bool;
 
       static void check_prepared_name( const std::string_view name );
-      [[nodiscard]] auto is_prepared( const std::string_view name ) const noexcept -> bool;
 
       void send_params( const char* statement,
                         const int n_params,
@@ -147,7 +146,7 @@ namespace tao::pq
       [[nodiscard]] auto transaction( const access_mode am, const isolation_level il = isolation_level::default_isolation_level ) -> std::shared_ptr< pq::transaction >;
       [[nodiscard]] auto transaction( const isolation_level il, const access_mode am = access_mode::default_access_mode ) -> std::shared_ptr< pq::transaction >;
 
-      void prepare( const std::string& name, const std::string& statement );
+      void prepare( std::string name, const internal::zsv statement );
       void deallocate( const std::string_view name );
 
       template< parameter_type... As >
