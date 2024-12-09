@@ -177,7 +177,7 @@ namespace tao::pq
       {
          [[nodiscard]] constexpr auto is_identifier( const std::string_view value ) noexcept -> bool
          {
-            return !value.empty() && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos ) && ( std::isdigit( static_cast< unsigned char >( value[ 0 ] ) ) == 0 );
+            return !value.empty() && ( std::isdigit( static_cast< unsigned char >( value[ 0 ] ) ) == 0 ) && ( value.find_first_not_of( "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_" ) == std::string_view::npos );
          }
 
       }  // namespace
@@ -188,7 +188,7 @@ namespace tao::pq
    {
       const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
       if( !buffer ) {
-         throw std::invalid_argument( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
+         throw std::invalid_argument( error_message() );  // LCOV_EXCL_LINE
       }
       return buffer.get();
    }
@@ -228,7 +228,7 @@ namespace tao::pq
                              PQsendQueryPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) :
                              PQsendQueryParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 );
       if( result == 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
+         throw pq::connection_error( error_message() );  // LCOV_EXCL_LINE
       }
    }
 
@@ -294,8 +294,7 @@ namespace tao::pq
                   break;
 
                default:
-                  throw std::runtime_error( "PQflush() failed: " + error_message() );
-                  // LCOV_EXCL_STOP
+                  throw std::runtime_error( std::format( "PQflush() failed: {}", error_message() ) );  // LCOV_EXCL_STOP
             }
          }
          connection::wait( wait_for_write, end );
@@ -323,7 +322,7 @@ namespace tao::pq
 
                // LCOV_EXCL_START
             case -2:
-               throw std::runtime_error( "PQgetCopyData() failed: " + error_message() );
+               throw std::runtime_error( std::format( "PQgetCopyData() failed: {}", error_message() ) );
 
             default:
                TAO_PQ_INTERNAL_UNREACHABLE;
@@ -351,7 +350,7 @@ namespace tao::pq
                break;
 
             case -1:
-               throw std::runtime_error( "PQputCopyData() failed: " + error_message() );
+               throw std::runtime_error( std::format( "PQputCopyData() failed: {}", error_message() ) );
 
             default:
                TAO_PQ_INTERNAL_UNREACHABLE;
@@ -374,7 +373,7 @@ namespace tao::pq
                break;
 
             case -1:
-               throw std::runtime_error( "PQputCopyEnd() failed: " + connection::error_message() );
+               throw std::runtime_error( std::format( "PQputCopyEnd() failed: {}", connection::error_message() ) );
 
             default:
                TAO_PQ_INTERNAL_UNREACHABLE;
@@ -405,11 +404,11 @@ namespace tao::pq
       if( !is_open() ) {
          // note that we can not access the sqlstate after PQconnectdb(),
          // see https://stackoverflow.com/q/23349086/2073257
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
+         throw pq::connection_error( error_message() );
       }
 
       if( PQsetnonblocking( m_pgconn.get(), 1 ) != 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
+         throw pq::connection_error( error_message() );  // LCOV_EXCL_LINE
       }
    }
 
@@ -418,7 +417,7 @@ namespace tao::pq
       return std::make_shared< connection >( private_key(), connection_info, std::move( poll_cb ) );
    }
 
-   auto connection::error_message() const -> std::string
+   auto connection::error_message() const -> const char*
    {
       return PQerrorMessage( m_pgconn.get() );
    }
@@ -507,7 +506,7 @@ namespace tao::pq
       connection::check_prepared_name( name );
       const auto end = timeout_end();
       if( PQsendPrepare( m_pgconn.get(), name.c_str(), statement, 0, nullptr ) == 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
+         throw pq::connection_error( error_message() );  // LCOV_EXCL_LINE
       }
       auto result = connection::get_result( end );
       switch( PQresultStatus( result.get() ) ) {
@@ -582,7 +581,7 @@ namespace tao::pq
    void connection::get_notifications()
    {
       if( PQconsumeInput( m_pgconn.get() ) == 0 ) {
-         throw pq::connection_error( PQerrorMessage( m_pgconn.get() ) );
+         throw pq::connection_error( error_message() );
       }
       handle_notifications();
    }
@@ -610,7 +609,7 @@ namespace tao::pq
    {
       const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQencryptPasswordConn( m_pgconn.get(), passwd, user, algorithm ), &PQfreemem );
       if( !buffer ) {
-         throw std::invalid_argument( PQerrorMessage( m_pgconn.get() ) );  // LCOV_EXCL_LINE
+         throw std::invalid_argument( error_message() );  // LCOV_EXCL_LINE
       }
       return buffer.get();
    }
