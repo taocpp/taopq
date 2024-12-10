@@ -31,9 +31,6 @@ namespace tao::pq
       inline constexpr bool is_parameter< parameter< Max > > = true;
 
       template< typename... As >
-      inline constexpr bool contains_parameter = ( is_parameter< std::decay_t< As > > || ... );
-
-      template< typename... As >
       inline constexpr std::size_t parameter_size = ( parameter_size< std::decay_t< As > > + ... + 0 );
 
       template< typename A >
@@ -45,7 +42,10 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   concept parameter_type = parameter_type_direct< T > || internal::is_parameter< std::decay_t< T > >;
+   concept parameter_type_composite = internal::is_parameter< std::decay_t< T > >;
+
+   template< typename T >
+   concept parameter_type = parameter_type_direct< T > || parameter_type_composite< T >;
 
    template< std::size_t Max >
    class parameter

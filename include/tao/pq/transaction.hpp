@@ -132,29 +132,17 @@ namespace tao::pq
          send_traits( statement, parameter_traits< std::decay_t< As > >( std::forward< As >( as ) )... );
       }
 
-      template< std::size_t Max >
-      void send( const internal::zsv statement, const parameter< Max >& p )
-      {
-         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
-      }
-
-      template< std::size_t Max >
-      void send( const internal::zsv statement, parameter< Max >& p )
-      {
-         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
-      }
-
-      template< std::size_t Max >
-      void send( const internal::zsv statement, parameter< Max >&& p )
-      {
-         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
-      }
-
       template< parameter_type... As >
-         requires internal::contains_parameter< As... >
+         requires( parameter_type_composite< As > || ... )
       void send( const internal::zsv statement, As&&... as )
       {
          const parameter< internal::parameter_size< As... > > p( std::forward< As >( as )... );
+         send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
+      }
+
+      template< parameter_type_composite A >
+      void send( const internal::zsv statement, A&& p )
+      {
          send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
       }
 

@@ -26,6 +26,9 @@
 
 namespace tao::pq
 {
+   template< typename T >
+   struct parameter_traits;
+
    namespace internal
    {
       // helper for arrays
@@ -61,15 +64,12 @@ namespace tao::pq
          }
       }
 
+      template< typename T >
+      concept parameter_type_has_element = requires( const parameter_traits< std::decay_t< T > >& t, std::string& s ) {
+         { t.template element< 0 >( s ) } -> std::same_as< void >;
+      };
+
    }  // namespace internal
-
-   template< typename T >
-   struct parameter_traits;
-
-   template< typename T >
-   concept parameter_type_has_element = requires( const parameter_traits< std::decay_t< T > >& t, std::string& s ) {
-      { t.template element< 0 >( s ) } -> std::same_as< void >;
-   };
 
    template< typename T >
    concept parameter_type_direct = requires( const parameter_traits< std::decay_t< T > >& t, std::string& s ) {
@@ -80,7 +80,7 @@ namespace tao::pq
       { t.template length< 0 >() } -> std::same_as< int >;
       { t.template format< 0 >() } -> std::same_as< int >;
       { t.template copy_to< 0 >( s ) } -> std::same_as< void >;
-   } && ( ( parameter_traits< std::decay_t< T > >::columns >= 2 ) || parameter_type_has_element< T > );
+   } && ( ( parameter_traits< std::decay_t< T > >::columns >= 2 ) || internal::parameter_type_has_element< T > );
 
    template<>
    struct parameter_traits< null_t >
