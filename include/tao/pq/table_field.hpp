@@ -48,17 +48,17 @@ namespace tao::pq
          return as< std::optional< T > >();
       }
 
+      [[nodiscard]] auto operator==( null_t /*unused*/ )
+      {
+         return is_null();
+      }
+
       friend void swap( table_field& lhs, table_field& rhs ) noexcept
       {
          std::swap( lhs.m_row, rhs.m_row );
          std::swap( lhs.m_column, rhs.m_column );
       }
    };
-
-   [[nodiscard]] inline auto operator==( const table_field& f, null_t /*unused*/ )
-   {
-      return f.is_null();
-   }
 
 }  // namespace tao::pq
 
