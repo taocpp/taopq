@@ -8,6 +8,7 @@
 // This is an internal header used for unit-tests.
 
 #include <cstdlib>
+#include <format>
 #include <stdexcept>
 #include <string>
 
@@ -27,7 +28,7 @@ namespace tao::pq::internal
          const std::unique_ptr< char, decltype( &std::free ) > up( buf, &std::free );
          return std::string( up.get(), sz );
       }
-      throw std::runtime_error( "environment variable not found: " + name );
+      throw std::runtime_error( std::format( "environment variable not found: {}", name ) );
    }
 
    [[nodiscard]] inline auto getenv( const std::string& name, const std::string& default_value ) -> std::string
@@ -46,7 +47,7 @@ namespace tao::pq::internal
    [[nodiscard]] inline auto getenv( const std::string& name ) -> std::string
    {
       const char* result = std::getenv( name.c_str() );
-      return ( result != nullptr ) ? result : throw std::runtime_error( "environment variable not found: " + name );
+      return ( result != nullptr ) ? result : throw std::runtime_error( std::format( "environment variable not found: {}", name ) );
    }
 
    [[nodiscard]] inline auto getenv( const std::string& name, const std::string& default_value ) -> std::string

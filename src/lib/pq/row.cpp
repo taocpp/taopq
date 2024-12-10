@@ -57,7 +57,7 @@ namespace tao::pq
             }
          }
       }
-      throw std::out_of_range( "column not found: " + std::string( in_name ) );
+      throw std::out_of_range( std::format( "column not found: {}", static_cast< const char* >( in_name ) ) );
    }
 
    auto row::begin() const -> row::const_iterator

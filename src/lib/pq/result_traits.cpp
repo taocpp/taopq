@@ -6,6 +6,7 @@
 
 #include <cstddef>
 #include <cstring>
+#include <format>
 #include <stdexcept>
 #include <string>
 
@@ -32,12 +33,12 @@ namespace tao::pq
       [[nodiscard]] auto unescape_bytea( const char* value ) -> binary
       {
          if( ( value[ 0 ] != '\\' ) || ( value[ 1 ] != 'x' ) ) {
-            throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
+            throw std::invalid_argument( std::format( "unescape BYTEA failed: {}", value ) );
          }
 
          const auto input = std::strlen( value );
          if( input % 2 == 1 ) {
-            throw std::invalid_argument( "unescape BYTEA failed: " + std::string( value ) );
+            throw std::invalid_argument( std::format( "unescape BYTEA failed: {}", value ) );
          }
 
          const auto size = ( input / 2 ) - 1;
@@ -65,13 +66,13 @@ namespace tao::pq
             return false;
          }
       }
-      throw std::runtime_error( "invalid value in tao::pq::result_traits<bool> for input: " + std::string( value ) );
+      throw std::runtime_error( std::format( "invalid value in tao::pq::result_traits<bool> for input: {}", value ) );
    }
 
    auto result_traits< char >::from( const char* value ) -> char
    {
       if( ( value[ 0 ] == '\0' ) || ( value[ 1 ] != '\0' ) ) {
-         throw std::runtime_error( "invalid value in tao::pq::result_traits<char> for input: " + std::string( value ) );
+         throw std::runtime_error( std::format( "invalid value in tao::pq::result_traits<char> for input: {}", value ) );
       }
       return value[ 0 ];
    }
