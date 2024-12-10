@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_RESULT_HPP
 #define TAO_PQ_RESULT_HPP
 
+#include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <format>
@@ -46,13 +47,6 @@ namespace tao::pq
       const std::size_t m_columns;
       const std::size_t m_rows;
 
-      void check_has_result_set() const
-      {
-         if( m_columns == 0 ) {
-            throw std::logic_error( "statement does not yield a result set" );
-         }
-      }
-
       void check_row( const std::size_t row ) const;
 
       explicit result( PGresult* pgresult );
@@ -69,13 +63,13 @@ namespace tao::pq
       [[nodiscard]] auto name( const std::size_t column ) const -> std::string;
       [[nodiscard]] auto index( const internal::zsv in_name ) const -> std::size_t;
 
-      [[nodiscard]] auto size() const -> std::size_t
+      [[nodiscard]] auto size() const noexcept -> std::size_t
       {
-         check_has_result_set();
+         assert( m_columns != 0 );
          return m_rows;
       }
 
-      [[nodiscard]] auto empty() const -> bool
+      [[nodiscard]] auto empty() const noexcept -> bool
       {
          return size() == 0;
       }
@@ -196,15 +190,15 @@ namespace tao::pq
       };
 
    public:
-      [[nodiscard]] auto begin() const -> const_iterator;
-      [[nodiscard]] auto end() const -> const_iterator;
+      [[nodiscard]] auto begin() const noexcept -> const_iterator;
+      [[nodiscard]] auto end() const noexcept -> const_iterator;
 
-      [[nodiscard]] auto cbegin() const
+      [[nodiscard]] auto cbegin() const noexcept
       {
          return begin();
       }
 
-      [[nodiscard]] auto cend() const
+      [[nodiscard]] auto cend() const noexcept
       {
          return end();
       }
@@ -265,7 +259,7 @@ namespace tao::pq
          requires result_type< typename T::value_type >
       [[nodiscard]] auto as_container() const -> T
       {
-         check_has_result_set();
+         assert( m_columns != 0 );
          T nrv;
          if constexpr( requires { nrv.reserve( size() ); } ) {
             nrv.reserve( size() );

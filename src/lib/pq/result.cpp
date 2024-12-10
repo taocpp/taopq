@@ -21,7 +21,7 @@ namespace tao::pq
 {
    void result::check_row( const std::size_t row ) const
    {
-      check_has_result_set();
+      assert( m_columns != 0 );
       if( !( row < m_rows ) ) {
          if( m_rows == 0 ) {
             throw std::out_of_range( std::format( "row {} out of range, result is empty", row ) );
@@ -81,22 +81,22 @@ namespace tao::pq
 
    auto result::index( const internal::zsv in_name ) const -> std::size_t
    {
+      assert( m_columns != 0 );
       const int column = PQfnumber( m_pgresult.get(), in_name );
       if( column < 0 ) {
          assert( column == -1 );
-         check_has_result_set();
          throw std::out_of_range( std::format( "column '{}' not found", in_name.value ) );
       }
       return column;
    }
 
-   auto result::begin() const -> result::const_iterator
+   auto result::begin() const noexcept -> result::const_iterator
    {
-      check_has_result_set();
+      assert( m_columns != 0 );
       return const_iterator( row( *this, 0, 0, m_columns ) );
    }
 
-   auto result::end() const -> result::const_iterator
+   auto result::end() const noexcept -> result::const_iterator
    {
       return const_iterator( row( *this, size(), 0, m_columns ) );
    }

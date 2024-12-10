@@ -71,7 +71,7 @@ namespace
       TEST_THROWS( connection->execute( "drop_table", 42 ) );
 
       // a statement which is not a query does not return "affected rows"
-      TEST_THROWS( connection->execute( "drop_table" ).rows_affected() );
+      TEST_ASSERT( connection->execute( "drop_table" ).columns() == 0 );
 
       // deallocate a prepared statement
       connection->deallocate( "drop_table" );
@@ -115,7 +115,7 @@ namespace
       connection->execute( "CREATE TABLE tao_connection_test ( a INTEGER PRIMARY KEY, b INTEGER )" );
 
       // a DELETE statement does not yield a result set
-      TEST_THROWS( connection->execute( "DELETE FROM tao_connection_test" ).empty() );
+      TEST_ASSERT( connection->execute( "DELETE FROM tao_connection_test" ).columns() == 0 );
 
       // out of range access throws
       TEST_THROWS( connection->execute( "SELECT * FROM tao_connection_test" ).at( 0 ) );
