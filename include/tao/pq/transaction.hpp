@@ -133,14 +133,14 @@ namespace tao::pq
       }
 
       template< parameter_type... As >
-         requires( parameter_type_composite< As > || ... )
+         requires( parameter_type_dynamic< As > || ... )
       void send( const internal::zsv statement, As&&... as )
       {
          const parameter< internal::parameter_size< As... > > p( std::forward< As >( as )... );
          send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
       }
 
-      template< parameter_type_composite A >
+      template< parameter_type_dynamic A >
       void send( const internal::zsv statement, A&& p )
       {
          send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
