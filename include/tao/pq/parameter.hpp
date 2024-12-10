@@ -42,10 +42,10 @@ namespace tao::pq
    }  // namespace internal
 
    template< typename T >
-   concept parameter_type_composite = internal::is_parameter< std::decay_t< T > >;
+   concept parameter_type_dynamic = internal::is_parameter< std::decay_t< T > >;
 
    template< typename T >
-   concept parameter_type = parameter_type_direct< T > || parameter_type_composite< T >;
+   concept parameter_type = parameter_type_direct< T > || parameter_type_dynamic< T >;
 
    template< std::size_t Max >
    class parameter
