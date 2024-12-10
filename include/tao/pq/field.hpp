@@ -34,7 +34,7 @@ namespace tao::pq
 
    public:
       [[nodiscard]] auto name() const -> std::string;
-      [[nodiscard]] auto index() const -> std::size_t;
+      [[nodiscard]] auto index() const noexcept -> std::size_t;
 
       [[nodiscard]] auto is_null() const -> bool;
       [[nodiscard]] auto get() const -> const char*;

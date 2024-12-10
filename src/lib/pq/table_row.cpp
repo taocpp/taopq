@@ -30,12 +30,12 @@ namespace tao::pq
       return { *m_reader, m_offset + offset, in_columns };
    }
 
-   auto table_row::begin() const -> table_row::const_iterator
+   auto table_row::begin() const noexcept -> table_row::const_iterator
    {
       return const_iterator( table_field( *this, m_offset ) );
    }
 
-   auto table_row::end() const -> table_row::const_iterator
+   auto table_row::end() const noexcept -> table_row::const_iterator
    {
       return const_iterator( table_field( *this, m_offset + m_columns ) );
    }

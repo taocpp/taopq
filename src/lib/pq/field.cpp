@@ -16,7 +16,7 @@ namespace tao::pq
       return m_row->name( m_column );
    }
 
-   auto field::index() const -> std::size_t
+   auto field::index() const noexcept -> std::size_t
    {
       return m_column - m_row->m_offset;
    }

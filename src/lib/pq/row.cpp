@@ -60,12 +60,12 @@ namespace tao::pq
       throw std::out_of_range( std::format( "column not found: {}", static_cast< const char* >( in_name ) ) );
    }
 
-   auto row::begin() const -> row::const_iterator
+   auto row::begin() const noexcept -> row::const_iterator
    {
       return const_iterator( field( *this, m_offset ) );
    }
 
-   auto row::end() const -> row::const_iterator
+   auto row::end() const noexcept -> row::const_iterator
    {
       return const_iterator( field( *this, m_offset + m_columns ) );
    }

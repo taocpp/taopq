@@ -174,15 +174,15 @@ namespace tao::pq
       };
 
    public:
-      [[nodiscard]] auto begin() const -> const_iterator;
-      [[nodiscard]] auto end() const -> const_iterator;
+      [[nodiscard]] auto begin() const noexcept -> const_iterator;
+      [[nodiscard]] auto end() const noexcept -> const_iterator;
 
-      [[nodiscard]] auto cbegin() const
+      [[nodiscard]] auto cbegin() const noexcept
       {
          return begin();
       }
 
-      [[nodiscard]] auto cend() const
+      [[nodiscard]] auto cend() const noexcept
       {
          return end();
       }
