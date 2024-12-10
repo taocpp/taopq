@@ -32,7 +32,7 @@ namespace tao::pq
       {}
 
    public:
-      [[nodiscard]] auto index() const -> std::size_t;
+      [[nodiscard]] auto index() const noexcept -> std::size_t;
 
       [[nodiscard]] auto is_null() const -> bool;
       [[nodiscard]] auto get() const -> const char*;
@@ -48,7 +48,7 @@ namespace tao::pq
          return as< std::optional< T > >();
       }
 
-      [[nodiscard]] auto operator==( null_t /*unused*/ )
+      [[nodiscard]] auto operator==( null_t /*unused*/ ) const
       {
          return is_null();
       }

@@ -10,7 +10,7 @@
 
 namespace tao::pq
 {
-   auto table_field::index() const -> std::size_t
+   auto table_field::index() const noexcept -> std::size_t
    {
       return m_column - m_row->m_offset;
    }
