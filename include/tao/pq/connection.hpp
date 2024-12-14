@@ -64,7 +64,7 @@ namespace tao::pq
       std::function< void( const notification& ) > m_notification_handler;
       std::map< std::string, std::function< void( const char* ) >, std::less<> > m_notification_handlers;
 
-      [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::string;
+      [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::unique_ptr< char, decltype( &PQfreemem ) >;
 
       [[nodiscard]] auto attempt_rollback() const noexcept -> bool;
 
@@ -77,7 +77,10 @@ namespace tao::pq
                         const int lengths[],
                         const int formats[] );
 
-      [[nodiscard]] auto timeout_end( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) const noexcept -> std::chrono::steady_clock::time_point;
+      [[nodiscard]] auto timeout_end( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) const noexcept -> std::chrono::steady_clock::time_point
+      {
+         return m_timeout ? ( start + *m_timeout ) : start;
+      }
 
       void wait( const bool wait_for_write, const std::chrono::steady_clock::time_point end );
       void cancel();

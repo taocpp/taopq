@@ -184,13 +184,13 @@ namespace tao::pq
 
    }  // namespace internal
 
-   auto connection::escape_identifier( const std::string_view identifier ) const -> std::string
+   auto connection::escape_identifier( const std::string_view identifier ) const -> std::unique_ptr< char, decltype( &PQfreemem ) >
    {
-      const std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
+      std::unique_ptr< char, decltype( &PQfreemem ) > buffer( PQescapeIdentifier( m_pgconn.get(), identifier.data(), identifier.size() ), &PQfreemem );
       if( !buffer ) {
          throw std::invalid_argument( error_message() );  // LCOV_EXCL_LINE
       }
-      return buffer.get();
+      return buffer;
    }
 
    auto connection::attempt_rollback() const noexcept -> bool
@@ -230,11 +230,6 @@ namespace tao::pq
       if( result == 0 ) {
          throw pq::connection_error( error_message() );  // LCOV_EXCL_LINE
       }
-   }
-
-   auto connection::timeout_end( const std::chrono::steady_clock::time_point start ) const noexcept -> std::chrono::steady_clock::time_point
-   {
-      return m_timeout ? ( start + *m_timeout ) : start;
    }
 
    void connection::wait( const bool wait_for_write, const std::chrono::steady_clock::time_point end )
@@ -534,13 +529,13 @@ namespace tao::pq
       if( it == m_prepared_statements.end() ) {
          throw std::runtime_error( std::format( "prepared statement not found: {}", name ) );
       }
-      connection::execute( "DEALLOCATE " + connection::escape_identifier( name ) );
+      connection::execute( std::format( "DEALLOCATE {}", connection::escape_identifier( name ).get() ) );
       m_prepared_statements.erase( it );
    }
 
    void connection::listen( const std::string_view channel )
    {
-      connection::execute( "LISTEN " + connection::escape_identifier( channel ) );
+      connection::execute( std::format( "LISTEN {}", connection::escape_identifier( channel ).get() ) );
    }
 
    void connection::listen( const std::string_view channel, const std::function< void( const char* payload ) >& handler )
@@ -551,12 +546,12 @@ namespace tao::pq
 
    void connection::unlisten( const std::string_view channel )
    {
-      connection::execute( "UNLISTEN " + connection::escape_identifier( channel ) );
+      connection::execute( std::format( "UNLISTEN {}", connection::escape_identifier( channel ).get() ) );
    }
 
    void connection::notify( const std::string_view channel )
    {
-      connection::execute( "NOTIFY " + connection::escape_identifier( channel ) );
+      connection::execute( std::format( "NOTIFY {}", connection::escape_identifier( channel ).get() ) );
    }
 
    void connection::notify( const std::string_view channel, const std::string_view payload )
