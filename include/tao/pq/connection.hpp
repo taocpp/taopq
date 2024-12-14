@@ -25,6 +25,7 @@
 #include <tao/pq/isolation_level.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/parameter.hpp>
+#include <tao/pq/pipeline_status.hpp>
 #include <tao/pq/poll.hpp>
 #include <tao/pq/transaction.hpp>
 #include <tao/pq/transaction_status.hpp>
@@ -132,6 +133,12 @@ namespace tao::pq
 
       [[nodiscard]] auto status() const noexcept -> connection_status;
       [[nodiscard]] auto transaction_status() const noexcept -> pq::transaction_status;
+
+      [[nodiscard]] auto pipeline_status() const noexcept -> pq::pipeline_status;
+      void enter_pipeline_mode();
+      void exit_pipeline_mode();
+
+      void pipeline_sync();
 
       [[nodiscard]] auto is_open() const noexcept -> bool
       {

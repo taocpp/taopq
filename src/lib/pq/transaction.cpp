@@ -7,6 +7,7 @@
 #include <chrono>
 #include <cstdio>
 #include <exception>
+#include <format>
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -189,8 +190,31 @@ namespace tao::pq
             result = std::move( next );
          }
       }
+      else {
+         throw std::runtime_error( "unable to obtain result" );
+      }
 
       return pq::result( result.release() );
+   }
+
+   void transaction::consume_pipeline_sync( const std::chrono::steady_clock::time_point start )
+   {
+      check_current_transaction();
+      const auto end = m_connection->timeout_end( start );
+
+      auto result = m_connection->get_result( end );
+      if( result ) {
+         const auto status = PQresultStatus( result.get() );
+         if( status == PGRES_PIPELINE_SYNC ) {
+            return;
+         }
+         else {
+            throw std::runtime_error( std::format( "unexpected result status: {}", static_cast< int >( status ) ) );
+         }
+      }
+      while( auto next = m_connection->get_result( end ) ) {
+         result = std::move( next );
+      }
    }
 
    auto transaction::subtransaction() -> std::shared_ptr< transaction >

@@ -152,6 +152,7 @@ namespace tao::pq
 #endif
 
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
+      void consume_pipeline_sync( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() );
 
       template< parameter_type... As >
       auto execute( const internal::zsv statement, As&&... as )

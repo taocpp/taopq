@@ -26,6 +26,7 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/internal/zsv.hpp>
+#include <tao/pq/result_status.hpp>
 #include <tao/pq/row.hpp>
 
 namespace tao::pq
@@ -52,6 +53,7 @@ namespace tao::pq
       explicit result( PGresult* pgresult );
 
    public:
+      [[nodiscard]] auto status() const noexcept -> result_status;
       [[nodiscard]] auto has_rows_affected() const noexcept -> bool;
       [[nodiscard]] auto rows_affected() const -> std::size_t;
 

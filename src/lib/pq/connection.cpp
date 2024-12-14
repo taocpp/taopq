@@ -476,6 +476,32 @@ namespace tao::pq
       return static_cast< pq::transaction_status >( PQtransactionStatus( m_pgconn.get() ) );
    }
 
+   auto connection::pipeline_status() const noexcept -> pq::pipeline_status
+   {
+      return static_cast< pq::pipeline_status >( PQpipelineStatus( m_pgconn.get() ) );
+   }
+
+   void connection::enter_pipeline_mode()
+   {
+      if( PQenterPipelineMode( m_pgconn.get() ) == 0 ) {
+         throw pq::connection_error( "unable to enter pipeline mode" );
+      }
+   }
+
+   void connection::exit_pipeline_mode()
+   {
+      if( PQexitPipelineMode( m_pgconn.get() ) == 0 ) {
+         throw pq::connection_error( error_message() );
+      }
+   }
+
+   void connection::pipeline_sync()
+   {
+      if( PQpipelineSync( m_pgconn.get() ) == 0 ) {
+         throw pq::connection_error( "unable to sync pipeline" );
+      }
+   }
+
    auto connection::direct() -> std::shared_ptr< pq::transaction >
    {
       return std::make_shared< internal::autocommit_transaction >( shared_from_this() );

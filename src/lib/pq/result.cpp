@@ -42,6 +42,8 @@ namespace tao::pq
 #if defined( LIBPQ_HAS_CHUNK_MODE )
          case PGRES_TUPLES_CHUNK:
 #endif
+         case PGRES_PIPELINE_SYNC:
+         case PGRES_PIPELINE_ABORTED:
             return;
 
          case PGRES_EMPTY_QUERY:
@@ -54,6 +56,11 @@ namespace tao::pq
          default:
             internal::throw_sqlstate( pgresult );
       }
+   }
+
+   auto result::status() const noexcept -> result_status
+   {
+      return static_cast< pq::result_status >( PQresultStatus( m_pgresult.get() ) );
    }
 
    auto result::has_rows_affected() const noexcept -> bool
