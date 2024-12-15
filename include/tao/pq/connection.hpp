@@ -150,6 +150,8 @@ namespace tao::pq
          return transaction_status() == transaction_status::idle;
       }
 
+      [[nodiscard]] auto is_busy() const noexcept -> bool;
+
       [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
 
       [[nodiscard]] auto transaction() -> std::shared_ptr< pq::transaction >;

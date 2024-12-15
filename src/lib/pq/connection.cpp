@@ -277,7 +277,7 @@ namespace tao::pq
    auto connection::get_result( const std::chrono::steady_clock::time_point end ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
       bool wait_for_write = true;
-      while( PQisBusy( m_pgconn.get() ) != 0 ) {
+      while( is_busy() ) {
          if( wait_for_write ) {
             switch( PQflush( m_pgconn.get() ) ) {
                case 0:
@@ -289,7 +289,8 @@ namespace tao::pq
                   break;
 
                default:
-                  throw std::runtime_error( std::format( "PQflush() failed: {}", error_message() ) );  // LCOV_EXCL_STOP
+                  throw std::runtime_error( std::format( "PQflush() failed: {}", error_message() ) );
+                  // LCOV_EXCL_STOP
             }
          }
          connection::wait( wait_for_write, end );
@@ -500,6 +501,11 @@ namespace tao::pq
       if( PQpipelineSync( m_pgconn.get() ) == 0 ) {
          throw pq::connection_error( "unable to sync pipeline" );
       }
+   }
+
+   auto connection::is_busy() const noexcept -> bool
+   {
+      return PQisBusy( m_pgconn.get() ) != 0;
    }
 
    auto connection::direct() -> std::shared_ptr< pq::transaction >
