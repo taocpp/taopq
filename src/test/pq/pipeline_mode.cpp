@@ -30,11 +30,16 @@ namespace
       connection->enter_pipeline_mode();
       TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::on );
 
-      connection->enter_pipeline_mode();
-      TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::on );
+      connection->exit_pipeline_mode();
+      TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::off );
 
       {
          auto tr = connection->direct();
+         TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::off );
+
+         connection->enter_pipeline_mode();
+         TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::on );
+
          tr->send( "SELECT 42" );
          tr->send( "SELECT 1234" );
          connection->pipeline_sync();
@@ -45,6 +50,37 @@ namespace
          connection->pipeline_sync();
 
          TEST_ASSERT( tr->get_result().as< int >() == 1234 );
+         tr->consume_pipeline_sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 1701 );
+         tr->consume_pipeline_sync();
+
+         TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::on );
+         connection->exit_pipeline_mode();
+         TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::off );
+
+         tr->commit();
+      }
+
+      {
+         auto tr = connection->transaction();
+         TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::off );
+
+         connection->enter_pipeline_mode();
+         TEST_ASSERT( connection->pipeline_status() == tao::pq::pipeline_status::on );
+
+         tr->send( "SELECT 42" );
+         tr->send( "SELECT 1234" );
+         connection->pipeline_sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 42 );
+
+         tr->send( "SELECT 1701" );
+         connection->pipeline_sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 1234 );
+         tr->consume_pipeline_sync();
+
          TEST_ASSERT( tr->get_result().as< int >() == 1701 );
          tr->consume_pipeline_sync();
 

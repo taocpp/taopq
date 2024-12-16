@@ -46,6 +46,8 @@ namespace
       // execute an SQL statement
       connection->execute( "DROP TABLE IF EXISTS tao_connection_test" );
 
+      TEST_THROWS( connection->direct()->get_result() );
+
       // execution of empty statements fails
       TEST_THROWS( connection->execute( "" ) );
 

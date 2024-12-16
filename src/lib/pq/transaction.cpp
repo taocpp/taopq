@@ -166,32 +166,33 @@ namespace tao::pq
       const auto end = m_connection->timeout_end( start );
 
       auto result = m_connection->get_result( end );
-      if( result ) {
-         switch( PQresultStatus( result.get() ) ) {
-            case PGRES_COPY_IN:
-               m_connection->put_copy_end( "unexpected COPY FROM statement" );
-               break;
-
-            case PGRES_COPY_OUT:
-               m_connection->cancel();
-               m_connection->clear_copy_data( end );
-               m_connection->clear_results( end );
-               throw std::runtime_error( "unexpected COPY TO statement" );
-
-            case PGRES_SINGLE_TUPLE:
-#if defined( LIBPQ_HAS_CHUNK_MODE )
-            case PGRES_TUPLES_CHUNK:
-#endif
-               return pq::result( result.release() );
-
-            default:;
-         }
-         while( auto next = m_connection->get_result( end ) ) {
-            result = std::move( next );
-         }
-      }
-      else {
+      if( !result ) {
          throw std::runtime_error( "unable to obtain result" );
+      }
+
+      switch( PQresultStatus( result.get() ) ) {
+         case PGRES_COPY_IN:
+            m_connection->put_copy_end( "unexpected COPY FROM statement" );
+            break;
+
+         case PGRES_COPY_OUT:
+            m_connection->cancel();
+            m_connection->clear_copy_data( end );
+            m_connection->clear_results( end );
+            throw std::runtime_error( "unexpected COPY TO statement" );
+
+         case PGRES_SINGLE_TUPLE:
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+         case PGRES_TUPLES_CHUNK:
+#endif
+            return pq::result( result.release() );
+
+         default:;
+      }
+
+      if( const auto next = m_connection->get_result( end ) ) {
+         const auto status = PQresultStatus( next.get() );
+         throw std::runtime_error( std::format( "unexpected result status: {}", PQresStatus( status ) ) );
       }
 
       return pq::result( result.release() );
@@ -203,17 +204,13 @@ namespace tao::pq
       const auto end = m_connection->timeout_end( start );
 
       auto result = m_connection->get_result( end );
-      if( result ) {
-         const auto status = PQresultStatus( result.get() );
-         if( status == PGRES_PIPELINE_SYNC ) {
-            return;
-         }
-         else {
-            throw std::runtime_error( std::format( "unexpected result status: {}", static_cast< int >( status ) ) );
-         }
+      if( !result ) {
+         throw std::runtime_error( "unable to obtain result" );
       }
-      while( auto next = m_connection->get_result( end ) ) {
-         result = std::move( next );
+
+      const auto status = PQresultStatus( result.get() );
+      if( status != PGRES_PIPELINE_SYNC ) {
+         throw std::runtime_error( std::format( "unexpected result status: {}", PQresStatus( status ) ) );
       }
    }
 

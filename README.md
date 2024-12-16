@@ -14,7 +14,7 @@ It has no dependencies beyond [`libpq`➚](https://www.postgresql.org/docs/curre
 
 ## Introduction
 
-The library provides support for database connections, transactions, nested transactions, prepared statements, large objects, connection pools, high-speed bulk data transfer, and more.
+The library provides support for database connections, transactions, nested transactions, prepared statements, large objects, connection pools, pipeline mode, high-speed bulk data transfer, and more.
 An extensible traits mechanism is used to convert C++ types into SQL statement parameters, and conversely to convert query results into arbitrary C++ types.
 The following example shows the basic look and feel of the library.
 
