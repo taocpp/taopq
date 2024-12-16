@@ -537,7 +537,7 @@ namespace tao::pq
          throw pq::connection_error( error_message() );  // LCOV_EXCL_LINE
       }
 
-      auto result = connection::get_result( end );
+      const auto result = connection::get_result( end );
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COMMAND_OK:
             connection::clear_results( end );

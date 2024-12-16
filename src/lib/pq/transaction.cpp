@@ -190,9 +190,8 @@ namespace tao::pq
          default:;
       }
 
-      if( const auto next = m_connection->get_result( end ) ) {
-         const auto status = PQresultStatus( next.get() );
-         throw std::runtime_error( std::format( "unexpected result status: {}", PQresStatus( status ) ) );
+      while( auto next = m_connection->get_result( end ) ) {
+         result = std::move( next );
       }
 
       return pq::result( result.release() );
@@ -203,7 +202,7 @@ namespace tao::pq
       check_current_transaction();
       const auto end = m_connection->timeout_end( start );
 
-      auto result = m_connection->get_result( end );
+      const auto result = m_connection->get_result( end );
       if( !result ) {
          throw std::runtime_error( "unable to obtain result" );
       }
