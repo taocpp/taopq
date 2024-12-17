@@ -36,15 +36,15 @@ namespace tao::pq
 
          case PGRES_COMMAND_OK:
          case PGRES_TUPLES_OK:
-            m_transaction->connection()->clear_results( end );
+            m_transaction->connection()->consume_empty_result( end );
             throw std::runtime_error( "expected COPY TO statement" );
 
          case PGRES_EMPTY_QUERY:
-            m_transaction->connection()->clear_results( end );
+            m_transaction->connection()->consume_empty_result( end );
             throw std::runtime_error( "unexpected empty query" );
 
          default:
-            m_transaction->connection()->clear_results( end );
+            m_transaction->connection()->consume_empty_result( end );
             internal::throw_sqlstate( result.get() );
       }
    }

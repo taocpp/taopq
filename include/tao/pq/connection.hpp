@@ -87,13 +87,15 @@ namespace tao::pq
       void cancel();
 
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point end ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
+      [[nodiscard]] auto get_fatal_error( const std::chrono::steady_clock::time_point end ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >;
+      void consume_empty_result( const std::chrono::steady_clock::time_point end );
+
       [[nodiscard]] auto get_copy_data( char*& buffer, const std::chrono::steady_clock::time_point end ) -> std::size_t;
       [[nodiscard]] auto get_copy_data( char*& buffer ) -> std::size_t;
 
       void put_copy_data( const char* buffer, const std::size_t size );
       void put_copy_end( const char* error_message = nullptr );
 
-      void clear_results( const std::chrono::steady_clock::time_point end );
       void clear_copy_data( const std::chrono::steady_clock::time_point end );
 
       // pass-key idiom

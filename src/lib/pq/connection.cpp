@@ -301,6 +301,29 @@ namespace tao::pq
       return result;
    }
 
+   auto connection::get_fatal_error( const std::chrono::steady_clock::time_point end ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >
+   {
+      auto result = connection::get_result( end );
+      if( !result ) {
+         throw std::runtime_error( "unable to obtain result" );
+      }
+
+      const auto status = PQresultStatus( result.get() );
+      if( status != PGRES_FATAL_ERROR ) {
+         throw std::runtime_error( std::format( "unexpected result status: {}", PQresStatus( status ) ) );
+      }
+
+      return result;
+   }
+
+   void connection::consume_empty_result( const std::chrono::steady_clock::time_point end )
+   {
+      if( const auto result = connection::get_result( end ) ) {
+         const auto status = PQresultStatus( result.get() );
+         throw std::runtime_error( std::format( "unexpected result status: {}", PQresStatus( status ) ) );
+      }
+   }
+
    auto connection::get_copy_data( char*& buffer, const std::chrono::steady_clock::time_point end ) -> std::size_t
    {
       while( true ) {
@@ -375,12 +398,6 @@ namespace tao::pq
                TAO_PQ_INTERNAL_UNREACHABLE;
                // LCOV_EXCL_STOP
          }
-      }
-   }
-
-   void connection::clear_results( const std::chrono::steady_clock::time_point end )
-   {
-      while( connection::get_result( end ) ) {
       }
    }
 
@@ -540,7 +557,7 @@ namespace tao::pq
       const auto result = connection::get_result( end );
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COMMAND_OK:
-            connection::clear_results( end );
+            connection::consume_empty_result( end );
             break;
 
          case PGRES_TUPLES_OK:
@@ -550,7 +567,7 @@ namespace tao::pq
             TAO_PQ_INTERNAL_UNREACHABLE;  // LCOV_EXCL_LINE
 
          default:
-            connection::clear_results( end );
+            connection::consume_empty_result( end );
             internal::throw_sqlstate( result.get() );
       }
 

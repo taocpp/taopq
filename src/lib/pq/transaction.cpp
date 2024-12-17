@@ -173,12 +173,14 @@ namespace tao::pq
       switch( PQresultStatus( result.get() ) ) {
          case PGRES_COPY_IN:
             m_connection->put_copy_end( "unexpected COPY FROM statement" );
+            result = m_connection->get_fatal_error( end );
             break;
 
          case PGRES_COPY_OUT:
             m_connection->cancel();
             m_connection->clear_copy_data( end );
-            m_connection->clear_results( end );
+            std::ignore = m_connection->get_fatal_error( end );
+            m_connection->consume_empty_result( end );
             throw std::runtime_error( "unexpected COPY TO statement" );
 
          case PGRES_SINGLE_TUPLE:
@@ -190,10 +192,7 @@ namespace tao::pq
          default:;
       }
 
-      while( auto next = m_connection->get_result( end ) ) {
-         result = std::move( next );
-      }
-
+      m_connection->consume_empty_result( end );
       return pq::result( result.release() );
    }
 
