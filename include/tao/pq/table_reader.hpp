@@ -29,7 +29,7 @@ namespace tao::pq
    class table_reader final
    {
    protected:
-      std::shared_ptr< transaction > m_previous;
+      std::shared_ptr< transaction_base > m_previous;
       std::shared_ptr< transaction > m_transaction;
       std::size_t m_columns;  // NOLINT(modernize-use-default-member-init)
       std::unique_ptr< char, decltype( &PQfreemem ) > m_buffer;

@@ -30,8 +30,8 @@ namespace tao::pq
    class table_reader;
    class table_writer;
 
-   class transaction
-      : public std::enable_shared_from_this< transaction >
+   class transaction_base
+      : public std::enable_shared_from_this< transaction_base >
    {
    protected:
       std::shared_ptr< pq::connection > m_connection;
@@ -39,25 +39,20 @@ namespace tao::pq
       friend class table_reader;
       friend class table_writer;
 
-      explicit transaction( const std::shared_ptr< pq::connection >& connection );
+      explicit transaction_base( const std::shared_ptr< pq::connection >& connection ) noexcept;
 
    public:
-      virtual ~transaction() = default;
+      virtual ~transaction_base() = default;
 
-      transaction( const transaction& ) = delete;
-      transaction( transaction&& ) = delete;
-      void operator=( const transaction& ) = delete;
-      void operator=( transaction&& ) = delete;
+      transaction_base( const transaction_base& ) = delete;
+      transaction_base( transaction_base&& ) = delete;
+      void operator=( const transaction_base& ) = delete;
+      void operator=( transaction_base&& ) = delete;
 
    protected:
       [[nodiscard]] virtual auto v_is_direct() const noexcept -> bool = 0;
 
-      virtual void v_commit() = 0;
-      virtual void v_rollback() = 0;
-
-      virtual void v_reset() noexcept = 0;
-
-      [[nodiscard]] auto current_transaction() const noexcept -> transaction*&;
+      [[nodiscard]] auto current_transaction() const noexcept -> transaction_base*&;
       void check_current_transaction() const;
 
       void send_params( const char* statement,
@@ -86,7 +81,7 @@ namespace tao::pq
       void send_traits( const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         transaction::send_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), ts... );
+         transaction_base::send_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), ts... );
       }
 
 #else
@@ -108,7 +103,7 @@ namespace tao::pq
       void send_traits( const char* statement, const Ts&... ts )
       {
          using gen = internal::gen< Ts::columns... >;
-         transaction::send_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
+         transaction_base::send_indexed( statement, typename gen::outer_sequence(), typename gen::inner_sequence(), std::tie( ts... ) );
       }
 
 #endif
@@ -118,8 +113,6 @@ namespace tao::pq
       {
          return m_connection;
       }
-
-      [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
 
       void send( const internal::zsv statement )
       {
@@ -146,13 +139,30 @@ namespace tao::pq
          send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
       }
 
+      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
+
+      // TODO: move this to the pipeline_transaction class
+      void consume_pipeline_sync( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() );
+   };
+
+   class transaction
+      : public transaction_base
+   {
+   protected:
+      using transaction_base::transaction_base;
+
+      virtual void v_commit() = 0;
+      virtual void v_rollback() = 0;
+
+      virtual void v_reset() noexcept = 0;
+
+   public:
+      [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
+
       void set_single_row_mode();
 #if defined( LIBPQ_HAS_CHUNK_MODE )
       void set_chunk_mode( const int rows );
 #endif
-
-      [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
-      void consume_pipeline_sync( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() );
 
       template< parameter_type... As >
       auto execute( const internal::zsv statement, As&&... as )
@@ -164,12 +174,6 @@ namespace tao::pq
 
       void commit();
       void rollback();
-
-      void listen( const std::string_view channel );
-      void unlisten( const std::string_view channel );
-
-      void notify( const std::string_view channel );
-      void notify( const std::string_view channel, const std::string_view payload );
    };
 
    namespace internal
@@ -178,7 +182,7 @@ namespace tao::pq
          : public transaction
       {
       private:
-         const std::shared_ptr< transaction > m_previous;
+         const std::shared_ptr< pq::transaction_base > m_previous;
 
       protected:
          explicit subtransaction_base( const std::shared_ptr< pq::connection >& connection )

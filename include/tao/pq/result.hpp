@@ -34,7 +34,7 @@ namespace tao::pq
    class connection;
    class table_reader;
    class table_writer;
-   class transaction;
+   class transaction_base;
 
    class result final
    {
@@ -42,7 +42,7 @@ namespace tao::pq
       friend class connection;
       friend class table_reader;
       friend class table_writer;
-      friend class transaction;
+      friend class transaction_base;
 
       const std::shared_ptr< PGresult > m_pgresult;
       const std::size_t m_columns;

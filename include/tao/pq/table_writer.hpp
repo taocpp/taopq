@@ -26,7 +26,7 @@ namespace tao::pq
    class table_writer final
    {
    protected:
-      std::shared_ptr< transaction > m_previous;
+      std::shared_ptr< transaction_base > m_previous;
       std::shared_ptr< transaction > m_transaction;
 
 #if defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L )

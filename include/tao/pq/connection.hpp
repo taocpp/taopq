@@ -51,14 +51,14 @@ namespace tao::pq
       friend class connection_pool;
       friend class table_reader;
       friend class table_writer;
-      friend class transaction;
+      friend class transaction_base;
 
       friend class internal::top_level_transaction;
       friend class internal::top_level_subtransaction;
       friend class internal::nested_subtransaction;
 
       std::unique_ptr< PGconn, decltype( &PQfinish ) > m_pgconn;
-      pq::transaction* m_current_transaction;
+      transaction_base* m_current_transaction;
       std::optional< std::chrono::milliseconds > m_timeout;
       std::set< std::string, std::less<> > m_prepared_statements;
       std::function< poll::callback > m_poll;

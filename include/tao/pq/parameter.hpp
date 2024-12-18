@@ -97,7 +97,7 @@ namespace tao::pq
       template< std::size_t >
       friend class parameter;
 
-      friend class transaction;
+      friend class transaction_base;
 
       template< typename T, std::size_t... Is >
       void fill( const T& t, std::index_sequence< Is... > /*unused*/ )
