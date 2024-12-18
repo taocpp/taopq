@@ -28,6 +28,7 @@
 #include <tao/pq/pipeline_status.hpp>
 #include <tao/pq/poll.hpp>
 #include <tao/pq/transaction.hpp>
+#include <tao/pq/transaction_base.hpp>
 #include <tao/pq/transaction_status.hpp>
 
 namespace tao::pq
