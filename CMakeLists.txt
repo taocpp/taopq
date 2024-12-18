@@ -40,6 +40,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/zsv.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/is_aggregate.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/is_array.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/large_object.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/notification.hpp
@@ -52,8 +53,10 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_optional.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_pair.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_tuple.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/pipeline_status.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/poll.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/result_status.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_aggregate.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_array.hpp
