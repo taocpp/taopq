@@ -48,8 +48,6 @@ namespace tao::pq
       void operator=( transaction_base&& ) = delete;
 
    protected:
-      [[nodiscard]] virtual auto v_is_direct() const noexcept -> bool = 0;
-
       [[nodiscard]] auto current_transaction() const noexcept -> transaction_base*&;
       void check_current_transaction() const;
 

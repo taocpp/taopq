@@ -545,6 +545,11 @@ namespace tao::pq
       return std::make_shared< internal::top_level_transaction >( shared_from_this(), il, am );
    }
 
+   auto connection::pipeline() -> std::shared_ptr< pq::pipeline >
+   {
+      return direct()->pipeline();
+   }
+
    void connection::prepare( std::string name, const internal::zsv statement )
    {
       connection::check_prepared_name( name );

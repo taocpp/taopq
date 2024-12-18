@@ -14,6 +14,7 @@
 #include <libpq-fe.h>
 
 #include <tao/pq/connection.hpp>
+#include <tao/pq/pipeline.hpp>
 
 namespace tao::pq
 {
@@ -119,6 +120,12 @@ namespace tao::pq
          return std::make_shared< internal::top_level_subtransaction >( m_connection );
       }
       return std::make_shared< internal::nested_subtransaction >( m_connection );
+   }
+
+   auto transaction::pipeline() -> std::shared_ptr< pq::pipeline >
+   {
+      check_current_transaction();
+      return std::make_shared< pq::pipeline >( m_connection );
    }
 
    void transaction::set_single_row_mode()

@@ -34,6 +34,7 @@
 namespace tao::pq
 {
    class connection_pool;
+   class pipeline;
    class table_reader;
    class table_writer;
 
@@ -160,6 +161,8 @@ namespace tao::pq
       [[nodiscard]] auto transaction() -> std::shared_ptr< pq::transaction >;
       [[nodiscard]] auto transaction( const access_mode am, const isolation_level il = isolation_level::default_isolation_level ) -> std::shared_ptr< pq::transaction >;
       [[nodiscard]] auto transaction( const isolation_level il, const access_mode am = access_mode::default_access_mode ) -> std::shared_ptr< pq::transaction >;
+
+      [[nodiscard]] auto pipeline() -> std::shared_ptr< pq::pipeline >;
 
       void prepare( std::string name, const internal::zsv statement );
       void deallocate( const std::string_view name );

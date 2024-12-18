@@ -17,11 +17,15 @@
 
 namespace tao::pq
 {
+   class pipeline;
+
    class transaction
       : public transaction_base
    {
    protected:
       using transaction_base::transaction_base;
+
+      [[nodiscard]] virtual auto v_is_direct() const noexcept -> bool = 0;
 
       virtual void v_commit() = 0;
       virtual void v_rollback() = 0;
@@ -30,6 +34,7 @@ namespace tao::pq
 
    public:
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
+      [[nodiscard]] auto pipeline() -> std::shared_ptr< pq::pipeline >;
 
       void set_single_row_mode();
 #if defined( LIBPQ_HAS_CHUNK_MODE )

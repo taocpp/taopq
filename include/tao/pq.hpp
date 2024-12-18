@@ -15,6 +15,7 @@
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/connection_pool.hpp>
+#include <tao/pq/pipeline.hpp>
 #include <tao/pq/transaction.hpp>
 
 #include <tao/pq/parameter.hpp>

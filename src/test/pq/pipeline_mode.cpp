@@ -90,6 +90,48 @@ namespace
 
          tr->commit();
       }
+
+      {
+         auto tr = connection->pipeline();
+
+         tr->send( "SELECT 42" );
+         tr->send( "SELECT 1234" );
+         tr->sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 42 );
+
+         tr->send( "SELECT 1701" );
+         tr->sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 1234 );
+         tr->consume_sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 1701 );
+         tr->consume_sync();
+
+         tr->finish();
+      }
+
+      {
+         auto tr = connection->transaction()->pipeline();
+
+         tr->send( "SELECT 42" );
+         tr->send( "SELECT 1234" );
+         tr->sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 42 );
+
+         tr->send( "SELECT 1701" );
+         tr->sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 1234 );
+         tr->consume_sync();
+
+         TEST_ASSERT( tr->get_result().as< int >() == 1701 );
+         tr->consume_sync();
+
+         tr->finish();
+      }
    }
 
 }  // namespace
