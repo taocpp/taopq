@@ -29,9 +29,9 @@ namespace tao::pq
    void pipeline::finish()
    {
       if( m_previous ) {
-         m_previous->connection()->exit_pipeline_mode();
          current_transaction() = m_previous.get();
-         m_previous.reset();
+         const auto extend_lifetime = std::move( m_previous );
+         connection()->exit_pipeline_mode();
       }
    }
 

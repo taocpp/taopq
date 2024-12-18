@@ -22,7 +22,6 @@ namespace tao::pq
    public:
       explicit pipeline( const std::shared_ptr< pq::connection >& connection );
 
-   public:
       ~pipeline() override
       {
          try {
