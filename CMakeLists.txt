@@ -69,6 +69,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/table_row.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/table_writer.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/transaction.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/transaction_base.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/transaction_status.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/version.hpp
 )
@@ -92,6 +93,7 @@ set(taopq_SOURCE_FILES
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_row.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_writer.cpp
   ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction.cpp
+  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction_base.cpp
 )
 
 source_group("Header Files" FILES ${taopq_INCLUDE_FILES})
