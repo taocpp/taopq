@@ -92,45 +92,45 @@ namespace
       }
 
       {
-         auto tr = connection->pipeline();
+         auto pl = connection->pipeline();
 
-         tr->send( "SELECT 42" );
-         tr->send( "SELECT 1234" );
-         tr->sync();
+         pl->send( "SELECT 42" );
+         pl->send( "SELECT 1234" );
+         pl->sync();
 
-         TEST_ASSERT( tr->get_result().as< int >() == 42 );
+         TEST_ASSERT( pl->get_result().as< int >() == 42 );
 
-         tr->send( "SELECT 1701" );
-         tr->sync();
+         pl->send( "SELECT 1701" );
+         pl->sync();
 
-         TEST_ASSERT( tr->get_result().as< int >() == 1234 );
-         tr->consume_sync();
+         TEST_ASSERT( pl->get_result().as< int >() == 1234 );
+         pl->consume_sync();
 
-         TEST_ASSERT( tr->get_result().as< int >() == 1701 );
-         tr->consume_sync();
+         TEST_ASSERT( pl->get_result().as< int >() == 1701 );
+         pl->consume_sync();
 
-         tr->finish();
+         pl->finish();
       }
 
       {
-         auto tr = connection->transaction()->pipeline();
+         auto pl = connection->transaction()->pipeline();
 
-         tr->send( "SELECT 42" );
-         tr->send( "SELECT 1234" );
-         tr->sync();
+         pl->send( "SELECT 42" );
+         pl->send( "SELECT 1234" );
+         pl->sync();
 
-         TEST_ASSERT( tr->get_result().as< int >() == 42 );
+         TEST_ASSERT( pl->get_result().as< int >() == 42 );
 
-         tr->send( "SELECT 1701" );
-         tr->sync();
+         pl->send( "SELECT 1701" );
+         pl->sync();
 
-         TEST_ASSERT( tr->get_result().as< int >() == 1234 );
-         tr->consume_sync();
+         TEST_ASSERT( pl->get_result().as< int >() == 1234 );
+         pl->consume_sync();
 
-         TEST_ASSERT( tr->get_result().as< int >() == 1701 );
-         tr->consume_sync();
+         TEST_ASSERT( pl->get_result().as< int >() == 1701 );
+         pl->consume_sync();
 
-         tr->finish();
+         pl->finish();
       }
    }
 
