@@ -4,6 +4,8 @@
 
 #include <tao/pq/pipeline.hpp>
 
+#include <chrono>
+
 #include <tao/pq/connection.hpp>
 
 namespace tao::pq
@@ -21,9 +23,9 @@ namespace tao::pq
       connection()->pipeline_sync();
    }
 
-   void pipeline::consume_sync()
+   void pipeline::consume_sync( const std::chrono::steady_clock::time_point start )
    {
-      current_transaction()->consume_pipeline_sync();
+      current_transaction()->consume_pipeline_sync( start );
    }
 
    void pipeline::finish()

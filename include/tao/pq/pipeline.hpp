@@ -5,6 +5,7 @@
 #ifndef TAO_PQ_PIPELINE_HPP
 #define TAO_PQ_PIPELINE_HPP
 
+#include <chrono>
 #include <memory>
 
 #include <tao/pq/transaction_base.hpp>
@@ -40,7 +41,7 @@ namespace tao::pq
       void operator=( pipeline&& ) = delete;
 
       void sync();
-      void consume_sync();
+      void consume_sync( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() );
 
       void finish();
    };

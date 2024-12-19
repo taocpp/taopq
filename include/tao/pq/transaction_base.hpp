@@ -136,8 +136,6 @@ namespace tao::pq
       }
 
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
-
-      // TODO: move this to the pipeline_transaction class
       void consume_pipeline_sync( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() );
    };
 
