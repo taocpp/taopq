@@ -135,6 +135,11 @@ namespace tao::pq
          send_params( statement, p.m_size, p.m_types, p.m_values, p.m_lengths, p.m_formats );
       }
 
+      void set_single_row_mode();
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+      void set_chunk_mode( const int rows );
+#endif
+
       [[nodiscard]] auto get_result( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() ) -> result;
       void consume_pipeline_sync( const std::chrono::steady_clock::time_point start = std::chrono::steady_clock::now() );
    };

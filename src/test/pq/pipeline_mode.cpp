@@ -132,6 +132,42 @@ namespace
 
          pl->finish();
       }
+
+      {
+         connection->execute( "DROP TABLE IF EXISTS tao_pipeline_mode" );
+         connection->execute( "CREATE TABLE tao_pipeline_mode ( name TEXT PRIMARY KEY, age INTEGER NOT NULL )" );
+
+         connection->prepare( "insert_user", "INSERT INTO tao_pipeline_mode ( name, age ) VALUES ( $1, $2 )" );
+
+         auto pl = connection->pipeline();
+
+         pl->send( "insert_user", "Daniel", 42 );
+         pl->send( "insert_user", "Tom", 41 );
+         pl->send( "insert_user", "Jerry", 29 );
+         pl->sync();
+
+         TEST_ASSERT( pl->get_result().rows_affected() == 1 );  // daniel
+         TEST_ASSERT( pl->get_result().rows_affected() == 1 );  // tom
+         TEST_ASSERT( pl->get_result().rows_affected() == 1 );  // jerry
+         TEST_EXECUTE( pl->consume_sync() );
+
+         pl->send( "SELECT name, age FROM tao_pipeline_mode" );
+         pl->send( "SELECT name, age FROM tao_pipeline_mode" );
+         pl->sync();
+
+         pl->set_single_row_mode();
+
+         TEST_ASSERT( pl->get_result().size() == 1 );
+         TEST_ASSERT( pl->get_result().size() == 1 );
+         TEST_ASSERT( pl->get_result().size() == 1 );
+         TEST_ASSERT( pl->get_result().empty() );
+
+         TEST_ASSERT( pl->get_result().size() == 3 );
+
+         TEST_EXECUTE( pl->consume_sync() );
+
+         pl->finish();
+      }
    }
 
 }  // namespace

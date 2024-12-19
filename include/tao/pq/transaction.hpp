@@ -36,11 +36,6 @@ namespace tao::pq
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
       [[nodiscard]] auto pipeline() -> std::shared_ptr< pq::pipeline >;
 
-      void set_single_row_mode();
-#if defined( LIBPQ_HAS_CHUNK_MODE )
-      void set_chunk_mode( const int rows );
-#endif
-
       template< parameter_type... As >
       auto execute( const internal::zsv statement, As&&... as )
       {

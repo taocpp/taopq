@@ -45,6 +45,24 @@ namespace tao::pq
       m_connection->send_params( statement, n_params, types, values, lengths, formats );
    }
 
+   void transaction_base::set_single_row_mode()
+   {
+      check_current_transaction();
+      if( PQsetSingleRowMode( m_connection->underlying_raw_ptr() ) == 0 ) {
+         throw std::runtime_error( "unable to switch to single row mode" );
+      }
+   }
+
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+   void transaction_base::set_chunk_mode( const int rows )
+   {
+      check_current_transaction();
+      if( PQsetChunkedRowsMode( m_connection->underlying_raw_ptr(), rows ) == 0 ) {
+         throw std::runtime_error( "unable to switch to chunk mode" );
+      }
+   }
+#endif
+
    auto transaction_base::get_result( const std::chrono::steady_clock::time_point start ) -> result
    {
       check_current_transaction();

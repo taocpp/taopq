@@ -128,24 +128,6 @@ namespace tao::pq
       return std::make_shared< pq::pipeline >( m_connection );
    }
 
-   void transaction::set_single_row_mode()
-   {
-      check_current_transaction();
-      if( PQsetSingleRowMode( m_connection->underlying_raw_ptr() ) == 0 ) {
-         throw std::runtime_error( "unable to switch to single row mode" );
-      }
-   }
-
-#if defined( LIBPQ_HAS_CHUNK_MODE )
-   void transaction::set_chunk_mode( const int rows )
-   {
-      check_current_transaction();
-      if( PQsetChunkedRowsMode( m_connection->underlying_raw_ptr(), rows ) == 0 ) {
-         throw std::runtime_error( "unable to switch to chunk mode" );
-      }
-   }
-#endif
-
    void transaction::commit()
    {
       check_current_transaction();
