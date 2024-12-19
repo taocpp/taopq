@@ -30,10 +30,10 @@ namespace
       // open a connection to the database
       const auto conn = tao::pq::connection::create( connection_string );
 
-      conn->execute( "DROP TABLE IF EXISTS tao_single_row_mode" );
-      conn->execute( "CREATE TABLE tao_single_row_mode ( name TEXT PRIMARY KEY, age INTEGER NOT NULL )" );
+      conn->execute( "DROP TABLE IF EXISTS tao_chunk_mode" );
+      conn->execute( "CREATE TABLE tao_chunk_mode ( name TEXT PRIMARY KEY, age INTEGER NOT NULL )" );
 
-      conn->prepare( "insert_user", "INSERT INTO tao_single_row_mode ( name, age ) VALUES ( $1, $2 )" );
+      conn->prepare( "insert_user", "INSERT INTO tao_chunk_mode ( name, age ) VALUES ( $1, $2 )" );
       conn->execute( "insert_user", "Daniel", 42 );
       conn->execute( "insert_user", "Tom", 41 );
       conn->execute( "insert_user", "Jerry", 29 );
@@ -44,7 +44,7 @@ namespace
       std::size_t count = 0;
 
       const auto tr = conn->transaction();
-      tr->send( "SELECT name, age FROM tao_single_row_mode" );
+      tr->send( "SELECT name, age FROM tao_chunk_mode" );
       tr->set_chunk_mode( 2 );
 
       while( true ) {
@@ -63,7 +63,7 @@ namespace
       TEST_ASSERT( count == 6 );
 
       count = 0;
-      tr->send( "SELECT name, age FROM tao_single_row_mode" );
+      tr->send( "SELECT name, age FROM tao_chunk_mode" );
       tr->set_chunk_mode( 4 );
 
       while( true ) {
@@ -84,7 +84,7 @@ namespace
       TEST_THROWS( tr->set_single_row_mode() );
       TEST_THROWS( tr->set_chunk_mode( 2 ) );
 
-      tr->send( "SELECT name, age FROM tao_single_row_mode" );
+      tr->send( "SELECT name, age FROM tao_chunk_mode" );
       TEST_THROWS( tr->set_chunk_mode( 0 ) );
       TEST_THROWS( tr->set_chunk_mode( -1 ) );
       tr->set_chunk_mode( 2 );
