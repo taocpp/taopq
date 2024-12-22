@@ -58,13 +58,17 @@ namespace tao::pq
       template< typename T, std::size_t N >
       inline constexpr bool is_array_parameter< std::array< T, N > > = true;
 
-      template< typename T >
-      inline constexpr bool is_array_result = pq::is_array< T >;
-
    }  // namespace internal
 
    template< typename T >
    inline constexpr bool is_array_parameter = internal::is_array_parameter< T >;
+
+   namespace internal
+   {
+      template< typename T >
+      inline constexpr bool is_array_result = pq::is_array< T >;
+
+   }  // namespace internal
 
    template< typename T >
    inline constexpr bool is_array_result = internal::is_array_result< T >;

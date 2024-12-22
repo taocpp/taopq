@@ -99,8 +99,8 @@ namespace tao::pq
 
       friend class transaction_base;
 
-      template< typename T, std::size_t... Is >
-      void fill( const T& t, std::index_sequence< Is... > /*unused*/ )
+      template< std::size_t... Is >
+      void fill( const auto& t, std::index_sequence< Is... > /*unused*/ )
       {
          ( ( m_types[ m_size + Is ] = static_cast< Oid >( t.template type< Is >() ) ), ... );
          ( ( m_values[ m_size + Is ] = t.template value< Is >() ), ... );

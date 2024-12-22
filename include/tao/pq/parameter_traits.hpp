@@ -26,7 +26,7 @@
 
 namespace tao::pq
 {
-   template< typename T >
+   template< typename >
    struct parameter_traits;
 
    namespace internal
@@ -37,8 +37,8 @@ namespace tao::pq
       // helper for table_writer
       void table_writer_append( std::string& buffer, std::string_view data );
 
-      template< std::size_t N, typename T >
-      void snprintf( char ( &buffer )[ N ], const char* format, const T v ) noexcept
+      template< std::size_t N >
+      void snprintf( char ( &buffer )[ N ], const char* format, const auto v ) noexcept
       {
          static_assert( N >= 32 );
          if( std::isfinite( v ) ) {
