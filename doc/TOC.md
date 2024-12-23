@@ -4,7 +4,7 @@
   * [Operating System Support](Requirements.md#operator-system-support)
   * [Compiler Support](Requirements.md#compiler-support)
   * [Language Requirements](Requirements.md#language-requirements)
-  * [Compiler Options/Warnings](Requirements.md#compiler-options-warnings)
+  * [Compiler Options/Warnings](Requirements.md#compiler-optionswarnings)
   * [Database Requirements](Requirements.md#database-requirements)
 * [Installation](Installation.md)
   * **TODO** after properly rewriting this chapter
