@@ -22,10 +22,10 @@
 * We require [C++20➚](https://en.wikipedia.org/wiki/C%2B%2B20) or newer.
 * We require exception support. The `-fno-exceptions` option is not supported.
 * We require RTTI support. The `-fno-rtti` option is not supported.
+
+## Compiler Options/Warnings
+
 * We support Clang's [`-fms-extensions`➚](https://clang.llvm.org/docs/MSVCCompatibility.html) option.
-
-## Compiler Warnings
-
 * We support the `/W4` option on [Visual Studio➚](https://docs.microsoft.com/en-us/cpp/build/reference/compiler-option-warning-level).
 * We support the `-pedantic`, `-Wall`, and `-Wextra` options on [GCC➚](https://gcc.gnu.org/onlinedocs/gcc/Warning-Options.html) and [Clang➚](https://clang.llvm.org/docs/DiagnosticsReference.html).
 
