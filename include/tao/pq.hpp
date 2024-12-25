@@ -27,6 +27,7 @@
 #include <tao/pq/parameter_traits_tuple.hpp>
 
 #include <tao/pq/exception.hpp>
+#include <tao/pq/log.hpp>
 #include <tao/pq/result.hpp>
 
 #include <tao/pq/result_traits.hpp>

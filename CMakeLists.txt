@@ -43,6 +43,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/is_array.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/large_object.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/log.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/notification.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/null.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/oid.hpp
