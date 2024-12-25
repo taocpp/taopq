@@ -23,6 +23,7 @@
 #include <tao/pq/internal/poll.hpp>
 #include <tao/pq/internal/zsv.hpp>
 #include <tao/pq/isolation_level.hpp>
+#include <tao/pq/log.hpp>
 #include <tao/pq/notification.hpp>
 #include <tao/pq/parameter.hpp>
 #include <tao/pq/pipeline_status.hpp>
@@ -66,6 +67,7 @@ namespace tao::pq
       std::function< poll::callback > m_poll;
       std::function< void( const notification& ) > m_notification_handler;
       std::map< std::string, std::function< void( const char* ) >, std::less<> > m_notification_handlers;
+      std::shared_ptr< log > m_log;
 
       [[nodiscard]] auto escape_identifier( const std::string_view identifier ) const -> std::unique_ptr< char, decltype( &PQfreemem ) >;
 
@@ -122,18 +124,56 @@ namespace tao::pq
 
       [[nodiscard]] auto error_message() const -> const char*;
 
-      [[nodiscard]] auto poll_callback() const noexcept -> const std::function< poll::callback >&;
-      void set_poll_callback( std::function< poll::callback > poll_cb ) noexcept;
-      void reset_poll_callback();
+      [[nodiscard]] auto poll_callback() const noexcept -> decltype( auto )
+      {
+         return m_poll;
+      }
 
-      [[nodiscard]] auto notification_handler() const -> std::function< void( const notification& ) >;
+      void set_poll_callback( std::function< poll::callback > poll_cb ) noexcept
+      {
+         m_poll = std::move( poll_cb );
+      }
+
+      void reset_poll_callback()
+      {
+         m_poll = internal::poll;
+      }
+
+      [[nodiscard]] auto notification_handler() const noexcept -> decltype( auto )
+      {
+         return m_notification_handler;
+      }
+
+      void set_notification_handler( std::function< void( const notification& ) > handler ) noexcept
+      {
+         m_notification_handler = std::move( handler );
+      }
+
+      void reset_notification_handler() noexcept
+      {
+         m_notification_handler = nullptr;
+      }
+
       [[nodiscard]] auto notification_handler( const std::string_view channel ) const -> std::function< void( const char* payload ) >;
 
-      void set_notification_handler( const std::function< void( const notification& ) >& handler );
       void set_notification_handler( const std::string_view channel, const std::function< void( const char* payload ) >& handler );
 
-      void reset_notification_handler() noexcept;
       void reset_notification_handler( const std::string_view channel ) noexcept;
+
+      [[nodiscard]] auto log_handler() const noexcept -> decltype( auto )
+      {
+         return m_log;
+      }
+
+      void set_log_handler( const std::shared_ptr< pq::log >& log ) noexcept
+      {
+         m_log = log;
+      }
+
+      void reset_log_handler() noexcept
+      {
+         m_log = nullptr;
+      }
 
       [[nodiscard]] auto status() const noexcept -> connection_status;
       [[nodiscard]] auto transaction_status() const noexcept -> pq::transaction_status;
@@ -155,6 +195,8 @@ namespace tao::pq
       }
 
       [[nodiscard]] auto is_busy() const noexcept -> bool;
+
+      [[nodiscard]] auto flush() -> bool;
 
       [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
 
@@ -190,8 +232,15 @@ namespace tao::pq
          return m_timeout;
       }
 
-      void set_timeout( const std::chrono::milliseconds timeout );
-      void reset_timeout() noexcept;
+      void set_timeout( const std::chrono::milliseconds timeout ) noexcept
+      {
+         m_timeout = timeout;
+      }
+
+      void reset_timeout() noexcept
+      {
+         m_timeout = std::nullopt;
+      }
 
       [[nodiscard]] auto password( const internal::zsv passwd, const internal::zsv user, const internal::zsv algorithm = "scram-sha-256" ) -> std::string;
 

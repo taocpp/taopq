@@ -224,9 +224,34 @@ namespace tao::pq
                                  const int lengths[],
                                  const int formats[] )
    {
-      const auto result = m_prepared_statements.contains( statement ) ?
+      const auto is_prepared = m_prepared_statements.contains( statement );
+      if( m_log ) {
+         if( is_prepared ) {
+            if( m_log->connection.send_query_prepared ) {
+               m_log->connection.send_query_prepared( *this, statement, n_params, values, lengths, formats );
+            }
+         }
+         else {
+            if( m_log->connection.send_query ) {
+               m_log->connection.send_query( *this, statement, n_params, types, values, lengths, formats );
+            }
+         }
+      }
+      const auto result = is_prepared ?
                              PQsendQueryPrepared( m_pgconn.get(), statement, n_params, values, lengths, formats, 0 ) :
                              PQsendQueryParams( m_pgconn.get(), statement, n_params, types, values, lengths, formats, 0 );
+      if( m_log ) {
+         if( is_prepared ) {
+            if( m_log->connection.send_query_prepared.result ) {
+               m_log->connection.send_query_prepared.result( *this, result );
+            }
+         }
+         else {
+            if( m_log->connection.send_query.result ) {
+               m_log->connection.send_query.result( *this, result );
+            }
+         }
+      }
       if( result == 0 ) {
          throw pq::connection_error( error_message() );  // LCOV_EXCL_LINE
       }
@@ -234,13 +259,24 @@ namespace tao::pq
 
    void connection::wait( const bool wait_for_write, const std::chrono::steady_clock::time_point end )
    {
+      if( m_log && m_log->connection.wait ) {
+         m_log->connection.wait( *this, wait_for_write, end );
+      }
       while( true ) {
          int timeout_ms = -1;
          if( m_timeout ) {
             timeout_ms = std::max( static_cast< int >( std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count() ), 0 );
          }
 
-         switch( m_poll( socket(), wait_for_write, timeout_ms ) ) {
+         const auto so = socket();
+         if( m_log && m_log->connection.poll ) {
+            m_log->connection.poll( *this, so, wait_for_write, timeout_ms );
+         }
+         const auto status = m_poll( so, wait_for_write, timeout_ms );
+         if( m_log && m_log->connection.poll.result ) {
+            m_log->connection.poll.result( *this, so, status );
+         }
+         switch( status ) {
             case poll::status::timeout:
                m_pgconn.reset();
                throw timeout_reached( "timeout reached" );
@@ -276,22 +312,13 @@ namespace tao::pq
 
    auto connection::get_result( const std::chrono::steady_clock::time_point end ) -> std::unique_ptr< PGresult, decltype( &PQclear ) >
    {
+      if( m_log && m_log->connection.get_result ) {
+         m_log->connection.get_result( *this, end );
+      }
       bool wait_for_write = true;
       while( is_busy() ) {
          if( wait_for_write ) {
-            switch( PQflush( m_pgconn.get() ) ) {
-               case 0:
-                  wait_for_write = false;
-                  break;
-
-                  // LCOV_EXCL_START
-               case 1:
-                  break;
-
-               default:
-                  throw pq::error( std::format( "PQflush() failed: {}", error_message() ) );
-                  // LCOV_EXCL_STOP
-            }
+            wait_for_write = flush();
          }
          connection::wait( wait_for_write, end );
       }
@@ -435,26 +462,6 @@ namespace tao::pq
       return PQerrorMessage( m_pgconn.get() );
    }
 
-   auto connection::poll_callback() const noexcept -> const std::function< poll::callback >&
-   {
-      return m_poll;
-   }
-
-   void connection::set_poll_callback( std::function< poll::callback > poll_cb ) noexcept
-   {
-      m_poll = std::move( poll_cb );
-   }
-
-   void connection::reset_poll_callback()
-   {
-      m_poll = internal::poll;
-   }
-
-   auto connection::notification_handler() const -> std::function< void( const notification& ) >
-   {
-      return m_notification_handler;
-   }
-
    auto connection::notification_handler( const std::string_view channel ) const -> std::function< void( const char* payload ) >
    {
       const auto it = m_notification_handlers.find( channel );
@@ -464,24 +471,17 @@ namespace tao::pq
       return {};
    }
 
-   void connection::set_notification_handler( const std::function< void( const notification& ) >& handler )
-   {
-      m_notification_handler = handler;
-   }
-
    void connection::set_notification_handler( const std::string_view channel, const std::function< void( const char* payload ) >& handler )
    {
       m_notification_handlers[ std::string( channel ) ] = handler;
    }
 
-   void connection::reset_notification_handler() noexcept
-   {
-      m_notification_handler = nullptr;
-   }
-
    void connection::reset_notification_handler( const std::string_view channel ) noexcept
    {
-      m_notification_handlers.erase( std::string( channel ) );
+      const auto it = m_notification_handlers.find( channel );
+      if( it != m_notification_handlers.end() ) {
+         m_notification_handlers.erase( it );
+      }
    }
 
    auto connection::status() const noexcept -> connection_status
@@ -522,7 +522,32 @@ namespace tao::pq
 
    auto connection::is_busy() const noexcept -> bool
    {
-      return PQisBusy( m_pgconn.get() ) != 0;
+      const auto result = PQisBusy( m_pgconn.get() );
+      if( m_log && m_log->connection.is_busy.result ) {
+         m_log->connection.is_busy.result( *this, result );
+      }
+      return result != 0;
+   }
+
+   auto connection::flush() -> bool
+   {
+      if( m_log && m_log->connection.flush ) {
+         m_log->connection.flush( *this );
+      }
+      const auto result = PQflush( m_pgconn.get() );
+      if( m_log && m_log->connection.flush.result ) {
+         m_log->connection.flush.result( *this, result );
+      }
+      switch( result ) {
+         case 0:
+            return false;
+
+         case 1:
+            return true;
+
+         default:
+            throw pq::error( std::format( "PQflush() failed: {}", error_message() ) );
+      }
    }
 
    auto connection::direct() -> std::shared_ptr< pq::transaction >
@@ -632,7 +657,14 @@ namespace tao::pq
 
    void connection::get_notifications()
    {
-      if( PQconsumeInput( m_pgconn.get() ) == 0 ) {
+      if( m_log && m_log->connection.consume_input ) {
+         m_log->connection.consume_input( *this );
+      }
+      const auto result = PQconsumeInput( m_pgconn.get() );
+      if( m_log && m_log->connection.consume_input.result ) {
+         m_log->connection.consume_input.result( *this, result );
+      }
+      if( result == 0 ) {
          throw pq::connection_error( error_message() );
       }
       handle_notifications();
@@ -645,16 +677,6 @@ namespace tao::pq
          throw pq::error( "PQsocket(): unable to retrieve file descriptor" );  // LCOV_EXCL_LINE
       }
       return fd;
-   }
-
-   void connection::set_timeout( const std::chrono::milliseconds timeout )
-   {
-      m_timeout = timeout;
-   }
-
-   void connection::reset_timeout() noexcept
-   {
-      m_timeout = std::nullopt;
    }
 
    auto connection::password( const internal::zsv passwd, const internal::zsv user, const internal::zsv algorithm ) -> std::string
