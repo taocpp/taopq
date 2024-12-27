@@ -46,6 +46,7 @@ namespace tao::pq
          using flush_result_t = std::function< void( connection&, int result ) >;
 
          using get_result_t = std::function< void( connection&, std::chrono::steady_clock::time_point end ) >;
+         using get_result_result_t = std::function< void( connection&, PGresult* ) >;
 
          struct : send_query_t
          {
@@ -84,7 +85,11 @@ namespace tao::pq
             using flush_t::operator=;
          } flush;
 
-         get_result_t get_result;
+         struct : get_result_t
+         {
+            get_result_result_t result;
+            using get_result_t::operator=;
+         } get_result;
 
       } connection;
 

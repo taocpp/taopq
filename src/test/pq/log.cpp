@@ -91,6 +91,16 @@ namespace
       std::cout << std::format( "flush(connection={}) -> {}", static_cast< const void* >( &c ), r ) << '\n';
    }
 
+   void log_get_result( tao::pq::connection& c, std::chrono::steady_clock::time_point e )
+   {
+      std::cout << std::format( "get_result(connection={}, timeout={}ms)", static_cast< const void* >( &c ), to_millis( e ) ) << '\n';
+   }
+
+   void log_get_result_result( tao::pq::connection& c, PGresult* r )
+   {
+      std::cout << std::format( "get_result(connection={}) -> {}", static_cast< const void* >( &c ), static_cast< const void* >( r ) ) << '\n';
+   }
+
    void run()
    {
       // overwrite the default with an environment variable if needed
@@ -114,6 +124,8 @@ namespace
       log->connection.consume_input.result = log_consume_input_result;
       log->connection.flush = log_flush;
       log->connection.flush.result = log_flush_result;
+      log->connection.get_result = log_get_result;
+      log->connection.get_result.result = log_get_result_result;
       conn->set_log_handler( log );
 
       // execute statements

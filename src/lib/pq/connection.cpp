@@ -324,6 +324,9 @@ namespace tao::pq
       }
 
       std::unique_ptr< PGresult, decltype( &PQclear ) > result( PQgetResult( m_pgconn.get() ), &PQclear );
+      if( m_log && m_log->connection.get_result.result ) {
+         m_log->connection.get_result.result( *this, result.get() );
+      }
       handle_notifications();
       return result;
    }
