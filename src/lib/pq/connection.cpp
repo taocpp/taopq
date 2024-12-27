@@ -436,10 +436,10 @@ namespace tao::pq
       }
    }
 
-   connection::connection( const private_key /*unused*/, const std::string& connection_info, std::function< poll::callback > poll_cb )
+   connection::connection( const private_key /*unused*/, const std::string& connection_info )
       : m_pgconn( PQconnectdb( connection_info.c_str() ), &PQfinish ),
         m_current_transaction( nullptr ),
-        m_poll( std::move( poll_cb ) )
+        m_poll( internal::poll )
    {
       if( !is_open() ) {
          // note that we can not access the sqlstate after PQconnectdb(),
@@ -452,9 +452,9 @@ namespace tao::pq
       }
    }
 
-   auto connection::create( const std::string& connection_info, std::function< poll::callback > poll_cb ) -> std::shared_ptr< connection >
+   auto connection::create( const std::string& connection_info ) -> std::shared_ptr< connection >
    {
-      return std::make_shared< connection >( private_key(), connection_info, std::move( poll_cb ) );
+      return std::make_shared< connection >( private_key(), connection_info );
    }
 
    auto connection::error_message() const -> const char*

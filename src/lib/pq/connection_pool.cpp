@@ -4,57 +4,27 @@
 
 #include <tao/pq/connection_pool.hpp>
 
-#include <chrono>
-#include <functional>
 #include <memory>
-#include <optional>
 #include <string_view>
-#include <utility>
 
 #include <tao/pq/connection.hpp>
 #include <tao/pq/internal/poll.hpp>
-#include <tao/pq/poll.hpp>
 
 namespace tao::pq
 {
    auto connection_pool::v_create() const -> std::unique_ptr< pq::connection >
    {
-      return std::make_unique< pq::connection >( pq::connection::private_key(), m_connection_info, m_poll );
+      return std::make_unique< pq::connection >( pq::connection::private_key(), m_connection_info );
    }
 
-   connection_pool::connection_pool( const private_key /*unused*/, const std::string_view connection_info, std::function< poll::callback > poll_cb )
+   connection_pool::connection_pool( const private_key /*unused*/, const std::string_view connection_info )
       : m_connection_info( connection_info ),
-        m_poll( std::move( poll_cb ) )
+        m_poll( internal::poll )
    {}
-
-   void connection_pool::set_timeout( const std::chrono::milliseconds timeout ) noexcept
-   {
-      m_timeout = timeout;
-   }
-
-   void connection_pool::reset_timeout() noexcept
-   {
-      m_timeout = std::nullopt;
-   }
-
-   auto connection_pool::poll_callback() const noexcept -> const std::function< poll::callback >&
-   {
-      return m_poll;
-   }
-
-   void connection_pool::set_poll_callback( std::function< poll::callback > poll_cb ) noexcept
-   {
-      m_poll = std::move( poll_cb );
-   }
-
-   void connection_pool::reset_poll_callback()
-   {
-      m_poll = internal::poll;
-   }
 
    auto connection_pool::connection() -> std::shared_ptr< pq::connection >
    {
-      auto result = get();
+      auto result = internal::pool< pq::connection >::get();
       if( m_timeout ) {
          result->set_timeout( *m_timeout );
       }
