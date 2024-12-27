@@ -198,6 +198,8 @@ namespace tao::pq
 
       [[nodiscard]] auto flush() -> bool;
 
+      void consume_input();
+
       [[nodiscard]] auto direct() -> std::shared_ptr< pq::transaction >;
 
       [[nodiscard]] auto transaction() -> std::shared_ptr< pq::transaction >;

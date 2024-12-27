@@ -504,21 +504,39 @@ namespace tao::pq
 
    void connection::enter_pipeline_mode()
    {
-      if( PQenterPipelineMode( m_pgconn.get() ) == 0 ) {
+      const auto result = PQenterPipelineMode( m_pgconn.get() );
+      if( m_log && m_log->connection.enter_pipeline_mode.result ) {
+         m_log->connection.enter_pipeline_mode.result( *this, result );
+      }
+      if( result == 0 ) {
          throw pq::connection_error( "unable to enter pipeline mode" );
       }
    }
 
    void connection::exit_pipeline_mode()
    {
-      if( PQexitPipelineMode( m_pgconn.get() ) == 0 ) {
+      if( m_log && m_log->connection.exit_pipeline_mode ) {
+         m_log->connection.exit_pipeline_mode( *this );
+      }
+      const auto result = PQexitPipelineMode( m_pgconn.get() );
+      if( m_log && m_log->connection.exit_pipeline_mode.result ) {
+         m_log->connection.exit_pipeline_mode.result( *this, result );
+      }
+      if( result == 0 ) {
          throw pq::connection_error( error_message() );
       }
    }
 
    void connection::pipeline_sync()
    {
-      if( PQpipelineSync( m_pgconn.get() ) == 0 ) {
+      if( m_log && m_log->connection.pipeline_sync ) {
+         m_log->connection.pipeline_sync( *this );
+      }
+      const auto result = PQpipelineSync( m_pgconn.get() );
+      if( m_log && m_log->connection.pipeline_sync.result ) {
+         m_log->connection.pipeline_sync.result( *this, result );
+      }
+      if( result == 0 ) {
          throw pq::connection_error( "unable to sync pipeline" );
       }
    }
@@ -550,6 +568,20 @@ namespace tao::pq
 
          default:
             throw pq::error( std::format( "PQflush() failed: {}", error_message() ) );
+      }
+   }
+
+   void connection::consume_input()
+   {
+      if( m_log && m_log->connection.consume_input ) {
+         m_log->connection.consume_input( *this );
+      }
+      const auto result = PQconsumeInput( m_pgconn.get() );
+      if( m_log && m_log->connection.consume_input.result ) {
+         m_log->connection.consume_input.result( *this, result );
+      }
+      if( result == 0 ) {
+         throw pq::connection_error( error_message() );
       }
    }
 
@@ -660,16 +692,7 @@ namespace tao::pq
 
    void connection::get_notifications()
    {
-      if( m_log && m_log->connection.consume_input ) {
-         m_log->connection.consume_input( *this );
-      }
-      const auto result = PQconsumeInput( m_pgconn.get() );
-      if( m_log && m_log->connection.consume_input.result ) {
-         m_log->connection.consume_input.result( *this, result );
-      }
-      if( result == 0 ) {
-         throw pq::connection_error( error_message() );
-      }
+      consume_input();
       handle_notifications();
    }
 

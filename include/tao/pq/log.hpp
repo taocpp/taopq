@@ -48,6 +48,14 @@ namespace tao::pq
          using get_result_t = std::function< void( connection&, std::chrono::steady_clock::time_point end ) >;
          using get_result_result_t = std::function< void( connection&, PGresult* ) >;
 
+         using enter_pipeline_mode_result_t = std::function< void( connection&, int result ) >;
+
+         using exit_pipeline_mode_t = std::function< void( connection& ) >;
+         using exit_pipeline_mode_result_t = std::function< void( connection&, int result ) >;
+
+         using pipeline_sync_t = std::function< void( connection& ) >;
+         using pipeline_sync_result_t = std::function< void( connection&, int result ) >;
+
          struct : send_query_t
          {
             send_query_result_t result;
@@ -90,6 +98,23 @@ namespace tao::pq
             get_result_result_t result;
             using get_result_t::operator=;
          } get_result;
+
+         struct
+         {
+            enter_pipeline_mode_result_t result;
+         } enter_pipeline_mode;
+
+         struct : exit_pipeline_mode_t
+         {
+            exit_pipeline_mode_result_t result;
+            using exit_pipeline_mode_t::operator=;
+         } exit_pipeline_mode;
+
+         struct : pipeline_sync_t
+         {
+            pipeline_sync_result_t result;
+            using pipeline_sync_t::operator=;
+         } pipeline_sync;
 
       } connection;
 
