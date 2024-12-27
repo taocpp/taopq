@@ -24,7 +24,7 @@
 namespace tao::pq
 {
    class connection_pool
-      : public internal::pool< connection >
+      : public internal::pool< pq::connection >
    {
    private:
       const std::string m_connection_info;
@@ -34,7 +34,7 @@ namespace tao::pq
    protected:
       [[nodiscard]] auto v_create() const -> std::unique_ptr< pq::connection > override;
 
-      [[nodiscard]] auto v_is_valid( connection& c ) const noexcept -> bool override
+      [[nodiscard]] auto v_is_valid( pq::connection& c ) const noexcept -> bool override
       {
          return c.is_idle();
       }
@@ -88,7 +88,7 @@ namespace tao::pq
          m_poll = internal::poll;
       }
 
-      [[nodiscard]] auto connection() -> std::shared_ptr< connection >;
+      [[nodiscard]] auto connection() -> std::shared_ptr< pq::connection >;
 
       template< parameter_type... As >
       auto execute( const internal::zsv statement, As&&... as )
