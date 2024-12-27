@@ -20,7 +20,7 @@ namespace tao::pq::poll
       again
    };
 
-   [[nodiscard]] constexpr auto taopq_format_as( const status st ) noexcept -> std::string_view
+   [[nodiscard]] inline constexpr auto taopq_format_as( const status st ) noexcept -> std::string_view
    {
       switch( st ) {
          case status::timeout:
@@ -36,7 +36,7 @@ namespace tao::pq::poll
             return "again";
 
          default:
-            return "unknown";
+            return "<unknown>";
       }
    }
 

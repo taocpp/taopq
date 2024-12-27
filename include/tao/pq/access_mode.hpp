@@ -6,6 +6,9 @@
 #define TAO_PQ_ACCESS_MODE_HPP
 
 #include <cstdint>
+#include <string_view>
+
+#include <tao/pq/internal/format_as.hpp>
 
 namespace tao::pq
 {
@@ -15,6 +18,23 @@ namespace tao::pq
       read_write,
       read_only
    };
+
+   [[nodiscard]] inline constexpr auto taopq_format_as( const access_mode am ) noexcept -> std::string_view
+   {
+      switch( am ) {
+         case access_mode::default_access_mode:
+            return "default_access_mode";
+
+         case access_mode::read_write:
+            return "read_write";
+
+         case access_mode::read_only:
+            return "read_only";
+
+         default:
+            return "<unknown>";
+      }
+   }
 
 }  // namespace tao::pq
 

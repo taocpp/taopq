@@ -6,8 +6,11 @@
 #define TAO_PQ_TRANSACTION_STATUS_HPP
 
 #include <cstdint>
+#include <string_view>
 
 #include <libpq-fe.h>
+
+#include <tao/pq/internal/format_as.hpp>
 
 namespace tao::pq
 {
@@ -19,6 +22,29 @@ namespace tao::pq
       error = PQTRANS_INERROR,
       unknown = PQTRANS_UNKNOWN
    };
+
+   [[nodiscard]] inline constexpr auto taopq_format_as( const transaction_status ts ) noexcept -> std::string_view
+   {
+      switch( ts ) {
+         case transaction_status::idle:
+            return "idle";
+
+         case transaction_status::in_transaction:
+            return "in_transaction";
+
+         case transaction_status::active:
+            return "active";
+
+         case transaction_status::error:
+            return "error";
+
+         case transaction_status::unknown:
+            return "unknown";
+
+         default:
+            return "<unknown>";
+      }
+   }
 
 }  // namespace tao::pq
 

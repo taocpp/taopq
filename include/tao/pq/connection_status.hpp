@@ -6,8 +6,11 @@
 #define TAO_PQ_CONNECTION_STATUS_HPP
 
 #include <cstdint>
+#include <string_view>
 
 #include <libpq-fe.h>
+
+#include <tao/pq/internal/format_as.hpp>
 
 namespace tao::pq
 {
@@ -16,6 +19,20 @@ namespace tao::pq
       ok = CONNECTION_OK,
       bad = CONNECTION_BAD
    };
+
+   [[nodiscard]] inline constexpr auto taopq_format_as( const connection_status cs ) noexcept -> std::string_view
+   {
+      switch( cs ) {
+         case connection_status::ok:
+            return "ok";
+
+         case connection_status::bad:
+            return "bad";
+
+         default:
+            return "<unknown>";
+      }
+   }
 
 }  // namespace tao::pq
 

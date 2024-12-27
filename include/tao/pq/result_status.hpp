@@ -6,8 +6,11 @@
 #define TAO_PQ_RESULT_STATUS_HPP
 
 #include <cstdint>
+#include <string_view>
 
 #include <libpq-fe.h>
+
+#include <tao/pq/internal/format_as.hpp>
 
 namespace tao::pq
 {
@@ -28,6 +31,52 @@ namespace tao::pq
       pipeline_sync = PGRES_PIPELINE_SYNC,
       pipeline_aborted = PGRES_PIPELINE_ABORTED
    };
+
+   [[nodiscard]] inline constexpr auto taopq_format_as( const result_status rs ) noexcept -> std::string_view
+   {
+      switch( rs ) {
+         case result_status::empty_query:
+            return "empty_query";
+
+         case result_status::command_ok:
+            return "command_ok";
+
+         case result_status::tuples_ok:
+            return "tuples_ok";
+
+         case result_status::copy_out:
+            return "copy_out";
+
+         case result_status::copy_in:
+            return "copy_in";
+
+         case result_status::bad_response:
+            return "bad_response";
+
+         case result_status::nonfatal_error:
+            return "nonfatal_error";
+
+         case result_status::fatal_error:
+            return "fatal_error";
+
+         case result_status::single_tuple:
+            return "single_tuple";
+
+#if defined( LIBPQ_HAS_CHUNK_MODE )
+         case result_status::tuples_chunk:
+            return "tuples_chunk";
+#endif
+
+         case result_status::pipeline_sync:
+            return "pipeline_sync";
+
+         case result_status::pipeline_aborted:
+            return "pipeline_aborted";
+
+         default:
+            return "<unknown>";
+      }
+   }
 
 }  // namespace tao::pq
 

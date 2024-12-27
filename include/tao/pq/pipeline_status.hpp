@@ -6,8 +6,11 @@
 #define TAO_PQ_PIPELINE_STATUS_HPP
 
 #include <cstdint>
+#include <string_view>
 
 #include <libpq-fe.h>
+
+#include <tao/pq/internal/format_as.hpp>
 
 namespace tao::pq
 {
@@ -17,6 +20,23 @@ namespace tao::pq
       off = PQ_PIPELINE_OFF,
       aborted = PQ_PIPELINE_ABORTED
    };
+
+   [[nodiscard]] inline constexpr auto taopq_format_as( const pipeline_status ps ) noexcept -> std::string_view
+   {
+      switch( ps ) {
+         case pipeline_status::on:
+            return "on";
+
+         case pipeline_status::off:
+            return "off";
+
+         case pipeline_status::aborted:
+            return "aborted";
+
+         default:
+            return "<unknown>";
+      }
+   }
 
 }  // namespace tao::pq
 

@@ -6,6 +6,9 @@
 #define TAO_PQ_ISOLATION_LEVEL_HPP
 
 #include <cstdint>
+#include <string_view>
+
+#include <tao/pq/internal/format_as.hpp>
 
 namespace tao::pq
 {
@@ -17,6 +20,29 @@ namespace tao::pq
       read_committed,
       read_uncommitted
    };
+
+   [[nodiscard]] inline constexpr auto taopq_format_as( const isolation_level il ) noexcept -> std::string_view
+   {
+      switch( il ) {
+         case isolation_level::default_isolation_level:
+            return "default_isolation_level";
+
+         case isolation_level::serializable:
+            return "serializable";
+
+         case isolation_level::repeatable_read:
+            return "repeatable_read";
+
+         case isolation_level::read_committed:
+            return "read_committed";
+
+         case isolation_level::read_uncommitted:
+            return "read_uncommitted";
+
+         default:
+            return "<unknown>";
+      }
+   }
 
 }  // namespace tao::pq
 
