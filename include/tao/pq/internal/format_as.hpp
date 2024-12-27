@@ -6,6 +6,7 @@
 #define TAO_PQ_INTERNAL_FORMAT_AS_HPP
 
 #include <format>
+#include <ostream>
 #include <utility>
 
 template< typename T >
@@ -17,5 +18,12 @@ struct std::formatter< T > : std::formatter< decltype( taopq_format_as( std::dec
       return std::formatter< decltype( taopq_format_as( v ) ) >::format( taopq_format_as( v ), ctx );
    }
 };
+
+template< typename T >
+   requires requires { taopq_format_as( std::declval< T >() ); }
+std::ostream& operator<<( std::ostream& os, const T& v )
+{
+   return os << taopq_format_as( v );
+}
 
 #endif
