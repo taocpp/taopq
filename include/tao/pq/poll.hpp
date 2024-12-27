@@ -20,7 +20,7 @@ namespace tao::pq::poll
       again
    };
 
-   [[nodiscard]] inline constexpr auto taopq_format_as( const status st ) noexcept -> std::string_view
+   [[nodiscard]] constexpr auto taopq_format_as( const status st ) noexcept -> std::string_view
    {
       switch( st ) {
          case status::timeout:

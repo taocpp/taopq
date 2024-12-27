@@ -19,7 +19,7 @@ namespace tao::pq
       read_only
    };
 
-   [[nodiscard]] inline constexpr auto taopq_format_as( const access_mode am ) noexcept -> std::string_view
+   [[nodiscard]] constexpr auto taopq_format_as( const access_mode am ) noexcept -> std::string_view
    {
       switch( am ) {
          case access_mode::default_access_mode:

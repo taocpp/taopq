@@ -21,7 +21,7 @@ namespace tao::pq
       aborted = PQ_PIPELINE_ABORTED
    };
 
-   [[nodiscard]] inline constexpr auto taopq_format_as( const pipeline_status ps ) noexcept -> std::string_view
+   [[nodiscard]] constexpr auto taopq_format_as( const pipeline_status ps ) noexcept -> std::string_view
    {
       switch( ps ) {
          case pipeline_status::on:

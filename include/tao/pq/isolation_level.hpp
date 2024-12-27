@@ -21,7 +21,7 @@ namespace tao::pq
       read_uncommitted
    };
 
-   [[nodiscard]] inline constexpr auto taopq_format_as( const isolation_level il ) noexcept -> std::string_view
+   [[nodiscard]] constexpr auto taopq_format_as( const isolation_level il ) noexcept -> std::string_view
    {
       switch( il ) {
          case isolation_level::default_isolation_level:

@@ -23,7 +23,7 @@ namespace tao::pq
       unknown = PQTRANS_UNKNOWN
    };
 
-   [[nodiscard]] inline constexpr auto taopq_format_as( const transaction_status ts ) noexcept -> std::string_view
+   [[nodiscard]] constexpr auto taopq_format_as( const transaction_status ts ) noexcept -> std::string_view
    {
       switch( ts ) {
          case transaction_status::idle:

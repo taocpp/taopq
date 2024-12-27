@@ -32,7 +32,7 @@ namespace tao::pq
       pipeline_aborted = PGRES_PIPELINE_ABORTED
    };
 
-   [[nodiscard]] inline constexpr auto taopq_format_as( const result_status rs ) noexcept -> std::string_view
+   [[nodiscard]] constexpr auto taopq_format_as( const result_status rs ) noexcept -> std::string_view
    {
       switch( rs ) {
          case result_status::empty_query:

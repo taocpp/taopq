@@ -20,7 +20,7 @@ namespace tao::pq
       bad = CONNECTION_BAD
    };
 
-   [[nodiscard]] inline constexpr auto taopq_format_as( const connection_status cs ) noexcept -> std::string_view
+   [[nodiscard]] constexpr auto taopq_format_as( const connection_status cs ) noexcept -> std::string_view
    {
       switch( cs ) {
          case connection_status::ok:
