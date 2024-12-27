@@ -6,6 +6,9 @@
 #define TAO_PQ_POLL_HPP
 
 #include <cstdint>
+#include <string_view>
+
+#include <tao/pq/internal/format_as.hpp>
 
 namespace tao::pq::poll
 {
@@ -16,6 +19,26 @@ namespace tao::pq::poll
       writable,
       again
    };
+
+   [[nodiscard]] constexpr auto taopq_format_as( const status st ) noexcept -> std::string_view
+   {
+      switch( st ) {
+         case status::timeout:
+            return "timeout";
+
+         case status::readable:
+            return "readable";
+
+         case status::writable:
+            return "writable";
+
+         case status::again:
+            return "again";
+
+         default:
+            return "unknown";
+      }
+   }
 
    using callback = status( const int socket, const bool wait_for_write, const int timeout_ms );
 

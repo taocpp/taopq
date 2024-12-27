@@ -30,6 +30,7 @@ set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/aggregate.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/exclusive_scan.hpp
+  ${taopq_INCLUDE_DIRS}/tao/pq/internal/format_as.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/from_chars.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/gen.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/internal/parameter_traits_helper.hpp

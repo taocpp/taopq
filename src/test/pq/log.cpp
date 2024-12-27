@@ -15,12 +15,6 @@
 
 namespace
 {
-   template< typename E >
-   [[nodiscard]] constexpr auto to_underlying( const E e ) noexcept
-   {
-      return static_cast< std::underlying_type_t< E > >( e );
-   }
-
    [[nodiscard]] auto to_millis( std::chrono::steady_clock::time_point end ) noexcept
    {
       return std::chrono::duration_cast< std::chrono::milliseconds >( end - std::chrono::steady_clock::now() ).count();
@@ -69,7 +63,7 @@ namespace
 
    void log_poll_result( tao::pq::connection& c, int s, tao::pq::poll::status r )
    {
-      std::cout << std::format( "poll(connection={},socket={}) -> {}", static_cast< const void* >( &c ), s, to_underlying( r ) ) << '\n';
+      std::cout << std::format( "poll(connection={},socket={}) -> {}", static_cast< const void* >( &c ), s, r ) << '\n';
    }
 
    void log_is_busy_result( const tao::pq::connection& c, int r )
