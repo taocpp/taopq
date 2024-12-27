@@ -21,7 +21,7 @@ struct std::formatter< T > : std::formatter< decltype( taopq_format_as( std::dec
 
 template< typename T >
    requires requires { taopq_format_as( std::declval< T >() ); }
-std::ostream& operator<<( std::ostream& os, const T& v )
+auto operator<<( std::ostream& os, const T& v ) -> std::ostream&
 {
    return os << taopq_format_as( v );
 }
