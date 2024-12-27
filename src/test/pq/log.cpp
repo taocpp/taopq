@@ -31,7 +31,7 @@ namespace
       std::ignore = types;
       std::ignore = lengths;
       std::ignore = formats;
-      std::cout << std::format( "send_query(connection={}, statement={}, n_params={})", (void*)( &c ), s, n ) << '\n';
+      std::cout << std::format( "send_query(connection={}, statement={}, n_params={})", static_cast< const void* >( &c ), s, n ) << '\n';
       for( int i = 0; i != n; ++i ) {
          std::cout << std::format( "  parameter[{}]={})", i, values[ i ] ) << '\n';
       }
@@ -39,14 +39,14 @@ namespace
 
    void log_send_query_result( tao::pq::connection& c, int r )
    {
-      std::cout << std::format( "send_query(connection={}) -> {}", (void*)( &c ), r ) << '\n';
+      std::cout << std::format( "send_query(connection={}) -> {}", static_cast< const void* >( &c ), r ) << '\n';
    }
 
    void log_send_query_prepared( tao::pq::connection& c, const char* s, int n, const char* const values[], const int lengths[], const int formats[] )
    {
       std::ignore = lengths;
       std::ignore = formats;
-      std::cout << std::format( "send_query_prepared(connection={}, statement={}, n_params={})", (void*)( &c ), s, n ) << '\n';
+      std::cout << std::format( "send_query_prepared(connection={}, statement={}, n_params={})", static_cast< const void* >( &c ), s, n ) << '\n';
       for( int i = 0; i != n; ++i ) {
          std::cout << std::format( "  parameter[{}]={})", i, values[ i ] ) << '\n';
       }
@@ -54,47 +54,47 @@ namespace
 
    void log_send_query_prepared_result( tao::pq::connection& c, int r )
    {
-      std::cout << std::format( "send_query_prepared(connection={}) -> {}", (void*)( &c ), r ) << '\n';
+      std::cout << std::format( "send_query_prepared(connection={}) -> {}", static_cast< const void* >( &c ), r ) << '\n';
    }
 
    void log_wait( tao::pq::connection& c, bool w, std::chrono::steady_clock::time_point e )
    {
-      std::cout << std::format( "wait(connection={}, wait_for_write={}, timeout={}ms)", (void*)( &c ), w, to_millis( e ) ) << '\n';
+      std::cout << std::format( "wait(connection={}, wait_for_write={}, timeout={}ms)", static_cast< const void* >( &c ), w, to_millis( e ) ) << '\n';
    }
 
    void log_poll( tao::pq::connection& c, int s, bool w, int t )
    {
-      std::cout << std::format( "poll(connection={},socket={}, wait_for_write={}, timeout={}ms)", (void*)( &c ), s, w, t ) << '\n';
+      std::cout << std::format( "poll(connection={},socket={}, wait_for_write={}, timeout={}ms)", static_cast< const void* >( &c ), s, w, t ) << '\n';
    }
 
    void log_poll_result( tao::pq::connection& c, int s, tao::pq::poll::status r )
    {
-      std::cout << std::format( "poll(connection={},socket={}) -> {}", (void*)( &c ), s, to_underlying( r ) ) << '\n';
+      std::cout << std::format( "poll(connection={},socket={}) -> {}", static_cast< const void* >( &c ), s, to_underlying( r ) ) << '\n';
    }
 
    void log_is_busy_result( const tao::pq::connection& c, int r )
    {
-      std::cout << std::format( "is_busy(connection={}) -> {}", (void*)( &c ), r ) << '\n';
+      std::cout << std::format( "is_busy(connection={}) -> {}", static_cast< const void* >( &c ), r ) << '\n';
    }
 
    void log_consume_input( tao::pq::connection& c )
    {
-      std::cout << std::format( "consume_input(connection={})", (void*)( &c ) ) << '\n';
+      std::cout << std::format( "consume_input(connection={})", static_cast< const void* >( &c ) ) << '\n';
    }
 
    void log_consume_input_result( tao::pq::connection& c, int r )
    {
-      std::cout << std::format( "consume_input(connection={}) -> {}", (void*)( &c ), r ) << '\n';
+      std::cout << std::format( "consume_input(connection={}) -> {}", static_cast< const void* >( &c ), r ) << '\n';
    }
 
    void log_flush( tao::pq::connection& c )
    {
-      std::cout << std::format( "flush(connection={})", (void*)( &c ) ) << '\n';
+      std::cout << std::format( "flush(connection={})", static_cast< const void* >( &c ) ) << '\n';
    }
 
    void log_flush_result( tao::pq::connection& c, int r )
    {
-      std::cout << std::format( "flush(connection={}) -> {}", (void*)( &c ), r ) << '\n';
+      std::cout << std::format( "flush(connection={}) -> {}", static_cast< const void* >( &c ), r ) << '\n';
    }
 
    void run()
