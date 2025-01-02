@@ -13,6 +13,7 @@
 namespace tao::pq
 {
    class connection;
+   class transaction;
 
    class pipeline
       : public transaction_base
@@ -20,8 +21,17 @@ namespace tao::pq
    private:
       std::shared_ptr< transaction_base > m_previous;
 
+      friend class transaction;
+
+      // pass-key idiom
+      class private_key final
+      {
+         private_key() = default;
+         friend class transaction;
+      };
+
    public:
-      explicit pipeline( const std::shared_ptr< pq::connection >& connection );
+      pipeline( const private_key /*unused*/, const std::shared_ptr< pq::connection >& connection );
 
       ~pipeline() override
       {

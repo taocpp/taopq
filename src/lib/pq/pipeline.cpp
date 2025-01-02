@@ -10,7 +10,7 @@
 
 namespace tao::pq
 {
-   pipeline::pipeline( const std::shared_ptr< pq::connection >& connection )
+   pipeline::pipeline( const pipeline::private_key /*unused*/, const std::shared_ptr< pq::connection >& connection )
       : transaction_base( connection ),
         m_previous( current_transaction()->shared_from_this() )
    {

@@ -107,7 +107,7 @@ namespace tao::pq
    auto transaction::pipeline() -> std::shared_ptr< pq::pipeline >
    {
       check_current_transaction();
-      return std::make_shared< pq::pipeline >( m_connection );
+      return std::make_shared< pq::pipeline >( pq::pipeline::private_key(), m_connection );
    }
 
    void transaction::commit()
