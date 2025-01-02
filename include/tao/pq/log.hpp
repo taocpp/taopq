@@ -15,6 +15,7 @@
 namespace tao::pq
 {
    class connection;
+   class transaction;
 
    struct log
    {
@@ -120,7 +121,10 @@ namespace tao::pq
 
       struct transaction_t
       {
-         // TODO...
+         // check std::current_exception() for more information
+         using destructor_rollback_failed_t = std::function< void( transaction& ) >;  // noexcept
+
+         destructor_rollback_failed_t destructor_rollback_failed;
 
       } transaction;
    };

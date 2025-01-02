@@ -6,7 +6,6 @@
 
 #include <chrono>
 #include <cstdio>
-#include <exception>
 #include <memory>
 #include <stdexcept>
 #include <utility>
@@ -33,17 +32,7 @@ namespace tao::pq
          ~top_level_subtransaction() override
          {
             if( m_connection && m_connection->attempt_rollback() ) {
-               try {
-                  rollback();
-               }
-               // LCOV_EXCL_START
-               catch( const std::exception& ) {  // NOLINT(bugprone-empty-catch)
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
-               }
-               catch( ... ) {  // NOLINT(bugprone-empty-catch)
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
-               }
-               // LCOV_EXCL_STOP
+               rollback_in_dtor();
             }
          }
 
@@ -79,14 +68,7 @@ namespace tao::pq
          ~nested_subtransaction() override
          {
             if( m_connection && m_connection->attempt_rollback() ) {
-               try {
-                  rollback();
-               }
-               // LCOV_EXCL_START
-               catch( ... ) {  // NOLINT(bugprone-empty-catch)
-                  // TODO: How to handle this case properly?
-               }
-               // LCOV_EXCL_STOP
+               rollback_in_dtor();
             }
          }
 
@@ -130,8 +112,8 @@ namespace tao::pq
 
    void transaction::commit()
    {
-      check_current_transaction();
       try {
+         check_current_transaction();
          v_commit();
       }
       // LCOV_EXCL_START
@@ -145,14 +127,30 @@ namespace tao::pq
 
    void transaction::rollback()
    {
-      check_current_transaction();
       try {
+         check_current_transaction();
          v_rollback();
       }
       // LCOV_EXCL_START
       catch( ... ) {
          v_reset();
          throw;
+      }
+      // LCOV_EXCL_STOP
+      v_reset();
+   }
+
+   void transaction::rollback_in_dtor() noexcept
+   {
+      try {
+         check_current_transaction();
+         v_rollback();
+      }
+      // LCOV_EXCL_START
+      catch( ... ) {
+         if( m_connection->m_log && m_connection->m_log->transaction.destructor_rollback_failed ) {
+            m_connection->m_log->transaction.destructor_rollback_failed( *this );
+         }
       }
       // LCOV_EXCL_STOP
       v_reset();

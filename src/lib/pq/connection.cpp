@@ -8,7 +8,6 @@
 #include <cctype>
 #include <chrono>
 #include <cstring>
-#include <exception>
 #include <format>
 #include <functional>
 #include <memory>
@@ -137,17 +136,7 @@ namespace tao::pq
          ~top_level_transaction() override
          {
             if( m_connection && m_connection->attempt_rollback() ) {
-               try {
-                  rollback();
-               }
-               // LCOV_EXCL_START
-               catch( const std::exception& ) {  // NOLINT(bugprone-empty-catch)
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing exception: " + std::string( e.what() ) );
-               }
-               catch( ... ) {  // NOLINT(bugprone-empty-catch)
-                  // TAO_LOG( WARNING, "unable to rollback transaction, swallowing unknown exception" );
-               }
-               // LCOV_EXCL_STOP
+               rollback_in_dtor();
             }
          }
 

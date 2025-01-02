@@ -54,6 +54,7 @@ namespace tao::pq
       friend class connection_pool;
       friend class table_reader;
       friend class table_writer;
+      friend class transaction;
       friend class transaction_base;
 
       friend class internal::top_level_transaction;

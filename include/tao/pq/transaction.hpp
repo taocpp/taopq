@@ -32,6 +32,8 @@ namespace tao::pq
 
       virtual void v_reset() noexcept = 0;
 
+      void rollback_in_dtor() noexcept;
+
    public:
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;
       [[nodiscard]] auto pipeline() -> std::shared_ptr< pq::pipeline >;
