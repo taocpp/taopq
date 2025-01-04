@@ -83,8 +83,19 @@ namespace
       };
       log->connection.get_result.result = []( tao::pq::connection& c, PGresult* r ) {
          std::cout << std::format( "get_result(connection={}) -> {}", static_cast< const void* >( &c ), static_cast< const void* >( r ) ) << '\n';
-         if( r ) {
-            std::cout << std::format( "  columns={}, rows={}", PQnfields( r ), PQntuples( r ) ) << '\n';
+         if( r != nullptr ) {
+            const auto st = PQresultStatus( r );
+            std::cout << std::format( "  status={}", PQresStatus( st ) ) << '\n';
+            const auto cols = PQnfields( r );
+            if( cols != 0 ) {
+               std::cout << std::format( "  columns={}, rows={}", cols, PQntuples( r ) ) << '\n';
+            }
+            else {
+               const char* str = PQcmdTuples( r );
+               if( str[ 0 ] != '\0' ) {
+                  std::cout << std::format( "  rows_affected={}", str ) << '\n';
+               }
+            }
          }
       };
 
