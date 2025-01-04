@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2024 Daniel Frey and Dr. Colin Hirsch
+// Copyright (c) 2016-2025 Daniel Frey and Dr. Colin Hirsch
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -31,6 +31,8 @@ namespace tao::pq
       virtual void v_rollback() = 0;
 
       virtual void v_reset() noexcept = 0;
+
+      void rollback_in_dtor() noexcept;
 
    public:
       [[nodiscard]] auto subtransaction() -> std::shared_ptr< transaction >;

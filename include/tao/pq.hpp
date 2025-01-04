@@ -1,4 +1,4 @@
-// Copyright (c) 2016-2024 Daniel Frey and Dr. Colin Hirsch
+// Copyright (c) 2016-2025 Daniel Frey and Dr. Colin Hirsch
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
@@ -27,6 +27,7 @@
 #include <tao/pq/parameter_traits_tuple.hpp>
 
 #include <tao/pq/exception.hpp>
+#include <tao/pq/log.hpp>
 #include <tao/pq/result.hpp>
 
 #include <tao/pq/result_traits.hpp>
