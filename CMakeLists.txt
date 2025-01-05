@@ -9,7 +9,7 @@ project(taopq VERSION ${taopq_VERSION} LANGUAGES CXX)
 
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
-find_package(PostgreSQL REQUIRED)
+find_package(PostgreSQL 14 REQUIRED)
 
 set(taopq_INSTALL_INCLUDE_DIR "include" CACHE STRING "The installation include directory")
 set(taopq_INSTALL_DOC_DIR "share/doc/tao/pq" CACHE STRING "The installation doc directory")
