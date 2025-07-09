@@ -12,6 +12,19 @@
 
 namespace tao::pq::internal
 {
+
+#if defined( __cpp_structured_bindings ) && ( __cpp_structured_bindings >= 202302L ) && ( __cplusplus >= 202302L )
+
+   template< typename T >
+      requires( std::is_aggregate_v< T > && !std::is_empty_v< T > && !std::is_union_v< T > )
+   constexpr auto tie_aggregate( const T& value ) noexcept
+   {
+      const auto& [... values ] = value;
+      return std::tie( values... );
+   }
+
+#else
+
    struct convert_to_any
    {
       template< typename T >
@@ -96,6 +109,8 @@ namespace tao::pq::internal
 #undef TAO_PQ_TIE
 #undef TAO_PQ_10
 #undef TAO_PQ_TIE10
+
+#endif
 
 }  // namespace tao::pq::internal
 
