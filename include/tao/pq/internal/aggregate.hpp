@@ -5,10 +5,13 @@
 #ifndef TAO_PQ_INTERNAL_AGGREGATE_HPP
 #define TAO_PQ_INTERNAL_AGGREGATE_HPP
 
-#include <cstddef>
 #include <tuple>
 #include <type_traits>
+
+#if !( defined( __cpp_structured_bindings ) && ( __cpp_structured_bindings >= 202302L ) && ( __cplusplus >= 202302L ) )
+#include <cstddef>
 #include <utility>
+#endif
 
 namespace tao::pq::internal
 {

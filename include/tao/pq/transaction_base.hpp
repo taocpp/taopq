@@ -8,7 +8,7 @@
 #include <chrono>
 #include <cstddef>
 #include <memory>
-#if !defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L )
+#if !( defined( __cpp_pack_indexing ) && ( __cplusplus >= 202302L ) )
 #include <tuple>
 #endif
 #include <type_traits>
