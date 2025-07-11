@@ -8,7 +8,7 @@
 #include <tuple>
 #include <type_traits>
 
-#if !( ( __cpp_structured_bindings >= 202302L ) && ( __cplusplus >= 202302L ) )
+#if !( ( __cpp_structured_bindings >= 202400L ) && ( __cplusplus >= 202400L ) )
 #include <cstddef>
 #include <utility>
 #endif
@@ -18,7 +18,7 @@ namespace tao::pq::internal
 
    // clang-format off
 
-#if ( __cpp_structured_bindings >= 202302L ) && ( __cplusplus >= 202302L )
+#if ( __cpp_structured_bindings >= 202400L ) && ( __cplusplus >= 202400L )
 
    template< typename T >
       requires( std::is_aggregate_v< T > && !std::is_empty_v< T > && !std::is_union_v< T > )
