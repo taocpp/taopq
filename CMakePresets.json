@@ -1,0 +1,310 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "werror-gcc-clang",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wnull-dereference"
+      }
+    },
+    {
+      "name": "werror-msvc",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "/W4 /WX /permissive-"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "default",
+      "displayName": "Debug",
+      "description": "Debug build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "displayName": "Release",
+      "description": "Release build with optimizations",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "relwithdebinfo",
+      "inherits": "default",
+      "displayName": "RelWithDebInfo",
+      "description": "Release build with debug info",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+      }
+    },
+    {
+      "name": "gcc-debug",
+      "inherits": "debug",
+      "displayName": "GCC Debug",
+      "description": "Debug build using GCC",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "gcc-release",
+      "inherits": "release",
+      "displayName": "GCC Release",
+      "description": "Release build using GCC",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++"
+      }
+    },
+    {
+      "name": "gcc-debug-dev",
+      "inherits": ["debug", "werror-gcc-clang"],
+      "displayName": "GCC Debug (Dev with -Werror)",
+      "description": "Debug build using GCC with warnings as errors",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "taopq_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "gcc-release-dev",
+      "inherits": ["release", "werror-gcc-clang"],
+      "displayName": "GCC Release (Dev with -Werror)",
+      "description": "Release build using GCC with warnings as errors",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "gcc",
+        "CMAKE_CXX_COMPILER": "g++",
+        "taopq_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "clang-debug",
+      "inherits": "debug",
+      "displayName": "Clang Debug",
+      "description": "Debug build using Clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "clang-release",
+      "inherits": "release",
+      "displayName": "Clang Release",
+      "description": "Release build using Clang",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++"
+      }
+    },
+    {
+      "name": "clang-debug-dev",
+      "inherits": ["debug", "werror-gcc-clang"],
+      "displayName": "Clang Debug (Dev with -Werror)",
+      "description": "Debug build using Clang with warnings as errors",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "taopq_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "clang-release-dev",
+      "inherits": ["release", "werror-gcc-clang"],
+      "displayName": "Clang Release (Dev with -Werror)",
+      "description": "Release build using Clang with warnings as errors",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "taopq_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "msvc-debug",
+      "inherits": "debug",
+      "displayName": "MSVC Debug",
+      "description": "Debug build using MSVC",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "msvc-release",
+      "inherits": "release",
+      "displayName": "MSVC Release",
+      "description": "Release build using MSVC",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "msvc-debug-dev",
+      "inherits": ["debug", "werror-msvc"],
+      "displayName": "MSVC Debug (Dev with /WX)",
+      "description": "Debug build using MSVC with warnings as errors",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "taopq_BUILD_TESTS": "ON"
+      }
+    },
+    {
+      "name": "msvc-release-dev",
+      "inherits": ["release", "werror-msvc"],
+      "displayName": "MSVC Release (Dev with /WX)",
+      "description": "Release build using MSVC with warnings as errors",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "taopq_BUILD_TESTS": "ON"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "displayName": "Debug Build",
+      "description": "Build in Debug mode"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "displayName": "Release Build",
+      "description": "Build in Release mode"
+    },
+    {
+      "name": "gcc-debug",
+      "configurePreset": "gcc-debug",
+      "displayName": "GCC Debug Build"
+    },
+    {
+      "name": "gcc-release",
+      "configurePreset": "gcc-release",
+      "displayName": "GCC Release Build"
+    },
+    {
+      "name": "gcc-debug-dev",
+      "configurePreset": "gcc-debug-dev",
+      "displayName": "GCC Debug Build (Dev)"
+    },
+    {
+      "name": "gcc-release-dev",
+      "configurePreset": "gcc-release-dev",
+      "displayName": "GCC Release Build (Dev)"
+    },
+    {
+      "name": "clang-debug",
+      "configurePreset": "clang-debug",
+      "displayName": "Clang Debug Build"
+    },
+    {
+      "name": "clang-release",
+      "configurePreset": "clang-release",
+      "displayName": "Clang Release Build"
+    },
+    {
+      "name": "clang-debug-dev",
+      "configurePreset": "clang-debug-dev",
+      "displayName": "Clang Debug Build (Dev)"
+    },
+    {
+      "name": "clang-release-dev",
+      "configurePreset": "clang-release-dev",
+      "displayName": "Clang Release Build (Dev)"
+    },
+    {
+      "name": "msvc-debug",
+      "configurePreset": "msvc-debug",
+      "displayName": "MSVC Debug Build"
+    },
+    {
+      "name": "msvc-release",
+      "configurePreset": "msvc-release",
+      "displayName": "MSVC Release Build"
+    },
+    {
+      "name": "msvc-debug-dev",
+      "configurePreset": "msvc-debug-dev",
+      "displayName": "MSVC Debug Build (Dev)"
+    },
+    {
+      "name": "msvc-release-dev",
+      "configurePreset": "msvc-release-dev",
+      "displayName": "MSVC Release Build (Dev)"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "displayName": "Test Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "displayName": "Test Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "gcc-debug-dev",
+      "configurePreset": "gcc-debug-dev",
+      "displayName": "Test GCC Debug (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "clang-debug-dev",
+      "configurePreset": "clang-debug-dev",
+      "displayName": "Test Clang Debug (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}
