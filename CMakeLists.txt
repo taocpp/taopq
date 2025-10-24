@@ -17,8 +17,6 @@ option(taopq_BUILD_TESTS "Build test programs" ON)
 
 set(taopq_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include)
 
-add_library(taopq)
-
 set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq.hpp
   ${taopq_INCLUDE_DIRS}/tao/pq/access_mode.hpp
@@ -104,7 +102,7 @@ set(taopq_SOURCE_FILES
 
 source_group("Header Files" FILES ${taopq_INCLUDE_FILES})
 
-target_sources(taopq PRIVATE ${taopq_SOURCE_FILES} PUBLIC ${taopq_INCLUDE_FILES})
+add_library(taopq ${taopq_SOURCE_FILES} ${taopq_INCLUDE_FILES})
 add_library(taocpp::taopq ALIAS taopq)
 set_target_properties(taopq PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
 
