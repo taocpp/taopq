@@ -1,13 +1,11 @@
+cmake_minimum_required(VERSION 3.15)
+
 file(GLOB testsources *.cpp)
 foreach(testsourcefile ${testsources})
   get_filename_component(exename taopq-test-${testsourcefile} NAME_WE)
   add_executable(${exename} ${testsourcefile})
   target_link_libraries(${exename} PRIVATE taocpp::taopq)
-  set_target_properties(${exename} PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED ON
-    CXX_EXTENSIONS OFF
-  )
+  target_compile_features(${exename} PRIVATE cxx_std_20)
   if(MSVC)
     target_compile_options(${exename} PRIVATE /W4 /WX /utf-8)
   else()
