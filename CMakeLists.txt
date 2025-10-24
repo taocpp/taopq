@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.15)
 
 # Read version from version.hpp
 file(READ "${CMAKE_CURRENT_LIST_DIR}/include/tao/pq/version.hpp" taopq_VERSION_DATA)
@@ -9,13 +9,15 @@ project(taopq VERSION ${taopq_VERSION} LANGUAGES CXX)
 
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
-find_package(PostgreSQL 14 REQUIRED)
+find_package(PostgreSQL 14 REQUIRED CONFIG)
 
 set(taopq_INSTALL_INCLUDE_DIR "include" CACHE STRING "The installation include directory")
 set(taopq_INSTALL_DOC_DIR "share/doc/tao/pq" CACHE STRING "The installation doc directory")
 option(taopq_BUILD_TESTS "Build test programs" ON)
 
 set(taopq_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include)
+
+add_library(taopq)
 
 set(taopq_INCLUDE_FILES
   ${taopq_INCLUDE_DIRS}/tao/pq.hpp
@@ -102,7 +104,7 @@ set(taopq_SOURCE_FILES
 
 source_group("Header Files" FILES ${taopq_INCLUDE_FILES})
 
-add_library(taopq ${taopq_SOURCE_FILES} ${taopq_INCLUDE_FILES})
+target_sources(taopq PRIVATE ${taopq_SOURCE_FILES} PUBLIC ${taopq_INCLUDE_FILES})
 add_library(taocpp::taopq ALIAS taopq)
 set_target_properties(taopq PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
 
@@ -110,12 +112,11 @@ target_include_directories(taopq
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    ${PostgreSQL_INCLUDE_DIRS}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(taopq PUBLIC ${PostgreSQL_LIBRARIES})
+target_link_libraries(taopq PUBLIC PostgreSQL::PostgreSQL)
 if(WIN32)
   target_link_libraries(taopq PUBLIC ws2_32)
 endif()
