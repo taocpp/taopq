@@ -20,9 +20,11 @@ jobs:
     - uses: actions/checkout@v5
     - uses: ikalnytskyi/action-setup-postgres@v8
     - uses: conan-io/setup-conan@v1
+      with:
+        cache_packages: true
 
-    - name: Install dependencies
-      run: conan install ${{ github.workspace }}/.github/conanfile.py -of build
+    - name: Install dependencies with Conan
+      run: conan install ${{ github.workspace }}/.github/conanfile.py -of build --build=missing
 
     - name: Configure CMake Project
       run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/build/release/generators/conan_toolchain.cmake

@@ -22,9 +22,11 @@ jobs:
     - uses: ikalnytskyi/action-setup-postgres@v8
     - uses: ilammy/msvc-dev-cmd@v1
     - uses: conan-io/setup-conan@v1
+      with:
+        cache_packages: true
 
     - name: Install dependencies with Conan
-      run: conan install ${{ github.workspace }}/.github/conanfile.py -of build
+      run: conan install ${{ github.workspace }}/.github/conanfile.py -of build --build=missing
 
     - name: Configure CMake Project
       run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install
