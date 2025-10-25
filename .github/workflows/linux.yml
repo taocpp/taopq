@@ -13,7 +13,6 @@ on:
 jobs:
   linux-next:
     strategy:
-      fail-fast: false
       matrix:
         compiler:
           - g++-13
@@ -47,29 +46,27 @@ jobs:
 
     - uses: awalsh128/cache-apt-pkgs-action@latest
       with:
-        packages: libpq-dev
-        version: 1.0
+        packages: libpq-dev libc++-dev
+        version: 2.0
 
-    - run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install
+    - name: Configure CMake Project
+      run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install
 
-    - run: cmake --build --preset unixlike-release-dev
+    - name: Build project files
+      run: cmake --build --preset unixlike-release-dev
 
-    - run: cmake --build --preset unixlike-release-dev --target test
+    - name: Run tests
+      run: cmake --build --preset unixlike-release-dev --target test
 
-    - run: cmake --build --preset unixlike-release-dev --target examples
-      with:
-        env:
-          TAOPQ_DATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
+    - name: Run examples
+      run: cmake --build --preset unixlike-release-dev --target examples
+      env:
+        TAOPQ_DATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
 
-    - run: cmake --build --preset unixlike-release-dev --target install
+    - name: Install Taocpp TaoPQ
+      run: cmake --build --preset unixlike-release-dev --target install
 
-  linux-gcc-extra:
-    strategy:
-      fail-fast: false
-      matrix:
-        flags: ["-D_GLIBCXX_USE_CXX11_ABI=0"]
-        build_type: [Debug, Release]
-
+  linux-gcc-old-abi:
     runs-on: ubuntu-24.04
 
     services:
@@ -93,29 +90,26 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev libc++-dev
+        version: 2.0
 
-    - run: sudo apt-get install -yq libpq-dev
+    - name: Configure CMake Project
+      run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0"
 
-    - run: cmake -E make_directory build
+    - name: Build project files
+      run: cmake --build --preset unixlike-release-dev
 
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.flags }}"
-
-    - working-directory: build/
-      run: cmake --build .
-
-    - working-directory: build/
-      run: ctest --output-on-failure
+    - name: Run tests
+      run: cmake --build --preset unixlike-release-dev --target test
 
   linux-clang-extra:
     strategy:
-      fail-fast: false
       matrix:
         flags: ["-stdlib=libc++","-fms-extensions"]
-        build_type: [Debug, Release]
 
     runs-on: ubuntu-24.04
 
@@ -140,19 +134,18 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev libc++-dev
+        version: 2.0
 
-    - run: sudo apt-get install -yq libpq-dev libc++-dev
+    - name: Configure CMake Project
+      run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_CXX_FLAGS="${{ matrix.flags }}"
 
-    - run: cmake -E make_directory build
+    - name: Build project files
+      run: cmake --build --preset unixlike-release-dev
 
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} -DCMAKE_CXX_FLAGS="${{ matrix.flags }}"
-
-    - working-directory: build/
-      run: cmake --build .
-
-    - working-directory: build/
-      run: ctest --output-on-failure
+    - name: Run tests
+      run: cmake --build --preset unixlike-release-dev --target test
