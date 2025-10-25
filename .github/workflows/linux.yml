@@ -57,6 +57,9 @@ jobs:
     - run: cmake --build --preset unixlike-release-dev --target test
 
     - run: cmake --build --preset unixlike-release-dev --target examples
+      with:
+        env:
+          TAOPQ_DATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
 
     - run: cmake --build --preset unixlike-release-dev --target install
 
