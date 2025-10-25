@@ -29,7 +29,7 @@ jobs:
       run: conan install ${{ github.workspace }}/.github/conanfile.py -of build --build=missing
 
     - name: Configure CMake Project
-      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install
+      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/build/build/Release/generators/conan_toolchain.cmake
 
     - name: Build project files
       run: cmake --build --preset msvc-release-dev

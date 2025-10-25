@@ -1,6 +1,5 @@
 from conan import ConanFile
 from conan.tools.cmake import CMakeDeps, CMakeToolchain, cmake_layout
-from conan.tools.apple import is_apple_os
 
 class TaopqRequirements(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
@@ -9,7 +8,7 @@ class TaopqRequirements(ConanFile):
         cmake_layout(self)
 
     def requirements(self):
-        self.requires("libpq/[*]")
+        self.requires("libpq/[>=14 <17]")
 
     def generate(self):
         tc = CMakeToolchain(self)
@@ -22,6 +21,6 @@ class TaopqRequirements(ConanFile):
         deps.generate()
 
     def compatibility(self):
-        if is_apple_os(self) and self.settings.compiler == "apple-clang" and self.settings.compiler.version in ("17.0", "17"):
+        if self.settings.compiler == "apple-clang" and self.settings.compiler.version in ("17", "17.0"):
             return [{"settings": [("compiler.version", v)]}
                     for v in ("16.0", "16", "15.0", "15", "14.0", "14", "13.0", "13")]
