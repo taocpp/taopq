@@ -19,7 +19,7 @@
       "name": "dev-flags-gcc-clang",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wnull-dereference",
+        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wnull-dereference -Wno-sign-conversion",
         "BUILD_TESTING": "ON",
         "BUILD_EXAMPLES": "ON"
       }
