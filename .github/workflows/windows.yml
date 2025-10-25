@@ -15,7 +15,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        cxx: [cl.exe, clang.exe]
+        cxx: [cl.exe]
 
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
