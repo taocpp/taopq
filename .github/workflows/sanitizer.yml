@@ -35,7 +35,8 @@ jobs:
           --health-retries 5
 
     env:
-      CXX: clang
+      CXX: clang++
+      CC: clang
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
