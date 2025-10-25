@@ -53,7 +53,7 @@ jobs:
 
     - run: cmake --build --preset unixlike-release-dev
 
-    - run: cmake --build --preset unixlike-release-dev --target test -- --output-on-failure
+    - run: cmake --build --preset unixlike-release-dev --target test
 
   linux-gcc-extra:
     strategy:
