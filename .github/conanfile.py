@@ -22,6 +22,6 @@ class TaopqRequirements(ConanFile):
         deps.generate()
 
     def compatibility(self):
-        if is_apple_os(self) and self.settings.compiler == "apple-clang" and self.settings.compiler.version == "17.0":
+        if is_apple_os(self) and self.settings.compiler == "apple-clang" and self.settings.compiler.version in ("17.0", "17"):
             return [{"settings": [("compiler.version", v)]}
-                    for v in ("16.0", "15.0", "14.0", "13.0")]
+                    for v in ("16.0", "16", "15.0", "15", "14.0", "14", "13.0", "13")]
