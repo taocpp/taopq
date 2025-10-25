@@ -20,10 +20,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5
+
     - uses: ikalnytskyi/action-setup-postgres@v8
+
     - uses: conan-io/setup-conan@v1
       with:
         cache_packages: true
+
+    - name: Set up MSVC dev cmd (x64)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
 
     - name: Install dependencies with Conan MSVC
       run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
