@@ -45,15 +45,20 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev
+        version: 1.0
 
-    - run: sudo apt-get install -yq libpq-dev
-
-    - run: cmake --preset unixlike-release-dev
+    - run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install
 
     - run: cmake --build --preset unixlike-release-dev
 
     - run: cmake --build --preset unixlike-release-dev --target test
+
+    - run: cmake --build --preset unixlike-release-dev --target examples
+
+    - run: cmake --build --preset unixlike-release-dev --target install
 
   linux-gcc-extra:
     strategy:
