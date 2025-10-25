@@ -84,7 +84,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
-        "taopq_BUILD_TESTS": "ON"
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -95,7 +95,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
         "CMAKE_CXX_COMPILER": "g++",
-        "taopq_BUILD_TESTS": "ON"
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -126,7 +126,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "taopq_BUILD_TESTS": "ON"
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -137,7 +137,7 @@
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
         "CMAKE_CXX_COMPILER": "clang++",
-        "taopq_BUILD_TESTS": "ON"
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -177,7 +177,7 @@
         "rhs": "Windows"
       },
       "cacheVariables": {
-        "taopq_BUILD_TESTS": "ON"
+        "BUILD_TESTING": "ON"
       }
     },
     {
@@ -191,7 +191,7 @@
         "rhs": "Windows"
       },
       "cacheVariables": {
-        "taopq_BUILD_TESTS": "ON"
+        "BUILD_TESTING": "ON"
       }
     }
   ],
