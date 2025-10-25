@@ -204,6 +204,14 @@
       }
     },
     {
+      "name": "unixlike-debug",
+      "configurePreset": "unixlike-debug",
+      "displayName": "Test Unix Like Compiler Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
       "name": "unixlike-debug-dev",
       "configurePreset": "unixlike-debug-dev",
       "displayName": "Test Unix Like Compiler Debug (Dev)",
