@@ -26,7 +26,7 @@
       "name": "werror-msvc",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/W4 /WX /permissive-"
+        "CMAKE_CXX_FLAGS": "/EHsc /W4 /WX /permissive-"
       }
     },
     {
@@ -171,8 +171,6 @@
       "inherits": ["debug", "werror-msvc"],
       "displayName": "MSVC Debug (Dev with /WX)",
       "description": "Debug build using MSVC with warnings as errors",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -187,8 +185,6 @@
       "inherits": ["release", "werror-msvc"],
       "displayName": "MSVC Release (Dev with /WX)",
       "description": "Release build using MSVC with warnings as errors",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
