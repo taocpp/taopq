@@ -12,6 +12,8 @@ project(taopq
   HOMEPAGE_URL "https://github.com/taocpp/taopq"
 )
 
+option(BUILD_EXAMPLES "Build taopq examples" OFF)
+
 find_package(PostgreSQL REQUIRED CONFIG)
 
 add_library(${PROJECT_NAME})
@@ -172,4 +174,8 @@ endif()
 if(BUILD_TESTING AND PROJECT_IS_TOP_LEVEL)
   enable_testing()
   add_subdirectory(test/pq)
+endif()
+
+if(BUILD_EXAMPLES AND PROJECT_IS_TOP_LEVEL)
+  add_subdirectory(example)
 endif()
