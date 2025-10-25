@@ -21,7 +21,7 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - uses: ikalnytskyi/action-setup-postgres@v8
+    # - uses: ikalnytskyi/action-setup-postgres@v8
 
     - name: Set up Python
       uses: actions/setup-python@v6
