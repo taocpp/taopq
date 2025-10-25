@@ -76,12 +76,45 @@
       "description": "Release build using Clang or GCC with warnings as errors"
     },
     {
-      "name": "msvc-debug",
+      "name": "msvc-clang-debug",
       "inherits": "debug",
       "displayName": "MSVC Debug",
       "description": "Debug build using MSVC",
       "generator": "Visual Studio 17 2022",
       "architecture": "x64",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "msvc-clang-release",
+      "inherits": "release",
+      "displayName": "MSVC Release",
+      "description": "Release build using MSVC",
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "msvc-debug",
+      "inherits": "debug",
+      "displayName": "MSVC Debug",
+      "description": "Debug build using MSVC",
+      "generator": "Visual Studio 17 2022",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"
@@ -98,7 +131,6 @@
       "displayName": "MSVC Release",
       "description": "Release build using MSVC",
       "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"
@@ -192,6 +224,16 @@
       "name": "msvc-release-dev",
       "configurePreset": "msvc-release-dev",
       "displayName": "MSVC Release Build (Dev)"
+    },
+    {
+      "name": "msvc-clang-debug",
+      "configurePreset": "msvc-clang-debug",
+      "displayName": "MSVC Clang Debug Build"
+    },
+    {
+      "name": "msvc-clang-release",
+      "configurePreset": "msvc-clang-release",
+      "displayName": "MSVC Clang Release Build"
     }
   ],
   "testPresets": [
