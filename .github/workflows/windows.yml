@@ -21,15 +21,17 @@ jobs:
     - uses: actions/checkout@v5
     - uses: ikalnytskyi/action-setup-postgres@v8
     - uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
     - uses: conan-io/setup-conan@v1
       with:
         cache_packages: true
 
     - name: Install dependencies with Conan
-      run: conan install ${{ github.workspace }}/.github/conanfile.py -of build --build=missing
+      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
 
     - name: Configure CMake Project
-      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/build/build/generators/conan_toolchain.cmake
+      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/build/generators/conan_toolchain.cmake
 
     - name: Build project files
       run: cmake --build --preset msvc-release-dev

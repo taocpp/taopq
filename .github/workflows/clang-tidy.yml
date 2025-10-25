@@ -15,10 +15,11 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
-
-    - run: sudo apt-get install -yq clang-tidy libpq-dev
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev clang-tidy
+        version: 3.0
 
     - run: find include/ src/ -name '*.?pp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++20 -Iinclude -I$(pg_config --includedir)
