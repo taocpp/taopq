@@ -8,7 +8,7 @@ class TaopqRequirements(ConanFile):
         cmake_layout(self)
 
     def requirements(self):
-        self.requires("libpq/[>=14 <17]")
+        self.requires("libpq/[*]")
 
     def generate(self):
         tc = CMakeToolchain(self)
