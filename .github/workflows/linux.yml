@@ -61,7 +61,7 @@ jobs:
     - name: Run examples
       run: cmake --build --preset unixlike-release-dev --target examples
       env:
-        TAOPQ_DATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
+        PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
 
     - name: Install Taocpp TaoPQ
       run: cmake --build --preset unixlike-release-dev --target install
