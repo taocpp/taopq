@@ -13,9 +13,6 @@ on:
 jobs:
   vs2022-msvc-clang:
     runs-on: windows-latest
-    strategy:
-      matrix:
-        cxx: [cl.exe]
 
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
@@ -24,23 +21,15 @@ jobs:
     steps:
     - uses: actions/checkout@v5
     - uses: ikalnytskyi/action-setup-postgres@v8
-    - uses: ilammy/msvc-dev-cmd@v1
-      with:
-        arch: x64
     - uses: conan-io/setup-conan@v1
       with:
         cache_packages: true
 
     - name: Install dependencies with Conan MSVC
-      if: matrix.cxx == 'cl.exe'
       run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
 
-    - name: Install dependencies with Conan Clang
-      if: matrix.cxx == 'clang.exe'
-      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -pr ${{ github.workspace }}/.github/win-clang.profile
-
     - name: Configure CMake Project
-      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
 
     - name: Build project files
       run: cmake --build --preset msvc-release-dev
