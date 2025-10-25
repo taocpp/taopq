@@ -47,7 +47,7 @@ jobs:
         version: 1.0
 
     - name: Configure CMake Project
-      run: cmake --preset unixlike-debug -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -fsanitize="${{ matrix.sanitizer }}"
+      run: cmake --preset unixlike-debug -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }}"
 
     - name: Build project files
       run: cmake --build --preset unixlike-debug
