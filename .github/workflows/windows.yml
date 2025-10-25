@@ -27,13 +27,13 @@ jobs:
       with:
         cache_packages: true
 
+    - name: Install dependencies with Conan MSVC
+      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
+
     - name: Set up MSVC dev cmd (x64)
       uses: ilammy/msvc-dev-cmd@v1
       with:
         arch: x64
-
-    - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
 
     - name: Configure CMake Project
       run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
