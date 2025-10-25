@@ -21,7 +21,12 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    # - uses: ikalnytskyi/action-setup-postgres@v8
+    - uses: ikalnytskyi/action-setup-postgres@v8
+
+    - name: Set up Python
+      uses: actions/setup-python@v6
+      with:
+        python-version: '3.x'
 
     - name: Set up MSVC dev cmd (x64)
       uses: ilammy/msvc-dev-cmd@v1
@@ -35,21 +40,19 @@ jobs:
     - name: Install dependencies with Conan MSVC
       run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
 
+    - name: Configure CMake Project
+      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
 
+    - name: Build project files
+      run: cmake --build --preset msvc-release-dev
 
-    #- name: Configure CMake Project
-    #  run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
+    - name: Run tests
+      run: cmake --build --preset msvc-release-dev --target test
 
-    #- name: Build project files
-    #  run: cmake --build --preset msvc-release-dev
+    - name: Run examples
+      run: cmake --build --preset msvc-release-dev --target examples
+      env:
+        PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
 
-    #- name: Run tests
-    #  run: cmake --build --preset msvc-release-dev --target test
-
-    #- name: Run examples
-    #  run: cmake --build --preset msvc-release-dev --target examples
-    #  env:
-    #    PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
-
-    #- name: Install Taocpp TaoPQ
-    #  run: cmake --build --preset msvc-release-dev --target install
+    - name: Install Taocpp TaoPQ
+      run: cmake --build --preset msvc-release-dev --target install
