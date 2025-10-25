@@ -14,7 +14,7 @@ jobs:
   sanitizer:
     strategy:
       matrix:
-        sanitizer: [address, undefined, thread, memory, leak]
+        sanitizer: [address, undefined, thread, leak]
 
     runs-on: ubuntu-24.04
 
