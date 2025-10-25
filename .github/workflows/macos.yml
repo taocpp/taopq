@@ -11,29 +11,28 @@ on:
       - 'doc/**'
 
 jobs:
-  xcode-macos-14:
-    strategy:
-      fail-fast: false
-      matrix:
-        xcode: ['15']
-        build_type: [Debug, Release]
-
-    runs-on: macos-14
-
+  xcode-macos-15:
+    runs-on: macos-15
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - uses: ikalnytskyi/action-setup-postgres@v6
 
-    - run: cmake -E make_directory build
+    - name: Configure CMake Project
+      run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install
 
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE
+    - name: Build project files
+      run: cmake --build --preset unixlike-release-dev
 
-    - working-directory: build/
-      run: cmake --build . --config ${{ matrix.build_type }}
+    - name: Run tests
+      run: cmake --build --preset unixlike-release-dev --target test
 
-    - working-directory: build/
-      run: ctest --output-on-failure
+    - name: Run examples
+      run: cmake --build --preset unixlike-release-dev --target examples
+      env:
+        PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
+
+    - name: Install Taocpp TaoPQ
+      run: cmake --build --preset unixlike-release-dev --target install
