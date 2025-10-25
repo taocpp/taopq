@@ -10,5 +10,4 @@ compiler.runtime_type=Release
 compiler.runtime_version=v143
 
 [conf]
-tools.env.virtualenv:auto_use=True
 tools.cmake.cmaketoolchain:generator=Visual Studio 17
