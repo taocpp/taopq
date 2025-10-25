@@ -13,10 +13,8 @@ on:
 jobs:
   sanitizer:
     strategy:
-      fail-fast: false
       matrix:
-        cxx: [g++, clang++]
-        sanitizer: [address, undefined]
+        sanitizer: [address, undefined, thread, memory, leak]
 
     runs-on: ubuntu-24.04
 
@@ -37,23 +35,22 @@ jobs:
           --health-retries 5
 
     env:
-      CXX: ${{ matrix.cxx }}
+      CXX: clang
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev
+        version: 1.0
 
-    - run: sudo apt-get install -yq libpq-dev
+    - name: Configure CMake Project
+      run: cmake --preset unixlike-debug -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -fsanitize=${{ matrix.sanitizer }}"
 
-    - run: cmake -E make_directory build
+    - name: Build project files
+      run: cmake --build --preset unixlike-debug
 
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_FLAGS="-fsanitize=${{ matrix.sanitizer }}"
-
-    - working-directory: build/
-      run: cmake --build .
-
-    - working-directory: build/
-      run: ctest --output-on-failure
+    - name: Run tests
+      run: cmake --build --preset unixlike-debug --target test
