@@ -18,10 +18,7 @@ jobs:
         compiler:
           - g++-13
           - g++-14
-          - clang++-16
-          - clang++-17
           - clang++-18
-        build_type: [Debug, Release]
 
     runs-on: ubuntu-24.04
 
@@ -46,22 +43,17 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
     - run: sudo apt-get update -yq
 
     - run: sudo apt-get install -yq libpq-dev
 
-    - run: cmake -E make_directory build
+    - run: cmake --preset unixlike-release-dev
 
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+    - run: cmake --build --preset unixlike-release-dev
 
-    - working-directory: build/
-      run: cmake --build .
-
-    - working-directory: build/
-      run: ctest --output-on-failure
+    - run: cmake --build --preset unixlike-release-dev --target test -- --output-on-failure
 
   linux-gcc-extra:
     strategy:
