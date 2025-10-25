@@ -14,7 +14,7 @@ project(taopq
 
 option(BUILD_EXAMPLES "Build taopq examples" OFF)
 
-find_package(PostgreSQL REQUIRED CONFIG)
+find_package(PostgreSQL REQUIRED)
 
 add_library(${PROJECT_NAME})
 add_library(taocpp::taopq ALIAS ${PROJECT_NAME})
