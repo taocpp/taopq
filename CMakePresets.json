@@ -16,17 +16,21 @@
       }
     },
     {
-      "name": "werror-gcc-clang",
+      "name": "dev-flags-gcc-clang",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wnull-dereference"
+        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wnull-dereference",
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
       }
     },
     {
-      "name": "werror-msvc",
+      "name": "dev-flags-msvc",
       "hidden": true,
       "cacheVariables": {
-        "CMAKE_CXX_FLAGS": "/EHsc /W4 /WX /permissive-"
+        "CMAKE_CXX_FLAGS": "/EHsc /W4 /WX /permissive-",
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
       }
     },
     {
@@ -78,24 +82,22 @@
     },
     {
       "name": "gcc-debug-dev",
-      "inherits": ["debug", "werror-gcc-clang"],
+      "inherits": ["debug", "dev-flags-gcc-clang"],
       "displayName": "GCC Debug (Dev with -Werror)",
       "description": "Debug build using GCC with warnings as errors",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
-        "CMAKE_CXX_COMPILER": "g++",
-        "BUILD_TESTING": "ON"
+        "CMAKE_CXX_COMPILER": "g++"
       }
     },
     {
       "name": "gcc-release-dev",
-      "inherits": ["release", "werror-gcc-clang"],
+      "inherits": ["release", "dev-flags-gcc-clang"],
       "displayName": "GCC Release (Dev with -Werror)",
       "description": "Release build using GCC with warnings as errors",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "gcc",
-        "CMAKE_CXX_COMPILER": "g++",
-        "BUILD_TESTING": "ON"
+        "CMAKE_CXX_COMPILER": "g++"
       }
     },
     {
@@ -120,24 +122,22 @@
     },
     {
       "name": "clang-debug-dev",
-      "inherits": ["debug", "werror-gcc-clang"],
+      "inherits": ["debug", "dev-flags-gcc-clang"],
       "displayName": "Clang Debug (Dev with -Werror)",
       "description": "Debug build using Clang with warnings as errors",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "BUILD_TESTING": "ON"
+        "CMAKE_CXX_COMPILER": "clang++"
       }
     },
     {
       "name": "clang-release-dev",
-      "inherits": ["release", "werror-gcc-clang"],
+      "inherits": ["release", "dev-flags-gcc-clang"],
       "displayName": "Clang Release (Dev with -Werror)",
       "description": "Release build using Clang with warnings as errors",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang",
-        "CMAKE_CXX_COMPILER": "clang++",
-        "BUILD_TESTING": "ON"
+        "CMAKE_CXX_COMPILER": "clang++"
       }
     },
     {
@@ -168,7 +168,7 @@
     },
     {
       "name": "msvc-debug-dev",
-      "inherits": ["debug", "werror-msvc"],
+      "inherits": ["debug", "dev-flags-msvc"],
       "displayName": "MSVC Debug (Dev with /WX)",
       "description": "Debug build using MSVC with warnings as errors",
       "condition": {
@@ -177,12 +177,13 @@
         "rhs": "Windows"
       },
       "cacheVariables": {
-        "BUILD_TESTING": "ON"
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
       }
     },
     {
       "name": "msvc-release-dev",
-      "inherits": ["release", "werror-msvc"],
+      "inherits": ["release", "dev-flags-msvc"],
       "displayName": "MSVC Release (Dev with /WX)",
       "description": "Release build using MSVC with warnings as errors",
       "condition": {
@@ -191,7 +192,8 @@
         "rhs": "Windows"
       },
       "cacheVariables": {
-        "BUILD_TESTING": "ON"
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
       }
     }
   ],
