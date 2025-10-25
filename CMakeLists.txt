@@ -173,7 +173,7 @@ endif()
 
 if(BUILD_TESTING AND PROJECT_IS_TOP_LEVEL)
   enable_testing()
-  add_subdirectory(test/pq)
+  add_subdirectory(test)
 endif()
 
 if(BUILD_EXAMPLES AND PROJECT_IS_TOP_LEVEL)

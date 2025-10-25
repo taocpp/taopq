@@ -6,7 +6,7 @@
 auto main() -> int {}
 #else
 
-#include "../macros.hpp"
+#include "utils/macros.hpp"
 
 #include <cmath>
 #include <exception>

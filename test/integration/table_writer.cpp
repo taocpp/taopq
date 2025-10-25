@@ -8,8 +8,8 @@
 #include <optional>
 #include <tuple>
 
-#include "../getenv.hpp"
-#include "../macros.hpp"
+#include "utils/getenv.hpp"
+#include "utils/macros.hpp"
 
 #include <tao/pq.hpp>
 

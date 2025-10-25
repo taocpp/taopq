@@ -5,8 +5,8 @@
 #include <exception>
 #include <iostream>
 
-#include "../getenv.hpp"
-#include "../macros.hpp"
+#include "utils/getenv.hpp"
+#include "utils/macros.hpp"
 
 #include <tao/pq/connection.hpp>
 

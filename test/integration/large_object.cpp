@@ -2,9 +2,9 @@
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt or copy at https://www.boost.org/LICENSE_1_0.txt)
 
-#include "../compare.hpp"
-#include "../getenv.hpp"
-#include "../macros.hpp"
+#include "utils/compare.hpp"
+#include "utils/getenv.hpp"
+#include "utils/macros.hpp"
 
 #include <exception>
 #include <ios>

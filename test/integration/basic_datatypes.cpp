@@ -10,9 +10,9 @@
 #include <memory>
 #include <string>
 
-#include "../compare.hpp"
-#include "../getenv.hpp"
-#include "../macros.hpp"
+#include "utils/compare.hpp"
+#include "utils/getenv.hpp"
+#include "utils/macros.hpp"
 
 #include <tao/pq.hpp>
 
