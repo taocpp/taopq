@@ -8,16 +8,6 @@ compiler.runtime_type=Release
 compiler.version=194
 os=Windows
 
-[options]
-libpq/*:with_openssl=False
-libpq/*:with_icu=False
-libpq/*:with_zlib=False
-libpq/*:with_zstd=False
-libpq/*:with_libxml2=False
-libpq/*:with_lz4=False
-libpq/*:with_xslt=False
-libpq/*:with_readline=False
-
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
 tools.meson.mesontoolchain:backend=ninja

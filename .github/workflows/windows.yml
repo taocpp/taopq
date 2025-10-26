@@ -38,11 +38,14 @@ jobs:
         cache_packages: true
         config_urls: .github/conan
 
-    - name: List cached packages
-      run: conan list "libpq/17.5#latest:*"
-
     - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr ${{ matrix.cxx }} --lockfile-partial
+      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr msvc --lockfile-partial
+
+    - name: Re-use Conan dependencies with MSVC
+      if: matrix.cxx == 'clangcl'
+      run: |
+        sed -i 's/set(CMAKE_CXX_COMPILER/# set(CMAKE_CXX_COMPILER/g' ${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake)
+        sed -i 's/set(CMAKE_C_COMPILER/# set(CMAKE_C_COMPILER/g' ${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake)
 
     - name: CMake Configure
       shell: pwsh
