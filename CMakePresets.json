@@ -113,10 +113,6 @@
       "displayName": "MSVC Debug",
       "description": "Debug build using MSVC",
       "generator": "Visual Studio 17 2022",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "cl",
-        "CMAKE_CXX_COMPILER": "cl"
-      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
@@ -129,10 +125,6 @@
       "displayName": "MSVC Release",
       "description": "Release build using MSVC",
       "generator": "Visual Studio 17 2022",
-      "cacheVariables": {
-        "CMAKE_C_COMPILER": "cl",
-        "CMAKE_CXX_COMPILER": "cl"
-      },
       "condition": {
         "type": "equals",
         "lhs": "${hostSystemName}",
