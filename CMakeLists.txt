@@ -12,7 +12,7 @@ project(taopq
   HOMEPAGE_URL "https://github.com/taocpp/taopq"
 )
 
-option(BUILD_EXAMPLES "Build taopq examples" OFF)
+option(BUILD_EXAMPLES "Build taopq examples" ON)
 
 find_package(PostgreSQL REQUIRED)
 

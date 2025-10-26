@@ -42,7 +42,7 @@ jobs:
         version: 1.0
 
     - name: Configure CMake Project
-      run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage"
+      run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_BUILD_EXAMPLES=OFF
 
     - name: Build project files
       run: cmake --build --preset unixlike-release-dev
