@@ -35,7 +35,7 @@ jobs:
 
     - name: Load vcvarsall.bat
       shell: cmd
-      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
 
     - uses: conan-io/setup-conan@v1
       with:
@@ -43,6 +43,10 @@ jobs:
 
     - name: Install dependencies with Conan MSVC
       run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
+
+    - name: Load vcvarsall.bat
+      shell: cmd
+      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
 
     - name: Configure CMake Project
       run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
