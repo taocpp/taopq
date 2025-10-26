@@ -8,6 +8,7 @@ def compatibility(conanfile):
                     ("compiler.cppstd", "20"),
                     ("compiler.runtime", "dynamic"),
                     ("compiler.runtime_type", "Release"),
+                    ("compiler.runtime_version", "null")
                 ]
             }
         ]

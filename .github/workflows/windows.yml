@@ -52,7 +52,7 @@ jobs:
       run: cmake --preset ${{ matrix.cxx }}-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake -DCMAKE_VERBOSE_MAKEFILE=ON
 
     - name: Build project files
-      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --parallel
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev
 
     - name: Run tests
       run: cmake --build --preset ${{ matrix.cxx }}-release-dev --target test
