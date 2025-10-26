@@ -40,10 +40,13 @@ jobs:
     - name: Install dependencies with Conan MSVC
       run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -pr .github/msvc.profile
 
+    - name: Respect CMake presets on Windows
+      if: matrix.cxx == 'clangcl'
+      run: |
+        sed -i 's/CMAKE_CXX_COMPILER/# CMAKE_CXX_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+        sed -i 's/CMAKE_C_COMPILER/# CMAKE_C_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+
     - name: CMake Configure
-      env:
-        CXX: ${{ matrix.cxx == 'msvc' && 'cl' || 'clang-cl' }}
-        CC: ${{ matrix.cxx == 'msvc' && 'cl' || 'clang-cl' }}
       shell: pwsh
       run: cmake --preset ${{ matrix.cxx }}-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake -DCMAKE_VERBOSE_MAKEFILE=ON
 
