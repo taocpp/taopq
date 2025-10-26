@@ -42,13 +42,16 @@ jobs:
         version: 1.0
 
     - name: Configure CMake Project
-      run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage" -DCMAKE_BUILD_EXAMPLES=OFF
+      run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage"
 
     - name: Build project files
       run: cmake --build --preset unixlike-release-dev
 
     - name: Run tests
       run: cmake --build --preset unixlike-release-dev --target test
+
+    - name: Run examples
+      run: cmake --build --preset unixlike-release-dev --target examples
 
     - uses: codecov/codecov-action@v5
       with:
