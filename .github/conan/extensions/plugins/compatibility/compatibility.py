@@ -1,3 +1,5 @@
+from cppstd_compat import cppstd_compat
+
 def compatibility(conanfile):
     if conanfile.settings.compiler == "clang" and conanfile.settings.os == "Windows":
         return [
@@ -12,3 +14,5 @@ def compatibility(conanfile):
                 ]
             }
         ]
+    configs = cppstd_compat(conanfile)
+    return configs

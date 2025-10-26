@@ -27,7 +27,7 @@ jobs:
       run: conan install ${{ github.workspace }}/.github/conanfile.py -s compiler.cppstd=20 --build=missing
 
     - name: Configure CMake Project
-      run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+      run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake
 
     - name: Build project files
       run: cmake --build --preset unixlike-release-dev
