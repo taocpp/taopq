@@ -11,6 +11,13 @@ compiler.runtime_version=v144
 
 [options]
 libpq/*:with_readline=False
+libpq/*:with_openssl=False
+libpq/*:with_icu=False
+libpq/*:with_zlib=False
+libpq/*:with_zstd=False
+libpq/*:with_libxml2=False
+libpq/*:with_lz4=False
+libpq/*:with_xslt=False
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
