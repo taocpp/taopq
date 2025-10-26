@@ -49,7 +49,7 @@ jobs:
 
     - name: CMake Configure
       shell: pwsh
-      run: cmake --preset ${{ matrix.cxx }}-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake -DCMAKE_VERBOSE_MAKEFILE=ON
+      run: cmake --preset ${{ matrix.cxx }}-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake
 
     - name: Build project files
       run: cmake --build --preset ${{ matrix.cxx }}-release-dev
