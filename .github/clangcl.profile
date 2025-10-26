@@ -9,6 +9,9 @@ compiler.runtime=dynamic
 compiler.runtime_type=Release
 compiler.runtime_version=v144
 
+[options]
+libpq/*:with_readline=False
+
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
 tools.build:compiler_executables={"c": "clang-cl.exe", "cpp": "clang-cl.exe"}
