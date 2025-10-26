@@ -49,7 +49,7 @@ jobs:
         Remove-Item Env:\Platform -ErrorAction SilentlyContinue
         Remove-Item Env:\VSCMD_ARG_TGT_ARCH -ErrorAction SilentlyContinue
 
-        cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
+        cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
 
     - name: Build project files
       run: cmake --build --preset msvc-release-dev
