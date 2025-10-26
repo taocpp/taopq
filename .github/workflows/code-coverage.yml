@@ -43,7 +43,7 @@ jobs:
 
     - name: Exclude example folder from code coverage
       run: |
-        echo "ignore:\n  - example/**" >> .codecov.yml
+        printf "ignore:\n  - example/**\n" >> .codecov.yml
 
     - name: Configure CMake Project
       run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage" -DBUILD_EXAMPLES=OFF
