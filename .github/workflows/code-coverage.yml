@@ -52,6 +52,8 @@ jobs:
 
     - name: Run examples
       run: cmake --build --preset unixlike-release-dev --target examples
+      env:
+        PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
 
     - uses: codecov/codecov-action@v5
       with:
