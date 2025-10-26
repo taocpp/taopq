@@ -11,3 +11,4 @@ compiler.runtime_version=v144
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
+tools.build:compiler_executables={"c": "clang-cl.exe", "cpp": "clang-cl.exe"}
