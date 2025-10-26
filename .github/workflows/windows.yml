@@ -34,6 +34,7 @@ jobs:
     #    arch: x64
 
     - name: Load vcvarsall.bat
+      shell: cmd
       run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
 
     - uses: conan-io/setup-conan@v1
