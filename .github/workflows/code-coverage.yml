@@ -41,8 +41,12 @@ jobs:
         packages: libpq-dev
         version: 1.0
 
+    - name: Exclude example folder from code coverage
+      run: |
+        echo "ignore:\n  - example/**" >> .codecov.yml
+
     - name: Configure CMake Project
-      run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage"
+      run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage" -DBUILD_EXAMPLES=OFF
 
     - name: Build project files
       run: cmake --build --preset unixlike-release-dev
@@ -50,12 +54,6 @@ jobs:
     - name: Run tests
       run: cmake --build --preset unixlike-release-dev --target test
 
-    - name: Run examples
-      run: cmake --build --preset unixlike-release-dev --target examples
-      env:
-        PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
-
     - uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
-        exclude: "${{ github.workspace }}/example"
