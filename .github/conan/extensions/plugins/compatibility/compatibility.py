@@ -5,11 +5,7 @@ def compatibility(conanfile):
             {
                 "settings": [
                     ("compiler", "msvc"),
-                    ("compiler.version", "194"),
-                    ("compiler.cppstd", "20"),
-                    ("compiler.runtime", "dynamic"),
-                    ("compiler.runtime_type", "Release"),
-                    ("compiler.runtime_version", "null")
+                    ("compiler.version", "194")
                 ]
             }
         )
