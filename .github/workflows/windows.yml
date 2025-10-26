@@ -39,7 +39,7 @@ jobs:
         config_urls: .github/conan
 
     - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr ${{ matrix.cxx }}
+      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr ${{ matrix.cxx }} --lockfile-partial
 
     - name: CMake Configure
       shell: pwsh

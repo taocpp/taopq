@@ -24,7 +24,7 @@ jobs:
         cache_packages: true
 
     - name: Install dependencies with Conan
-      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py -s compiler.cppstd=20 --build=missing
+      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py -s compiler.cppstd=20 --build=missing --lockfile-partial
 
     - name: Configure CMake Project
       run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake

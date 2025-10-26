@@ -19,11 +19,3 @@ class TaopqRequirements(ConanFile):
         deps.set_property("libpq", "cmake_target_name", "PostgreSQL::PostgreSQL")
         deps.set_property("libpq", "cmake_additional_variables_prefixes", ["PostgreSQL",])
         deps.generate()
-
-    def compatibility(self):
-        if self.settings.compiler == "apple-clang" and self.settings.compiler.version in ("17", "17.0"):
-            return [{"settings": [("compiler.version", v)]}
-                    for v in ("16.0", "16", "15.0", "15", "14.0", "14", "13.0", "13")]
-        # Clang cl is compatible with MSVC
-        if self.settings.compiler == "clang" and self.settings.os == "Windows":
-            return [{"settings": [("compiler", "msvc")]}]
