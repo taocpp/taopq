@@ -141,63 +141,26 @@
     },
     {
       "name": "msvc-debug-dev",
-      "inherits": ["debug", "dev-flags-msvc"],
+      "inherits": ["msvc-debug", "dev-flags-msvc"],
       "displayName": "MSVC Debug (Dev with /WX)",
-      "description": "Debug build using MSVC with warnings as errors",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
-      "cacheVariables": {
-        "BUILD_TESTING": "ON",
-        "BUILD_EXAMPLES": "ON"
-      }
+      "description": "Debug build using MSVC with warnings as errors"
     },
     {
       "name": "msvc-release-dev",
-      "inherits": ["release", "dev-flags-msvc"],
+      "inherits": ["msvc-release", "dev-flags-msvc"],
       "displayName": "MSVC Release (Dev with /WX)",
-      "description": "Release build using MSVC with warnings as errors",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
-      "cacheVariables": {
-        "BUILD_TESTING": "ON",
-        "BUILD_EXAMPLES": "ON"
-      }
+      "description": "Release build using MSVC with warnings as errors"
     },
     {
       "name": "clangcl-debug-dev",
-      "inherits": ["debug", "dev-flags-msvc"],
+      "inherits": ["clangcl-debug", "dev-flags-msvc"],
       "displayName": "ClangCL Debug (Dev with /WX)",
-      "description": "Debug build using ClangCL with warnings as errors",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
-      "cacheVariables": {
-        "BUILD_TESTING": "ON",
-        "BUILD_EXAMPLES": "ON"
-      }
+      "description": "Debug build using ClangCL with warnings as errors"
     },
     {
       "name": "clangcl-release-dev",
-      "inherits": ["release", "dev-flags-msvc"],
-      "displayName": "ClangCL Release (Dev with /WX)",
-      "description": "Release build using ClangCL with warnings as errors",
-      "condition": {
-        "type": "equals",
-        "lhs": "${hostSystemName}",
-        "rhs": "Windows"
-      },
-      "cacheVariables": {
-        "BUILD_TESTING": "ON",
-        "BUILD_EXAMPLES": "ON"
-      }
+      "inherits": ["clangcl-release", "dev-flags-msvc"],
+      "displayName": "ClangCL Release (Dev with /WX)"
     }
   ],
   "buildPresets": [
@@ -287,6 +250,14 @@
       "name": "release",
       "configurePreset": "release",
       "displayName": "Test Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "unixlike-release",
+      "configurePreset": "unixlike-release",
+      "displayName": "Test Unix Like Compiler Release",
       "output": {
         "outputOnFailure": true
       }
