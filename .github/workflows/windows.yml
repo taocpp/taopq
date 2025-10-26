@@ -25,7 +25,8 @@ jobs:
     steps:
     - uses: actions/checkout@v5
 
-    - uses: ikalnytskyi/action-setup-postgres@v8
+    #- name: Set up PostgreSQL
+    # - uses: ikalnytskyi/action-setup-postgres@v8
 
     - name: Set up MSVC dev cmd (x64)
       uses: ilammy/msvc-dev-cmd@v1
