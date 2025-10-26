@@ -39,7 +39,7 @@ jobs:
         cache_packages: true
 
     - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -pr .github/${{ matrix.cxx }}.profile
+      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -pr .github/msvc.profile
 
     - name: CMake Configure
       shell: pwsh

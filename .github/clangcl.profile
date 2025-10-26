@@ -22,4 +22,5 @@ libpq/*:with_xslt=False
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
 tools.build:cflags=["/std:c11"]
+tools.meson.mesontoolchain:backend=ninja
 tools.build:compiler_executables={"c": "clang-cl.exe", "cpp": "clang-cl.exe"}
