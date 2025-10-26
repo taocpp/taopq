@@ -23,9 +23,6 @@ jobs:
       with:
         cache_packages: true
 
-    - name: List cached packages
-      run: conan list "libpq/17.5#latest:*"
-
     - name: Install dependencies with Conan
       run: conan install ${{ github.workspace }}/.github/conan/conanfile.py -s compiler.cppstd=20 --build=missing --lockfile-partial
 
