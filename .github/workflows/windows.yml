@@ -43,8 +43,8 @@ jobs:
     - name: Respect CMake presets on Windows
       if: matrix.cxx == 'clangcl'
       run: |
-        sed -i 's/CMAKE_CXX_COMPILER/# CMAKE_CXX_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
-        sed -i 's/CMAKE_C_COMPILER/# CMAKE_C_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+        sed -i 's/set(CMAKE_CXX_COMPILER/# set(CMAKE_CXX_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+        sed -i 's/set(CMAKE_C_COMPILER/# set(CMAKE_C_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
 
     - name: CMake Configure
       shell: pwsh
