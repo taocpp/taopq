@@ -1,10 +1,10 @@
 name: code-coverage
 
 on:
-  #push:
-  #  paths-ignore:
-  #    - 'README.md'
-  #    - 'doc/**'
+  push:
+    paths-ignore:
+      - 'README.md'
+      - 'doc/**'
   pull_request:
     paths-ignore:
       - 'README.md'
