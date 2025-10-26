@@ -95,7 +95,7 @@
       "name": "clangcl-release",
       "inherits": "release",
       "displayName": "MSVC Release",
-      "description": "Release build using MSVC",
+      "description": "Ninja",
       "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
@@ -111,8 +111,8 @@
       "name": "msvc-debug",
       "inherits": "debug",
       "displayName": "MSVC Debug",
-      "description": "Debug build using MSVC",
-      "generator": "Visual Studio 17 2022",
+      "description": "Ninja",
+      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"
@@ -128,7 +128,7 @@
       "inherits": "release",
       "displayName": "MSVC Release",
       "description": "Release build using MSVC",
-      "generator": "Visual Studio 17 2022",
+      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "cl",
         "CMAKE_CXX_COMPILER": "cl"

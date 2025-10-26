@@ -10,3 +10,4 @@ os=Windows
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
+tools.meson.mesontoolchain:backend=ninja
