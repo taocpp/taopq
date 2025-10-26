@@ -10,4 +10,4 @@ compiler.runtime_type=Release
 compiler.runtime_version=v143
 
 [conf]
-tools.cmake.cmaketoolchain:generator=Visual Studio 17
+tools.cmake.cmaketoolchain:generator=Ninja

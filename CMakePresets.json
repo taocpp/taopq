@@ -76,12 +76,11 @@
       "description": "Release build using Clang or GCC with warnings as errors"
     },
     {
-      "name": "msvc-clang-debug",
+      "name": "clangcl-debug",
       "inherits": "debug",
       "displayName": "MSVC Debug",
       "description": "Debug build using MSVC",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
+      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl"
@@ -93,12 +92,11 @@
       }
     },
     {
-      "name": "msvc-clang-release",
+      "name": "clangcl-release",
       "inherits": "release",
       "displayName": "MSVC Release",
       "description": "Release build using MSVC",
-      "generator": "Visual Studio 17 2022",
-      "architecture": "x64",
+      "generator": "Ninja",
       "cacheVariables": {
         "CMAKE_C_COMPILER": "clang-cl",
         "CMAKE_CXX_COMPILER": "clang-cl"
@@ -170,6 +168,36 @@
         "BUILD_TESTING": "ON",
         "BUILD_EXAMPLES": "ON"
       }
+    },
+    {
+      "name": "clangcl-debug-dev",
+      "inherits": ["debug", "dev-flags-gcc-clang"],
+      "displayName": "ClangCL Debug (Dev with /WX)",
+      "description": "Debug build using ClangCL with warnings as errors",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
+      }
+    },
+    {
+      "name": "clangcl-release-dev",
+      "inherits": ["release", "dev-flags-gcc-clang"],
+      "displayName": "ClangCL Release (Dev with /WX)",
+      "description": "Release build using ClangCL with warnings as errors",
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      },
+      "cacheVariables": {
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
+      }
     }
   ],
   "buildPresets": [
@@ -226,14 +254,24 @@
       "displayName": "MSVC Release Build (Dev)"
     },
     {
-      "name": "msvc-clang-debug",
-      "configurePreset": "msvc-clang-debug",
+      "name": "clangcl-debug",
+      "configurePreset": "clangcl-debug",
       "displayName": "MSVC Clang Debug Build"
     },
     {
-      "name": "msvc-clang-release",
-      "configurePreset": "msvc-clang-release",
+      "name": "clangcl-release",
+      "configurePreset": "clangcl-release",
       "displayName": "MSVC Clang Release Build"
+    },
+    {
+      "name": "clangcl-debug-dev",
+      "configurePreset": "clangcl-debug-dev",
+      "displayName": "ClangCL Debug Build (Dev)"
+    },
+    {
+      "name": "clangcl-release-dev",
+      "configurePreset": "clangcl-release-dev",
+      "displayName": "ClangCL Release Build (Dev)"
     }
   ],
   "testPresets": [
@@ -289,6 +327,22 @@
       "name": "msvc-release-dev",
       "configurePreset": "msvc-release-dev",
       "displayName": "Test MSVC Release (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "clangcl-debug-dev",
+      "configurePreset": "clangcl-debug-dev",
+      "displayName": "Test ClangCL Debug (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "clangcl-release-dev",
+      "configurePreset": "clangcl-release-dev",
+      "displayName": "Test ClangCL Release (Dev)",
       "output": {
         "outputOnFailure": true
       }

@@ -13,6 +13,9 @@ on:
 jobs:
   vs2022-msvc-clang:
     runs-on: windows-latest
+    strategy:
+      matrix:
+        cxx: [ "msvc", "clangcl" ]
 
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
@@ -33,22 +36,22 @@ jobs:
         cache_packages: true
 
     - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator=Ninja
+      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -pr .github/${{ matrix.cxx }}.profile
 
-    - name: CMake Configure (Ninja + MSVC)
+    - name: CMake Configure
       shell: pwsh
-      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+      run: cmake --preset ${{ matrix.cxx }}-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
 
     - name: Build project files
-      run: cmake --build --preset msvc-release-dev
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --parallel
 
     - name: Run tests
-      run: cmake --build --preset msvc-release-dev --target test
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --target test
 
     - name: Run examples
-      run: cmake --build --preset msvc-release-dev --target examples
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --target examples
       env:
         PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
 
     - name: Install Taocpp TaoPQ
-      run: cmake --build --preset msvc-release-dev --target install
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --target install
