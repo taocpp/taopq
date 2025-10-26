@@ -21,4 +21,5 @@ libpq/*:with_xslt=False
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
+tools.build:cflags=["/std:c11"]
 tools.build:compiler_executables={"c": "clang-cl.exe", "cpp": "clang-cl.exe"}
