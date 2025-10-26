@@ -28,21 +28,17 @@ jobs:
       with:
         python-version: '3.x'
 
-    #- name: Set up MSVC dev cmd (x64)
-    #  uses: ilammy/msvc-dev-cmd@v1
-    #  with:
-    #    arch: x64
-
-    - name: Load vcvarsall.bat
-      shell: cmd
-      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
+    - name: Set up MSVC dev cmd (x64)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
 
     - uses: conan-io/setup-conan@v1
       with:
         cache_packages: true
 
     - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
+      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20 -c tools.cmake.cmaketoolchain:generator=Ninja
 
     - name: Configure (Ninja + MSVC)
       shell: pwsh
