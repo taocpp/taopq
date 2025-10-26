@@ -32,7 +32,8 @@ jobs:
       with:
         arch: x64
 
-    - uses: conan-io/setup-conan@v1
+    - name: Set up Conan
+      uses: conan-io/setup-conan@v1
       with:
         cache_packages: true
 
