@@ -7,7 +7,7 @@ compiler.version=19
 compiler.cppstd=20
 compiler.runtime=dynamic
 compiler.runtime_type=Release
-compiler.runtime_version=v143
+compiler.runtime_version=v144
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
