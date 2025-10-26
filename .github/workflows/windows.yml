@@ -35,7 +35,7 @@ jobs:
 
     - name: Load vcvarsall.bat
       shell: cmd
-      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x64
 
     - uses: conan-io/setup-conan@v1
       with:
@@ -44,12 +44,16 @@ jobs:
     - name: Install dependencies with Conan MSVC
       run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -s compiler.cppstd=20
 
-    - name: Load vcvarsall.bat
-      shell: cmd
-      run: call "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Auxiliary\Build\vcvars64.bat"
+    - name: Configure (Ninja + MSVC)
+      shell: pwsh
+      run: |
+        $env:CC="cl"
+        $env:CXX="cl"
 
-    - name: Configure CMake Project
-      run: cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
+        Remove-Item Env:\Platform -ErrorAction SilentlyContinue
+        Remove-Item Env:\VSCMD_ARG_TGT_ARCH -ErrorAction SilentlyContinue
+
+        cmake --preset msvc-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/build/generators/conan_toolchain.cmake
 
     - name: Build project files
       run: cmake --build --preset msvc-release-dev
