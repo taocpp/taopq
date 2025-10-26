@@ -38,6 +38,9 @@ jobs:
         cache_packages: true
         config_urls: .github/conan
 
+    - name: List cached packages
+      run: conan list "libpq/17.5#latest:*"
+
     - name: Install dependencies with Conan MSVC
       run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr ${{ matrix.cxx }} --lockfile-partial
 
