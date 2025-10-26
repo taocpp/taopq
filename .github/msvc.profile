@@ -10,4 +10,3 @@ os=Windows
 
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
-tools.build:compiler_executables={"c": "cl.exe", "cpp": "cl.exe"}

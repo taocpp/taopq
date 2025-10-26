@@ -38,13 +38,13 @@ jobs:
         cache_packages: true
 
     - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -pr .github/msvc.profile
+      run: conan install ${{ github.workspace }}/.github/conanfile.py --build=missing -pr .github/${{ matrix.cxx }}.profile
 
-    - name: Respect CMake presets on Windows
-      if: matrix.cxx == 'clangcl'
-      run: |
-        sed -i 's/set(CMAKE_CXX_COMPILER/# set(CMAKE_CXX_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
-        sed -i 's/set(CMAKE_C_COMPILER/# set(CMAKE_C_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+    #- name: Respect CMake presets on Windows
+    #  if: matrix.cxx == 'clangcl'
+    #  run: |
+    #    sed -i 's/set(CMAKE_CXX_COMPILER/# set(CMAKE_CXX_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
+    #    sed -i 's/set(CMAKE_C_COMPILER/# set(CMAKE_C_COMPILER/g' ${{ github.workspace }}/.github/build/Release/generators/conan_toolchain.cmake
 
     - name: CMake Configure
       shell: pwsh
