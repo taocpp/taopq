@@ -19,3 +19,4 @@ libpq/*:compiler.runtime_type=Release
 tools.cmake.cmaketoolchain:generator=Ninja
 tools.meson.mesontoolchain:backend=ninja
 tools.build:compiler_executables={"c": "clang-cl.exe", "cpp": "clang-cl.exe"}
+libpq/*:tools.build:compiler_executables={"c": "cl.exe", "cpp": "cl.exe"}
