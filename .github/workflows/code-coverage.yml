@@ -34,23 +34,26 @@ jobs:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev
+        version: 1.0
 
-    - run: sudo apt-get install -yq libpq-dev
+    - name: Exclude example folder from code coverage
+      run: |
+        printf "ignore:\n  - example/**\n" >> .codecov.yml
 
-    - run: cmake -E make_directory build
+    - name: Configure CMake Project
+      run: cmake --preset unixlike-release-dev -DCMAKE_CXX_FLAGS="-coverage" -DBUILD_EXAMPLES=OFF
 
-    - working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -DCMAKE_CXX_FLAGS="-coverage"
+    - name: Build project files
+      run: cmake --build --preset unixlike-release-dev
 
-    - working-directory: build/
-      run: cmake --build .
+    - name: Run tests
+      run: cmake --build --preset unixlike-release-dev --target test
 
-    - working-directory: build/
-      run: ctest --output-on-failure
-
-    - uses: codecov/codecov-action@v4.2.0
+    - uses: codecov/codecov-action@v5
       with:
         token: ${{ secrets.CODECOV_TOKEN }}

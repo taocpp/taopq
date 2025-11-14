@@ -1,0 +1,322 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 21,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "default",
+      "hidden": true,
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/${presetName}",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+      }
+    },
+    {
+      "name": "dev-flags-gcc-clang",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Wnon-virtual-dtor -Wold-style-cast -Wcast-align -Wunused -Woverloaded-virtual -Wnull-dereference -Wno-sign-conversion",
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
+      }
+    },
+    {
+      "name": "dev-flags-msvc",
+      "hidden": true,
+      "cacheVariables": {
+        "CMAKE_CXX_FLAGS": "/EHsc /W4 /WX /permissive-",
+        "BUILD_TESTING": "ON",
+        "BUILD_EXAMPLES": "ON"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "default",
+      "displayName": "Debug",
+      "description": "Debug build",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
+      "name": "release",
+      "inherits": "default",
+      "displayName": "Release",
+      "description": "Release build with optimizations",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "unixlike-debug",
+      "inherits": "debug",
+      "displayName": "Unix Like Compiler Debug",
+      "description": "Debug build using GCC or Clang"
+    },
+    {
+      "name": "unixlike-release",
+      "inherits": "release",
+      "displayName": "Unix Like Compiler Release",
+      "description": "Release build using GCC or Clang"
+    },
+    {
+      "name": "unixlike-debug-dev",
+      "inherits": ["debug", "dev-flags-gcc-clang"],
+      "displayName": "Unix Like Compiler Debug (Dev with -Werror)",
+      "description": "Debug build using Clang or GCC with warnings as errors"
+    },
+    {
+      "name": "unixlike-release-dev",
+      "inherits": ["release", "dev-flags-gcc-clang"],
+      "displayName": "Unix Like Compiler Release (Dev with -Werror)",
+      "description": "Release build using Clang or GCC with warnings as errors"
+    },
+    {
+      "name": "clangcl-debug",
+      "inherits": "debug",
+      "displayName": "MSVC Debug",
+      "description": "Debug build using MSVC",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "clangcl-release",
+      "inherits": "release",
+      "displayName": "MSVC Release",
+      "description": "Ninja",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "clang-cl",
+        "CMAKE_CXX_COMPILER": "clang-cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "msvc-debug",
+      "inherits": "debug",
+      "displayName": "MSVC Debug",
+      "description": "Ninja",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "msvc-release",
+      "inherits": "release",
+      "displayName": "MSVC Release",
+      "description": "Release build using MSVC",
+      "generator": "Ninja",
+      "cacheVariables": {
+        "CMAKE_C_COMPILER": "cl",
+        "CMAKE_CXX_COMPILER": "cl"
+      },
+      "condition": {
+        "type": "equals",
+        "lhs": "${hostSystemName}",
+        "rhs": "Windows"
+      }
+    },
+    {
+      "name": "msvc-debug-dev",
+      "inherits": ["msvc-debug", "dev-flags-msvc"],
+      "displayName": "MSVC Debug (Dev with /WX)",
+      "description": "Debug build using MSVC with warnings as errors"
+    },
+    {
+      "name": "msvc-release-dev",
+      "inherits": ["msvc-release", "dev-flags-msvc"],
+      "displayName": "MSVC Release (Dev with /WX)",
+      "description": "Release build using MSVC with warnings as errors"
+    },
+    {
+      "name": "clangcl-debug-dev",
+      "inherits": ["clangcl-debug", "dev-flags-msvc"],
+      "displayName": "ClangCL Debug (Dev with /WX)",
+      "description": "Debug build using ClangCL with warnings as errors"
+    },
+    {
+      "name": "clangcl-release-dev",
+      "inherits": ["clangcl-release", "dev-flags-msvc"],
+      "displayName": "ClangCL Release (Dev with /WX)"
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "displayName": "Debug Build",
+      "description": "Build in Debug mode"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "displayName": "Release Build",
+      "description": "Build in Release mode"
+    },
+    {
+      "name": "unixlike-debug",
+      "configurePreset": "unixlike-debug",
+      "displayName": "Unix Like Compiler Debug Build"
+    },
+    {
+      "name": "unixlike-release",
+      "configurePreset": "unixlike-release",
+      "displayName": "Unix Like Compiler Release Build"
+    },
+    {
+      "name": "unixlike-debug-dev",
+      "configurePreset": "unixlike-debug-dev",
+      "displayName": "Unix Like Compiler Debug Build (Dev)"
+    },
+    {
+      "name": "unixlike-release-dev",
+      "configurePreset": "unixlike-release-dev",
+      "displayName": "Unix Like Compiler Release Build (Dev)"
+    },
+    {
+      "name": "msvc-debug",
+      "configurePreset": "msvc-debug",
+      "displayName": "MSVC Debug Build"
+    },
+    {
+      "name": "msvc-release",
+      "configurePreset": "msvc-release",
+      "displayName": "MSVC Release Build"
+    },
+    {
+      "name": "msvc-debug-dev",
+      "configurePreset": "msvc-debug-dev",
+      "displayName": "MSVC Debug Build (Dev)"
+    },
+    {
+      "name": "msvc-release-dev",
+      "configurePreset": "msvc-release-dev",
+      "displayName": "MSVC Release Build (Dev)"
+    },
+    {
+      "name": "clangcl-debug",
+      "configurePreset": "clangcl-debug",
+      "displayName": "MSVC Clang Debug Build"
+    },
+    {
+      "name": "clangcl-release",
+      "configurePreset": "clangcl-release",
+      "displayName": "MSVC Clang Release Build"
+    },
+    {
+      "name": "clangcl-debug-dev",
+      "configurePreset": "clangcl-debug-dev",
+      "displayName": "ClangCL Debug Build (Dev)"
+    },
+    {
+      "name": "clangcl-release-dev",
+      "configurePreset": "clangcl-release-dev",
+      "displayName": "ClangCL Release Build (Dev)"
+    }
+  ],
+  "testPresets": [
+    {
+      "name": "debug",
+      "configurePreset": "debug",
+      "displayName": "Test Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "release",
+      "configurePreset": "release",
+      "displayName": "Test Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "unixlike-release",
+      "configurePreset": "unixlike-release",
+      "displayName": "Test Unix Like Compiler Release",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "unixlike-debug",
+      "configurePreset": "unixlike-debug",
+      "displayName": "Test Unix Like Compiler Debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "unixlike-debug-dev",
+      "configurePreset": "unixlike-debug-dev",
+      "displayName": "Test Unix Like Compiler Debug (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "unixlike-release-dev",
+      "configurePreset": "unixlike-release-dev",
+      "displayName": "Test Unix Like Compiler Release (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "msvc-debug-dev",
+      "configurePreset": "msvc-debug-dev",
+      "displayName": "Test MSVC Debug (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "msvc-release-dev",
+      "configurePreset": "msvc-release-dev",
+      "displayName": "Test MSVC Release (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "clangcl-debug-dev",
+      "configurePreset": "clangcl-debug-dev",
+      "displayName": "Test ClangCL Debug (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "clangcl-release-dev",
+      "configurePreset": "clangcl-release-dev",
+      "displayName": "Test ClangCL Release (Dev)",
+      "output": {
+        "outputOnFailure": true
+      }
+    }
+  ]
+}

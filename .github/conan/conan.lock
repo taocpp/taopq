@@ -1,0 +1,18 @@
+{
+    "version": "0.5",
+    "requires": [
+        "libpq/17.5#c721ebe7a5c0b2c28017655947ee3ea2%1760534946.2855446"
+    ],
+    "build_requires": [
+        "pkgconf/2.2.0#4ac315b50ef734072b00ff3aacbf52bf%1755505628.021",
+        "ninja/1.13.1#294f8721dbcde145674f7ba44994700e%1753400352.374",
+        "meson/1.9.1#abbc783cd297bedce14581b4aec060b8%1758626166.349",
+        "m4/1.4.19#b38ced39a01e31fef5435bc634461fd2%1700758725.451",
+        "gnu-config/cci.20210814#69fde734e1a46fd1655b4af46ab40945%1746203214.947",
+        "flex/2.6.4#64789130658cbad3e5210b1cb317249e%1761206522.0890596",
+        "cmake/4.1.2#71e7d1fe41e6c644d602c7e4bdbac291%1759423783.444",
+        "bison/3.8.2#c3490cbe0078b6fd3eb4cf5ed64144dc%1755688988.644"
+    ],
+    "python_requires": [],
+    "config_requires": []
+}

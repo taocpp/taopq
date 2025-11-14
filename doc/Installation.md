@@ -38,6 +38,18 @@ When executing the build step, taoPQ will be built first, as its target is requi
 
 ---
 
+## Using Conan
+
+You can install pre-built binaries for taoPQ or build it from source using [Conan](https://conan.io/). Use the following command:
+
+```bash
+conan install --requires="taocpp-taopq/[*]" --build=missing
+```
+
+The taoPQ Conan recipe is kept up to date by Conan maintainers and community contributors.
+If the version is out of date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the ConanCenterIndex repository.
+
+
 This document is part of [taoPQ](https://github.com/taocpp/taopq).
 
 Copyright (c) 2021-2025 Daniel Frey and Dr. Colin Hirsch<br>

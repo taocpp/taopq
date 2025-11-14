@@ -1,166 +1,181 @@
-cmake_minimum_required(VERSION 3.8.0 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.15)
 
 # Read version from version.hpp
-file(READ "${CMAKE_CURRENT_LIST_DIR}/include/tao/pq/version.hpp" taopq_VERSION_DATA)
+file(READ "${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/version.hpp" taopq_VERSION_DATA)
 string(REGEX MATCH "#define TAO_PQ_VERSION \"([^\"]+)\"" _ ${taopq_VERSION_DATA})
 set(taopq_VERSION "${CMAKE_MATCH_1}")
 
-project(taopq VERSION ${taopq_VERSION} LANGUAGES CXX)
-
-list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
-
-find_package(PostgreSQL 14 REQUIRED)
-
-set(taopq_INSTALL_INCLUDE_DIR "include" CACHE STRING "The installation include directory")
-set(taopq_INSTALL_DOC_DIR "share/doc/tao/pq" CACHE STRING "The installation doc directory")
-option(taopq_BUILD_TESTS "Build test programs" ON)
-
-set(taopq_INCLUDE_DIRS ${CMAKE_CURRENT_LIST_DIR}/include)
-
-set(taopq_INCLUDE_FILES
-  ${taopq_INCLUDE_DIRS}/tao/pq.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/access_mode.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/binary.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/bind.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/connection.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/connection_pool.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/connection_status.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/exception.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/field.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/aggregate.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/demangle.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/exclusive_scan.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/format_as.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/from_chars.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/gen.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/parameter_traits_helper.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/poll.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/pool.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/resize_uninitialized.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/strtox.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/unreachable.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/internal/zsv.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/is_aggregate.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/is_array.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/isolation_level.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/large_object.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/log.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/notification.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/null.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/oid.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/parameter.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_aggregate.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_array.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_optional.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_pair.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/parameter_traits_tuple.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/pipeline.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/pipeline_status.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/poll.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result_status.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result_traits.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_aggregate.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_array.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_optional.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_pair.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/result_traits_tuple.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/row.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/table_field.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/table_reader.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/table_row.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/table_writer.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/transaction.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/transaction_base.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/transaction_status.hpp
-  ${taopq_INCLUDE_DIRS}/tao/pq/version.hpp
+project(taopq
+  VERSION ${taopq_VERSION}
+  LANGUAGES CXX
+  DESCRIPTION "A lightweight C++ client library for accessing a PostgreSQL database"
+  HOMEPAGE_URL "https://github.com/taocpp/taopq"
 )
 
-set(taopq_SOURCE_FILES
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/connection_pool.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/exception.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/field.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/demangle.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/poll.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/internal/strtox.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/large_object.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/parameter_traits.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/pipeline.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/result_traits_array.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/row.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_field.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_reader.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_row.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/table_writer.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction.cpp
-  ${CMAKE_CURRENT_LIST_DIR}/src/lib/pq/transaction_base.cpp
+option(BUILD_EXAMPLES "Build taopq examples" ON)
+
+find_package(PostgreSQL REQUIRED)
+
+add_library(${PROJECT_NAME})
+add_library(taocpp::taopq ALIAS ${PROJECT_NAME})
+
+target_sources(${PROJECT_NAME}
+  PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/connection.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/connection_pool.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/exception.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/field.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/internal/demangle.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/internal/poll.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/internal/strtox.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/large_object.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/parameter_traits.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/pipeline.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/result.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/result_traits.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/result_traits_array.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/row.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/table_field.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/table_reader.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/table_row.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/table_writer.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/transaction.cpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/lib/pq/transaction_base.cpp
+  PUBLIC FILE_SET HEADERS
+  BASE_DIRS include
+  FILES
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/access_mode.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/binary.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/bind.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/connection.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/connection_pool.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/connection_status.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/exception.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/field.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/aggregate.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/demangle.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/exclusive_scan.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/format_as.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/from_chars.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/gen.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/parameter_traits_helper.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/poll.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/pool.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/resize_uninitialized.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/strtox.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/unreachable.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/internal/zsv.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/is_aggregate.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/is_array.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/isolation_level.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/large_object.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/log.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/notification.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/null.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/oid.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/parameter.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/parameter_traits.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/parameter_traits_aggregate.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/parameter_traits_array.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/parameter_traits_optional.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/parameter_traits_pair.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/parameter_traits_tuple.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/pipeline.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/pipeline_status.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/poll.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result_status.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result_traits.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result_traits_aggregate.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result_traits_array.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result_traits_optional.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result_traits_pair.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/result_traits_tuple.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/row.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/table_field.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/table_reader.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/table_row.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/table_writer.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/transaction.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/transaction_base.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/transaction_status.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/tao/pq/version.hpp
 )
 
-source_group("Header Files" FILES ${taopq_INCLUDE_FILES})
-
-add_library(taopq ${taopq_SOURCE_FILES} ${taopq_INCLUDE_FILES})
-add_library(taocpp::taopq ALIAS taopq)
-set_target_properties(taopq PROPERTIES OUTPUT_NAME "${PROJECT_NAME}")
-
-target_include_directories(taopq
+target_include_directories(${PROJECT_NAME}
   PUBLIC
     $<INSTALL_INTERFACE:include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    ${PostgreSQL_INCLUDE_DIRS}
   PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(taopq PUBLIC ${PostgreSQL_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PUBLIC PostgreSQL::PostgreSQL)
 if(WIN32)
-  target_link_libraries(taopq PUBLIC ws2_32)
+  target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32)
 endif()
 
-target_compile_features(taopq PUBLIC cxx_std_20)
+target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_20)
 
-include(GNUInstallDirs)
-set(taopq_INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME} CACHE STRING "The installation cmake directory")
-
-install(TARGETS taopq EXPORT taopq-targets
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-install(DIRECTORY include/ DESTINATION ${taopq_INSTALL_INCLUDE_DIR})
-install(FILES LICENSE_1_0.txt DESTINATION ${taopq_INSTALL_DOC_DIR})
-
-install(EXPORT taopq-targets
-  FILE ${PROJECT_NAME}Targets.cmake
-  NAMESPACE taocpp::
-  DESTINATION ${taopq_INSTALL_CONFIGDIR}
-)
-
-include(CMakePackageConfigHelpers)
-write_basic_package_version_file(${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+set_target_properties(${PROJECT_NAME} PROPERTIES
+  OUTPUT_NAME taopq
   VERSION ${PROJECT_VERSION}
-  COMPATIBILITY AnyNewerVersion
+  SOVERSION ${PROJECT_VERSION_MAJOR}
+  CXX_VISIBILITY_PRESET hidden
+  VISIBILITY_INLINES_HIDDEN ON
+  EXPORT_NAME taopq
 )
 
-configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/${PROJECT_NAME}Config.cmake.in
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  INSTALL_DESTINATION ${taopq_INSTALL_CONFIGDIR}
-)
+if(PROJECT_IS_TOP_LEVEL)
+  include(GNUInstallDirs)
+  include(CMakePackageConfigHelpers)
 
-install(FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
-  DESTINATION ${taopq_INSTALL_CONFIGDIR}
-)
+  install(TARGETS taopq
+    EXPORT taopq-targets
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+    FILE_SET HEADERS
+  )
 
-export(EXPORT taopq-targets FILE ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake NAMESPACE taocpp::)
-export(PACKAGE taopq)
+  install(FILES LICENSE_1_0.txt DESTINATION ${CMAKE_INSTALL_DOCDIR})
 
-if(taopq_BUILD_TESTS)
+  install(EXPORT taopq-targets
+    FILE ${PROJECT_NAME}Targets.cmake
+    NAMESPACE taocpp::
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/taopq
+  )
+
+  write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake
+    VERSION ${PROJECT_VERSION}
+    COMPATIBILITY SameMajorVersion
+  )
+
+  file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+"include(CMakeFindDependencyMacro)
+find_dependency(PostgreSQL REQUIRED CONFIG)
+include(\"\${CMAKE_CURRENT_LIST_DIR}/taopqTargets.cmake\")
+")
+
+  install(FILES
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/taopq
+  )
+
+  export(EXPORT taopq-targets
+    FILE "${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}Targets.cmake"
+    NAMESPACE taocpp::
+  )
+endif()
+
+if(BUILD_TESTING AND PROJECT_IS_TOP_LEVEL)
   enable_testing()
-  add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/src/test/pq)
+  add_subdirectory(test)
+endif()
+
+if(BUILD_EXAMPLES AND PROJECT_IS_TOP_LEVEL)
+  add_subdirectory(example)
 endif()

@@ -12,55 +12,49 @@ on:
 
 jobs:
   vs2022:
+    runs-on: windows-latest
     strategy:
       fail-fast: false
       matrix:
-        build_type: [Debug, Release]
-
-    runs-on: windows-latest
+        cxx: [ "msvc", "clangcl" ]
 
     env:
       TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
 
     steps:
-    - uses: actions/checkout@v4
-    - uses: ikalnytskyi/action-setup-postgres@v6
+    - uses: actions/checkout@v5
 
-    - run: cmake -E make_directory build
+    - name: Set up PostgreSQL
+      uses: ikalnytskyi/action-setup-postgres@v8
 
-    - shell: bash
-      working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 17 2022" -DPostgreSQL_ADDITIONAL_VERSIONS=14
+    - name: Set up MSVC dev cmd (x64)
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
 
-    - working-directory: build/
-      run: cmake --build . --config ${{ matrix.build_type }}
+    - name: Set up Conan
+      uses: conan-io/setup-conan@v1
+      with:
+        cache_packages: true
+        config_urls: .github/conan
 
-    - working-directory: build/
-      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+    - name: Install dependencies with Conan MSVC
+      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr ${{ matrix.cxx }} --lockfile-partial
 
-  vs2022-clang:
-    strategy:
-      fail-fast: false
-      matrix:
-        build_type: [Debug, Release]
+    - name: CMake Configure
+      shell: pwsh
+      run: cmake --preset ${{ matrix.cxx }}-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install -DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake
 
-    runs-on: windows-latest
+    - name: Build project files
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev
 
-    env:
-      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
+    - name: Run tests
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --target test
 
-    steps:
-    - uses: actions/checkout@v4
-    - uses: ikalnytskyi/action-setup-postgres@v6
+    - name: Run examples
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --target examples
+      env:
+        PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
 
-    - run: cmake -E make_directory build
-
-    - shell: bash
-      working-directory: build/
-      run: cmake $GITHUB_WORKSPACE -G "Visual Studio 17 2022" -T ClangCL -DPostgreSQL_ADDITIONAL_VERSIONS=14
-
-    - working-directory: build/
-      run: cmake --build . --config ${{ matrix.build_type }}
-
-    - working-directory: build/
-      run: ctest -C ${{ matrix.build_type }} --output-on-failure
+    - name: Install Taocpp TaoPQ
+      run: cmake --build --preset ${{ matrix.cxx }}-release-dev --target install

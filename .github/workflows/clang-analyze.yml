@@ -15,16 +15,15 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: clang-tools libpq-dev
+        version: 1.0
 
-    - run: sudo apt-get install -yq clang-tools libpq-dev
+    - name: Configure CMake Project
+      run: scan-build cmake --preset unixlike-release-dev
 
-    - run: scan-build cmake -E make_directory build
-
-    - working-directory: build/
-      run: scan-build cmake $GITHUB_WORKSPACE
-
-    - working-directory: build/
-      run: scan-build cmake --build .
+    - name: Build project files
+      run: scan-build cmake --build --preset unixlike-release-dev

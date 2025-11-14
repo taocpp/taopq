@@ -15,10 +15,18 @@ jobs:
     runs-on: ubuntu-24.04
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
 
-    - run: sudo apt-get update -yq
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev clang-tidy
+        version: 3.0
 
-    - run: sudo apt-get install -yq clang-tidy libpq-dev
+    - name: Configure CMake Project
+      run: cmake --preset unixlike-debug-dev -DBUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF
 
-    - run: find include/ src/ -name '*.?pp' | xargs -I '{}' clang-tidy --quiet '{}' -- --std=c++20 -Iinclude -I$(pg_config --includedir)
+    - name: Build project files
+      run: cmake --build --preset unixlike-debug-dev
+
+    - name: Run clang-tidy
+      run: run-clang-tidy -p build/unixlike-debug-dev/
