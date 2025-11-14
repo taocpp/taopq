@@ -39,13 +39,7 @@ jobs:
         config_urls: .github/conan
 
     - name: Install dependencies with Conan MSVC
-      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr msvc --lockfile-partial
-
-    - name: Re-use Conan dependencies with MSVC
-      if: matrix.cxx == 'clangcl'
-      run: |
-        sed -i 's/set(CMAKE_CXX_COMPILER/# set(CMAKE_CXX_COMPILER/g' ${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake
-        sed -i 's/set(CMAKE_C_COMPILER/# set(CMAKE_C_COMPILER/g' ${{ github.workspace }}/.github/conan/build/Release/generators/conan_toolchain.cmake
+      run: conan install ${{ github.workspace }}/.github/conan/conanfile.py --build=missing -pr ${{ matrix.cxx }} --lockfile-partial
 
     - name: CMake Configure
       shell: pwsh

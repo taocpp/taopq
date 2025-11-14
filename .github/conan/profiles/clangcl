@@ -9,6 +9,12 @@ compiler.runtime=dynamic
 compiler.runtime_type=Release
 compiler.runtime_version=v144
 
+libpq/*:compiler=msvc
+libpq/*:compiler.version=194
+libpq/*:compiler.cppstd=20
+libpq/*:compiler.runtime=dynamic
+libpq/*:compiler.runtime_type=Release
+
 [conf]
 tools.cmake.cmaketoolchain:generator=Ninja
 tools.meson.mesontoolchain:backend=ninja
