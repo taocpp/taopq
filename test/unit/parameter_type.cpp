@@ -82,8 +82,6 @@ static_assert( tao::pq::parameter_type< std::vector< unsigned long long > > );
 
 static_assert( tao::pq::parameter_type< std::vector< std::set< double > > > );
 static_assert( tao::pq::parameter_type< std::set< std::vector< double > > > );
-// GCC 15 broke this:
-// static_assert( tao::pq::parameter_type< std::list< std::unordered_set< std::tuple< int > > > > );
 
 // aggregate
 namespace example
