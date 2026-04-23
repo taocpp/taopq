@@ -107,6 +107,8 @@ namespace tao::pq::internal
 
 #elif defined( _GLIBCXX_VECTOR )
 
+     void resize_uninitialized_proxy( std::vector< std::byte >& v, const std::size_t n ) noexcept;
+
       template< typename T, auto Mimpl, auto Mfinish >
       struct vector_proxy
       {
