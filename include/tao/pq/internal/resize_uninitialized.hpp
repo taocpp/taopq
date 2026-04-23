@@ -109,17 +109,18 @@ namespace tao::pq::internal
 
      void resize_uninitialized_proxy( std::vector< std::byte >& v, const std::size_t n ) noexcept;
 
-      template< typename T, auto Mimpl, auto Mfinish >
+      template< typename T, typename B, auto Mimpl, auto Mfinish >
       struct vector_proxy
       {
          friend void resize_uninitialized_proxy( T& v, const std::size_t n ) noexcept
          {
             // v._M_impl._M_finish = v.data() + n;
-            v.*Mimpl.*Mfinish = v.data() + n;
+            reinterpret_cast< B& >( v ).*Mimpl.*Mfinish = v.data() + n;
          }
       };
 
       template struct vector_proxy< std::vector< std::byte >,
+				    std::vector< std::byte >::_Base,
 				    &std::vector< std::byte >::_M_impl,
 				    &decltype( std::declval< std::vector< std::byte > >()._M_impl )::_M_finish >;
 
