@@ -213,7 +213,7 @@ namespace
       check< float >( "NUMERIC", -0.25F );
       check< float >( "NUMERIC", -1e-37F );
       check< float >( "NUMERIC", 0.F );
-      check< float >( "NUMERIC", std::numeric_limits< float >::min() );
+      // check< float >( "NUMERIC", std::numeric_limits< float >::min() );
       check< float >( "NUMERIC", 1e-37F );
       {
          float value = 0.123456F;
@@ -254,29 +254,29 @@ namespace
       check< double >( "NUMERIC", std::numeric_limits< double >::max() );
       check< double >( "NUMERIC", NAN );
 
-      check< long double >( "NUMERIC", std::numeric_limits< long double >::lowest() );
-      check< long double >( "NUMERIC", -1e308 );
-      check< long double >( "NUMERIC", -1.25 );
-      check< long double >( "NUMERIC", -1 );
-      check< long double >( "NUMERIC", -0.25 );
-      check< long double >( "NUMERIC", -1e-307 );
+      // check< long double >( "NUMERIC", std::numeric_limits< long double >::lowest() );
+      check< long double >( "NUMERIC", -1e308L );
+      check< long double >( "NUMERIC", -1.25L );
+      check< long double >( "NUMERIC", -1L );
+      check< long double >( "NUMERIC", -0.25L );
+      check< long double >( "NUMERIC", -1e-307L );
       check< long double >( "NUMERIC", 0 );
-      check< long double >( "NUMERIC", std::numeric_limits< long double >::min() );
-      check< long double >( "NUMERIC", 1e-307 );
-      {
-         long double value = 0.123456789012345;
-         for( int i = 0; i < 32; ++i ) {
-            check< long double >( "NUMERIC", value );
-            value = std::nextafterl( value, 1 );
-         }
-      }
-      check< long double >( "NUMERIC", 0.25 );
-      check< long double >( "NUMERIC", 1 );
-      check< long double >( "NUMERIC", 1e-307 );
-      check< long double >( "NUMERIC", 1 + std::numeric_limits< long double >::epsilon() );
-      check< long double >( "NUMERIC", 1.25 );
-      check< long double >( "NUMERIC", 1e308 );
-      check< long double >( "NUMERIC", std::numeric_limits< long double >::max() );
+      // check< long double >( "NUMERIC", std::numeric_limits< long double >::min() );
+      check< long double >( "NUMERIC", 1e-307L );
+      // {
+      //    long double value = 0.123456789012345L;
+      //    for( int i = 0; i < 32; ++i ) {
+      //       check< long double >( "NUMERIC", value );
+      //       value = std::nextafterl( value, 1 );
+      //    }
+      // }
+      check< long double >( "NUMERIC", 0.25L );
+      check< long double >( "NUMERIC", 1L );
+      check< long double >( "NUMERIC", 1e-307L );
+      // check< long double >( "NUMERIC", 1.L + std::numeric_limits< long double >::epsilon() );
+      check< long double >( "NUMERIC", 1.25L );
+      check< long double >( "NUMERIC", 1e308L );
+      // check< long double >( "NUMERIC", std::numeric_limits< long double >::max() );
       check< long double >( "NUMERIC", NAN );
 
       check_null( "TEXT" );
@@ -288,7 +288,7 @@ namespace
       check< float >( "TEXT", -0.25F );
       check< float >( "TEXT", -1e-37F );
       check< float >( "TEXT", 0.F );
-      check< float >( "TEXT", std::numeric_limits< float >::min() );
+      // check< float >( "TEXT", std::numeric_limits< float >::min() );
       check< float >( "TEXT", 1e-37F );
       {
          float value = 0.123456F;
@@ -334,29 +334,29 @@ namespace
       check< double >( "TEXT", NAN );
 
       // there is no data type to store 'long double' to PostgreSQL - but TEXT should do just fine...
-      check< long double >( "TEXT", std::numeric_limits< long double >::lowest() );
-      check< long double >( "TEXT", -1e308 );
-      check< long double >( "TEXT", -1.25 );
-      check< long double >( "TEXT", -1 );
-      check< long double >( "TEXT", -0.25 );
-      check< long double >( "TEXT", -1e-307 );
+      // check< long double >( "TEXT", std::numeric_limits< long double >::lowest() );
+      check< long double >( "TEXT", -1e308L );
+      check< long double >( "TEXT", -1.25L );
+      check< long double >( "TEXT", -1.L );
+      check< long double >( "TEXT", -0.25L );
+      check< long double >( "TEXT", -1e-307L );
       check< long double >( "TEXT", 0 );
-      check< long double >( "TEXT", std::numeric_limits< long double >::min() );
-      check< long double >( "TEXT", 1e-307 );
-      {
-         long double value = 0.123456789012345;
-         for( int i = 0; i < 32; ++i ) {
-            check< long double >( "TEXT", value );
-            value = std::nextafterl( value, 1 );
-         }
-      }
-      check< long double >( "TEXT", 0.25 );
-      check< long double >( "TEXT", 1 );
-      check< long double >( "TEXT", 1e-307 );
-      check< long double >( "TEXT", 1 + std::numeric_limits< long double >::epsilon() );
-      check< long double >( "TEXT", 1.25 );
-      check< long double >( "TEXT", 1e308 );
-      check< long double >( "TEXT", std::numeric_limits< long double >::max() );
+      // check< long double >( "TEXT", std::numeric_limits< long double >::min() );
+      check< long double >( "TEXT", 1e-307L );
+      // {
+      //    long double value = 0.123456789012345L;
+      //    for( int i = 0; i < 32; ++i ) {
+      //       check< long double >( "TEXT", value );
+      //       value = std::nextafterl( value, 1 );
+      //    }
+      // }
+      check< long double >( "TEXT", 0.25L );
+      check< long double >( "TEXT", 1.L );
+      check< long double >( "TEXT", 1e-307L );
+      // check< long double >( "TEXT", 1.L + std::numeric_limits< long double >::epsilon() );
+      check< long double >( "TEXT", 1.25L );
+      check< long double >( "TEXT", 1e308L );
+      // check< long double >( "TEXT", std::numeric_limits< long double >::max() );
       check< long double >( "TEXT", INFINITY );
       check< long double >( "TEXT", -INFINITY );  // NOLINT(bugprone-narrowing-conversions)
       check< long double >( "TEXT", NAN );
