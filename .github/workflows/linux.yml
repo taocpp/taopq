@@ -17,6 +17,8 @@ jobs:
         compiler:
           - g++-13
           - g++-14
+          - g++-15
+          - g++-16
           - clang++-18
 
     runs-on: ubuntu-24.04
@@ -48,6 +50,20 @@ jobs:
       with:
         packages: libpq-dev libc++-dev
         version: 2.0
+
+    - name: Install GCC-15
+      if: matrix.compiler == 'g++-15'
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update
+        sudo apt-get install -y g++-15
+
+    - name: Install GCC-16
+      if: matrix.compiler == 'g++-16'
+      run: |
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt-get update
+        sudo apt-get install -y g++-16
 
     - name: Configure CMake Project
       run: cmake --preset unixlike-release-dev -DCMAKE_INSTALL_PREFIX=${{ github.workspace }}/taopq-install
