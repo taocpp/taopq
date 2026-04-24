@@ -48,8 +48,7 @@ TESTSOURCES := $(shell find test -name '*.cpp')
 DEPENDS := $(SOURCES:%.cpp=$(BUILDDIR)/%.d) $(TESTSOURCES:%.cpp=$(BUILDDIR)/%.d)
 BINARIES := $(SOURCES:%.cpp=$(BUILDDIR)/%) $(TESTSOURCES:%.cpp=$(BUILDDIR)/%)
 
-UNIT_TESTS := $(filter $(BUILDDIR)/test/unit/%,$(BINARIES))
-INTEGRATION_TESTS := $(filter $(BUILDDIR)/test/integration/%,$(BINARIES))
+UNIT_TESTS := $(filter $(BUILDDIR)/test/%,$(BINARIES))
 
 LIBSOURCES := $(filter src/lib/%,$(SOURCES))
 LIBNAME := taopq
