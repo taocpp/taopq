@@ -149,3 +149,42 @@ jobs:
 
     - name: Run tests
       run: cmake --build --preset unixlike-release-dev --target test
+
+  linux-makefile:
+    runs-on: ubuntu-24.04
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+        ports:
+          - 5432:5432
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      TAOPQ_TEST_DATABASE: host=localhost dbname=postgres user=postgres password=postgres
+      CXX: g++-13
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - uses: awalsh128/cache-apt-pkgs-action@latest
+      with:
+        packages: libpq-dev libc++-dev
+        version: 2.0
+
+    - name: Build project files with Makefile
+      run: make -j$(nproc)
+
+    - name: Run tests with Makefile
+      run: make test
+      env:
+        PGDATABASE: ${{ env.TAOPQ_TEST_DATABASE }}
