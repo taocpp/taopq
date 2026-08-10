@@ -96,10 +96,10 @@ namespace tao::pq::internal
 
 #if !defined( _LIBCPP_HAS_NO_ASAN ) && defined( __has_feature )
 #if __has_feature( address_sanitizer )
-	    __sanitizer_annotate_contiguous_container( v.data(),
-						       v.data() + v.capacity(),
-						       v.data() + v.size(),
-						       v.data() + n );
+            __sanitizer_annotate_contiguous_container( v.data(),
+                                                       v.data() + v.capacity(),
+                                                       v.data() + v.size(),
+                                                       v.data() + n );
 #endif
 #endif
          }
