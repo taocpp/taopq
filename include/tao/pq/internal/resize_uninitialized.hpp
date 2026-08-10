@@ -94,11 +94,13 @@ namespace tao::pq::internal
             // v.__end_ = v.data() + n;
             v.*M = v.data() + n;
 
-#ifndef _LIBCPP_HAS_NO_ASAN
-            __sanitizer_annotate_contiguous_container( v.data(),
-                                                       v.data() + v.capacity(),
-                                                       v.data() + v.size(),
-                                                       v.data() + n );
+#if !defined( _LIBCPP_HAS_NO_ASAN ) && defined( __has_feature )
+#if __has_feature( address_sanitizer )
+	    __sanitizer_annotate_contiguous_container( v.data(),
+						       v.data() + v.capacity(),
+						       v.data() + v.size(),
+						       v.data() + n );
+#endif
 #endif
          }
       };
