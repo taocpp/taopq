@@ -25,6 +25,8 @@ namespace tao::pq
       std::shared_ptr< transaction > m_transaction;
       int m_fd;
 
+      [[nodiscard]] auto read_noexcept( char* data, const std::size_t size ) noexcept -> std::size_t;
+
    public:
       [[nodiscard]] static auto create( const std::shared_ptr< transaction >& transaction, const oid desired_id = oid::invalid ) -> oid;
 

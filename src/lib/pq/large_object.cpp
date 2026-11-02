@@ -35,6 +35,12 @@ namespace tao::pq
 
    }  // namespace
 
+   auto large_object::read_noexcept( char* data, const std::size_t size ) noexcept -> std::size_t
+   {
+      assert( m_transaction );
+      return lo_read( m_transaction->connection()->underlying_raw_ptr(), m_fd, data, size );
+   }
+
    auto large_object::create( const std::shared_ptr< transaction >& transaction, const oid desired_id ) -> oid
    {
       const oid id = static_cast< oid >( lo_create( transaction->connection()->underlying_raw_ptr(), static_cast< Oid >( desired_id ) ) );
@@ -113,8 +119,7 @@ namespace tao::pq
 
    auto large_object::read( char* data, const std::size_t size ) -> std::size_t
    {
-      assert( m_transaction );
-      const auto result = lo_read( m_transaction->connection()->underlying_raw_ptr(), m_fd, data, size );
+      const auto result = read_noexcept( data, size );
       if( result == -1 ) {
          throw std::runtime_error( std::format( "tao::pq::large_object::read() failed: {}", m_transaction->connection()->error_message() ) );
       }
@@ -166,10 +171,9 @@ namespace tao::pq
    {
       std::string nrv;
 #if defined( __cpp_lib_string_resize_and_overwrite )
-      assert( m_transaction );
       int result;
       nrv.resize_and_overwrite( size, [ & ]( char* buf, std::size_t buf_size ) noexcept {
-         result = lo_read( m_transaction->connection()->underlying_raw_ptr(), m_fd, buf, buf_size );
+         result = read_noexcept( buf, buf_size );
          return std::max( result, 0 );
       } );
       if( result == -1 ) {
