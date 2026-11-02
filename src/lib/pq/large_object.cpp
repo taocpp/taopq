@@ -165,8 +165,20 @@ namespace tao::pq
    auto large_object::read< std::string >( const std::size_t size ) -> std::string
    {
       std::string nrv;
+#if defined( __cpp_lib_string_resize_and_overwrite )
+      assert( m_transaction );
+      int result;
+      nrv.resize_and_overwrite( size, [ & ]( char* buf, std::size_t buf_size ) noexcept {
+         result = lo_read( m_transaction->connection()->underlying_raw_ptr(), m_fd, buf, buf_size );
+         return std::max( result, 0 );
+      } );
+      if( result == -1 ) {
+         throw std::runtime_error( std::format( "tao::pq::large_object::read() failed: {}", m_transaction->connection()->error_message() ) );
+      }
+#else
       internal::resize_uninitialized( nrv, size );
       nrv.resize( read( nrv.data(), size ) );
+#endif
       return nrv;
    }
 

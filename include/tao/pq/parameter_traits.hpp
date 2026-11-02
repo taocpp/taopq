@@ -20,9 +20,12 @@
 #include <tao/pq/binary.hpp>
 #include <tao/pq/bind.hpp>
 #include <tao/pq/internal/parameter_traits_helper.hpp>
-#include <tao/pq/internal/resize_uninitialized.hpp>
 #include <tao/pq/null.hpp>
 #include <tao/pq/oid.hpp>
+
+#if !defined( __cpp_lib_string_resize_and_overwrite )
+#include <tao/pq/internal/resize_uninitialized.hpp>
+#endif
 
 namespace tao::pq
 {
@@ -424,6 +427,18 @@ namespace tao::pq
          // generate bytea hex format
          constexpr char hex[] = "0123456789abcdef";
          auto pos = data.size();
+#if defined( __cpp_lib_string_resize_and_overwrite )
+         data.resize_and_overwrite( pos + 3 + ( 2 * m_v.size() ), [ & ]( char* buf, std::size_t buf_size ) noexcept {
+            buf[ pos++ ] = '\\';
+            buf[ pos++ ] = '\\';
+            buf[ pos++ ] = 'x';
+            for( auto c : m_v ) {
+               buf[ pos++ ] = hex[ static_cast< unsigned char >( c ) >> 4 ];
+               buf[ pos++ ] = hex[ static_cast< unsigned char >( c ) & 15 ];
+            }
+            return buf_size;
+         } );
+#else
          internal::resize_uninitialized( data, pos + 3 + ( 2 * m_v.size() ) );
          data[ pos++ ] = '\\';
          data[ pos++ ] = '\\';
@@ -432,6 +447,7 @@ namespace tao::pq
             data[ pos++ ] = hex[ static_cast< unsigned char >( c ) >> 4 ];
             data[ pos++ ] = hex[ static_cast< unsigned char >( c ) & 15 ];
          }
+#endif
       }
 
       template< std::size_t I >
