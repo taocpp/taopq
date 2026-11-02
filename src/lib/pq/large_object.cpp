@@ -35,7 +35,7 @@ namespace tao::pq
 
    }  // namespace
 
-   auto large_object::read_noexcept( char* data, const std::size_t size ) noexcept -> std::size_t
+   auto large_object::read_noexcept( char* data, const std::size_t size ) noexcept -> int
    {
       assert( m_transaction );
       return lo_read( m_transaction->connection()->underlying_raw_ptr(), m_fd, data, size );
