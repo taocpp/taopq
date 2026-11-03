@@ -105,7 +105,7 @@ namespace tao::pq::internal
          case -1: {
             const int e = errno;
             if( ( e != EINTR ) && ( e != EAGAIN ) ) {
-               throw network_error( std::format( "poll() failed: ", errno_to_string( e ) ) );
+               throw network_error( std::format( "poll() failed: {}", errno_to_string( e ) ) );
             }
             return pq::poll::status::again;
          }
