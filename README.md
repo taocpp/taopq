@@ -65,9 +65,18 @@ int main()
 * [Installation](doc/Installation.md)
 * [Getting Started](doc/Getting-Started.md)
 * [Connection](doc/Connection.md)
+* [Connection Pool](doc/Connection-Pool.md)
 * [Transaction](doc/Transaction.md)
 * [Statement](doc/Statement.md)
+* [Parameter Type Conversion](doc/Parameter-Type-Conversion.md)
 * [Result](doc/Result.md)
+* [Result Type Conversion](doc/Result-Type-Conversion.md)
+* [Aggregate Support](doc/Aggregate-Support.md)
+* [Error Handling](doc/Error-Handling.md)
+* [Binary Data](doc/Binary-Data.md)
+* [Bulk Transfer](doc/Bulk-Transfer.md)
+* [Large Object](doc/Large-Object.md)
+* [Performance](doc/Performance.md)
 
 ## Contact
 
