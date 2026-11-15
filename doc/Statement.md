@@ -15,10 +15,10 @@ template< typename... As >
 auto Type::execute( const tao::pq::internal::zsv statement, As&&... as ) -> tao::pq::result;
 ```
 
-For the purpose of this chapter, it makes no difference which `Type` is used.
-The method takes the statement itself as its first parameter plus additional parameters that will be passed to the statement.
-It returns a `tao::pq::result` that is documented in the [Result](Result.md) chapter.
-In case of an error, i.e. if the statement execution failed, an exception is thrown as documented in the [Error Handling](Error-Handling.md) chapter.
+For the purposes of this chapter, it makes no difference which `Type` is used.
+The method takes the statement itself as its first parameter, followed by additional parameters that will be passed to the SQL statement.
+It returns a `tao::pq::result`, documented in the [Result](Result.md) chapter.
+If statement execution fails, an exception is thrown as documented in the [Error Handling](Error-Handling.md) chapter.
 
 ### `tao::pq::internal::zsv`
 
@@ -38,10 +38,9 @@ tr->execute( "INSERT INTO user ( name, age ) VALUES ( $1, $2 )", "Daniel", 42 );
 ```
 
 The actual data is separated from the statement itself.
-The use of positional parameters makes passing strings and other types safe, as there is no need for manually escaping the data.
-Our library now knows what is the actual SQL statement you want to send and what is the data you want to send.
-This protects you from SQL injections and it is also quiet convenient.
-The way the data is now transferred between the client and the server is also more efficient.
+The use of positional parameters makes passing strings and other types safe, as there is no need to manually escape the data.
+The library can distinguish the SQL statement from the data you want to send, which protects you from SQL injection.
+The transfer of data between client and server is also more efficient.
 
 :warning: The only thing you have to remember is to **never** concatenate strings together to create the SQL statement including the data manually.
 As this is such an important point, we will illustrate how it should **not** be done:
@@ -60,7 +59,7 @@ What happens, if a user enters the following "name":
 
 `Robert'; DELETE FROM user WHERE name <> 'Little Bobby Tables`
 
-Yupp, all users other than [`Little Bobby Tables`➚](https://xkcd.com/327/) have just been deleted from the database.
+Yes, all users other than [`Little Bobby Tables`➚](https://xkcd.com/327/) have just been deleted from the database.
 
 You might have seen other libraries where you should [escape the data explicitly➚](https://www.postgresql.org/docs/current/libpq-exec.html#LIBPQ-EXEC-ESCAPE-STRING), something like:
 
@@ -72,10 +71,10 @@ auto find_user( const std::string& name )
 ```
 
 This is cumbersome and error-prone.
-It is easy to forget calling the escape method, which the compiler will *not* catch for you, and for non-strings, the code needs to call explicit conversion methods to string.
-This turns longer SQL statements into a long, ugly mess.
+It is easy to forget to call the escape method, and the compiler will not catch that for you.
+For non-string types, the code would need to call explicit conversion methods to string, turning longer SQL statements into a messy tangle.
 
-Positional parameters solve all of those problems and therefore taoPQ does not even offer any escaping methods.
+Positional parameters solve all of these problems, and for that reason taoPQ does not offer any escaping methods.
 To be safe and to make your life easier, with taoPQ always use positional parameters:
 
 ```c++
@@ -95,7 +94,7 @@ We allow at most one SQL command in the given statement passed to an `execute()`
 ## Prepared Statements
 
 In the [Connection](Connection.md) chapter we have shown how you can prepare (and deallocate) prepared statements.
-In order to execute prepared statements, you simply pass the name of the prepared statement to the `execute()`-method instead of the actual SQL statement.
+To execute prepared statements, you simply pass the name of the prepared statement to the `execute()`-method instead of the SQL statement.
 This might look like this:
 
 ```c++
@@ -106,9 +105,9 @@ connection->execute( "insert_user", "Tom", 41 );
 connection->execute( "insert_user", "Jerry", 29 );
 ```
 
-This is both more efficient and also allows you to change the statements in a central place if need be, without touching any of the places where it is actually used.
+This is both more efficient and allows you to change the statements in a central place if needed, without touching any of the call sites.
 
-You might want to wrap calls to a (prepared) statement into an application-specific wrapper, that way you add C++'s type safety for the rest of the application calling that method (and also receiving the result).
+You might also consider wrapping calls to a (prepared) statement in an application-specific wrapper, adding C++'s type safety for the rest of the application that calls that wrapper (and receives the result).
 
 Another idea that we already used in practice is to read the SQL statements from a configuration file.
 When you then need to change a statement, e.g. to work around a performance issue with the database or because you renamed a column in the database, all you need to do is adapt the configuration.

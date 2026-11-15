@@ -1,15 +1,14 @@
 # Connection Pool
 
-Opening a new connection to the database server typically consists of several time-consuming steps.
-A physical channel such as a socket or a named pipe must be established, the initial handshake with the server must occur, if encryption protocols (SSL) are enabled those need to be established, the connection string information must be parsed, the connection must be authenticated by the server, checks must be run for enlisting in the current transactions, and so on.
+Opening a new connection to the database server involves several time-consuming steps: establishing a physical channel (a socket or named pipe), performing the initial server handshake, negotiating encryption if SSL is enabled, parsing the connection string, authenticating with the server, and more.
 
 In practice, most applications use only one or a few different configurations for connections.
 This means that during application execution, many identical connections will be repeatedly opened and closed.
 To minimize the cost of opening connections, taoPQ provides connection pools.
 
-Connection pools reduces the number of times that new connections must be opened.
-They manage connections by keeping alive a set of active connections and borrowing them to the application on demand.
-The connection pool maintains ownership of the connections when they are not used by the application.
+Connection pools reduce the number of times new connections must be opened.
+They keep a set of active connections alive and borrow them to the application on demand.
+When a connection is not in use, the pool retains ownership of it.
 
 ## Synopsis
 
@@ -122,9 +121,9 @@ auto tao::pq::connection_pool::connection()
     -> std::shared_ptr< tao::pq::connection >;
 ```
 
-This will either open a new connection when the pool is empty, or it will give you a reused connection from the pool.
-As long as you retain ownership of the returned shared pointer, it is yours to work with.
-When the last remaining shared pointer is destroyed or assigned another value, the connection is returned to the pool.
+This will either open a new connection when the pool is empty, or return a reused connection from the pool.
+As long as you retain the returned shared pointer, the connection is yours to use.
+When the last shared pointer is destroyed or assigned another value, the connection is returned to the pool.
 
 ## Executing Statements
 
@@ -133,10 +132,10 @@ After the statement was executed, the temporary connection is returned to the po
 
 ## Cleanup
 
-The connection pool will implicitly discard connections that are in a failed state when they are returned to the pool or when they are retrieved from the pool.
+The connection pool will discard connections that are in a failed state when they are returned to the pool or when they are retrieved from it.
 
-In some environments you might need to periodically clean up the connection pool to get rid of connections that are no longer valid.
-In order to do so, just call the `erase_invalid()`-method, which will check the status of each pooled connection and discard the invalid ones.
+In some environments you may need to periodically clean up the connection pool to discard connections that are no longer valid.
+To do so, call the `erase_invalid()`-method, which checks the status of each pooled connection and discards the invalid ones.
 
 ```c++
 void tao::pq::connection_pool::erase_invalid();
@@ -160,7 +159,7 @@ Setting the default `poll()`-callback for borrowed connections is done by callin
 void set_poll_callback( std::function< tao::pq::poll::callback > poll_cb ) noexcept;
 ```
 
-You can revert the current default `poll()`-callback for borrowed connections to the default by calling the `reset_poll_callback()`-method.
+To revert the current default `poll()`-callback for borrowed connections to the built-in default, call the `reset_poll_callback()`-method.
 
 ```c++
 void reset_poll_callback();
@@ -168,11 +167,10 @@ void reset_poll_callback();
 
 ## Thread Safety
 
-The connection pool's borrowing mechanism is thread-safe, i.e. multiple threads can make calls to the `connection()`-method or return connections simultaneously.
+The connection pool's borrowing mechanism is thread-safe: multiple threads can call the `connection()`-method or return connections simultaneously.
 You can also call the `erase_invalid()`-method at any time.
 
-Internally, the connection pool uses a [mutex➚](https://en.cppreference.com/w/cpp/thread/mutex) to serialize the above operations.
-We minimized the work in the [critical sections➚](https://en.wikipedia.org/wiki/Critical_section) as far as possible.
+Internally, the connection pool uses a [mutex➚](https://en.cppreference.com/w/cpp/thread/mutex) to serialize the above operations, with as little work as possible performed within the [critical sections➚](https://en.wikipedia.org/wiki/Critical_section).
 
 ---
 

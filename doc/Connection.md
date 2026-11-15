@@ -1,7 +1,7 @@
 # Connection
 
 All communication with a database server is handled through a connection, represented by the `tao::pq::connection` type in taoPQ.
-A connection object takes care of tracking [transactions](Transaction.md), [error handling](Error-Handling.md), and it has its own set of prepared statements.
+A connection object manages [transactions](Transaction.md), handles [error reporting](Error-Handling.md), and maintains its own set of prepared statements.
 
 ## Synopsis
 
@@ -167,15 +167,15 @@ auto tao::pq::connection::create( const std::string& connection_info,
 ```
 
 It takes a mandatory parameter, the [connection string➚](https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-CONNSTRING), that is passed to the underlying `libpq` for opening the database connection.
-The connection string contains parameters and options, such as the server address or the database name.
-Connection parameters that are not specified in the connection string might also be set via [environment variables➚](https://www.postgresql.org/docs/current/libpq-envars.html).
+The connection string contains parameters and options, such as the server address or database name.
+Connection parameters that are not specified in the connection string can also be set via [environment variables➚](https://www.postgresql.org/docs/current/libpq-envars.html).
 
 The second, optional parameter can be used to specify a `poll()`-callback, see [Customizable `poll()`-callback](#customizable-poll-callback).
 
 The method returns a `std::shared_ptr<tao::pq::connection>` or, in case of an error, throws an exception.
 When the last reference to a connection is deleted, i.e. the last shared pointer referencing it is deleted or reset, the connection is closed via its destructor which takes care of freeing underlying resources.
-The shared pointer might also be stored internally in other objects of taoPQ, i.e. a transaction.
-This ensures, that the connection is kept alive as long as there are dependent objects like an active transaction, see below.
+The shared pointer may also be stored internally by other taoPQ objects, e.g. a transaction.
+This ensures that the connection is kept alive as long as dependent objects exist, as described below.
 
 ## Creating Transactions
 
@@ -236,7 +236,7 @@ taoPQ limits the name to classic C-style identifiers, i.e. a non-empty sequence 
 A valid identifier must begin with a non-digit character.
 Identifiers are case-sensitive (lowercase and uppercase letters are distinct).
 
-A previously prepared statement can be [deallocated➚](https://www.postgresql.org/docs/current/sql-deallocate.html), although this is rare in pratice.
+A previously prepared statement can be [deallocated➚](https://www.postgresql.org/docs/current/sql-deallocate.html), although this is rare in practice.
 To deallocate a prepared statement, call the `deallocate()`-method.
 
 ```c++
@@ -248,11 +248,11 @@ This allows the [execution](Statement.md) of those prepared statements transpare
 
 ### Manually Prepared Statements
 
-You can manually prepare statements by executing [`PREPARE`➚](https://www.postgresql.org/docs/current/sql-prepare.html) statements directly via an `execute()`-method.
-While those prepared statements live on the same connection, there are some important differences.
-You can only execute those prepared statements by executing [`EXECUTE`➚](https://www.postgresql.org/docs/current/sql-execute.html) statements directly via an `execute()`-method, and you can only deallocate them by executing [`DEALLOCATE`➚](https://www.postgresql.org/docs/current/sql-deallocate.html) statements directly via an `execute()`-method.
+You can prepare statements manually by executing [`PREPARE`➚](https://www.postgresql.org/docs/current/sql-prepare.html) statements directly via the `execute()`-method.
+Those prepared statements live on the same connection, but they behave differently from statements registered via `prepare()`.
+You can only execute them by issuing [`EXECUTE`➚](https://www.postgresql.org/docs/current/sql-execute.html) statements directly via the `execute()`-method, and you can only deallocate them by issuing [`DEALLOCATE`➚](https://www.postgresql.org/docs/current/sql-deallocate.html) statements directly via the `execute()`-method.
 
-:point_up: We advise to use the methods offered by taoPQ's connection type.
+:point_up: We recommend using the methods offered by taoPQ's `connection` type.
 
 ## Checking Status
 

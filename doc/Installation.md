@@ -3,7 +3,8 @@
 ## Using CMake
 
 Since CMake 3.11, the feature [FetchContent➚](https://cmake.org/cmake/help/latest/module/FetchContent.html) can be used to download and build project dependencies.
-This mechanism makes our development much easier, but it lacks in terms of reproducibility, so be careful if you are using it for production. Also, we will use `FetchContent_MakeAvailable` which is available since CMake 3.14:
+This mechanism simplifies development, but it has a downside: downloaded dependencies may change between builds, which can make builds non-reproducible. Be careful when using it in production.
+Also, this example uses `FetchContent_MakeAvailable`, which is available since CMake 3.14:
 
 ```cmake
 cmake_minimum_required(VERSION 3.14)
@@ -32,22 +33,21 @@ cmake .
 cmake --build .
 ```
 
-The CMake client will download taoPQ source files based on the `main` branch, but is highly recommended using a commit or tag to keep the reproducibility.
-Besides that, PostgreSQL (libpq) is a pre-requirement. You can extend the `CMakeLists.txt` to download and build libpq too, or just consume from your system.
-When executing the build step, taoPQ will be built first, as its target is required by our application, after that, the example application will be built and linked to both libpq and taoPQ.
+The CMake build will download the taoPQ source files from the `main` branch. For reproducibility, we recommend pinning to a specific commit or tag instead.
+PostgreSQL (libpq) is a prerequisite; you can either install it from your system or extend the `CMakeLists.txt` to download and build it as well.
+During the build, taoPQ is built first, as it is a dependency of the example application. The example is then built and linked to both libpq and taoPQ.
 
 ---
 
 ## Using Conan
 
-You can install pre-built binaries for taoPQ or build it from source using [Conan](https://conan.io/). Use the following command:
+You can install a pre-built binary for taoPQ or build it from source using [Conan](https://conan.io/). Use the following command:
 
 ```bash
 conan install --requires="taocpp-taopq/[*]" --build=missing
 ```
 
-The taoPQ Conan recipe is kept up to date by Conan maintainers and community contributors.
-If the version is out of date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the ConanCenterIndex repository.
+The taoPQ Conan recipe is maintained by the Conan community. If the version is out of date, please [create an issue or pull request](https://github.com/conan-io/conan-center-index) on the ConanCenterIndex repository.
 
 
 This document is part of [taoPQ](https://github.com/taocpp/taopq).

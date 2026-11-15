@@ -8,16 +8,16 @@ Large Objects in taoPQ have their own representation discussed in the [Large Obj
 
 In PostgreSQL strings are a sequence of bytes that is valid in a given encoding.
 One or more bytes can represent individual characters or code points.
-This means that not all sequences of bytes are a valid string and therefore binary data can generally not be represented by PostgreSQL as a string.
+Not all sequences of bytes form a valid string, which means that binary data in general cannot be represented as a string.
 
-Binary data is different from strings, as binary data is a collection of an arbitrary sequence of bytes.
+Binary data is distinct from strings, as binary data is a collection of an arbitrary sequence of bytes.
 Any byte is treated independently of its surrounding bytes and can have any value, including '\0'.
 It is therefore crucial to represent binary data with the dedicated [`BYTEA`➚](https://www.postgresql.org/docs/current/datatype-binary.html) data type.
 
 ## C++ Binary Data
 
 The individual bytes are represented by [`std::byte`➚](https://en.cppreference.com/w/cpp/types/byte).
-As there is no one-size-fits-all data type to handle binary data in C++, we allow several options.
+As no single C++ data type suits all cases for binary data, we support several options.
 
 We mostly represent binary data with `tao::pq::binary` and `tao::pq::binary_view`.
 These are type aliases for [`std::vector<std::byte>`➚](https://en.cppreference.com/w/cpp/container/vector) and [`std::span<std::byte>`➚](https://en.cppreference.com/w/cpp/container/span), respectively.
@@ -27,7 +27,7 @@ These are type aliases for [`std::vector<std::byte>`➚](https://en.cppreference
 When you pass binary data to taoPQ, we only require a view to be passed.
 As a view is a non-owning data type, constructing an instance of it is cheap.
 
-If you have other data types, you can create a binary data view by using
+If you need to pass other data types, you can create a binary view using
 
 ```c++
 auto tao::pq::to_binary_view( const auto* data, const std::size_t size ) noexcept -> tao::pq::binary_view;
@@ -38,16 +38,16 @@ auto tao::pq::to_binary_view( const auto& data ) noexcept
 }
 ```
 
-The former function requires (and checks) that `T` has a size of 1 byte.
-If you want to store larger `T`s as binary data you need to manually convert the pointer and size appropriately.
+The first function requires (and checks) that `T` is exactly one byte in size.
+If you want to store larger `T`s as binary data, you need to manually convert the pointer and size appropriately.
 
 The second method requires the data type `T` to be a suitable candidate for [`std::data()`➚](https://en.cppreference.com/w/cpp/iterator/data) and [`std::size()`➚](https://en.cppreference.com/w/cpp/iterator/size), which requires the data to be stored in a contiguous block of memory.
 We do not offer any convenience methods to create binary data from distributed data structures, i.e. `std::list<std::byte>` is not supported.
 
 ## Receiving Binary Data
 
-When receiving binary data, a non-owning view is insufficient, hence we return `tao::pq::binary`.
-In some cases other alternatives are offered, i.e. you may provide a buffer that the data is written to.
+When receiving binary data, a non-owning view is insufficient, so we return `tao::pq::binary` instead.
+In some cases, alternatives are offered, e.g. you may provide a buffer that the data is written to.
 
 ---
 

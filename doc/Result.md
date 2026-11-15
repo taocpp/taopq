@@ -276,19 +276,19 @@ auto tao::pq::result::rows_affected() const -> std::size_t;
 
 ## Query Results
 
-[Query results➚](https://www.postgresql.org/docs/current/queries-overview.html) are non-mutable data sets, they are cheap to copy, move, or assign and you can iterate over the data multiple times in random order.
-Likewise, rows are also non-mutable, as well as fields.
-This also means iterators will behave as constant iterators.
+[Query results➚](https://www.postgresql.org/docs/current/queries-overview.html) are immutable data sets; they are cheap to copy, move, or assign, and you can iterate over the data multiple times in random order.
+Likewise, rows are also immutable, as well as fields.
+This also means iterators behave as constant iterators.
 
 Query results act similar to a random-access container.
-The don't fully implement the [container requirements➚](https://en.cppreference.com/w/cpp/named_req/Container), but a reasonable subset of those are provided.
+They do not fully implement the [container requirements➚](https://en.cppreference.com/w/cpp/named_req/Container), but a reasonable subset is provided.
 
 :point_up: Rows and fields are non-owning, meaning they are only valid as long as the query result instance is still valid.
 
 ### Basics
 
 You can query the container's size, i.e. the number of rows it contains, by calling the `size()`-method.
-The `empty()`-method will, of course, return whether the size of the container is zero or not.
+The `empty()`-method returns whether the container has zero rows.
 
 ```c++
 bool tao::pq::result::empty() const;
@@ -297,7 +297,7 @@ auto tao::pq::result::size() const -> std::size_t;
 
 The number of columns, column order, and the column name is the same for all rows of a result set.
 You can query the number of columns by calling the `columns()`-method.
-You can retrieve the name of a column using the `name()`-method, or the column index by using the `index()`-method.
+The column name can be retrieved using the `name()`-method, and the column index using the `index()`-method.
 
 ```c++
 auto tao::pq::result::columns() const -> std::size_t;
@@ -305,8 +305,8 @@ auto tao::pq::result::name( std::size_t column ) const -> std::string;
 auto tao::pq::result::index( tao::pq::internal::zsv name ) const -> std::size_t;
 ```
 
-Direct access to the data is provided by the `is_null()`- and the `get()`-methods.
-The latter returns the raw string as returned by `libpq`, it is a low level access method that is rarely used directly.
+Direct access to the data is provided by the `is_null()`- and `get()`-methods.
+The latter returns the raw string as returned by `libpq`; it is a low-level access method that is rarely used directly.
 
 ```c++
 bool tao::pq::result::is_null( std::size_t row, std::size_t column ) const;
@@ -352,14 +352,14 @@ for( std::size_t i = 0; i < result.size(); ++i ) {
 }
 ```
 
-This is enabled by the accessors, the `at()`-method and the `[]`-operator.
+This is enabled by the accessors `at()` and `operator[]`.
 
 ```c++
 auto tao::pq::result::at( std::size_t index ) const -> tao::pq::row;
 auto tao::pq::result::operator[]( std::size_t index ) const noexcept -> tao::pq::row;
 ```
 
-More conversion methods will be discussed later, after we covered the basics for rows and fields.
+More conversion methods will be discussed later, after we have covered the basics for rows and fields.
 
 ### Field Access
 
@@ -371,8 +371,8 @@ auto tao::pq::row::name( std::size_t column ) const -> std::string;
 auto tao::pq::row::index( tao::pq::internal::zsv name ) const -> std::size_t;
 ```
 
-Direct access to the data is provided by the `is_null()`- and the `get()`-methods.
-The latter returns the raw string as returned by `libpq`, it is a low level access method that is rarely used directly.
+Direct access to the data is provided by the `is_null()`- and `get()`-methods.
+The latter returns the raw string as returned by `libpq`; it is a low-level access method that is rarely used directly.
 
 ```c++
 bool tao::pq::row::is_null( std::size_t column ) const;
@@ -406,7 +406,7 @@ or more traditionally:
 const tao::pq::result result = ...;
 for( auto it = std::begin( result ); it != std::end( result ); ++it ) {
    for( auto jt = std::begin( *it ); jt != std::end( *it ); ++jt ) {
-      // use *jt to access your fields's data
+      // use *jt to access your field's data
    }
 }
 ```
@@ -422,14 +422,14 @@ for( std::size_t i = 0; i < result.size(); ++i ) {
 }
 ```
 
-This is enabled by the accessors, the `at()`-method and the `[]`-operator.
+This is enabled by the accessors `at()` and `operator[]`.
 
 ```c++
 auto tao::pq::row::at( std::size_t index ) const -> tao::pq::field;
 auto tao::pq::row::operator[]( std::size_t index ) const noexcept -> tao::pq::field;
 ```
 
-More conversion methods will be discussed later, after we covered the basics for fields.
+More conversion methods will be discussed later, after we have covered the basics for fields.
 
 ### Fields
 
@@ -439,23 +439,23 @@ You can query a field's name by calling the `name()`-method.
 auto tao::pq::field::name() const -> std::string;
 ```
 
-Direct access to the data is provided by the `is_null()`- and the `get()`-methods.
-The latter returns the raw string as returned by `libpq`, it is a low level access method that is rarely used directly.
+Direct access to the data is provided by the `is_null()`- and `get()`-methods.
+The latter returns the raw string as returned by `libpq`; it is a low-level access method that is rarely used directly.
 
 ```c++
 bool tao::pq::field::is_null() const;
 auto tao::pq::field::get() const -> const char*;
 ```
 
-Now that we covered the basics, we can retrieve the actual data and convert it to the data types we need.
+Now that we have covered the basics, we can retrieve the data and convert it to the types we need.
 
 ## Field Data Conversion
 
-A field can be converted to any data type `T` that is a single field wide.
-What we mean by that is, that `tao::pq::result_traits_size< T >` yields 1.
+A field can be converted to any data type `T` that is a single field wide,
+meaning that `tao::pq::result_traits_size< T >` yields 1.
 This is the case for `const char*`, `std::string`, `int`, etc.
 
-In order to convert a field to the data type you want, you can use the `as()`-method.
+To convert a field to the data type you want, you can use the `as()`-method.
 
 ```c++
 template< typename T >

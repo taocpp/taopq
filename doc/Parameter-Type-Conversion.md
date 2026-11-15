@@ -1,7 +1,7 @@
 # Parameter Type Conversion
 
 When [executing statements](Statement.md), you can pass any number of parameters after the statement itself to the `execute()`-method.
-Each parameter then gets converted through the parameter traits class template into one or more positional parameters for the SQL statement.
+Each parameter is converted through the parameter traits mechanism into one or more positional parameters for the SQL statement.
 By default, the following C++ types are available for use as parameters.
 
 ## NULL
@@ -86,9 +86,9 @@ Custom data types can be registered in two different ways, by using a `to_taopq(
 
 ### `to_taopq()`
 
-You can use a function or method called `to_taopq()`, any value returned will then be fed into the parameters as outlined above.
-Usually, that means a simple conversion will return a single known type, more complicated types return a `std::tuple` to return multiple parameters for the SQL statement.
-There are multiple places where this function or method can be placed.
+You can use a function or method called `to_taopq()`, and any value it returns is then fed into the parameters as outlined above.
+Usually, a simple conversion returns a single known type, while more complex types return a `std::tuple` to produce multiple parameters for the SQL statement.
+There are multiple places where this function or method can be defined.
 
 #### Intrusive Placement
 
@@ -131,12 +131,12 @@ public:
 };
 ```
 
-The above means that each time you pass a `my_coordinates` instance as a parameter to an `execute()`-method, three positional parameters are added and can be referenced from the SQL statement.
+The above means that each time you pass a `my_coordinates` instance as a parameter to an `execute()`-method, three positional parameters are added and can be referenced in the SQL statement.
 
 #### Non-Intrusive Placement
 
-If you can't modify the class you could specialize `tao::pq::bind<...>` and place a static `to_taopq()`-method inside the specialization, or provide a free function called `to_taopq()` instead.
-Those functions must accept a single parameter of the class you want to register.
+If you can't modify the class, you can specialize `tao::pq::bind<...>` and place a static `to_taopq()`-method inside the specialization, or provide a free function called `to_taopq()` instead.
+Those functions must accept a single parameter of the type you want to register.
 
 Example for the specialization of `tao::pq::bind<...>`:
 
@@ -172,8 +172,8 @@ auto to_taopq( const some_coordinates& v ) noexcept
 
 The free function is found either by [ADL➚](https://en.cppreference.com/w/cpp/language/adl) or in namespace `tao::pq`.
 
-:point_up: Note that any returned value in the above examples can itself be a registered custom type.
-taoPQ will simply expand parameters recursively.
+:point_up: Note that any returned value in the above examples can itself be a registered custom type;
+taoPQ recursively expands the result into parameters.
 
 ### `tao::pq::parameter_traits< T >`
 

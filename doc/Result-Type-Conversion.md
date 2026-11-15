@@ -44,11 +44,11 @@ By default, the following C++ types are available for use as result types.
 Represents a [nullable➚](https://en.wikipedia.org/wiki/Nullable_type) type.
 
 If the result field is NULL, an empty optional is returned.
-If the result field is not NULL, the value is converted to `T` and returned in the optional.
+If the result field is not NULL, the value is converted to `T` and stored in the `std::optional`.
 
 ## `std::pair< T, U >`
 
-Returns a `std::pair< T, U >`, hence convertes two (or more) neighboring fields from the result's row.
+Returns a `std::pair< T, U >`, hence converts two (or more) neighboring fields from the result's row.
 It can read more than two fields when `T` or `U` themselves read more than one field, i.e. converting to `std::pair<int,std::pair<int,int>>` will read three fields from the result's row.
 
 ## `std::tuple< Ts... >`
@@ -104,8 +104,8 @@ public:
 };
 ```
 
-taoPQ will find the class' method, analyze the methods parameters and convert the result's row accordingly.
-The method must have at least one parameter, each parameter will read the required number of fields.
+taoPQ will find the class' method, analyze the method's parameters, and convert the result's row accordingly.
+The method must have at least one parameter; each parameter will read the required number of fields.
 
 #### Non-Intrusive Placement
 
@@ -131,8 +131,8 @@ struct tao::pq::bind< some_coordinates >
 ```
 
 :point_up: Note that unlike [`to_taopq()`](Parameter-Type-Conversion.md), there is no free function version for `from_taopq()` available.
-This is due to the fact that the custom data type is not a parameter, but rather the returned value.
-The parameter list can therefore be identical for multiple custom data types and this could leads to conflicting overloads.
+This is due to the fact that the custom data type is not a parameter, but rather the return value.
+The parameter list can therefore be identical for multiple custom data types, which could lead to conflicting overloads.
 Also, [ADL➚](https://en.cppreference.com/w/cpp/language/adl) would be unavailable as only the parameters' types are considered for ADL.
 
 ### `tao::pq::result_traits< T >`
