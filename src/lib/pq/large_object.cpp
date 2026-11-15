@@ -4,6 +4,7 @@
 
 #include <tao/pq/large_object.hpp>
 
+#include <algorithm>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -171,7 +172,7 @@ namespace tao::pq
    {
       std::string nrv;
 #if defined( __cpp_lib_string_resize_and_overwrite )
-      int result;
+      int result = 0;
       nrv.resize_and_overwrite( size, [ & ]( char* buf, std::size_t buf_size ) noexcept {
          result = read_noexcept( buf, buf_size );
          return std::max( result, 0 );
